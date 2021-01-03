@@ -13,3 +13,6 @@ For updates:
 * follow us on [Twitter](https://twitter.com/petoicamp), [Instagram](https://www.instagram.com/petoicamp/), and [YouTube channel](https://www.youtube.com/c/rongzhongli).
 
 The [old repository for OpenCat](https://github.com/PetoiCamp/OpenCat-Old) is too redundent with large image files and is now obsolete. 
+
+To install the code on our robot models, first change the model and board definition in OpenCat.h, then upload WriteInstinct.ino.
+Run the code. In the serial monitor, set baudrate as 115200 and "No line ending". Enter three capitalized 'Y' after the prompts and wait for the MPU to calibrate. Then upload OpenCat.ino as the main functional code. 
