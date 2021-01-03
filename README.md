@@ -15,4 +15,14 @@ For updates:
 The [old repository for OpenCat](https://github.com/PetoiCamp/OpenCat-Old) is too redundent with large image files and is now obsolete. 
 
 To install the code on our robot models, first change the model and board definition in OpenCat.h, then upload WriteInstinct.ino.
+
+```
+#include "InstinctBittle.h" //activate the correct header file according to your model
+//#include "InstinctNybble.h"
+
+//#define NyBoard_V0_1
+//#define NyBoard_V0_2
+#define NyBoard_V1_0
+```
+
 Run the code. In the serial monitor, set baudrate as 115200 and "No line ending". Enter three capitalized 'Y' after the prompts and wait for the MPU to calibrate. Then upload OpenCat.ino as the main functional code. 
