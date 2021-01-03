@@ -19,7 +19,7 @@ This repository works on both Nybble and Bittle controled by NyBoard based on AT
 #define NyBoard_V1_0
 ```
 
-In the serial monitor, set **"No line ending"** and baudrate as **115200** (or **57600** for NyBoard V0_\*). Enter three capitalized '**Y**' after the prompts and wait for the MPU to calibrate. Then upload **OpenCat.ino** as the main functional code. 
+In the serial monitor, set **No line ending** and baudrate as **115200** (or **57600** for NyBoard V0_\*). Enter three capitalized **Y** after the prompts and wait for the MPU to calibrate. Then upload **OpenCat.ino** as the main functional code. 
 
 For updates:
 * star this repository to receive timely notifications on changes.
