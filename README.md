@@ -26,4 +26,4 @@ For updates:
 * visit www.petoi.com and subscribe to our official newsletters for project announcements.
 * follow us on [Twitter](https://twitter.com/petoicamp), [Instagram](https://www.instagram.com/petoicamp/), and [YouTube channel](https://www.youtube.com/c/rongzhongli) for fun videos and community activities.
 
-The [old repository for OpenCat](https://github.com/PetoiCamp/OpenCat-Old) is too redundent with large image logs and is now obsolete. 
+The [old repository for OpenCat](https://github.com/PetoiCamp/OpenCat-Old) is too redundent with large image logs and will be obsolete after we add compatibility notes in the documentation.
