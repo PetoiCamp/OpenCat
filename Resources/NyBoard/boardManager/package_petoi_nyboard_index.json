@@ -1,0 +1,36 @@
+{
+  "packages": [
+    {
+      "name": "NyBoard",
+      "maintainer": "Petoi",
+      "websiteURL": "https://www.petoi.com/",
+      "email": "info@petoi.com",
+      "help": {
+        "online": "https://www.petoi.com/forum/"
+      },
+      "platforms": [
+        {
+          "name": "Petoi NyBoard",
+          "architecture": "avr",
+          "version": "0.1.0",
+          "category": "Contributed",
+          "help": {
+            "online": "https://www.petoi.com/forum/"
+          },
+          "url": "https://raw.githubusercontent.com/PetoiCamp/OpenCat/master/Resources/NyBoard/boardManager/NyBoard-0.1.0.tar.bz2",
+          "archiveFileName": "NyBoard-0.1.0.tar.bz2",
+          "checksum": "SHA-256:dca1425fbb3d71a59d5b8ba2714476814fe5df18edb63ba3fda931a7246fda2c",
+          "size": "3064",
+          "boards": [
+            {"name": "ATmega328P (5V, 20 MHz) NyBoard V0_1"}
+          ],
+          "toolsDependencies": [
+            { "packager": "arduino", "name": "avr-gcc", "version": "4.8.1-arduino5" },
+            { "packager": "arduino", "name": "avrdude", "version": "6.0.1-arduino5" }
+          ]
+        }
+      ],
+      "tools":[]
+    }
+  ]
+}

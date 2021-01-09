@@ -1,0 +1,23 @@
+## Arduino Pro or Pro Mini (5V, 20 MHz) w/ ATmega328P
+## --------------------------------------------------
+nyboard01.name=ATmega328P (5V, 20 MHz) NyBoard V0_1
+
+nyboard01.upload.tool=arduino:avrdude
+nyboard01.upload.protocol=arduino
+nyboard01.upload.maximum_size=30720
+nyboard01.upload.maximum_data_size=2048
+nyboard01.upload.speed=57600
+
+nyboard01.bootloader.tool=arduino:avrdude
+nyboard01.bootloader.low_fuses=0xFF
+nyboard01.bootloader.high_fuses=0xDA
+nyboard01.bootloader.extended_fuses=0xFD
+nyboard01.bootloader.file=atmega/ATmega328_20MHz.hex
+nyboard01.bootloader.unlock_bits=0x3F
+nyboard01.bootloader.lock_bits=0x0F
+
+nyboard01.build.mcu=atmega328p
+nyboard01.build.f_cpu=20000000L
+nyboard01.build.board=AVR_PRO
+nyboard01.build.core=arduino:arduino
+nyboard01.build.variant=arduino:eightanaloginputs
