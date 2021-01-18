@@ -177,14 +177,15 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define T_HELP 'h'
 #define T_SAVE 's'
 #define T_ABORT 'a'
-#define T_INDEX 'i'
-#define T_LIST 'l'
+#define T_INDEXED 'i'
+#define T_LISTED 'l'
 #define T_ANGLES 'j'
 #define T_CALIBRATE 'c'
 #define T_MOVE 'm'
 #define T_MEOW 'u'
 #define T_BEEP 'b'
 #define T_UNDEFINED 'w'
+#define T_MELODY 'o'
 
 
 String gait = "wk";
