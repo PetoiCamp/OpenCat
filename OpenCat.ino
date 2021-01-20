@@ -676,6 +676,7 @@ void loop() {
             }
             skillByName("balance", 1, 2, false);
             strcpy(lastCmd, "balance");
+            hold = 0;
           }
           else {
             transform( motion.dutyAngles, motion.angleDataRatio, 1, firstMotionJoint);
