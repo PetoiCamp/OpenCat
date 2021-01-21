@@ -179,7 +179,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define T_ABORT 'a'
 #define T_INDEXED 'i'
 #define T_LISTED 'l'
-#define T_ANGLES 'j'
+#define T_JOINTS 'j'
 #define T_CALIBRATE 'c'
 #define T_MOVE 'm'
 #define T_MEOW 'u'

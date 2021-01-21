@@ -549,7 +549,7 @@ void loop() {
 
             break;
           }
-        case T_ANGLES: { //show the list of current joint anles
+        case T_JOINTS: { //show the list of current joint anles
             printRange(DOF);
             printList(currentAng);
             break;
