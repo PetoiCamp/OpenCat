@@ -238,7 +238,7 @@ void checkBodyMotion()  {
       }
     if (fabs(ypr[1]) > LARGE_PITCH || fabs(ypr[2]) > LARGE_ROLL) {//check again
       if (!hold) {
-        token = T_COMMAND;
+        token = T_SKILL;
         if (fabs(ypr[2]) > LARGE_ROLL) {
           strcpy(newCmd, "rc");
           newCmdIdx = 4;
@@ -255,7 +255,7 @@ void checkBodyMotion()  {
   // recover
   else if (hold) {
     if (hold == 1) {
-      token = T_COMMAND;
+      token = T_SKILL;
       strcpy(newCmd, "balance");
       newCmdIdx = 1;
     }
@@ -452,7 +452,7 @@ void loop() {
           checkGyro = false;
         }
         else
-          token = T_COMMAND;
+          token = T_SKILL;
         newCmdIdx = 2;
       }
       irrecv.resume(); // receive the next value
@@ -630,7 +630,7 @@ void loop() {
         //      PT("\n");
         if (token == T_UNDEFINED) {}; //some words for undefined behaviors
 
-        if (token == T_COMMAND) { //validating key
+        if (token == T_SKILL) { //validating key
 
           motion.loadBySkillName(newCmd);
 
@@ -696,7 +696,7 @@ void loop() {
 
     //motion block
     {
-      if (token == T_COMMAND) {
+      if (token == T_SKILL) {
         if (jointIdx == DOF) {
 #ifdef SKIP
           if (updateFrame++ == SKIP) {

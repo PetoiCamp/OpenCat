@@ -172,7 +172,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 
 
 #define T_REST 'd'
-#define T_COMMAND 'k'
+#define T_SKILL 'k'
 #define T_SLEEP 'z'
 #define T_HELP 'h'
 #define T_SAVE 's'
