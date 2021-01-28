@@ -48,7 +48,7 @@ void writeConst() {
 #endif
   for (byte i = 0; i < DOF; i++) {
 #ifndef AUTORUN
-    if (resetJointCalibrationQ == 'Y')
+    if (resetJointCalibrationQ == 'Y' || resetJointCalibrationQ == 'y')
       EEPROM.update(CALIB + i, calibs[i]);
 #endif
     EEPROM.update(PIN + i, pins[i]);
@@ -71,7 +71,7 @@ void saveSkillInfoFromProgmemToOnboardEeprom() {
 #ifndef AUTORUN
   while (!Serial.available());
   char choice = Serial.read();
-  PT(choice == 'Y' ? "Will" : "Won't");
+  PT((choice == 'Y' || choice == 'y') ? "Will" : "Won't");
 #endif
   PTL(" overwrite Instincts on external I2C EEPROM!");
 #endif
@@ -90,7 +90,7 @@ void saveSkillInfoFromProgmemToOnboardEeprom() {
     if (!EEPROMOverflow)
       if (skillNameWithType[s][len - 1] == 'I'
 #ifndef AUTORUN
-          && choice == 'Y'
+          && (choice == 'Y' || choice == 'y')
 #endif
          ) { //  if there's instinct and there's i2c eeprom, and user decide to update.
         // save the data array to i2c eeprom. its address will be saved to onboard eeprom
@@ -109,7 +109,7 @@ void saveSkillInfoFromProgmemToOnboardEeprom() {
   PTLF(" %)!");
 #ifdef I2C_EEPROM
 #ifndef AUTORUN
-  if (choice == 'Y')
+  if (choice == 'Y' || choice == 'y')
 #endif
   {
     PTF("    Maximal storage of external I2C EEPROM is ");
@@ -262,14 +262,14 @@ void setup() {
     shutServos();
     token = 'd';
   }
-  beep(30);
+  beep(15, 50, 50, 5);
   // start message
   PTLF("\nCalibrate MPU? (Y/n)");
 #ifndef AUTORUN
   while (!Serial.available());
   choice = Serial.read();
   PTLF("Gotcha!");
-  if (choice == 'Y')
+  if (choice == 'Y' || choice == 'y')
 #endif
   {
     PTLF("\n* MPU6050 Calibration Routine");
@@ -293,7 +293,7 @@ void setup() {
 
 void loop() {
 #ifndef AUTORUN
-  if (choice == 'Y')
+  if (choice == 'Y' || choice == 'y')
 #endif
   {
     if (stage == 0) {
@@ -688,7 +688,6 @@ void calibration() {
     */
 
     if (ready == 6) {
-      delay(100);
       beep(100, 1000);
 #ifdef PIXEL_PIN
       for (int i = 0; i < NUMPIXELS - 1; i++) { // For each pixel...

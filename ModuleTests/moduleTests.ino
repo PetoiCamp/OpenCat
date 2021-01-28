@@ -285,10 +285,10 @@ String tests[] = {
 byte totalTests = sizeof(tests) / 6;
 bool *passed = new bool[totalTests];
 // our servo # counter
-bool skip = true;
+bool skip = false;
 int num;
 float t = 0;
-float tStep = 4;
+float tStep = 5;
 int i0 = 0, it = 16;
 int single = 0;
 int group = 0;
@@ -457,13 +457,12 @@ void loop() {
                   }
                 }
             }
-
             if (skip)
               delay(100);
             else
             {
               for (int servonum = i0; servonum < it; servonum++) {
-                float duty =  (sin(2 * 3.14159 * t / 360.0 + (servonum / 2 * 3.14159 / 4))) * range / 2 ;
+                float duty =  (sin(2 * 3.14159 * t / 360.0 + (servonum / 2 * 3.14159 / 4))) * range*3/4;/// 2 ;
                 pwm.setPWM(servonum, 0, SERVOMIN + range / 2 + duty);
                 delayMicroseconds(500);
                 PT(duty);
@@ -471,7 +470,7 @@ void loop() {
               }
               PTL();
               delay(dly);
-              t += tStep;
+              t += (tStep*2);
               if (t > 360)
                 t = 0;
             }
