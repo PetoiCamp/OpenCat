@@ -6,7 +6,7 @@ The goal is to foster collaboration in quadruped robotic research and developmen
 
 The project is still a complex system only for skilled makers, yet we want to share our work with the community by mass production and bringing down the hardware and software cost.
 
-OpenCat has been deployed on Petoi's palm-sized, realistic lifelike robot cat Nybble (www.igg.me/at/nybble) and robot dog Bittle (www.igg.me/at/bittle) that can run, walk, and self-balance like a real animal.  We've successfully crowdfunded these two robots and bringing them them to the market.  With our customized Arduino board coordinating all instinctive and sophisticated movements, one can clip on various sensors to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips through wired/wireless connections.
+OpenCat has been deployed on Petoi's palm-sized, realistic lifelike robot cat Nybble (www.igg.me/at/nybble) and robot dog Bittle (www.igg.me/at/bittle) that can run, walk, and self-balance like a real animal.  We've successfully crowdfunded these two robots and bringing them to the market.  With our customized Arduino board coordinating all instinctive and sophisticated movements, one can clip on various sensors to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips through wired/wireless connections.
 
 This repository works on both Nybble and Bittle controled by NyBoard based on ATmega328P. To run the code on our robot models, first change the model and board definition in **OpenCat.h**, then upload **WriteInstinct.ino**.
 
