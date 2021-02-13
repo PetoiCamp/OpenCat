@@ -566,6 +566,7 @@ void loop() {
             pch = strtok (temp, " ,");
             do {  //it supports combining multiple commands at one time
                   //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
+                  //the combined commands should be less than four. string len <=30 to be exact. 
               int target[2] = {};
               byte inLen = 0;
               for (byte b = 0; b < 2 && pch != NULL; b++) {
