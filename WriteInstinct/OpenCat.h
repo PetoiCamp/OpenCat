@@ -625,7 +625,8 @@ void assignSkillAddressToOnboardEeprom() {
   PT(sizeof(progmemPointer) / 2);
   PTL(" skill addresses...");
   for (byte s = 0; s < sizeof(progmemPointer) / 2; s++) { //save skill info to on-board EEPROM, load skills to SkillList
-    PTL(s);
+    if (s)
+      PTL(s);
     byte nameLen = EEPROM.read(SKILLS + skillAddressShift++); //without last type character
     //PTL(nameLen);
     /*for (int n = 0; n < nameLen; n++)
@@ -738,7 +739,7 @@ inline int8_t adaptiveCoefficient(byte idx, byte para) {
 }
 
 float adjust(byte i) {
-  float rollAdj, pitchAdj,adj;
+  float rollAdj, pitchAdj, adj;
   if (i == 1 || i > 3)  {//check idx = 1
     bool leftQ = (i - 1 ) % 4 > 1 ? true : false;
     //bool frontQ = i % 4 < 2 ? true : false;
@@ -752,12 +753,11 @@ float adjust(byte i) {
   }
   else
     rollAdj = RollPitchDeviation[0] * adaptiveCoefficient(i, 0) ;
-    adj = radPerDeg * (
+  currentAdjust[i] = radPerDeg * (
 #ifdef POSTURE_WALKING_FACTOR
                        (i > 3 ? postureOrWalkingFactor : 1) *
 #endif
                        rollAdj - ramp * adaptiveCoefficient(i, 1) * ((i % 4 < 2) ? ( RollPitchDeviation[1]) : RollPitchDeviation[1]));
-  currentAdjust[i] = currentAdjust[i] + min(max(adj-currentAdjust[i],-5),5);
   return currentAdjust[i];
 }
 
@@ -792,7 +792,7 @@ void shutServos() {
 }
 int8_t countDown = 0;
 template <typename T> void transform( T * target, byte angleDataRatio = 1, float speedRatio = 1, byte offset = 0) {
-  countDown=10;
+  countDown = 5;
   int *diff = new int [DOF - offset], maxDiff = 0;
   for (byte i = offset; i < DOF; i++) {
     diff[i - offset] =   currentAng[i] - target[i - offset] * angleDataRatio;

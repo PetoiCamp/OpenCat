@@ -468,8 +468,6 @@ void loop() {
       if (checkGyro) {
         if (!(timer % skipGyro)) {
           checkBodyMotion();
-          if (countDown)
-            countDown--;
         }
         else if (mpuInterrupt || fifoCount >= packetSize)
         {
@@ -601,7 +599,6 @@ void loop() {
                 angleStep = floor((target[1] - currentAng[target[0]]) / angleInterval);
                 for (int a = 0; a < abs(angleStep); a++) {
                   int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + currentAng[target[0]] + a * angleInterval * angleStep / abs(angleStep)) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
-                  PT(duty); PT("\t"); PTL(currentAng[target[0]] + a * angleInterval * angleStep / abs(angleStep));
                   pwm.setPWM(pin(target[0]), 0,  duty);
                 }
                 currentAng[target[0]] = motion.dutyAngles[target[0]] = target[1];
@@ -693,6 +690,8 @@ void loop() {
             }
             skillByName("balance", 1, 2, false);
             strcpy(lastCmd, "balance");
+            for (byte a = 0; a < DOF; a++)
+              currentAdjust[a] = 0;
             hold = 0;
           }
           else {
@@ -759,11 +758,17 @@ void loop() {
           int dutyIdx = timer * WALKING_DOF + jointIdx - firstMotionJoint;
           calibratedPWM(jointIdx, motion.dutyAngles[dutyIdx]*motion.angleDataRatio//+ ((Xconfig && (jointIdx == 14 || jointIdx == 15)) ? 180 : 0)
 #ifdef GYRO
-                        + (checkGyro ? ((!(timer % skipGyro) && countDown == 0) ? adjust(jointIdx) : currentAdjust[jointIdx]) : 0)
+                        + (checkGyro ?
+                           (!(timer % skipGyro)  ?
+                            adjust(jointIdx)
+                            : currentAdjust[jointIdx])
+                           : 0)
+                        //+ (checkGyro ? ((!(timer % skipGyro) && countDown == 0) ? adjust(jointIdx) : currentAdjust[jointIdx]) : 0)
 #endif
                        );
-          if (jointIdx == 8){
-            PT(currentAdjust[jointIdx]); PT("\t"); PTL( adjust(jointIdx) );}
+//          if (jointIdx == 8) {
+//            PT(currentAdjust[jointIdx]); PT("\t"); PTL( adjust(jointIdx) );
+//          }
         }
         jointIdx++;
       }
