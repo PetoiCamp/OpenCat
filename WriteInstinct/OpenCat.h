@@ -229,7 +229,7 @@ byte pins[] = {12, 11, 3, 4,
 
 #ifdef PIXEL_PIN
 #include <Adafruit_NeoPixel.h>
-#define NUMPIXELS 7 
+#define NUMPIXELS 7
 #define LIT_ON 30
 Adafruit_NeoPixel pixels(NUMPIXELS, PIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #endif
@@ -738,7 +738,7 @@ inline int8_t adaptiveCoefficient(byte idx, byte para) {
 }
 
 float adjust(byte i) {
-  float rollAdj, pitchAdj;
+  float rollAdj, pitchAdj,adj;
   if (i == 1 || i > 3)  {//check idx = 1
     bool leftQ = (i - 1 ) % 4 > 1 ? true : false;
     //bool frontQ = i % 4 < 2 ? true : false;
@@ -752,11 +752,12 @@ float adjust(byte i) {
   }
   else
     rollAdj = RollPitchDeviation[0] * adaptiveCoefficient(i, 0) ;
-  currentAdjust[i] = radPerDeg * (
+    adj = radPerDeg * (
 #ifdef POSTURE_WALKING_FACTOR
                        (i > 3 ? postureOrWalkingFactor : 1) *
 #endif
                        rollAdj - ramp * adaptiveCoefficient(i, 1) * ((i % 4 < 2) ? ( RollPitchDeviation[1]) : RollPitchDeviation[1]));
+  currentAdjust[i] = currentAdjust[i] + min(max(adj-currentAdjust[i],-5),5);
   return currentAdjust[i];
 }
 
@@ -789,24 +790,26 @@ void shutServos() {
     pwm.setPWM(i, 0, 4096);
   }
 }
-template <typename T> void transform( T * target, byte angleDataRatio=1, float speedRatio = 1, byte offset = 0) {
+int8_t countDown = 0;
+template <typename T> void transform( T * target, byte angleDataRatio = 1, float speedRatio = 1, byte offset = 0) {
+  countDown=10;
   int *diff = new int [DOF - offset], maxDiff = 0;
   for (byte i = offset; i < DOF; i++) {
-    diff[i - offset] =   currentAng[i] - target[i - offset]*angleDataRatio;
+    diff[i - offset] =   currentAng[i] - target[i - offset] * angleDataRatio;
     maxDiff = max(maxDiff, abs( diff[i - offset]));
   }
   byte steps = byte(round(maxDiff / 1.0/*degreeStep*/ / speedRatio));//default speed is 1 degree per step
 
   for (byte s = 0; s <= steps; s++) {
     for (byte i = offset; i < DOF; i++) {
-      float dutyAng = (target[i - offset]*angleDataRatio + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * diff[i - offset]));
+      float dutyAng = (target[i - offset] * angleDataRatio + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * diff[i - offset]));
       calibratedPWM(i,  dutyAng);
       //delayMicroseconds(2);
     }
   }
   delete [] diff;
   //  printList(currentAng);
-  //  PTL();
+  PTL();
 }
 
 

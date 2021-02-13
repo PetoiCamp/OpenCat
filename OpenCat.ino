@@ -133,8 +133,8 @@ byte newCmdIdx = 0;
 byte hold = 0;
 int8_t offsetLR = 0;
 bool checkGyro = true;
-int8_t skipGyro = 3;
-int8_t countDown = 0;
+int8_t skipGyro = 2;
+
 #define COUNT_DOWN 60
 
 uint8_t timer = 0;
@@ -466,8 +466,11 @@ void loop() {
     {
 #ifdef GYRO //if opt out the gyro, the calculation can be really fast
       if (checkGyro) {
-        if (!(timer % skipGyro) && countDown == 0)
+        if (!(timer % skipGyro)) {
           checkBodyMotion();
+          if (countDown)
+            countDown--;
+        }
         else if (mpuInterrupt || fifoCount >= packetSize)
         {
           // reset interrupt flag and get INT_STATUS byte
@@ -560,13 +563,13 @@ void loop() {
         case 'b': //beep(tone, duration): tone 0 is pause, duration range is 0~255
           {
             String inBuffer = Serial.readStringUntil('\n');
-            char* temp=new char[30];
+            char* temp = new char[30];
             strcpy(temp, inBuffer.c_str());
             char *pch;
             pch = strtok (temp, " ,");
             do {  //it supports combining multiple commands at one time
-                  //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
-                  //the combined commands should be less than four. string len <=30 to be exact. 
+              //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
+              //the combined commands should be less than four. string len <=30 to be exact.
               int target[2] = {};
               byte inLen = 0;
               for (byte b = 0; b < 2 && pch != NULL; b++) {
@@ -574,7 +577,8 @@ void loop() {
                 pch = strtok (NULL, " ,\t");
                 inLen++;
               }
-
+              PT(token);
+              printList(target, 2);
               float angleInterval = 0.2;
               int angleStep = 0;
               if (token == 'c') {
@@ -588,11 +592,18 @@ void loop() {
                 PTL();
                 printRange(DOF);
                 printList(servoCalibs);
-                yield();
+                //yield();
+                int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + motion.dutyAngles[target[0]]) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
+                pwm.setPWM(pin(target[0]), 0,  duty);
               }
               else if (token == 'm') {
                 //SPF("moving [ targetIdx, angle ]: ");
-                angleStep = floor((target[1] - currentAng[target[0]]) / angleInterval)+1;
+                angleStep = floor((target[1] - currentAng[target[0]]) / angleInterval);
+                for (int a = 0; a < abs(angleStep); a++) {
+                  int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + currentAng[target[0]] + a * angleInterval * angleStep / abs(angleStep)) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
+                  PT(duty); PT("\t"); PTL(currentAng[target[0]] + a * angleInterval * angleStep / abs(angleStep));
+                  pwm.setPWM(pin(target[0]), 0,  duty);
+                }
                 currentAng[target[0]] = motion.dutyAngles[target[0]] = target[1];
               }
               else if (token == 'u') {
@@ -601,17 +612,9 @@ void loop() {
               else if (token == 'b') {
                 beep(target[0], (byte)target[1]);
               }
-              PT(token);
-              printList(target, 2);
-              if (token == 'c' || token == 'm') {
-                do {
-                  int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + motion.dutyAngles[target[0]] - angleStep * angleInterval) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
-                  pwm.setPWM(pin(target[0]), 0,  duty);
-                  angleStep -= (angleStep / abs(angleStep));
-                } while (angleStep);
-              }
+
               delay(50);
-            }while(pch != NULL);
+            } while (pch != NULL);
             delete []pch;
             delete []temp;
             break;
@@ -695,7 +698,7 @@ void loop() {
           else {
             transform( motion.dutyAngles, motion.angleDataRatio, 1, firstMotionJoint);
           }
-          jointIdx = 3;//DOF; to skip the large adjustment caused by MPU overflow. joint 3 is not used. 
+          jointIdx = 3;//DOF; to skip the large adjustment caused by MPU overflow. joint 3 is not used.
           if (!strcmp(newCmd, "rest")) {
             shutServos();
             token = 'd';
@@ -759,6 +762,8 @@ void loop() {
                         + (checkGyro ? ((!(timer % skipGyro) && countDown == 0) ? adjust(jointIdx) : currentAdjust[jointIdx]) : 0)
 #endif
                        );
+          if (jointIdx == 8){
+            PT(currentAdjust[jointIdx]); PT("\t"); PTL( adjust(jointIdx) );}
         }
         jointIdx++;
       }
