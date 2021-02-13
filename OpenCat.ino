@@ -694,9 +694,8 @@ void loop() {
           }
           else {
             transform( motion.dutyAngles, motion.angleDataRatio, 1, firstMotionJoint);
-            jointIdx = DOF;
           }
-
+          jointIdx = 3;//DOF; to skip the large adjustment caused by MPU overflow. joint 3 is not used. 
           if (!strcmp(newCmd, "rest")) {
             shutServos();
             token = 'd';
