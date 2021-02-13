@@ -559,47 +559,60 @@ void loop() {
         case 'u': //meow (repeat, increament)
         case 'b': //beep(tone, duration): tone 0 is pause, duration range is 0~255
           {
-            int target[2] = {};
             String inBuffer = Serial.readStringUntil('\n');
-            byte inLen = 0;
-            strcpy(newCmd, inBuffer.c_str());
+            char* temp=new char[30];
+            strcpy(temp, inBuffer.c_str());
             char *pch;
-            pch = strtok (newCmd, " ,");
-            for (byte c = 0; pch != NULL; c++)
-            {
-              target[c] = atoi(pch);
-              pch = strtok (NULL, " ,\t");
-              inLen++;
-            }
-            if (token == 'c') {
-              //PTLF("calibrating [ targetIdx, angle ]: ");
-              if (strcmp(lastCmd, "c")) { //first time entering the calibration function
-                motion.loadBySkillName("calib");
-                transform( motion.dutyAngles);
+            pch = strtok (temp, " ,");
+            do {  //it supports combining multiple commands at one time
+                  //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
+              int target[2] = {};
+              byte inLen = 0;
+              for (byte b = 0; b < 2 && pch != NULL; b++) {
+                target[b] = atoi(pch);
+                pch = strtok (NULL, " ,\t");
+                inLen++;
               }
-              if (inLen == 2)
-                servoCalibs[target[0]] = target[1];
-              PTL();
-              printRange(DOF);
-              printList(servoCalibs);
-              yield();
-            }
-            else if (token == 'm') {
-              //SPF("moving [ targetIdx, angle ]: ");
-              currentAng[target[0]] = motion.dutyAngles[target[0]] = target[1];
-            }
-            else if (token == 'u') {
-              meow(target[0], 0, 50, 200, 1 + target[1]);
-            }
-            else if (token == 'b') {
-              beep(target[0], (byte)target[1]);
-            }
-            PT(token);
-            printList(target, 2);
-            if (token == 'c' || token == 'm') {
-              int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + motion.dutyAngles[target[0]]) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
-              pwm.setPWM(pin(target[0]), 0,  duty);
-            }
+
+              float angleInterval = 0.2;
+              int angleStep = 0;
+              if (token == 'c') {
+                //PTLF("calibrating [ targetIdx, angle ]: ");
+                if (strcmp(lastCmd, "c")) { //first time entering the calibration function
+                  motion.loadBySkillName("calib");
+                  transform( motion.dutyAngles);
+                }
+                if (inLen == 2)
+                  servoCalibs[target[0]] = target[1];
+                PTL();
+                printRange(DOF);
+                printList(servoCalibs);
+                yield();
+              }
+              else if (token == 'm') {
+                //SPF("moving [ targetIdx, angle ]: ");
+                angleStep = floor((target[1] - currentAng[target[0]]) / angleInterval)+1;
+                currentAng[target[0]] = motion.dutyAngles[target[0]] = target[1];
+              }
+              else if (token == 'u') {
+                meow(target[0], 0, 50, 200, 1 + target[1]);
+              }
+              else if (token == 'b') {
+                beep(target[0], (byte)target[1]);
+              }
+              PT(token);
+              printList(target, 2);
+              if (token == 'c' || token == 'm') {
+                do {
+                  int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + motion.dutyAngles[target[0]] - angleStep * angleInterval) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
+                  pwm.setPWM(pin(target[0]), 0,  duty);
+                  angleStep -= (angleStep / abs(angleStep));
+                } while (angleStep);
+              }
+              delay(50);
+            }while(pch != NULL);
+            delete []pch;
+            delete []temp;
             break;
           }
 
