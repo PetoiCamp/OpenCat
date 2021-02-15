@@ -793,23 +793,30 @@ void shutServos() {
 int8_t countDown = 0;
 template <typename T> void transform( T * target, byte angleDataRatio = 1, float speedRatio = 1, byte offset = 0) {
   countDown = 5;
-  int *diff = new int [DOF - offset], maxDiff = 0;
-  for (byte i = offset; i < DOF; i++) {
-    diff[i - offset] =   currentAng[i] - target[i - offset] * angleDataRatio;
-    maxDiff = max(maxDiff, abs( diff[i - offset]));
-  }
-  byte steps = byte(round(maxDiff / 1.0/*degreeStep*/ / speedRatio));//default speed is 1 degree per step
-
-  for (byte s = 0; s <= steps; s++) {
+  if (speedRatio == 0)
+    allCalibratedPWM(target, 8);
+  else {
+    int *diff = new int [DOF - offset], maxDiff = 0;
     for (byte i = offset; i < DOF; i++) {
-      float dutyAng = (target[i - offset] * angleDataRatio + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * diff[i - offset]));
-      calibratedPWM(i,  dutyAng);
-      //delayMicroseconds(2);
+      diff[i - offset] =   currentAng[i] - target[i - offset] * angleDataRatio;
+      maxDiff = max(maxDiff, abs( diff[i - offset]));
     }
+
+    byte steps = byte(round(maxDiff / 1.0/*degreeStep*/ / speedRatio));//default speed is 1 degree per step
+    PT("diff "); PT(maxDiff); PT("\t");
+    PTL(steps);
+
+    for (byte s = 0; s <= steps; s++) {
+      for (byte i = offset; i < DOF; i++) {
+        float dutyAng = (target[i - offset] * angleDataRatio + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * diff[i - offset]));
+        calibratedPWM(i,  dutyAng);
+        //delayMicroseconds(2);
+      }
+    }
+    delete [] diff;
+    //  printList(currentAng);
+    //PTL();
   }
-  delete [] diff;
-  //  printList(currentAng);
-  PTL();
 }
 
 

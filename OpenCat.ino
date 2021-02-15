@@ -682,7 +682,7 @@ void loop() {
             int8_t repeat = motion.loopCycle[2] - 1;
             for (byte c = 0; c < abs(motion.period); c++) { //the last two in the row are transition speed and delay
               transform(motion.dutyAngles + c * 18, motion.angleDataRatio, motion.dutyAngles[16 + c * 18] / 4.0);
-              delay(motion.dutyAngles[17 + c * 18] * 100);
+              delay(motion.dutyAngles[17 + c * 18] * 50);
               if (c == motion.loopCycle[1] && repeat > 0) {
                 c = motion.loopCycle[0] - 1;
                 repeat--;

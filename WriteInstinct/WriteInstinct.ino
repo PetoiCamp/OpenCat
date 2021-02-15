@@ -100,8 +100,8 @@ void saveSkillInfoFromProgmemToOnboardEeprom() {
 #endif
     skillAddressShift += 2; // one int (2 bytes) for address
   }
-  PTLF("  *********** Notice! *********");
-  PTLF("    Maximal storage of onboard EEPROM is 1024 bytes.");
+  PTLF("  ***");
+  PTLF("    On-chip EEPROM has 1024 bytes.");
   PTF("\tInstinctive dictionary used ");
   PT(SKILLS + skillAddressShift);
   PT(" bytes (");
@@ -239,8 +239,7 @@ void setup() {
 
   // wait for ready
   while (Serial.available() && Serial.read()); // empty buffer
-  PTLF("\n* Include your robot's header file in OpenCat.h");
-  PTLF("\n* Change the \"V*_*\" in \"#define NyBoard_V1_0\" according to your NyBoard version!");
+  PTLF("\n* Change \"#define NyBoard_V*_*\" in OpenCat.h according to your NyBoard version!");
   PTLF("\n* OpenCat Writing Constants to EEPROM...");
   writeConst(); // only run for the first time when writing to the board.
   beep(30);
