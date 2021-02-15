@@ -803,8 +803,6 @@ template <typename T> void transform( T * target, byte angleDataRatio = 1, float
     }
 
     byte steps = byte(round(maxDiff / 1.0/*degreeStep*/ / speedRatio));//default speed is 1 degree per step
-    PT("diff "); PT(maxDiff); PT("\t");
-    PTL(steps);
 
     for (byte s = 0; s <= steps; s++) {
       for (byte i = offset; i < DOF; i++) {

@@ -122,7 +122,7 @@ void saveSkillInfoFromProgmemToOnboardEeprom() {
     PTLF(" %)!");
   }
 #endif
-  PTLF("  *****************************");
+  PTLF("  ***");
   PTLF("Finished!");
 }
 
