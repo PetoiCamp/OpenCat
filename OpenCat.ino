@@ -382,7 +382,7 @@ void setup() {
 
     //meow();
     strcpy(lastCmd, "rest");
-    motion.loadBySkillName("rest");
+    motion.loadBySkillName(lastCmd);
     for (int8_t i = DOF - 1; i >= 0; i--) {
       pulsePerDegree[i] = float(PWM_RANGE) / servoAngleRange(i);
       servoCalibs[i] = servoCalib(i);
@@ -497,7 +497,8 @@ void loop() {
             break;
           }
         case 'd': {
-            skillByName("rest");
+            strcpy(lastCmd,"rest");
+            skillByName(lastCmd);
             break;
           }
 
@@ -581,9 +582,11 @@ void loop() {
               int angleStep = 0;
               if (token == 'c') {
                 //PTLF("calibrating [ targetIdx, angle ]: ");
-                if (strcmp(lastCmd, "c")) { //first time entering the calibration function
-                  motion.loadBySkillName("calib");
+                if (strcmp(lastCmd, "calib")) { //first time entering the calibration function
+                  strcpy(lastCmd,"calib");
+                  motion.loadBySkillName(lastCmd);
                   transform( motion.dutyAngles);
+                  
                 }
                 if (inLen == 2)
                   servoCalibs[target[0]] = target[1];
@@ -766,9 +769,9 @@ void loop() {
                         //+ (checkGyro ? ((!(timer % skipGyro) && countDown == 0) ? adjust(jointIdx) : currentAdjust[jointIdx]) : 0)
 #endif
                        );
-//          if (jointIdx == 8) {
-//            PT(currentAdjust[jointIdx]); PT("\t"); PTL( adjust(jointIdx) );
-//          }
+          //          if (jointIdx == 8) {
+          //            PT(currentAdjust[jointIdx]); PT("\t"); PTL( adjust(jointIdx) );
+          //          }
         }
         jointIdx++;
       }

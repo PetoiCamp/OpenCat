@@ -776,6 +776,7 @@ void calibratedPWM(byte i, float angle) {
   int duty = calibratedDuty0[i] + angle * pulsePerDegree[i] * rotationDirection(i);
   duty = max(SERVOMIN , min(SERVOMAX , duty));
   pwm.setPWM(pin(i), 0, duty);
+  //PT(i);PT("\t");PTL(angle);
 }
 
 void allCalibratedPWM(char * dutyAng, byte offset = 0) {
