@@ -168,7 +168,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 
 #define K60 "str"     //stretch
 #define K61 "sit"     //sit
-#define K62 "zero"    //zero position
+#define K62 "bf"    //zero position
 
 
 String gait = "wk";
@@ -405,7 +405,7 @@ void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress
   if (period < -1) {
     skillHeader = 7; //rows, roll, tilt, loopStart, loopEnd, loopNumber, angle ratio <1,2>
     //(if the angles are larger than 128, they will be divided by angle ratio)
-    frameSize = 18;
+    frameSize = 20;
   }
   else
     frameSize = period > 1 ? WALKING_DOF : 16;
@@ -515,7 +515,7 @@ class Motion {
       byte skillHeader = 4;
       byte frameSize;
       if (period < -1) {
-        frameSize = 18;
+        frameSize = 20;
         for (byte i = 0; i < 3; i++)
           loopCycle[i] = pgm_read_byte(pgmAddress + skillHeader + i);
         skillHeader = 7;
@@ -545,7 +545,7 @@ class Motion {
       byte frameSize;
       if (period < -1) {
         skillHeader = 7;
-        frameSize = 18;
+        frameSize = 20;
         Wire.requestFrom(DEVICE_ADDRESS, 3);
         for (byte i = 0; i < 3; i++)
           loopCycle[i] = Wire.read();
