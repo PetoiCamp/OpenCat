@@ -168,7 +168,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 
 #define K60 "str"     //stretch
 #define K61 "sit"     //sit
-#define K62 "bf"    //zero position
+#define K62 "zero"    //zero position
 
 
 String gait = "wk";
