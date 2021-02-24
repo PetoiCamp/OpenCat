@@ -405,7 +405,7 @@ void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress
   if (period < -1) {
     skillHeader = 7; //rows, roll, tilt, loopStart, loopEnd, loopNumber, angle ratio <1,2>
     //(if the angles are larger than 128, they will be divided by angle ratio)
-    frameSize = 18;
+    frameSize = 20;
   }
   else
     frameSize = period > 1 ? WALKING_DOF : 16;
@@ -515,7 +515,7 @@ class Motion {
       byte skillHeader = 4;
       byte frameSize;
       if (period < -1) {
-        frameSize = 18;
+        frameSize = 20;
         for (byte i = 0; i < 3; i++)
           loopCycle[i] = pgm_read_byte(pgmAddress + skillHeader + i);
         skillHeader = 7;
@@ -545,7 +545,7 @@ class Motion {
       byte frameSize;
       if (period < -1) {
         skillHeader = 7;
-        frameSize = 18;
+        frameSize = 20;
         Wire.requestFrom(DEVICE_ADDRESS, 3);
         for (byte i = 0; i < 3; i++)
           loopCycle[i] = Wire.read();
@@ -776,7 +776,6 @@ void calibratedPWM(byte i, float angle) {
   int duty = calibratedDuty0[i] + angle * pulsePerDegree[i] * rotationDirection(i);
   duty = max(SERVOMIN , min(SERVOMAX , duty));
   pwm.setPWM(pin(i), 0, duty);
-  //PT(i);PT("\t");PTL(angle);
 }
 
 void allCalibratedPWM(char * dutyAng, byte offset = 0) {

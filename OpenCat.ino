@@ -582,9 +582,11 @@ void loop() {
               int angleStep = 0;
               if (token == 'c') {
                 //PTLF("calibrating [ targetIdx, angle ]: ");
-                if (strcmp(lastCmd, "calib")) { //first time entering the calibration function
-                  strcpy(lastCmd,"calib");
-                  motion.loadBySkillName(lastCmd);
+
+                if (strcmp(lastCmd, "c")) { //first time entering the calibration function
+                  strcpy(lastCmd, "c");
+                  motion.loadBySkillName("calib");
+
                   transform( motion.dutyAngles);
                   
                 }
