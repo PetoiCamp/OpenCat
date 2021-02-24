@@ -432,28 +432,10 @@ void loop() {
       //PTL(IRsig);
       if (IRsig != "") {
         strcpy(newCmd, IRsig.c_str());
-        if (!strcmp(newCmd, "d"))
-          token = 'd';
-        else if (!strcmp(newCmd, "z"))
-          token = 'z';
-        else if (!strcmp(newCmd, "p"))
-          tStep = !tStep;
+        if (strlen(newCmd) == 1)
+          token = newCmd[0];
         //        else if (!strcmp(newCmd, "x"))
         //          token = 'x';
-        else if (!strcmp(newCmd, "g")) {
-          if (!checkGyro)
-            checkBodyMotion();
-          
-          //            countDown = COUNT_DOWN;
-          checkGyro = !checkGyro;
-        }
-        else if (!strcmp(newCmd, "sl")) {
-          ramp = (ramp == 1) ? -1.5 : 1;
-        }
-        else if (!strcmp(newCmd, "c")) {
-          token = 'c';
-          checkGyro = false;
-        }
         else
           token = 'k';
         newCmdIdx = 2;
@@ -471,7 +453,7 @@ void loop() {
       if (checkGyro) {
         if (!(timer % skipGyro)) {
           checkBodyMotion();
-          
+
         }
         else if (mpuInterrupt || fifoCount >= packetSize)
         {
@@ -492,20 +474,36 @@ void loop() {
       beep(newCmdIdx * 4);
       // this block handles argumentless tokens
       switch (token) {
-        case 'h': {
-            PTLF("* help info *");// print the help document. not implemented on NyBoard Vo due to limited space
-            break;
-          }
-        case 'z': { //turn off servos only
-            shutServos();
-            break;
-          }
+//        case 'h': {
+//            PTLF("* info *");// print the help document. not implemented on NyBoard Vo due to limited space
+//            break;
+//          }
         case 'd': {
-            strcpy(lastCmd,"rest");
+            strcpy(lastCmd, "rest");
             skillByName(lastCmd);
             break;
           }
-
+        case 'g': {
+            if (!checkGyro)
+              checkBodyMotion();
+            //            countDown = COUNT_DOWN;
+            checkGyro = !checkGyro;
+            token = 'k';
+            break;
+          }
+        case 'p': {
+            tStep = !tStep;
+            if (tStep)
+              token = 'k';
+            else
+              shutServos();
+            break;
+          }
+        //        case 'r': { //if the robot is on a ramp, flip the adaption direction
+        //            ramp = (ramp == 1) ? -1.5 : 1;
+        //            token = 'k';
+        //            break;
+        //          }
         case 's': {
             PTLF("save offset");
             saveCalib(servoCalibs);
@@ -592,7 +590,7 @@ void loop() {
                   motion.loadBySkillName("calib");
 
                   transform( motion.dutyAngles);
-                  
+
                 }
                 if (inLen == 2)
                   servoCalibs[target[0]] = target[1];

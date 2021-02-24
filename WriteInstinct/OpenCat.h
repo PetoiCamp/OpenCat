@@ -145,7 +145,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define K11 "balance" //neutral stand up posture
 #define K12 "R"       //right
 
-#define K20 "z"       //shut off all servos 
+#define K20 "p"       //pause motion and shut off all servos 
 #define K21 "B"       //backward
 #define K22 "c"       //calibration mode with IMU turned off
 
@@ -159,7 +159,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define K42 "buttUp"    //butt up
 #else //BITTLE
 #define K41 "rn"      //run
-#define K42 "bd"      //bound
+#define K42 "ck"      //check around
 #endif
 
 #define K50 "hi"      //greeting
