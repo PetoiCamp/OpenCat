@@ -225,6 +225,7 @@ void getYPR() {//get YPR angles from FIFO data, takes time
     }
   }
 }
+
 void checkBodyMotion()  {
   //if (!dmpReady) return;
   getYPR();
@@ -275,6 +276,7 @@ void checkBodyMotion()  {
     //PTL(RollPitchDeviation[i]);
     RollPitchDeviation[i] = sign(ypr[2 - i]) * max(fabs(RollPitchDeviation[i]) - levelTolerance[i], 0);//filter out small angles
   }
+
   //PTL(jointIdx);
 }
 
@@ -441,6 +443,7 @@ void loop() {
         else if (!strcmp(newCmd, "g")) {
           if (!checkGyro)
             checkBodyMotion();
+          
           //            countDown = COUNT_DOWN;
           checkGyro = !checkGyro;
         }
@@ -468,6 +471,7 @@ void loop() {
       if (checkGyro) {
         if (!(timer % skipGyro)) {
           checkBodyMotion();
+          
         }
         else if (mpuInterrupt || fifoCount >= packetSize)
         {
@@ -685,9 +689,24 @@ void loop() {
 
           if (motion.period < 1) {
             int8_t repeat = motion.loopCycle[2] - 1;
+            byte frameSize = 20;
             for (byte c = 0; c < abs(motion.period); c++) { //the last two in the row are transition speed and delay
-              transform(motion.dutyAngles + c * 18, motion.angleDataRatio, motion.dutyAngles[16 + c * 18] / 4.0);
-              delay(motion.dutyAngles[17 + c * 18] * 50);
+              transform(motion.dutyAngles + c * frameSize, motion.angleDataRatio, motion.dutyAngles[16 + c * frameSize] / 4.0);
+              if (motion.dutyAngles[18 + c * frameSize] > 0) {
+#ifdef GYRO //if opt out the gyro, the calculation can be really fast
+                do {
+                  getYPR();
+                  PT(ypr[1]);
+                  PTF("\t");
+                  PT(ypr[2]);
+                  PT("\tabs\t");
+                  PTL(fabs(ypr[motion.dutyAngles[18 + c * frameSize]] - motion.dutyAngles[19 + c * frameSize]));
+                } while (fabs(ypr[motion.dutyAngles[18 + c * frameSize]] - motion.dutyAngles[19 + c * frameSize]) > 20) ;
+#endif
+              }
+              else {
+                delay(motion.dutyAngles[17 + c * frameSize] * 50);
+              }
               if (c == motion.loopCycle[1] && repeat > 0) {
                 c = motion.loopCycle[0] - 1;
                 repeat--;
