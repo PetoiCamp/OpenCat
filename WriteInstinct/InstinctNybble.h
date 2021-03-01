@@ -602,43 +602,43 @@ const char zero[] PROGMEM = {
 const char hi[] PROGMEM = { 
 -3, 0, -30, 1,
  1, 2, 3, 
-    0, -20, -60,   0,   0,   0,   0,   0,  30,  30, -90, -90,  60,  60,  45,  45,	   5, 1,  0,0,
-   35, -15, -60,   0,  -3,  -3,   3,   3, -75,  30, -85, -70,  40,  65,  60,   0,	   6, 0,  0,0,
-   40, -10, -35,   0,  -3,  -3,   3,   3, -60,  30, -80, -70,  60,  65,  60,   0,	   6, 0,  0,0,
+    0, -20, -60,   0,   0,   0,   0,   0,  30,  30, -90, -90,  60,  60,  45,  45,	   5, 1, 0, 0,
+   35, -15, -60,   0,  -3,  -3,   3,   3, -75,  30, -85, -70,  40,  65,  60,   0,	   6, 0, 0, 0,
+   40, -10, -35,   0,  -3,  -3,   3,   3, -60,  30, -80, -70,  60,  65,  60,   0,	   6, 0, 0, 0,
 };
 const char pee[] PROGMEM = { 
 -4, 0, 10, 1,
  2, 3, 2, 
-   30,  20,   0,   0,  15, -10,  60, -10,  40,  40,  85, -45,  10,  60,  15, -45,	   6, 0,  0,0,
-   45,  20, -45,   0,  15, -10,  60, -10,  60,  53,  75, -60, -30,  40,   0, -21,	   2,10,  0,0,
-   30,  20, -30,   0,  15, -10,  60, -10,  40,  40,  85, -45,  10,  50,   0, -45,	   8, 0,  0,0,
-   40,  25,   0,   0,  15, -10,  60, -10,  40,  40,  70, -45,  10,  50, -30, -45,	   8, 0,  0,0,
+   30,  20,   0,   0,  15, -10,  60, -10,  40,  40,  85, -45,  10,  60,  15, -45,	   6, 0, 0, 0,
+   45,  20, -45,   0,  15, -10,  60, -10,  60,  53,  75, -60, -30,  40,   0, -21,	   2,10, 0, 0,
+   30,  20, -30,   0,  15, -10,  60, -10,  40,  40,  85, -45,  10,  50,   0, -45,	   8, 0, 0, 0,
+   40,  25,   0,   0,  15, -10,  60, -10,  40,  40,  70, -45,  10,  50, -30, -45,	   8, 0, 0, 0,
 };
 const char pu[] PROGMEM = { 
 -5, 0, -15, 1,
  1, 2, 3, 
-   30,  30,   0,   0,   0,   0,   0,   0,  60,  60,  70,  70,  15,  15, -70, -70,	   6, 0,  0,0,
-    0, -40,   0,   0,   0,   0,   0,   0,  30,  30,  95,  95,  60,  60, -70, -70,	   6, 1,  0,0,
-    5,   5,   0,   0,   0,   0,   0,   0,  75,  75,  55,  55, -50, -50, -75, -75,	   8, 0,  0,0,
-    5,   5,   0,   0,   0,   0,   0,   0,  75, -70,  55,  55, -50,  70, -75, -75,	   8, 0,  0,0,
-   60, -30, -45,   0,   0,   0,   0,   0,  70, -70,  55,   0, -30, -45, -75, -45,	   8, 1,  0,0,
+   30,  30,   0,   0,   0,   0,   0,   0,  60,  60,  70,  70,  15,  15, -70, -70,	   6, 0, 0, 0,
+    0, -40,   0,   0,   0,   0,   0,   0,  30,  30,  95,  95,  60,  60, -70, -70,	   6, 1, 0, 0,
+    5,   5,   0,   0,   0,   0,   0,   0,  75,  75,  55,  55, -50, -50, -75, -75,	   8, 0, 0, 0,
+    5,   5,   0,   0,   0,   0,   0,   0,  75, -70,  55,  55, -50,  70, -75, -75,	   8, 0, 0, 0,
+   60, -30, -45,   0,   0,   0,   0,   0,  70, -70,  55,   0, -30, -45, -75, -45,	   8, 1, 0, 0,
 };
 const char rc[] PROGMEM = { 
 -3, 0, 0, 2,
  0, 0, 0, 
-    0,   0,   0,   0,   0,   0,   0,   0, -88, -43,  67,  87,  42, -35,  42,  42,	   8, 0,  0,0,
-    0,   0,   0,   0,   0,   0,   0,   0, -83, -88,  87,  42,  42,  42,  42, -40,	   8, 0,  0,0,
-   -8, -20, -11,   0,  -1,  -1,   0,   0,  18,  18,  18,  18, -14, -14, -14, -14,	   5, 0,  0,0,
+    0,   0,   0,   0,   0,   0,   0,   0, -88, -43,  67,  87,  42, -35,  42,  42,	   8, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0, -83, -88,  87,  42,  42,  42,  42, -40,	   8, 0, 0, 0,
+   -8, -20, -11,   0,  -1,  -1,   0,   0,  18,  18,  18,  18, -14, -14, -14, -14,	   5, 0, 0, 0,
 };
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
-  const char* skillNameWithType[]={"bdI","biI","bkI","bkLI","bkRI","crFI","crLI","crRI","lyI","trFI","trLI","trRI","vtI","wkFI","wkLI","wkRI","balanceI","buttUpI","calibI","droppedI","hsN","hs1N","hs2N","liftedI","luI","restI","sitI","sleepI","strI","zeroI","hiI","peeI","puI","rcI",};
+  const char* skillNameWithType[]={"bdI","biI","bkI","bkLI","bkRI","crFI","crLI","crRI","lyI","trFI","trLI","trRI","vtI","wkFI","wkLI","wkRI","balanceI","buttUpI","calibI","droppedI","hsN","hs1N","hs2N","liftedI","luI","restI","sitI","sleepI","strI","zeroN","hiI","peeI","puI","rcI",};
   const char* progmemPointer[] = {bd, bi, bk, bkL, bkR, crF, crL, crR, ly, trF, trL, trR, vt, wkF, wkL, wkR, balance, buttUp, calib, dropped, hs, hs1, hs2, lifted, lu, rest, sit, sleep, str, zero, hi, pee, pu, rc, };
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses
-  const char* progmemPointer[] = {hs, hs1, hs2, };
+  const char* progmemPointer[] = {hs, hs1, hs2, zero, };
 #endif
-//the total byte of instincts is 4682
+//the total byte of instincts is 4712
 //the maximal array size is 365 bytes of bk. 
 //Make sure to leave enough memory for SRAM to work properly. Any single skill should be smaller than 400 bytes for safety.
