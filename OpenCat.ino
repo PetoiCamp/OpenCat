@@ -474,10 +474,10 @@ void loop() {
       beep(newCmdIdx * 4);
       // this block handles argumentless tokens
       switch (token) {
-//        case 'h': {
-//            PTLF("* info *");// print the help document. not implemented on NyBoard Vo due to limited space
-//            break;
-//          }
+        //        case 'h': {
+        //            PTLF("* info *");// print the help document. not implemented on NyBoard Vo due to limited space
+        //            break;
+        //          }
         case 'd': {
             strcpy(lastCmd, "rest");
             skillByName(lastCmd);
@@ -690,19 +690,29 @@ void loop() {
             byte frameSize = 20;
             for (byte c = 0; c < abs(motion.period); c++) { //the last two in the row are transition speed and delay
               transform(motion.dutyAngles + c * frameSize, motion.angleDataRatio, motion.dutyAngles[16 + c * frameSize] / 4.0);
-              if (motion.dutyAngles[18 + c * frameSize] > 0) {
 #ifdef GYRO //if opt out the gyro, the calculation can be really fast
-                do {
+              if (motion.dutyAngles[18 + c * frameSize]) {
+                int triggerAxis = motion.dutyAngles[18 + c * frameSize];
+                int triggerAngle = motion.dutyAngles[19 + c * frameSize];
+
+                float currentYpr = ypr[abs(triggerAxis)];
+                float previousYpr = currentYpr;
+                while (1) {
                   getYPR();
-                  PT(ypr[1]);
+                  currentYpr = ypr[abs(triggerAxis)];
+                  PT(currentYpr);
                   PTF("\t");
-                  PT(ypr[2]);
-                  PT("\tabs\t");
-                  PTL(fabs(ypr[motion.dutyAngles[18 + c * frameSize]] - motion.dutyAngles[19 + c * frameSize]));
-                } while (fabs(ypr[motion.dutyAngles[18 + c * frameSize]] - motion.dutyAngles[19 + c * frameSize]) > 20) ;
-#endif
+                  PTL(triggerAngle);
+                  if ((180 - fabs(currentYpr) > 2)  //skip the angle when the reading jumps from 180 to -180
+                      && (triggerAxis * currentYpr < triggerAxis * triggerAngle && triggerAxis * previousYpr > triggerAxis * triggerAngle )
+                     ) //the sign of triggerAxis will deterine whether the current angle should be larger or smaller than the trigger angle 
+                    break;
+                  previousYpr = currentYpr;
+                }
               }
-              else {
+              else
+#endif
+              {
                 delay(motion.dutyAngles[17 + c * frameSize] * 50);
               }
               if (c == motion.loopCycle[1] && repeat > 0) {
