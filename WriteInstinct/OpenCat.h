@@ -136,6 +136,27 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
     if (repeat)delay(pause);
   }
 }
+
+//token list
+#define T_ABORT     'a'
+#define T_BEEP      'b'
+#define T_CALIBRATE 'c'
+#define T_REST      'd'
+#define T_GYRO      'g'
+#define T_HELP      'h'
+#define T_INDEXED   'i'
+#define T_JOINTS    'j'
+#define T_SKILL     'k'
+#define T_LISTED    'l'
+#define T_MOVE      'm'
+#define T_MELODY    'o'
+#define T_PAUSE     'p'
+#define T_RAMP      'r'
+#define T_SAVE      's'
+#define T_MEOW      'u'
+#define T_UNDEFINED 'w'
+#define T_XLEG      'x'
+
 //abbreviation //gait/posture/function names
 #define K00 "d"       //rest and shutdown all servos 
 #define K01 "F"       //forward

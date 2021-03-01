@@ -239,7 +239,7 @@ void checkBodyMotion()  {
       }
     if (fabs(ypr[1]) > LARGE_PITCH || fabs(ypr[2]) > LARGE_ROLL) {//check again
       if (!hold) {
-        token = 'k';
+        token = T_SKILL;
         if (fabs(ypr[2]) > LARGE_ROLL) {
           strcpy(newCmd, "rc");
           newCmdIdx = 4;
@@ -256,7 +256,7 @@ void checkBodyMotion()  {
   // recover
   else if (hold) {
     if (hold == 1) {
-      token = 'k';
+      token = T_SKILL;
       strcpy(newCmd, "balance");
       newCmdIdx = 1;
     }
@@ -395,7 +395,7 @@ void setup() {
     }
     randomSeed(analogRead(0));//use the fluctuation of voltage caused by servos as entropy pool
     shutServos();
-    token = 'd';
+    token = T_REST;
   }
   beep(30);
 
@@ -434,10 +434,8 @@ void loop() {
         strcpy(newCmd, IRsig.c_str());
         if (strlen(newCmd) == 1)
           token = newCmd[0];
-        //        else if (!strcmp(newCmd, "x"))
-        //          token = 'x';
         else
-          token = 'k';
+          token = T_SKILL;
         newCmdIdx = 2;
       }
       irrecv.resume(); // receive the next value
@@ -474,42 +472,42 @@ void loop() {
       beep(newCmdIdx * 4);
       // this block handles argumentless tokens
       switch (token) {
-        //        case 'h': {
+        //        case T_HELP: {
         //            PTLF("* info *");// print the help document. not implemented on NyBoard Vo due to limited space
         //            break;
         //          }
-        case 'd': {
+        case T_REST: {
             strcpy(lastCmd, "rest");
             skillByName(lastCmd);
             break;
           }
-        case 'g': {
+        case T_GYRO: {
             if (!checkGyro)
               checkBodyMotion();
             //            countDown = COUNT_DOWN;
             checkGyro = !checkGyro;
-            token = 'k';
+            token = T_SKILL;
             break;
           }
-        case 'p': {
+        case T_PAUSE: {
             tStep = !tStep;
             if (tStep)
-              token = 'k';
+              token = T_SKILL;
             else
               shutServos();
             break;
           }
-        //        case 'r': { //if the robot is on a ramp, flip the adaption direction
+        //        case T_RAMP: { //if the robot is on a ramp, flip the adaption direction
         //            ramp = (ramp == 1) ? -1.5 : 1;
-        //            token = 'k';
+        //            token = T_SKILL;
         //            break;
         //          }
-        case 's': {
+        case T_SAVE: {
             PTLF("save offset");
             saveCalib(servoCalibs);
             break;
           }
-        case 'a': {
+        case T_ABORT: {
             PTLF("aborted");
             for (byte i = 0; i < DOF; i++) {
               servoCalibs[i] = servoCalib( i);
@@ -518,9 +516,9 @@ void loop() {
           }
 
         // this block handles array like arguments
-        case 'i': //indexed joint motions: joint0, angle0, joint1, angle1, ...
-        case 'l': //list of all 16 joint: angle0, angle2,... angle15
-          //case 'o': //for melody
+        case T_INDEXED: //indexed joint motions: joint0, angle0, joint1, angle1, ...
+        case T_LISTED: //list of all 16 joint: angle0, angle2,... angle15
+          //case T_MELODY: //for melody
           {
             String inBuffer = Serial.readStringUntil('~');
             int8_t numArg = inBuffer.length();
@@ -529,12 +527,12 @@ void loop() {
             for (int i = 0; i < DOF; i += 1) {
               targetFrame[i] = currentAng[i];
             }
-            if (token == 'i') {
+            if (token == T_INDEXED) {
               for (int i = 0; i < numArg; i += 2) {
                 targetFrame[list[i]] = list[i + 1];
               }
             }
-            else if (token == 'l') {
+            else if (token == T_LISTED) {
               for (int i = 0; i < DOF; i += 1) {
                 targetFrame[i] = list[i];
               }
@@ -542,26 +540,26 @@ void loop() {
             transform(targetFrame, 1, 3); //need to add angleDataRatio if the angles are large
             delete [] targetFrame;
 
-            //            if (token == 'i') {
+            //            if (token == T_INDEXED) {
             //              for (int i = 0; i < numArg; i += 2) {
             //                calibratedPWM(list[i], list[i + 1]);
             //              }
             //            }
-            //            else if (token == 'l') {
+            //            else if (token == T_LISTED) {
             //              allCalibratedPWM(list);
             //            }
 
             break;
           }
-        case 'j': { //show the list of current joint anles
+        case T_JOINTS: { //show the list of current joint anles
             printRange(DOF);
             printList(currentAng);
             break;
           }
-        case 'c': //calibration
-        case 'm': //move jointIndex to angle
-        case 'u': //meow (repeat, increament)
-        case 'b': //beep(tone, duration): tone 0 is pause, duration range is 0~255
+        case T_CALIBRATE: //calibration
+        case T_MOVE: //move jointIndex to angle
+        case T_MEOW: //meow (repeat, increament)
+        case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
           {
             String inBuffer = Serial.readStringUntil('\n');
             char* temp = new char[30];
@@ -582,7 +580,7 @@ void loop() {
               printList(target, 2);
               float angleInterval = 0.2;
               int angleStep = 0;
-              if (token == 'c') {
+              if (token == T_CALIBRATE) {
                 //PTLF("calibrating [ targetIdx, angle ]: ");
 
                 if (strcmp(lastCmd, "c")) { //first time entering the calibration function
@@ -601,7 +599,7 @@ void loop() {
                 int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + motion.dutyAngles[target[0]]) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
                 pwm.setPWM(pin(target[0]), 0,  duty);
               }
-              else if (token == 'm') {
+              else if (token == T_MOVE) {
                 //SPF("moving [ targetIdx, angle ]: ");
                 angleStep = floor((target[1] - currentAng[target[0]]) / angleInterval);
                 for (int a = 0; a < abs(angleStep); a++) {
@@ -610,10 +608,10 @@ void loop() {
                 }
                 currentAng[target[0]] = motion.dutyAngles[target[0]] = target[1];
               }
-              else if (token == 'u') {
+              else if (token == T_MEOW) {
                 meow(target[0], 0, 50, 200, 1 + target[1]);
               }
-              else if (token == 'b') {
+              else if (token == T_BEEP) {
                 beep(target[0], (byte)target[1]);
               }
 
@@ -624,7 +622,7 @@ void loop() {
             break;
           }
 
-        //        case 'x': {
+        //        case T_XLEG: {
         //            for (byte s = 0; s < 23; s++) {
         //
         //              motion.loadDataFromProgmem(steps[s]);
@@ -649,9 +647,9 @@ void loop() {
         //      PT(token);
         //      PT(newCmd);
         //      PT("\n");
-        if (token == 'w') {}; //some words for undefined behaviors
+        if (token == T_UNDEFINED) {}; //some words for undefined behaviors
 
-        if (token == 'k') { //validating key
+        if (token == T_SKILL) { //validating key
 
           motion.loadBySkillName(newCmd);
 
@@ -732,7 +730,7 @@ void loop() {
           jointIdx = 3;//DOF; to skip the large adjustment caused by MPU overflow. joint 3 is not used.
           if (!strcmp(newCmd, "rest")) {
             shutServos();
-            token = 'd';
+            token = T_REST;
           }
         }
         else {
@@ -744,7 +742,7 @@ void loop() {
 
     //motion block
     {
-      if (token == 'k') {
+      if (token == T_SKILL) {
         if (jointIdx == DOF) {
 #ifdef SKIP
           if (updateFrame++ == SKIP) {

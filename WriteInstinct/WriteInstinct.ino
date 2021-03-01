@@ -259,7 +259,7 @@ void setup() {
       calibratedPWM(i, motion.dutyAngles[i]);
     }
     shutServos();
-    token = 'd';
+    token = T_REST;
   }
   beep(15, 50, 50, 5);
   // start message
@@ -351,31 +351,27 @@ void loop() {
     // this block handles argumentless tokens
 
     switch (token) {
-      case 'g': {
+      case T_GYRO: {
           printMPU = !printMPU;
           break;
         }
-      // if (token == 'h')
+      // if (token == T_HELP)
       //   PTLF("** Help Information **");// print the help document
-      case 'z': { //turn off servos only
-          shutServos();
-          break;
-        }
-      case 'd' : {
+      case T_REST : {
           skillByName("rest");
           break;
         }
-      case 'j': { //show the list of current joint angles
+      case T_JOINTS: { //show the list of current joint angles
           printRange(DOF);
           printList(currentAng);
           break;
         }
-      case 's': {
+      case T_SAVE: {
           PTLF("save calibration");
           saveCalib(servoCalibs);
           break;
         }
-      case 'a': {
+      case T_ABORT: {
           PTLF("abort calibration");
           for (byte i = 0; i < DOF; i++) {
             servoCalibs[i] = servoCalib( i);
@@ -383,8 +379,8 @@ void loop() {
           break;
         }
       // this block handles array like arguments
-      case 'c':
-      case 'm': {
+      case T_CALIBRATE:
+      case T_MOVE: {
           int target[2] = {};
           String inBuffer = Serial.readStringUntil('\n');
           byte inLen = 0;
@@ -398,7 +394,7 @@ void loop() {
             inLen++;
           }
 
-          if (token == 'c') {
+          if (token == T_CALIBRATE) {
             //PTLF("calibrating [ targetIdx, angle ]: ");
             if (strcmp(lastCmd, "c")) { //first time entering the calibration function
               motion.loadBySkillName("calib");
@@ -412,7 +408,7 @@ void loop() {
             yield();
 
           }
-          else if (token == 'm') {
+          else if (token == T_MOVE) {
             PTLF("moving [ targetIdx, angle ]: ");
             currentAng[target[0]] = motion.dutyAngles[target[0]] = target[1];
           }
@@ -451,9 +447,9 @@ void loop() {
       //      PT(token);
       //      PT(cmd);
       //      PT("\n");
-      if (token == 'w') {}; //some words for undefined behaviors
+      if (token == T_UNDEFINED) {}; //some words for undefined behaviors
 
-      if (token == 'k') { //validating key
+      if (token == T_SKILL) { //validating key
         motion.loadBySkillName(cmd);
         //motion.info();
 #ifdef DEVELOPER
@@ -471,7 +467,7 @@ void loop() {
         transform( motion.dutyAngles, 1, 1, firstValidJoint);
         if (!strcmp(cmd, "rest")) {
           shutServos();
-          token = 'd';
+          token = T_REST;
         }
       }
       else {
@@ -489,7 +485,7 @@ void loop() {
       printList(ag, 6);
     }
 
-    if (token == 'k') {
+    if (token == T_SKILL) {
 #ifndef HEAD  //skip head
       if (jointIdx == 0)
         jointIdx = 2;
