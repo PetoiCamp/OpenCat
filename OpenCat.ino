@@ -72,7 +72,7 @@ void dmpDataReady() {
 // https://brainy-bits.com/blogs/tutorials/ir-remote-arduino
 #include <IRremote.h>
 /*-----( Declare objects )-----*/
-IRrecv irrecv(IR_RECIEVER);     // create instance of 'irrecv'
+IRrecv irrecv(IR_RECEIVER);     // create instance of 'irrecv'
 decode_results results;      // create instance of 'decode_results'
 
 String translateIR() // takes action based on IR code received
