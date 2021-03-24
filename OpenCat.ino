@@ -586,9 +586,8 @@ void loop() {
                 if (strcmp(lastCmd, "c")) { //first time entering the calibration function
                   strcpy(lastCmd, "c");
                   motion.loadBySkillName("calib");
-
                   transform( motion.dutyAngles);
-
+                  checkGyro=false;
                 }
                 if (inLen == 2)
                   servoCalibs[target[0]] = target[1];
