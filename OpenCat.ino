@@ -419,6 +419,7 @@ void loop() {
     PTL("check battery");
     PTL(voltage);//relative voltage
     meow();
+    delay(500);
   }
   else {
     newCmd[0] = '\0';
