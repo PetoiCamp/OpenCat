@@ -5,6 +5,7 @@
  *  
  *          Petoi WiFi module Config 
  *  Module name: ESP-WROOM-02D / 4MB Flash
+ *  Board: Generic ESP8266 Module
  *  Built-in LED: IO2 (Pin 2)
  *  Upload speed 921600 (may downgrade to half automatically)
  *  CPU Frequency: 80MHz (Power saving, lower heat) / 160MHz (High performance)
