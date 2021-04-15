@@ -82,6 +82,15 @@ void handleAction() {
   else if(argname == "run"){          // run
     Serial.print("krnF");
   }
+  else if(argname == "pee"){          // pee
+    Serial.print("kpee");
+  }
+  else if(argname == "pushup"){       // pushup
+    Serial.print("kpu");
+  }
+  else if(argname == "stepping"){     // stepping
+    Serial.print("kvt");
+  }
   else if(argname == "forward"){
     Serial.print("kwkF");
   }

@@ -6,16 +6,15 @@
 const char actionpage[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>OpenCAT Nybble Web Control</title>
-    <meta charset="utf-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=0.8, user-scalable=yes" />
-    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-      
+  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+  <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  
   <style>
     .header{
       background-color: #F1F1F1;
@@ -55,24 +54,24 @@ const char actionpage[] PROGMEM = R"=====(
       background-color: #4caf50;
     }
     
-        .btn-group button {
-    border-radius: 25px;
+    .btn-group button {
+        border-radius: 25px;
         background-color: #4CAF50; /* Green background */
         border: 1px solid green; /* Green border */
         color: white; /* White text */
         padding: 10px 24px; /* Some padding */
         cursor: pointer; /* Pointer/hand icon */
         text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 20px;
-    height: 50px;
-    margin: 5px;
-        }   
+        text-decoration: none;
+        display: inline-block;
+        font-size: 20px;
+        height: 50px;
+        margin: 5px;
+    }   
 
-        .btn-group button:hover {
+    .btn-group button:hover {
         background-color: #3e8e41;
-        }   
+    }   
     
     .btn button {
       border-radius: 25px;
@@ -123,55 +122,54 @@ const char actionpage[] PROGMEM = R"=====(
   </div>
   
   <div>
-
-        <div class="btn" style="width: 100%;">
-            <center><button onclick="location.href='/action?name=forward'">Forward</button></center>
-        </div>
-        <div class="btn" style="width:100%">
-            <button onclick="location.href='/action?name=forwardleft'">Forward Left</button>
-            <button onclick="location.href='/action?name=forwardright'">Forward Right</button>  
-        </div>    
-        <div class="btn" style="width:100%">
-            <button onclick="location.href='/action?name=backleft'">Back Left</button>
-            <button onclick="location.href='/action?name=backright'">Back Right</button> 
-        </div>   
-          <div class="btn" style="width: 100%;">
-             <center><button onclick="location.href='/action?name=back'">Back</button></center>
-          </div>  
-          <h4 align="center">Mode</h4>
-            <div class="btn-group" style="width:100%">
-                <button style="width: 100%" onclick="location.href='/action?name=gyro'">GyroOn/Off</button>
-                <button style="width: 100%" onclick="location.href='/action?name=calibration'">Calibration</button>
-                <button style="width: 100%" onclick="location.href='/action?name=balance'">Balanced</button>    
-            </div>     
-      
-        <h4 align="center">Actions</h4>
-            <div class="btn-group" style="width:100%">
-                <button style="width: 100%" onclick="location.href='/action?name=walk'">Walk</button>
-                <button style="width: 100%" onclick="location.href='/action?name=trot'">Trot</button>
-                <button style="width: 100%" onclick="location.href='/action?name=crawl'">Crawl</button>    
-            </div>
-            <div class="btn-group" style="width:100%">
-                <button style="width: 100%" onclick="location.href='/action?name=sit'">Sit</button>
-                <button style="width: 100%" onclick="location.href='/action?name=check'">Check</button>
-                <button style="width: 100%" onclick="location.href='/action?name=buttup'">Buttup</button>    
-            </div>
-            <div class="btn-group" style="width:100%">
-                <button style="width: 100%" onclick="location.href='/action?name=hello'">Hello</button>
-                <button style="width: 100%" onclick="location.href='/action?name=stretch'">Stretch</button>
-                <button style="width: 100%" onclick="location.href='/action?name=run'">Run</button>    
-            </div>    
-      
-        <div class="btn-stop" style="width: 100%;">
-           <center><button onclick="location.href='/action?name=stop'">STOP</button></center>
-        </div>  
+    <div class="btn" style="width: 100%;">
+      <center><button onclick="location.href='/action?name=forward'">Forward</button></center>
+    </ div>
+    <div class="btn" style="width:100%">
+      <button onclick="location.href='/action?name=forwardleft'">Forward Left</button>
+      <button onclick="location.href='/action?name=forwardright'">Forward Right</button>
+    </div>
+    <div class="btn" style="width:100%">
+      <button onclick="location.href='/action?name=backleft'">Back Left</button>
+      <button onclick="location.href='/action?name=backright'">Back Right</button>
+    </div>
+    <div class="btn" style="width: 100%;">
+      <center><button onclick="location.href='/action?name=back'">Back</button></center>
+    </div>
+    <h4 align="center">Mode</h4>
+    <div class="btn-group" style="width:100%">
+      <button style="width: 100%" onclick="location.href='/action?name=gyro'">GyroOn/Off</button>
+      <button style="width: 100%" onclick="location.href='/action?name=calibration'">Calibration</button>
+      <button style="width: 100%" onclick="location.href='/action?name=balance'">Balanced</button>
+    </div>
+    <h4 align="center">Actions</h4>
+    <div class="btn-group" style="width:100%">
+      <button style="width: 100%" onclick="location.href='/action?name=walk'">Walk</button>
+      <button style="width: 100%" onclick="location.href='/action?name=trot'">Trot</button>
+      <button style="width: 100%" onclick="location.href='/action?name=crawl'">Crawl</button>
+    </div>
+    <div class="btn-group" style="width:100%">
+      <button style="width: 100%" onclick="location.href='/action?name=sit'">Sit</button>
+      <button style="width: 100%" onclick="location.href='/action?name=check'">Check</button>
+      <button style="width: 100%" onclick="location.href='/action?name=buttup'">Buttup</button>
+    </div>
+    <div class="btn-group" style="width:100%">
+      <button style="width: 100%" onclick="location.href='/action?name=hello'">Hello</button>
+      <button style="width: 100%" onclick="location.href='/action?name=stretch'">Stretch</button>
+      <button style="width: 100%" onclick="location.href='/action?name=run'">Run</button>
+    </div>
+    <div class="btn-group" style="width:100%">
+      <button style="width: 100%" onclick="location.href='/action?name=pee'">Pee</button>
+      <button style="width: 100%" onclick="location.href='/action?name=pushup'">Push ups</button>
+      <button style="width: 100%" onclick="location.href='/action?name=stepping'">Stepping</button>
+    </div>
+    <div class="btn-stop" style="width: 100%;">
+      <center><button onclick="location.href='/action?name=stop'">STOP</button></center>
+    </div>
   </div>
-  
-    <div class="footer">
+  <div class="footer">
     <p>Petoi LLC 2021 www.petoi.com</p>
   </div>
-  
-  
 </body>
 
 </html>
