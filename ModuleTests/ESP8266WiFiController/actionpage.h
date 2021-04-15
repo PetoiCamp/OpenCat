@@ -163,8 +163,11 @@ const char actionpage[] PROGMEM = R"=====(
       <button style="width: 100%" onclick="location.href='/action?name=pushup'">Push ups</button>
       <button style="width: 100%" onclick="location.href='/action?name=stepping'">Stepping</button>
     </div>
-    <div class="btn-stop" style="width: 100%;">
-      <center><button onclick="location.href='/action?name=stop'">STOP</button></center>
+    <div class="btn-group" style="width:100%">
+      <center><button onclick="location.href='/action?name=back'">Back</button></center>
+    </div>
+    <div class="btn" style="width: 100%;">
+      <center><button onclick="location.href='/action?name=lookup'">Look up</button></center>
     </div>
 	<form action="/action" method="get">
 		<div style="width: 100%; margin-top: 25px;">

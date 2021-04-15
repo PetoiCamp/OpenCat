@@ -91,6 +91,9 @@ void handleAction() {
   else if(argname == "stepping"){     // stepping
     Serial.print("kvt");
   }
+  else if(argname == "lookup"){       // lookup
+    Serial.print("lu");
+  }
   else if(argname == "forward"){
     Serial.print("kwkF");
   }
