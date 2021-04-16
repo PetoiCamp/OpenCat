@@ -173,6 +173,9 @@ const char actionpage[] PROGMEM = R"=====(
     <div class="btn-group" style="width:100%">
         <button style="width: 100%" onclick="location.href='/action?name=lookup'">Look up</button>
     </div>
+    <div class="btn-group btn-stop" style="width:100%">
+        <button style="width: 100%" onclick="location.href='/action?name=stop'">STOP</button>
+    </div>
     <form action="/action" method="get">
         <div class="center" style="width: 100%; margin-top: 25px;">
             <input name="name" type="text" placeholder="input command"><input type="submit"/>
