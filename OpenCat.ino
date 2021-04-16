@@ -590,8 +590,15 @@ void loop() {
                   transform( motion.dutyAngles);
                   checkGyro=false;
                 }
-                if (inLen == 2)
+                if (inLen == 2) {
+                  if (target[1] >= 1001) { // Using 1001 for incremental calibration. 1001 is adding 1 degree, 1002 is adding 2 and 1009 is adding 9 degrees
+                    target[1] = servoCalibs[target[0]] + target[1] - 1000;
+                  } else if (target[1] <= -1001) { // Using -1001 for incremental calibration. -1001 is removing 1 degree, 1002 is removing 2 and 1009 is removing 9 degrees
+                    target[1] = servoCalibs[target[0]] + target[1] + 1000;
+                  }
+                  
                   servoCalibs[target[0]] = target[1];
+                }
                 PTL();
                 printRange(DOF);
                 printList(servoCalibs);
