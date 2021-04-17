@@ -19,8 +19,8 @@ const char calibrationpage[] PROGMEM = R"=====(
     </div>
     <h4>Head (0)</h4>
     <div class="btn-group" style="width:100%">
-        <button style="width: 50%" onclick="decrease(0)">Left</button>
-        <button style="width: 50%" onclick="increase(0)">Right</button>
+        <button style="width: 50%" onclick="increase(0)">Left</button>
+        <button style="width: 50%" onclick="decrease(0)">Right</button>
     </div>
     <h4>Front left leg</h4>
     <div class="btn-group" style="width:100%">
