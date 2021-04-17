@@ -142,7 +142,6 @@ const char head[] PROGMEM = R"=====(
         <li><a id="Home" href="/">Home</a></li>
         <li><a id="Actions" href="/actionpage">Actions</a></li>
         <li><a id="Calibration" href="/calibrationpage">Calibration</a></li>
-        <li><a id="Programming" href="/programmingpage">Programming</a></li>
     </ul>
     <h1>%TITLE%</h1>
 </div>
