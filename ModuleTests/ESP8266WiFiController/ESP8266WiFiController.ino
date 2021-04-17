@@ -26,6 +26,7 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>         // https://github.com/tzapu/WiFiManager
 
+#include "commons.h"
 #include "mainpage.h"
 #include "actionpage.h"
 #include "calibrationpage.h"
@@ -34,18 +35,27 @@
 
 ESP8266WebServer server(80);
 
+String PROGMEM renderHtml(String body, String title) {
+  String page;
+  page += FPSTR(head);
+  page.replace(FPSTR("%TITLE%"), title);
+  page += body;
+  page += FPSTR(footer);
+  return page;
+}
+
 void handleMainPage() {
   //Serial.println("GET /");
-  server.send(200, "text/html", mainpage);
+  server.send(200, "text/html", renderHtml(FPSTR(mainpage), "Welcome!"));
 }
 
 void handleActionPage() {
   //Serial.println("GET /actionpage");
-  server.send(200, "text/html", actionpage);
+  server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
 }
 
 void handleCalibrationPage() {
-    server.send(200, "text/html", calibrationpage);
+    server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
     Serial.print("c");
 }
 
