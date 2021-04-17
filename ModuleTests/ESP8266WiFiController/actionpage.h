@@ -3,6 +3,7 @@
 
 const char actionpage[] PROGMEM = R"=====(
 <div class="content">
+    <h4 class="center">Movements</h4>
     <div class="btn center" style="width: 100%;">
         <button onclick="location.href='/action?name=forward'">Forward</button>
     </div>
@@ -50,6 +51,7 @@ const char actionpage[] PROGMEM = R"=====(
     <div class="btn-group btn-stop" style="width:100%">
         <button style="width: 100%" onclick="location.href='/action?name=stop'">STOP</button>
     </div>
+    <h4 class="center">Custom command</h4>
     <form action="/action" method="get">
         <div class="center" style="width: 100%; margin-top: 25px;">
             <input name="name" type="text" placeholder="input command"><input type="submit"/>

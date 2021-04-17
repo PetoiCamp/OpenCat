@@ -40,35 +40,32 @@ String PROGMEM renderHtml(String body, String title) {
   page += FPSTR(head);
   page.replace(FPSTR("%TITLE%"), title);
   page += body;
-  page += FPSTR(footer);
+  page += FPSTR(foot);
   return page;
 }
 
 void handleMainPage() {
-  //Serial.println("GET /");
-  server.send(200, "text/html", renderHtml(FPSTR(mainpage), "Welcome!"));
+  server.send(200, "text/html", renderHtml(FPSTR(mainpage), "Home"));
 }
 
 void handleActionPage() {
-  //Serial.println("GET /actionpage");
   server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
 }
 
 void handleCalibrationPage() {
-    server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
-    Serial.print("c");
+  server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
 }
 
 void handleCalibration() {
-    String joint = server.arg("c");
-    String offset = server.arg("o");
+  String joint = server.arg("c");
+  String offset = server.arg("o");
     
-    if (joint == "s") {
-      Serial.print("s");
-    } else {
-      Serial.print("c" + joint + " " + offset);
-    }
-    server.send(200, "text/html", calibrationpage);
+  if (joint == "s") {
+    Serial.print("s");
+  } else {
+    Serial.print("c" + joint + " " + offset);
+  }
+  server.send(200, "text/html", calibrationpage);
 }
 
 void handleAction() {
@@ -181,7 +178,6 @@ void setup(void) {
 }
 
 void loop(void) {
-
   // handle clients
   server.handleClient();
 }

@@ -1,7 +1,7 @@
 #ifndef COMMONS_H
 #define COMMONS_H
 
-char* head PROGMEM = R"=====(
+const char head[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,9 +9,6 @@ char* head PROGMEM = R"=====(
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=0.8, user-scalable=yes"/>
     <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
     <style>
         .header {
@@ -23,13 +20,17 @@ char* head PROGMEM = R"=====(
             padding: 10px;
         }
 
+        h4 {
+          margin-top: 15px;
+        }
+
         ul {
             list-style-type: none;
             margin: 0;
             padding: 0;
             overflow: hidden;
             border: 1px solid #E7E7E7;
-            background-color: #F3F3F3;
+            background-color: #F1F1F1;
         }
 
         li {
@@ -67,7 +68,7 @@ char* head PROGMEM = R"=====(
             display: inline-block;
             font-size: 20px;
             height: 50px;
-            margin: 5px;
+            margin: 5px 5px 10px;
         }
 
         .btn-group button:hover {
@@ -113,21 +114,41 @@ char* head PROGMEM = R"=====(
             text-align: center;
         }
 
+        .content {
+            margin: 25px;
+        }
+
+        .explanation {
+            width: 50%;
+            margin: 15px auto;
+            background-color: #7dc280;
+            border: 1px solid black;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 20px;
+        }
     </style>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            let title = "%TITLE%";
+            document.getElementById(title).classList.add('active')
+        });
+    </script>
 </head>
+
 <body>
 <div class="header">
     <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/actionpage">Actions</a></li>
-        <li><a href="/calibrationpage">Calibration</a></li>
-        <li><a href="/programmingpage">Programming</a></li>
+        <li><a id="Home" href="/">Home</a></li>
+        <li><a id="Actions" href="/actionpage">Actions</a></li>
+        <li><a id="Calibration" href="/calibrationpage">Calibration</a></li>
+        <li><a id="Programming" href="/programmingpage">Programming</a></li>
     </ul>
     <h1>%TITLE%</h1>
 </div>
 )=====";
 
-const char footer[] PROGMEM = R"=====(
+const char foot[] PROGMEM = R"=====(
 <div class="footer">
     <p>Petoi LLC 2021 www.petoi.com</p>
 </div>
