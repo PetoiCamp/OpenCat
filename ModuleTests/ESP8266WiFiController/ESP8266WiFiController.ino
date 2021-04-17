@@ -54,6 +54,7 @@ void handleActionPage() {
 
 void handleCalibrationPage() {
   server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
+  Serial.print("c");
 }
 
 void handleCalibration() {
@@ -65,7 +66,7 @@ void handleCalibration() {
   } else {
     Serial.print("c" + joint + " " + offset);
   }
-  server.send(200, "text/html", calibrationpage);
+  server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
 }
 
 void handleAction() {
@@ -145,7 +146,7 @@ void handleAction() {
   }
 
   // Return to actionpage after CMD
-  server.send(200, "text/html", actionpage);
+  handleActionPage();
 }
 
 void setup(void) {
