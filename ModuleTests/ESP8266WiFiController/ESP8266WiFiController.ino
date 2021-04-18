@@ -28,6 +28,7 @@
 
 #include "mainpage.h"
 #include "actionpage.h"
+#include "calibrationpage.h"
 
 #define BUILTIN_LED 2
 
@@ -41,6 +42,23 @@ void handleMainPage() {
 void handleActionPage() {
   //Serial.println("GET /actionpage");
   server.send(200, "text/html", actionpage);
+}
+
+void handleCalibrationPage() {
+    server.send(200, "text/html", calibrationpage);
+    Serial.print("c");
+}
+
+void handleCalibration() {
+    String joint = server.arg("c");
+    String offset = server.arg("o");
+    
+    if (joint == "s") {
+      Serial.print("s");
+    } else {
+      Serial.print("c" + joint + " " + offset);
+    }
+    server.send(200, "text/html", calibrationpage);
 }
 
 void handleAction() {
@@ -145,6 +163,8 @@ void setup(void) {
   server.on("/", handleMainPage);
   server.on("/actionpage", handleActionPage);
   server.on("/action", handleAction);
+  server.on("/calibrationpage", handleCalibrationPage);
+  server.on("/calibration", handleCalibration);
 
   server.begin();
   Serial.println("HTTP server started");
