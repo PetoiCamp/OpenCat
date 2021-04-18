@@ -127,6 +127,12 @@ const char head[] PROGMEM = R"=====(
             box-sizing: border-box;
             border-radius: 20px;
         }
+
+        .radiolist {
+            display: inline-block;
+            width: 150px;
+            height: 35px;
+        }
     </style>
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {

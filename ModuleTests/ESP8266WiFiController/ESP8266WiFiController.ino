@@ -49,6 +49,10 @@ void handleMainPage() {
 }
 
 void handleActionPage() {
+  String cmd = server.arg("cmd");
+  if (cmd != 0) {
+    Serial.print(cmd); 
+  }
   server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
 }
 
@@ -67,86 +71,6 @@ void handleCalibration() {
     Serial.print("c" + joint + " " + offset);
   }
   server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
-}
-
-void handleAction() {
-  String argname = server.arg("name");
-
-  if(argname == "gyro"){              // gyro switch
-    Serial.print("g");
-  }
-  else if(argname == "calibration"){  // calibration mode
-    Serial.print("c");
-  }
-  else if(argname == "balance"){      // balance mode
-    Serial.print("kbalance");   
-  }
-  else if(argname == "walk"){         // demo walk
-    Serial.print("kwkF");
-  }
-  else if(argname == "trot"){         // trot
-    Serial.print("ktrF");
-  }
-  else if(argname == "crawl"){        // crawl
-    Serial.print("kcrF");
-  }
-  else if(argname == "sit"){          // sit
-    Serial.print("ksit");
-  }
-  else if(argname == "check"){        // check 
-    Serial.print("kck");
-  }
-  else if(argname == "buttup"){       // butt UP
-    Serial.print("kbuttUp");
-  }
-  else if(argname == "hello"){        // Say Hi~ 
-    Serial.print("khi");
-  }
-  else if(argname == "stretch"){      // stretch body
-    Serial.print("kstr");
-  }
-  else if(argname == "run"){          // run
-    Serial.print("krnF");
-  }
-  else if(argname == "pee"){          // pee
-    Serial.print("kpee");
-  }
-  else if(argname == "pushup"){       // pushup
-    Serial.print("kpu");
-  }
-  else if(argname == "stepping"){     // stepping
-    Serial.print("kvt");
-  }
-  else if(argname == "lookup"){       // lookup
-    Serial.print("lu");
-  }
-  else if(argname == "forward"){
-    Serial.print("kwkF");
-  }
-  else if(argname == "forwardleft"){
-    Serial.print("kwkL");
-  }
-  else if(argname == "forwardright"){
-    Serial.print("kwkR");
-  }
-  else if(argname == "backleft"){
-    Serial.print("kbkL");
-  }
-  else if(argname == "backright"){
-    Serial.print("kbkR");
-  }
-  else if(argname == "back"){
-    Serial.print("kbk");
-  }
-  else if(argname == "stop"){
-    Serial.print("d");
-  }
-  else {
-    Serial.print(argname);      // pass through hhtp argument to Bittle
-  }
-
-  // Return to actionpage after CMD
-  handleActionPage();
 }
 
 void setup(void) {
@@ -170,7 +94,6 @@ void setup(void) {
   // HTTP server started with handlers
   server.on("/", handleMainPage);
   server.on("/actionpage", handleActionPage);
-  server.on("/action", handleAction);
   server.on("/calibrationpage", handleCalibrationPage);
   server.on("/calibration", handleCalibration);
 
