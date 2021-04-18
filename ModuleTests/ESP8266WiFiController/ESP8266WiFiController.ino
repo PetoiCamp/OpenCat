@@ -26,6 +26,7 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>         // https://github.com/tzapu/WiFiManager
 
+#include "commons.h"
 #include "mainpage.h"
 #include "actionpage.h"
 #include "calibrationpage.h"
@@ -34,31 +35,38 @@
 
 ESP8266WebServer server(80);
 
+String PROGMEM renderHtml(String body, String title) {
+  String page;
+  page += FPSTR(head);
+  page.replace(FPSTR("%TITLE%"), title);
+  page += body;
+  page += FPSTR(foot);
+  return page;
+}
+
 void handleMainPage() {
-  //Serial.println("GET /");
-  server.send(200, "text/html", mainpage);
+  server.send(200, "text/html", renderHtml(FPSTR(mainpage), "Home"));
 }
 
 void handleActionPage() {
-  //Serial.println("GET /actionpage");
-  server.send(200, "text/html", actionpage);
+  server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
 }
 
 void handleCalibrationPage() {
-    server.send(200, "text/html", calibrationpage);
-    Serial.print("c");
+  server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
+  Serial.print("c");
 }
 
 void handleCalibration() {
-    String joint = server.arg("c");
-    String offset = server.arg("o");
+  String joint = server.arg("c");
+  String offset = server.arg("o");
     
-    if (joint == "s") {
-      Serial.print("s");
-    } else {
-      Serial.print("c" + joint + " " + offset);
-    }
-    server.send(200, "text/html", calibrationpage);
+  if (joint == "s") {
+    Serial.print("s");
+  } else {
+    Serial.print("c" + joint + " " + offset);
+  }
+  server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
 }
 
 void handleAction() {
@@ -138,7 +146,7 @@ void handleAction() {
   }
 
   // Return to actionpage after CMD
-  server.send(200, "text/html", actionpage);
+  handleActionPage();
 }
 
 void setup(void) {
@@ -171,7 +179,6 @@ void setup(void) {
 }
 
 void loop(void) {
-
   // handle clients
   server.handleClient();
 }
