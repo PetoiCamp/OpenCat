@@ -26,21 +26,47 @@
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>         // https://github.com/tzapu/WiFiManager
 
+#include "commons.h"
 #include "mainpage.h"
 #include "actionpage.h"
+#include "calibrationpage.h"
 
 #define BUILTIN_LED 2
 
 ESP8266WebServer server(80);
 
+String PROGMEM renderHtml(String body, String title) {
+  String page;
+  page += FPSTR(head);
+  page.replace(FPSTR("%TITLE%"), title);
+  page += body;
+  page += FPSTR(foot);
+  return page;
+}
+
 void handleMainPage() {
-  //Serial.println("GET /");
-  server.send(200, "text/html", mainpage);
+  server.send(200, "text/html", renderHtml(FPSTR(mainpage), "Home"));
 }
 
 void handleActionPage() {
-  //Serial.println("GET /actionpage");
-  server.send(200, "text/html", actionpage);
+  server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
+}
+
+void handleCalibrationPage() {
+  server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
+  Serial.print("c");
+}
+
+void handleCalibration() {
+  String joint = server.arg("c");
+  String offset = server.arg("o");
+    
+  if (joint == "s") {
+    Serial.print("s");
+  } else {
+    Serial.print("c" + joint + " " + offset);
+  }
+  server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
 }
 
 void handleAction() {
@@ -82,6 +108,18 @@ void handleAction() {
   else if(argname == "run"){          // run
     Serial.print("krnF");
   }
+  else if(argname == "pee"){          // pee
+    Serial.print("kpee");
+  }
+  else if(argname == "pushup"){       // pushup
+    Serial.print("kpu");
+  }
+  else if(argname == "stepping"){     // stepping
+    Serial.print("kvt");
+  }
+  else if(argname == "lookup"){       // lookup
+    Serial.print("lu");
+  }
   else if(argname == "forward"){
     Serial.print("kwkF");
   }
@@ -108,7 +146,7 @@ void handleAction() {
   }
 
   // Return to actionpage after CMD
-  server.send(200, "text/html", actionpage);
+  handleActionPage();
 }
 
 void setup(void) {
@@ -133,13 +171,14 @@ void setup(void) {
   server.on("/", handleMainPage);
   server.on("/actionpage", handleActionPage);
   server.on("/action", handleAction);
+  server.on("/calibrationpage", handleCalibrationPage);
+  server.on("/calibration", handleCalibration);
 
   server.begin();
   Serial.println("HTTP server started");
 }
 
 void loop(void) {
-
   // handle clients
   server.handleClient();
 }
