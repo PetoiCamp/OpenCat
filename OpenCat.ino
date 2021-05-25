@@ -425,7 +425,25 @@ void loop() {
     newCmd[0] = '\0';
     newCmdIdx = 0;
 
-
+//    int val = analogRead(A2);
+//    Serial.println(val);//
+//    float amp=1;
+//    if (val > 600*amp) {
+//      token = 'p';
+//      if (val < 750*amp) {
+//        int movement = min(max(currentAng[0] + random(-1, 2) * (val-450*amp)/3, -80), 80);
+//        calibratedPWM(0, abs(movement) > 80 ? 0 : movement, 0.001);
+//        delay(10);
+//      }
+//      else if (val < 1000*amp) {
+//        skillByName("sit", 1, 1, 0);
+//        delay(500);
+//      }
+//      else {
+//        skillByName("balance", 1, 0, 0);
+//        delay(500);
+//      }
+//    }
     // input block
     //else if (t == 0) {
     if (irrecv.decode(&results)) {
@@ -588,7 +606,7 @@ void loop() {
                   strcpy(lastCmd, "c");
                   motion.loadBySkillName("calib");
                   transform( motion.dutyAngles);
-                  checkGyro=false;
+                  checkGyro = false;
                 }
                 if (inLen == 2) {
                   if (target[1] >= 1001) { // Using 1001 for incremental calibration. 1001 is adding 1 degree, 1002 is adding 2 and 1009 is adding 9 degrees
@@ -596,7 +614,7 @@ void loop() {
                   } else if (target[1] <= -1001) { // Using -1001 for incremental calibration. -1001 is removing 1 degree, 1002 is removing 2 and 1009 is removing 9 degrees
                     target[1] = servoCalibs[target[0]] + target[1] + 1000;
                   }
-                  
+
                   servoCalibs[target[0]] = target[1];
                 }
                 PTL();
@@ -710,7 +728,7 @@ void loop() {
                   PTL(triggerAngle);
                   if ((180 - fabs(currentYpr) > 2)  //skip the angle when the reading jumps from 180 to -180
                       && (triggerAxis * currentYpr < triggerAxis * triggerAngle && triggerAxis * previousYpr > triggerAxis * triggerAngle )
-                     ) //the sign of triggerAxis will deterine whether the current angle should be larger or smaller than the trigger angle 
+                     ) //the sign of triggerAxis will deterine whether the current angle should be larger or smaller than the trigger angle
                     break;
                   previousYpr = currentYpr;
                 }

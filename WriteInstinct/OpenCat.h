@@ -789,14 +789,18 @@ void saveCalib(int8_t *var) {
   }
 }
 
-void calibratedPWM(byte i, float angle) {
+void calibratedPWM(byte i, float angle, float speedRatio = 0) {
   /*float angle = max(-SERVO_ANG_RANGE/2, min(SERVO_ANG_RANGE/2, angle));
     if (i > 3 && i < 8)
     angle = max(-5, angle);*/
+  int duty0 = calibratedDuty0[i] + currentAng[i] * pulsePerDegree[i] * rotationDirection(i);
   currentAng[i] = angle;
   int duty = calibratedDuty0[i] + angle * pulsePerDegree[i] * rotationDirection(i);
   duty = max(SERVOMIN , min(SERVOMAX , duty));
-  pwm.setPWM(pin(i), 0, duty);
+  byte steps = byte(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)); //default speed is 1 degree per step
+  for (byte s = 0; s <= steps; s++){
+    pwm.setPWM(pin(i), 0, duty + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * (duty0 - duty)));
+  }
 }
 
 void allCalibratedPWM(char * dutyAng, byte offset = 0) {
