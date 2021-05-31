@@ -244,10 +244,10 @@ void checkBodyMotion()  {
           strcpy(newCmd, "rc");
           newCmdIdx = 4;
         }
-        else {
-          strcpy(newCmd, ypr[1] < LARGE_PITCH ? "lifted" : "dropped");
-          newCmdIdx = 1;
-        }
+//        else {
+//          strcpy(newCmd, ypr[1] < LARGE_PITCH ? "lifted" : "dropped");
+//          newCmdIdx = 1;
+//        }
       }
       hold = 10;
     }
