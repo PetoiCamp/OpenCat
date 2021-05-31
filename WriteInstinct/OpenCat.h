@@ -99,6 +99,7 @@
 #define BUZZER 5
 #define GYRO
 #define ULTRA_SOUND
+bool soundLightSensorQ =false;
 
 void beep(int8_t note, float duration = 10, int pause = 0, byte repeat = 1 ) {
   if (note == 0) {//rest note

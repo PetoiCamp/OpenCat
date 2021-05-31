@@ -425,25 +425,25 @@ void loop() {
     newCmd[0] = '\0';
     newCmdIdx = 0;
 
-//    int val = analogRead(A2);
-//    Serial.println(val);//
-//    float amp=1;
-//    if (val > 600*amp) {
-//      token = 'p';
-//      if (val < 750*amp) {
-//        int movement = min(max(currentAng[0] + random(-1, 2) * (val-450*amp)/3, -80), 80);
-//        calibratedPWM(0, abs(movement) > 80 ? 0 : movement, 0.001);
-//        delay(10);
-//      }
-//      else if (val < 1000*amp) {
-//        skillByName("sit", 1, 1, 0);
-//        delay(500);
-//      }
-//      else {
-//        skillByName("balance", 1, 0, 0);
-//        delay(500);
-//      }
-//    }
+    int val = analogRead(A2);
+    Serial.println(val);//
+    float amp=1;
+    if (val > 200*amp) {
+      token = 'p';
+      if (val < 400*amp) {
+        int movement = min(max(currentAng[0] + random(-1, 2) * (val-450*amp)/3, -80), 80);
+        calibratedPWM(0, abs(movement) > 80 ? 0 : movement, 0.001);
+        delay(10);
+      }
+      else if (val < 550*amp) {
+        skillByName("sit", 1, 1, 0);
+        delay(500);
+      }
+      else {
+        skillByName("balance", 1, 0.5, 0);
+        delay(500);
+      }
+    }
     // input block
     //else if (t == 0) {
     if (irrecv.decode(&results)) {
