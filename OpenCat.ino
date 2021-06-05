@@ -124,31 +124,7 @@ String translateIR() // takes action based on IR code received
 }
 
 
-char token;
-char lastToken;
-#define CMD_LEN 10
-char *lastCmd = new char[CMD_LEN];
-char *newCmd = new char[CMD_LEN];
-byte newCmdIdx = 0;
-byte hold = 0;
-int8_t offsetLR = 0;
-bool checkGyro = true;
-int8_t skipGyro = 2;
 
-#define COUNT_DOWN 60
-
-uint8_t timer = 0;
-//#define SKIP 1
-#ifdef SKIP
-byte updateFrame = 0;
-#endif
-byte firstMotionJoint;
-byte jointIdx = 0;
-
-//bool Xconfig = false;
-
-
-unsigned long usedTime = 0;
 void getFIFO() {//get FIFO only without further processing
   while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
 
@@ -244,10 +220,10 @@ void checkBodyMotion()  {
           strcpy(newCmd, "rc");
           newCmdIdx = 4;
         }
-//        else {
-//          strcpy(newCmd, ypr[1] < LARGE_PITCH ? "lifted" : "dropped");
-//          newCmdIdx = 1;
-//        }
+        else {
+          strcpy(newCmd, ypr[1] < LARGE_PITCH ? "lifted" : "dropped");
+          newCmdIdx = 1;
+        }
       }
       hold = 10;
     }
@@ -401,48 +377,47 @@ void setup() {
 
   pinMode(BATT, INPUT);
   pinMode(BUZZER, OUTPUT);
+
+  soundLightSensorQ = sensorConnectedQ(READING_COUNT);
+  lightLag = analogRead(LIGHT);
   meow();
 }
 
 void loop() {
   float voltage = analogRead(BATT);
-  if (voltage <
-#ifdef NyBoard_V0_1
-      650
-#else
-      300
-#endif
-     ) { //give the cat a break when voltage drops after sprint
+  if (voltage < 650) { //battery voltage < 6.1V. Needs to be recharged
+    //give the robot a break when voltage drops after sprint
     //adjust the thresholds according to your batteries' voltage
     //if set too high, the robot will keep crying.
-    //If too low, Nybble may faint due to temporary voltage drop
+    //If too low, the robot may faint due to temporary voltage drop
     PTL("check battery");
-    PTL(voltage);//relative voltage
-    meow();
-    delay(500);
+    beep(15, 50, 50, 3);
+    delay(2000);
   }
   else {
     newCmd[0] = '\0';
     newCmdIdx = 0;
+    if (soundLightSensorQ && motion.period == 1) {
+      SoundLightSensorPattern();
 
-    int val = analogRead(A2);
-    Serial.println(val);//
-    float amp=1;
-    if (val > 200*amp) {
-      token = 'p';
-      if (val < 400*amp) {
-        int movement = min(max(currentAng[0] + random(-1, 2) * (val-450*amp)/3, -80), 80);
-        calibratedPWM(0, abs(movement) > 80 ? 0 : movement, 0.001);
-        delay(10);
-      }
-      else if (val < 550*amp) {
-        skillByName("sit", 1, 1, 0);
-        delay(500);
-      }
-      else {
-        skillByName("balance", 1, 0.5, 0);
-        delay(500);
-      }
+      //      float amp = 1;
+      //      if (abs(light-lightLag))
+      //      if (sound > 200 * amp) {
+      //        token = 'p';
+      //        if (sound < 400 * amp) {
+      //          int movement = min(max(currentAng[0] + random(-1, 2) * (sound - 450 * amp) / 3, -80), 80);
+      //          calibratedPWM(0, abs(movement) > 80 ? 0 : movement, 0.001);
+      //          delay(10);
+      //        }
+      //        else if (sound < 550 * amp) {
+      //          skillByName("sit", 1, 1, 0);
+      //          delay(500);
+      //        }
+      //        else {
+      //          skillByName("balance", 1, 2, 0);
+      //          delay(500);
+      //        }
+      //      }
     }
     // input block
     //else if (t == 0) {

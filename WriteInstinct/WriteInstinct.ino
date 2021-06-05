@@ -183,27 +183,20 @@ int giro_deadzone = 1;   //Giro error allowed, make it lower to get more precisi
 //MPU6050 mpu;
 MPU6050 mpu(0x68); // <-- use for AD0 high
 
-
 byte stage = 0;
 char choice;
 int ag[6];      //int16_t ax, ay, az, gx, gy, gz;
 int agMean[6];  //mean_ax, mean_ay, mean_az, mean_gx, mean_gy, mean_gz;
 int agOffset[6];  //ax_offset, ay_offset, az_offset, gx_offset, gy_offset, gz_offset;
 int mpuOffset[6];
-uint8_t timer = 0;
+
 #define SKIP 3
 #ifdef SKIP
 byte updateFrame = 0;
 #endif
 byte firstValidJoint;
-char token;
-#define CMD_LEN 10
-char lastCmd[CMD_LEN] = {};
-byte jointIdx = 0;
 
-#define CMD_LEN 10
 bool printMPU = false;
-
 
 void setup() {
 #ifdef PIXEL_PIN
