@@ -185,8 +185,8 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define K41 "lu"      //look up
 #define K42 "buttUp"    //butt up
 #else //BITTLE
-#define K41 "rn"      //run
-#define K42 "ck"      //check around
+#define K41 "ck"      //check around
+#define K42 "pd"      //play dead
 #endif
 
 #define K50 "hi"      //greeting

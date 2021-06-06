@@ -220,10 +220,10 @@ void checkBodyMotion()  {
           strcpy(newCmd, "rc");
           newCmdIdx = 4;
         }
-        else {
-          strcpy(newCmd, ypr[1] < LARGE_PITCH ? "lifted" : "dropped");
-          newCmdIdx = 1;
-        }
+//        else {
+//          strcpy(newCmd, ypr[1] < LARGE_PITCH ? "lifted" : "dropped");
+//          newCmdIdx = 1;
+//        }
       }
       hold = 10;
     }
@@ -378,46 +378,28 @@ void setup() {
   pinMode(BATT, INPUT);
   pinMode(BUZZER, OUTPUT);
 
-  soundLightSensorQ = sensorConnectedQ(READING_COUNT);
+  soundLightSensorQ = sensorConnectedQ(READING_COUNT);//test if the Petoi Sound&Light sensor is connected
   lightLag = analogRead(LIGHT);
   meow();
 }
 
 void loop() {
   float voltage = analogRead(BATT);
-  if (voltage < 650) { //battery voltage < 6.1V. Needs to be recharged
+  if (voltage < 650) { //if battery voltage < 6.5V, it needs to be recharged
     //give the robot a break when voltage drops after sprint
     //adjust the thresholds according to your batteries' voltage
-    //if set too high, the robot will keep crying.
-    //If too low, the robot may faint due to temporary voltage drop
-    PTL("check battery");
+    //if set too high, the robot will stop working when the battery still has power.
+    //If too low, the robot may not alarm before the battery shuts off
+    PTL("low power");
     beep(15, 50, 50, 3);
-    delay(2000);
+    delay(1500);
   }
   else {
     newCmd[0] = '\0';
     newCmdIdx = 0;
-    if (soundLightSensorQ && motion.period == 1) {
+    if (soundLightSensorQ && motion.period == 1) {//if the Petoi Sound&Light sensor is connected
+                                                  //and the robot is not walking (to avoid noise)
       SoundLightSensorPattern();
-
-      //      float amp = 1;
-      //      if (abs(light-lightLag))
-      //      if (sound > 200 * amp) {
-      //        token = 'p';
-      //        if (sound < 400 * amp) {
-      //          int movement = min(max(currentAng[0] + random(-1, 2) * (sound - 450 * amp) / 3, -80), 80);
-      //          calibratedPWM(0, abs(movement) > 80 ? 0 : movement, 0.001);
-      //          delay(10);
-      //        }
-      //        else if (sound < 550 * amp) {
-      //          skillByName("sit", 1, 1, 0);
-      //          delay(500);
-      //        }
-      //        else {
-      //          skillByName("balance", 1, 2, 0);
-      //          delay(500);
-      //        }
-      //      }
     }
     // input block
     //else if (t == 0) {
