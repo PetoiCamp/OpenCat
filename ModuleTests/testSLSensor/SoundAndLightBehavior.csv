@@ -1,0 +1,13 @@
+﻿LIGHT,READING,THRESHOLD,
+brighter,lower,,
+darker,higher,850,
+,,,
+Light,,Sound,Behavior
+level,change,level,
+dark,,low,rest
+,,high,sit
+mid,,low,sit
+,,high,stand
+,fast light,,
+,fast dim,,
+bright,,,proportional

@@ -104,6 +104,7 @@
 #define LIGHT A3
 #define READING_COUNT 100
 bool soundLightSensorQ = false;
+bool restQ = false;
 int lightLag = 0;
 
 void beep(int8_t note, float duration = 10, int pause = 0, byte repeat = 1 ) {
@@ -879,8 +880,10 @@ template <typename T> void transform( T * target, byte angleDataRatio = 1, float
 void skillByName(char* skillName, byte angleDataRatio = 1, float speedRatio = 1, bool shutServoAfterward = true) {
   motion.loadBySkillName(skillName);
   transform(motion.dutyAngles, angleDataRatio, speedRatio);
-  if (shutServoAfterward)
+  if (shutServoAfterward) {
     shutServos();
+    token = 'd';
+  }
 }
 
 
@@ -951,33 +954,77 @@ bool sensorConnectedQ(int n) {
   return sqrt(mean) > 20 ? true : false;
 }
 
-int SoundLightSensorPattern() {
+
+
+int SoundLightSensorPattern(char *cmd) { //under construction, and will only be active with our new sound and light sensor connected. 
   int sound = analogRead(SOUND); //larger sound has larger readings
   int light = analogRead(LIGHT); //lower light has larger readings
+  int lightDiff = light - lightLag;
+  lightLag = light;
   Serial.print(1024);
   Serial.print('\t');
   Serial.print(sound);
   Serial.print('\t');
   Serial.println(light);
-
-  float amp = 1;
-  if (abs(light - lightLag))
-    if (sound > 200 * amp) {
-      token = 'p';
-      if (sound < 400 * amp) {
-        int movement = min(max(currentAng[0] + random(-1, 2) * (sound - 450 * amp) / 3, -80), 80);
-        calibratedPWM(0, abs(movement) > 80 ? 0 : movement, 0.001);
-        delay(10);
-      }
-      else if (sound < 550 * amp) {
-        skillByName("sit", 1, 1, 0);
-        delay(500);
+  if (light > 800 && sound < 500) { //dark condition
+    if (!restQ) {
+      skillByName("rest", 1, 1, 1);
+      delay(500);
+      restQ = true;
+    }
+  }
+  else {
+    int headPan;
+    if (abs(light - 450) > 10)
+      headPan = min(max(currentAng[0] + (light - 450) / 7, -50), 50);
+    if (sound > 250)
+      headPan = min(max(headPan + (random(0, 2) * 2 - 1) * (sound - 250) / 10, -50), 50);
+    calibratedPWM(0, abs(headPan) > 80 ? 0 : headPan, 0.01);
+    restQ = false;
+    if (sound > 700){
+      if (light - lightLag  < - 50) {
+        beep(15);
+        PTL("Bang!");
+        strcpy(cmd, "pd");
+        token = 'k';
+        return 4;
       }
       else {
-        skillByName("balance", 1, 2, 0);
-        delay(500);
+        strcpy(cmd, "balance");
+        token = 'k';
+        return 4;       
+        }
       }
-    }
+        //delay(10);
+      }
+  return 0;
+  //    if (sound < 700) {
+  //      skillByName("sit", 1, 1, 0);
+  //    }
+  //    else {
+  //      skillByName("balance", 1, 2, 0);
+  //      delay(500);
+  //    }
+  //    skillByName("sit", 1, 1, 0);
+
+
+
+  //  else  //bright condition
+  //    //if (abs(light - lightLag))
+  //    if (sound > 150) {
+  //      if (sound > 250) {
+  //        int headPan= min(max(currentAng[0] + (random(0, 2) * 2 - 1) * (sound - 250) / 10, -50), 50);
+  //        calibratedPWM(0, abs(movement) > 80 ? 0 : movement, 0.001);
+  //        delay(10);
+  //      }
+  //      if (sound < 700) {
+  //        skillByName("sit", 1, 1, 0);
+  //      }
+  //      else {
+  //        skillByName("balance", 1, 2, 0);
+  //        delay(500);
+  //      }
+  //    }
 
 
 

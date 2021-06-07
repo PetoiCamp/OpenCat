@@ -220,10 +220,10 @@ void checkBodyMotion()  {
           strcpy(newCmd, "rc");
           newCmdIdx = 4;
         }
-//        else {
-//          strcpy(newCmd, ypr[1] < LARGE_PITCH ? "lifted" : "dropped");
-//          newCmdIdx = 1;
-//        }
+        //        else {
+        //          strcpy(newCmd, ypr[1] < LARGE_PITCH ? "lifted" : "dropped");
+        //          newCmdIdx = 1;
+        //        }
       }
       hold = 10;
     }
@@ -385,12 +385,13 @@ void setup() {
 
 void loop() {
   float voltage = analogRead(BATT);
-  if (voltage < 650) { //if battery voltage < 6.5V, it needs to be recharged
+  if (voltage < 640) { //if battery voltage < 6.4V, it needs to be recharged
     //give the robot a break when voltage drops after sprint
     //adjust the thresholds according to your batteries' voltage
     //if set too high, the robot will stop working when the battery still has power.
     //If too low, the robot may not alarm before the battery shuts off
-    PTL("low power");
+    PT(voltage/100);
+    PTL("V low power!");
     beep(15, 50, 50, 3);
     delay(1500);
   }
@@ -398,8 +399,8 @@ void loop() {
     newCmd[0] = '\0';
     newCmdIdx = 0;
     if (soundLightSensorQ && motion.period == 1) {//if the Petoi Sound&Light sensor is connected
-                                                  //and the robot is not walking (to avoid noise)
-      SoundLightSensorPattern();
+      //and the robot is not walking (to avoid noise)
+      newCmdIdx=SoundLightSensorPattern(newCmd);
     }
     // input block
     //else if (t == 0) {
