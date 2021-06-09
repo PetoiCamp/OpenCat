@@ -2,11 +2,11 @@
 brighter,lower,,
 darker,higher,850,
 ,,,
-Light,,Sound,Behavior
-level,change,level,
+LIGHT,,SOUND,
+_LEVEL,_CHANGE,_LEVEL,_BEHAVIOR
 dark,,low,rest
 ,,high,sit
-mid,,low,sit
+high,,low,sit
 ,,high,stand
 ,fast light,,
 ,fast dim,,

@@ -385,22 +385,22 @@ void setup() {
 
 void loop() {
   float voltage = analogRead(BATT);
-  if (voltage < 640) { //if battery voltage < 6.4V, it needs to be recharged
+  if (voltage < LOW_BATT) { //if battery voltage < threshold, it needs to be recharged
     //give the robot a break when voltage drops after sprint
     //adjust the thresholds according to your batteries' voltage
     //if set too high, the robot will stop working when the battery still has power.
     //If too low, the robot may not alarm before the battery shuts off
-    PT(voltage/100);
-    PTL("V low power!");
+    PTL("Low power!");
     beep(15, 50, 50, 3);
     delay(1500);
   }
+
   else {
     newCmd[0] = '\0';
     newCmdIdx = 0;
     if (soundLightSensorQ && motion.period == 1) {//if the Petoi Sound&Light sensor is connected
       //and the robot is not walking (to avoid noise)
-      newCmdIdx=SoundLightSensorPattern(newCmd);
+      newCmdIdx = SoundLightSensorPattern(newCmd);
     }
     // input block
     //else if (t == 0) {
@@ -446,7 +446,8 @@ void loop() {
     //for obstacle avoidance and auto recovery
     if (newCmdIdx) {
       PTL(token);
-      beep(newCmdIdx * 4);
+      if (newCmdIdx < 4)
+        beep(newCmdIdx * 4);
       // this block handles argumentless tokens
       switch (token) {
         //        case T_HELP: {

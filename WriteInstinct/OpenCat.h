@@ -230,6 +230,7 @@ byte pins[] = {7, 0, 8, 15,
                4, 3, 12, 11
               };
 #define BATT A0 //voltage detector
+#define LOW_BATT 440
 #define DEVICE_ADDRESS 0x50     //I2C Address of eeprom chip         
 #define BAUD_RATE 57600
 
@@ -240,6 +241,7 @@ byte pins[] = {4, 3, 11, 12,
                7, 0, 15, 8
               };
 #define BATT A0
+#define LOW_BATT 440
 #define DEVICE_ADDRESS 0x50
 #define BAUD_RATE 57600
 
@@ -250,6 +252,7 @@ byte pins[] = {12, 11, 3, 4,
                15, 8, 7, 0
               };
 #define BATT A7
+#define LOW_BATT 640
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
 //define PIXEL_PIN 10
@@ -956,11 +959,9 @@ bool sensorConnectedQ(int n) {
 
 
 
-int SoundLightSensorPattern(char *cmd) { //under construction, and will only be active with our new sound and light sensor connected. 
+int SoundLightSensorPattern(char *cmd) { //under construction, and will only be active with our new sound and light sensor connected.
   int sound = analogRead(SOUND); //larger sound has larger readings
   int light = analogRead(LIGHT); //lower light has larger readings
-  int lightDiff = light - lightLag;
-  lightLag = light;
   Serial.print(1024);
   Serial.print('\t');
   Serial.print(sound);
@@ -974,29 +975,39 @@ int SoundLightSensorPattern(char *cmd) { //under construction, and will only be 
     }
   }
   else {
-    int headPan;
-    if (abs(light - 450) > 10)
-      headPan = min(max(currentAng[0] + (light - 450) / 7, -50), 50);
-    if (sound > 250)
-      headPan = min(max(headPan + (random(0, 2) * 2 - 1) * (sound - 250) / 10, -50), 50);
-    calibratedPWM(0, abs(headPan) > 80 ? 0 : headPan, 0.01);
+    //    int headPan;
+    //    if (abs(light - 450) > 10)
+    //      headPan = min(max(currentAng[0] + (light - 450) / 50, -50), 50);
+    //    if (sound > 250)
+    //      headPan = min(max(currentAng[0] + (random(0, 2) * 2 - 1) * (sound - 250) / 50, -50), 50);
+    //    calibratedPWM(0, abs(headPan) > 80 ? 0 : headPan, 0.01);
     restQ = false;
-    if (sound > 700){
-      if (light - lightLag  < - 50) {
-        beep(15);
-        PTL("Bang!");
-        strcpy(cmd, "pd");
-        token = 'k';
-        return 4;
-      }
-      else {
-        strcpy(cmd, "balance");
-        token = 'k';
-        return 4;       
+
+    if (sound > 700) {
+
+      for (byte l = 0; l < 10; l++) {
+        lightLag = light;
+        light = analogRead(LIGHT); //lower light has larger readings
+        if (light - lightLag  < - 40) {
+          beep(15);
+          PTL("Bang!");
+          strcpy(cmd, "pd");
+          token = 'k';
+          return 4;
         }
       }
-        //delay(10);
-      }
+
+      strcpy(cmd, "balance");
+
+    }
+    else
+      strcpy(cmd, "sit");
+
+
+    token = 'k';
+    return 4;
+    //delay(10);
+  }
   return 0;
   //    if (sound < 700) {
   //      skillByName("sit", 1, 1, 0);
