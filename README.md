@@ -8,7 +8,7 @@ Inspired by Boston Dynamics' Big Dog, Rongzhong Li started the project in his do
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/slope.gif?raw=true)
 
-The project is still a complex system only for skilled makers, yet we want to share our work with the community by mass production and bringing down the hardware and software cost. OpenCat has been deployed on Petoi's palm-sized, realistic lifelike robot cat [Nybble](www.igg.me/at/nybble) and robot dog [Bittle](www.igg.me/at/bittle). We've successfully crowdfunded these two robots and shipped thousands of units worldwide.  With our customized Arduino board coordinating all instinctive and sophisticated movements, one can clip on various sensors to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips through wired/wireless connections.
+The project is still a complex system only for skilled makers, yet we want to share our work with the community by mass production and bringing down the hardware and software cost. OpenCat has been deployed on Petoi's palm-sized, realistic lifelike robot cat [Nybble](https://www.indiegogo.com/projects/nybble-world-s-cutest-open-source-robotic-cat) and robot dog [Bittle](https://www.indiegogo.com/projects/bittle-a-palm-sized-robot-dog-for-stem-and-fun). We've successfully crowdfunded these two robots and shipped thousands of units worldwide.  With our customized Arduino board coordinating all instinctive and sophisticated movements, one can clip on various sensors to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips through wired/wireless connections.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/ball.gif?raw=true)
 
