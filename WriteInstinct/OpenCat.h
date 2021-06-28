@@ -66,7 +66,7 @@
   SOFTWARE.
 
 */
-#define I2C_EEPROM
+#define I2C_EEPROM //comment this line out if you don't have an I2C EEPROM in your DIY board. 
 
 //postures and movements trained by RongzhongLi
 #include "InstinctBittle.h" //activate the correct header file according to your model
