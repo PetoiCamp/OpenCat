@@ -381,6 +381,11 @@ void setup() {
   soundLightSensorQ = sensorConnectedQ(READING_COUNT);//test if the Petoi Sound&Light sensor is connected
   lightLag = analogRead(LIGHT);
   meow();
+#ifdef BITTLE
+  PTLF("Bittle");
+#elif defined NYBBLE
+  PTLF("Nybble");
+#endif
 }
 
 void loop() {

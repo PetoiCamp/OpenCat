@@ -66,6 +66,7 @@
   SOFTWARE.
 
 */
+#define I2C_EEPROM
 
 //postures and movements trained by RongzhongLi
 #include "InstinctBittle.h" //activate the correct header file according to your model
@@ -963,6 +964,8 @@ int SoundLightSensorPattern(char *cmd) { //under construction, and will only be 
   int sound = analogRead(SOUND); //larger sound has larger readings
   int light = analogRead(LIGHT); //lower light has larger readings
   Serial.print(1024);
+  Serial.print('\t');
+  Serial.print(0);
   Serial.print('\t');
   Serial.print(sound);
   Serial.print('\t');

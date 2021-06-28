@@ -1,6 +1,5 @@
 #define NYBBLE
 #define NUM_SKILLS 34
-#define I2C_EEPROM
 
 const char bd[] PROGMEM = {
   30, 0, 0, 1,

@@ -1,6 +1,5 @@
 #define BITTLE
 #define NUM_SKILLS 31
-#define I2C_EEPROM
 
 const char bdF[] PROGMEM = { 
 15, 0, 0, 1,
