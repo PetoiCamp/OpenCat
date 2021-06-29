@@ -289,6 +289,11 @@ void loop() {
 #endif
   {
     if (stage == 0) {
+#ifdef AUTORUN
+      for (byte i = 0; i < 6; i++) {
+        EEPROMWriteInt(MPUCALIB + i * 2, 0);
+      }
+#endif
       PTLF("\nReading sensors for first time...");
       meansensors();
       stage++;
@@ -298,9 +303,6 @@ void loop() {
     if (stage == 1) {
       PTLF("\nYour MPU6050 should be placed in horizontal position, with package letters facing up.");
       PTLF("Don't touch it until all six numbers appear. You should hear a long beep followed by a Meooow!");
-//      for (byte i = 0; i < 6; i++) {
-//        EEPROMWriteInt(MPUCALIB + i * 2, 0);
-//      }
       calibration();
       stage++;
       delay(100);
