@@ -9,7 +9,9 @@
 ## Jun 7, 2021
 
 * Adjusted the threshold voltage so that Bittle will keep beeping when the battery goes under 6.5V, a few moments before the battery power shuts off;
-* Adjusted the gaits so that the elbow won't hit the body in the accelerated phase. Removed the running gait on the IR remote key "2" and replaced it with a faster trot. The original "check around" behavior on key "3" is assigned to key "2";
+* Adjusted the gaits so that the elbow won't hit the body in the accelerated phase. 
+* The trot on key "1" is tuned to be faster.
+* Removed the running gait on the IR remote key "2" and replaced it with "check around" behavior previously on key "3";
 * Assigned a "play dead" trick to IR remote key "3". Bittle will fall on its back then roll back (if the gyro is activated);
 * Removed the behavior when the robot is tilted at a large angle to avoid an occasional bug. Will put the behavior back if the bug can be fixed; 
 * Added an auto detection code for a new sound&light sensor connected to the analog Grove pin. Some new automated behaviors are being developed. The code block won't be active if the sensor is not connected to the Analog Grove socket;
