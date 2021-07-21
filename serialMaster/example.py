@@ -63,5 +63,8 @@ try:
 except Exception as e:
     wrapper(['d', 0])
     close_serial(ser)
-    print("exit")
     raise e
+else:
+    wrapper(['d', 0])
+    close_serial(ser)
+    print("finish")
