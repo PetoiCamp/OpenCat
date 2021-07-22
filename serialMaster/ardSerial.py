@@ -43,7 +43,6 @@ def close_serial(ser):
     if ser.is_open:
         ser.close()
     logger.info('closing serial port')
-    ser.close()
     time.sleep(2)
 
 
