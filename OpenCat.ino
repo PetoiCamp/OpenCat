@@ -403,10 +403,10 @@ void loop() {
   else {
     newCmd[0] = '\0';
     newCmdIdx = 0;
-//    if (soundLightSensorQ && motion.period == 1) {//if the Petoi Sound&Light sensor is connected
-//      //and the robot is not walking (to avoid noise)
-//      newCmdIdx = SoundLightSensorPattern(newCmd);
-//    }
+    if (soundLightSensorQ && motion.period == 1 && token != 'c') { //if the Petoi Sound&Light sensor is connected
+      //and the robot is not walking (to avoid noise)
+      newCmdIdx = SoundLightSensorPattern(newCmd);
+    }
     // input block
     //else if (t == 0) {
     if (irrecv.decode(&results)) {

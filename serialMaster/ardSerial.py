@@ -6,7 +6,7 @@ import time
 import math
 import numpy as np
 ser = serial.Serial(
-    port='/dev/cu.BittleSPP-3534C8-Port',#'/dev/ttyS0',
+    port='/dev/ttyS0',#'/dev/cu.BittleSPP-3534C8-Port',
     baudrate=115200,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
