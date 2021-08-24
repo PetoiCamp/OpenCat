@@ -722,10 +722,10 @@ void loop() {
             token = T_REST;
           }
         }
-        else {
-          lastCmd[0] = token;
-          memset(lastCmd + 1, '\0', CMD_LEN - 1);
-        }
+      }
+      else {
+        lastCmd[0] = token;
+        memset(lastCmd + 1, '\0', CMD_LEN - 1);
       }
     }
 
