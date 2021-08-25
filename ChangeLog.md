@@ -1,6 +1,9 @@
 
 # Change Log
 
+## Aug 25, 2021
+* Added an 'M' token to move multiple indexed joints to angles (ASCII format entered in the serial monitor) simultaneously;
+* Re-arranged the IR key map for the new customized IR panel.
 
 ## Jun 29, 2021
 * OpenCat.ino will print out the model name (Bittle/Nybble) at booting up.

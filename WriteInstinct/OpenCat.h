@@ -157,6 +157,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define T_SKILL     'k'
 #define T_LISTED    'l'
 #define T_MOVE      'm'
+#define T_SIMULTANEOUS_MOVE 'M'
 #define T_MELODY    'o'
 #define T_PAUSE     'p'
 #define T_RAMP      'r'
@@ -183,20 +184,20 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define K32 "wk"      //walk
 
 #define K40 "tr"      //trot
-#ifdef NYBBLE
-#define K41 "lu"      //look up
-#define K42 "buttUp"    //butt up
-#else //BITTLE
-#define K41 "ck"      //check around
-#define K42 "pd"      //play dead
-#endif
+#define K41 "sit"     //sit
+#define K42 "str"     //stretch
 
 #define K50 "hi"      //greeting
 #define K51 "pu"      //push up
 #define K52 "pee"     //standng with three legs
 
-#define K60 "str"     //stretch
-#define K61 "sit"     //sit
+#ifdef NYBBLE
+#define K60 "lu"      //look up
+#define K61 "buttUp"    //butt up
+#else //BITTLE
+#define K60 "ck"      //check around
+#define K61 "pd"      //play dead
+#endif
 #define K62 "zero"    //zero position
 
 

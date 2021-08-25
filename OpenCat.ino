@@ -499,8 +499,8 @@ void loop() {
           }
 
         // this block handles array like arguments
-        case T_INDEXED: //indexed joint motions: joint0, angle0, joint1, angle1, ...
-        case T_LISTED: //list of all 16 joint: angle0, angle2,... angle15
+        case T_INDEXED: //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
+        case T_LISTED: //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
           //case T_MELODY: //for melody
           {
             String inBuffer = Serial.readStringUntil('~');
@@ -540,12 +540,17 @@ void loop() {
             break;
           }
         case T_CALIBRATE: //calibration
-        case T_MOVE: //move jointIndex to angle
+        case T_MOVE: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor) 
+        case T_SIMULTANEOUS_MOVE: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor) 
         case T_MEOW: //meow (repeat, increament)
         case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
           {
+            char *simultaneousMoveInBinary = new char [DOF];
+            for (int i = 0; i < DOF; i += 1) {
+              simultaneousMoveInBinary[i] = currentAng[i];
+            }
             String inBuffer = Serial.readStringUntil('\n');
-            char* temp = new char[30];
+            char* temp = new char[64];
             strcpy(temp, inBuffer.c_str());
             char *pch;
             pch = strtok (temp, " ,");
@@ -559,6 +564,8 @@ void loop() {
                 pch = strtok (NULL, " ,\t");
                 inLen++;
               }
+              simultaneousMoveInBinary[target[0]] = target[1];
+
               PT(token);
               printList(target, 2);
               float angleInterval = 0.2;
@@ -606,6 +613,9 @@ void loop() {
 
               delay(50);
             } while (pch != NULL);
+            if (token == T_SIMULTANEOUS_MOVE) 
+                transform(simultaneousMoveInBinary, 1, 6);
+            delete []simultaneousMoveInBinary;
             delete []pch;
             delete []temp;
             break;
