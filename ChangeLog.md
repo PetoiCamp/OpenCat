@@ -1,5 +1,9 @@
-
 # Change Log
+
+
+## Aug 31, 2021
+* Moved the device's model info (Nybble/Bittle) to the top of booting printouts.
+* Added a shorter encoding for the IR remote to save flash by about 178 Bytes.
 
 ## Aug 25, 2021
 * Added an 'M' token to move multiple indexed joints to angles (ASCII format entered in the serial monitor) simultaneously;

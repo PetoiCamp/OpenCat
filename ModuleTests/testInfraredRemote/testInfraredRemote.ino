@@ -25,6 +25,10 @@
   SOFTWARE.
 */
 
+#define SHORT_ENCODING// activating this line will use a shorter encoding of the HEX values
+// the original value is formatted as address  code complement
+//                                   2Bytes  1Byte   1Byte
+
 #include "IRremote.h"
 
 int receiver = 4; // Signal Pin of IR receiver to Arduino Pin 4
@@ -58,11 +62,9 @@ void translateIR() // takes action based on IR code received
 // describing Remote IR codes
 
 {
-
+#ifndef SHORT_ENCODING
   switch (results.value)
-
   {
-
     case 0xFF629D: Serial.println(" FORWARD"); break;
     case 0xFF22DD: Serial.println(" LEFT");    break;
     case 0xFF02FD: Serial.println(" -OK-");    break;
@@ -81,7 +83,31 @@ void translateIR() // takes action based on IR code received
     case 0xFF4AB5: Serial.println(" 0");    break;
     case 0xFF52AD: Serial.println(" #");    break;
     case 0xFFFFFFFF: Serial.println(" REPEAT"); break;
-
+#else
+  uint8_t trimmed = (results.value >> 8);
+  //  Serial.println(results.value, HEX);
+  //  Serial.println(cut, HEX);
+  switch (trimmed)
+  {
+    case 0x62: Serial.println(" FORWARD"); break;
+    case 0x22: Serial.println(" LEFT");    break;
+    case 0x02: Serial.println(" -OK-");    break;
+    case 0xC2: Serial.println(" RIGHT");   break;
+    case 0xA8: Serial.println(" REVERSE"); break;
+    case 0x68: Serial.println(" 1");    break;
+    case 0x98: Serial.println(" 2");    break;
+    case 0xB0: Serial.println(" 3");    break;
+    case 0x30: Serial.println(" 4");    break;
+    case 0x18: Serial.println(" 5");    break;
+    case 0x7A: Serial.println(" 6");    break;
+    case 0x10: Serial.println(" 7");    break;
+    case 0x38: Serial.println(" 8");    break;
+    case 0x5A: Serial.println(" 9");    break;
+    case 0x42: Serial.println(" *");    break;
+    case 0x4A: Serial.println(" 0");    break;
+    case 0x52: Serial.println(" #");    break;
+    case 0xFF: Serial.println(" REPEAT"); break;
+#endif
     default:
       Serial.print("other button");
 

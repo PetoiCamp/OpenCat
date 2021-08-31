@@ -71,6 +71,10 @@ void dmpDataReady() {
 
 // https://brainy-bits.com/blogs/tutorials/ir-remote-arduino
 #include <IRremote.h>
+#define SHORT_ENCODING // activating this line will use a shorter encoding of the HEX values
+// the original value is formatted as address  code complement
+//                                   2Bytes  1Byte   1Byte
+// it will save 178 Bytes for the final compiled code
 /*-----( Declare objects )-----*/
 IRrecv irrecv(IR_RECEIVER);     // create instance of 'irrecv'
 decode_results results;      // create instance of 'decode_results'
@@ -78,6 +82,7 @@ decode_results results;      // create instance of 'decode_results'
 String translateIR() // takes action based on IR code received
 // describing Remote IR codes.
 {
+#ifndef SHORT_ENCODING
   switch (results.value) {
     //IR signal    key on IR remote           //key mapping
     case 0xFFA25D: /*PTLF(" CH-");   */       return (F(K00));
@@ -109,7 +114,40 @@ String translateIR() // takes action based on IR code received
     case 0xFF52AD: /*PTLF(" 9");  */          return (F(K62));
 
     case 0xFFFFFFFF: return (""); //Serial.println(" REPEAT");
+#else
+  uint8_t trimmed = (results.value >> 8);
+  switch (trimmed) {
+    //IR signal    key on IR remote           //key mapping
+    case 0xA2: /*PTLF(" CH-");   */       return (F(K00));
+    case 0x62: /*PTLF(" CH");  */         return (F(K01));
+    case 0xE2: /*PTLF(" CH+"); */         return (F(K02));
 
+    case 0x22: /*PTLF(" |<<"); */         return (F(K10));
+    case 0x02: /*PTLF(" >>|"); */         return (F(K11));
+    case 0xC2: /*PTLF(" >||"); */         return (F(K12));
+
+    case 0xE0: /*PTLF(" -");   */         return (F(K20));
+    case 0xA8: /*PTLF(" +");  */          return (F(K21));
+    case 0x90: /*PTLF(" EQ"); */          return (F(K22));
+
+    case 0x68: /*PTLF(" 0");  */          return (F(K30));
+    case 0x98: /*PTLF(" 100+"); */        return (F(K31));
+    case 0xB0: /*PTLF(" 200+"); */        return (F(K32));
+
+    case 0x30: /*PTLF(" 1");  */          return (F(K40));
+    case 0x18: /*PTLF(" 2");  */          return (F(K41));
+    case 0x7A: /*PTLF(" 3");  */          return (F(K42));
+
+    case 0x10: /*PTLF(" 4");  */          return (F(K50));
+    case 0x38: /*PTLF(" 5");  */          return (F(K51));
+    case 0x5A: /*PTLF(" 6");  */          return (F(K52));
+
+    case 0x42: /*PTLF(" 7");  */          return (F(K60));
+    case 0x4A: /*PTLF(" 8");  */          return (F(K61));
+    case 0x52: /*PTLF(" 9");  */          return (F(K62));
+
+    case 0xFF: return (""); //Serial.println(" REPEAT");
+#endif
     default: {
         //Serial.println(results.value, HEX);
       }
@@ -282,6 +320,11 @@ void setup() {
   while (Serial.available() && Serial.read()); // empty buffer
   delay(100);
   PTLF("\n* Start *");
+#ifdef BITTLE
+  PTLF("Bittle");
+#elif defined NYBBLE
+  PTLF("Nybble");
+#endif
   PTLF("Initialize I2C");
   PTLF("Connect MPU6050");
   mpu.initialize();
@@ -381,11 +424,6 @@ void setup() {
   soundLightSensorQ = sensorConnectedQ(READING_COUNT);//test if the Petoi Sound&Light sensor is connected
   lightLag = analogRead(LIGHT);
   meow();
-#ifdef BITTLE
-  PTLF("Bittle");
-#elif defined NYBBLE
-  PTLF("Nybble");
-#endif
 }
 
 void loop() {
@@ -540,8 +578,8 @@ void loop() {
             break;
           }
         case T_CALIBRATE: //calibration
-        case T_MOVE: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor) 
-        case T_SIMULTANEOUS_MOVE: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor) 
+        case T_MOVE: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
+        case T_SIMULTANEOUS_MOVE: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
         case T_MEOW: //meow (repeat, increament)
         case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
           {
@@ -613,8 +651,8 @@ void loop() {
 
               delay(50);
             } while (pch != NULL);
-            if (token == T_SIMULTANEOUS_MOVE) 
-                transform(simultaneousMoveInBinary, 1, 6);
+            if (token == T_SIMULTANEOUS_MOVE)
+              transform(simultaneousMoveInBinary, 1, 6);
             delete []simultaneousMoveInBinary;
             delete []pch;
             delete []temp;
