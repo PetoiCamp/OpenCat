@@ -1,5 +1,8 @@
 # Change Log
 
+## Sep 9, 2021
+* Print the list of calibration offsets before the joints' movements to help the App read the values.
+
 
 ## Aug 31, 2021
 * Moved the device's model info (Nybble/Bittle) to the top of booting printouts.
