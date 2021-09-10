@@ -610,7 +610,10 @@ void loop() {
               int angleStep = 0;
               if (token == T_CALIBRATE) {
                 //PTLF("calibrating [ targetIdx, angle ]: ");
-
+                PTL();
+                printRange(DOF);
+                printList(servoCalibs);
+                //yield();
                 if (strcmp(lastCmd, "c")) { //first time entering the calibration function
                   strcpy(lastCmd, "c");
                   motion.loadBySkillName("calib");
@@ -626,10 +629,6 @@ void loop() {
 
                   servoCalibs[target[0]] = target[1];
                 }
-                PTL();
-                printRange(DOF);
-                printList(servoCalibs);
-                //yield();
                 int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + motion.dutyAngles[target[0]]) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
                 pwm.setPWM(pin(target[0]), 0,  duty);
               }
