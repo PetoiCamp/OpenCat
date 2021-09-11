@@ -925,8 +925,7 @@ template <typename T> void printList(T * arr, byte len = DOF) {
     //PT((T)(arr[i]));
     //PT('\t');
   }
-  PT(temp);
-  PTL("\tEoL");
+  PTL(temp);
 }
 template <typename T> void printEEPROMList(int EEaddress, byte len = DOF) {
   for (byte i = 0; i < len; i++) {
