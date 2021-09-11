@@ -4,11 +4,15 @@ OpenCat is the open-source Arduino and Raspberry Pi-based robotic pet framework 
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/walk.gif?raw=true)
 
+![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/run.gif?raw=true)
+
 Inspired by Boston Dynamics' Big Dog, Rongzhong Li started the project in his dorm in 2016. After one year of R&D, he founded Petoi LLC and devoted all his resources to the startup. The goal is to foster collaboration in quadruped robotic research and development of agile and affordable quadruped robot pets, bring STEM concepts to the mass and inspire newcomers (including a lot of kids) to join the robotic AI revolution.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/slope.gif?raw=true)
 
 The project is still a complex system only for skilled makers, yet we want to share our work with the community by mass production and bringing down the hardware and software cost. OpenCat has been deployed on Petoi's palm-sized, realistic lifelike robot cat [Nybble](https://www.indiegogo.com/projects/nybble-world-s-cutest-open-source-robotic-cat) and robot dog [Bittle](https://www.indiegogo.com/projects/bittle-a-palm-sized-robot-dog-for-stem-and-fun). 
+
+![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/stand.gif?raw=true)
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/NybbleBalance.gif?raw=true)
 
