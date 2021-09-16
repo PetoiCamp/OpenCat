@@ -569,10 +569,10 @@ const char stp[] PROGMEM = {
     0,   0,   0,   0,   0,   0,   0,   0,  65, -10,  70, 125,  45,  30, -45,  90,	 8, 0, 0, 0,
     0,   0,   0,   0,   0,   0,   0,   0,  65, -10,  70,  60,  45,  30, -45, -45,	 8, 0, 0, 0,
 };
+  const char* skillNameWithType[]={"bdFI","bkI","bkLI","bkRI","crFI","crLI","crRI","trFI","trLI","trRI","vtI","wkFI","wkLI","wkRI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","bfI","ckI","hiI","pdI","peeI","puI","rcI","stpI",};
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
-  const char* skillNameWithType[]={"bdFI","bkI","bkLI","bkRI","crFI","crLI","crRI","trFI","trLI","trRI","vtI","wkFI","wkLI","wkRI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","bfI","ckI","hiI","pdI","peeI","puI","rcI","stpI",};
   const char* progmemPointer[] = {bdF, bk, bkL, bkR, crF, crL, crR, trF, trL, trR, vt, wkF, wkL, wkR, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, hi, pd, pee, pu, rc, stp, };
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses

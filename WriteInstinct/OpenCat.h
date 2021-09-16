@@ -503,6 +503,68 @@ void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress
   //PTLF("finish copying to I2C EEPROM");
 }
 
+void saveSkillInfoFromProgmemToOnboardEeprom() {
+  int skillAddressShift = 0;
+  unsigned int i2cEepromAddress = 0; //won't hurt if unused
+#ifdef I2C_EEPROM
+  PTLF("\n* Update Instincts? (Y/n)");
+#ifndef AUTORUN
+  while (!Serial.available());
+  char choice = Serial.read();
+  PT((choice == 'Y' || choice == 'y') ? "Will" : "Won't");
+#endif
+  PTL(" overwrite Instincts on external I2C EEPROM!");
+#endif
+  PTLF("Saving skill info...");
+  for (byte s = 0; s < NUM_SKILLS; s++) {//save skill info to on-board EEPROM
+    byte len = strlen(skillNameWithType[s]);
+    EEPROM.update(SKILLS + skillAddressShift++, len - 1); //the last char in name denotes skill type, I(nstinct) on external eeprom, N(ewbility) on progmem
+    PT(skillNameWithType[s][len - 1] == 'I' ? "I nstinct:\t" : "N ewbility:\t");
+    for (byte l = 0; l < len; l++) {
+      PT(skillNameWithType[s][l]);
+      EEPROM.update(SKILLS + skillAddressShift++, skillNameWithType[s][l]);
+    }
+    PTL();
+    //PTL("Current EEPROM address is " + String(SKILLS + skillAddressShift));
+#ifdef I2C_EEPROM
+    if (!EEPROMOverflow)
+      if (skillNameWithType[s][len - 1] == 'I'
+#ifndef AUTORUN
+          && (choice == 'Y' || choice == 'y')
+#endif
+         ) { //  if there's instinct and there's i2c eeprom, and user decide to update.
+        // save the data array to i2c eeprom. its address will be saved to onboard eeprom
+        EEPROMWriteInt(SKILLS + skillAddressShift, i2cEepromAddress);
+        copyDataFromPgmToI2cEeprom(i2cEepromAddress,  (unsigned int) progmemPointer[s]);
+      }
+#endif
+    skillAddressShift += 2; // one int (2 bytes) for address
+  }
+  PTLF("  ***");
+  PTLF("    On-chip EEPROM has 1024 bytes.");
+  PTF("\tInstinctive dictionary used ");
+  PT(SKILLS + skillAddressShift);
+  PT(" bytes (");
+  PT(float(100) * (SKILLS + skillAddressShift) / 1024);
+  PTLF(" %)!");
+#ifdef I2C_EEPROM
+#ifndef AUTORUN
+  if (choice == 'Y' || choice == 'y')
+#endif
+  {
+    PTF("    Maximal storage of external I2C EEPROM is ");
+    PT(EEPROM_SIZE);
+    PTLF(" bytes.");
+    PT("\tInstinctive data used ");
+    PT(i2cEepromAddress);
+    PT(" bytes (");
+    PT(float(100)*i2cEepromAddress / EEPROM_SIZE);
+    PTLF(" %)!");
+  }
+#endif
+  PTLF("  ***");
+  PTLF("Finished!");
+}
 /*
   class Skill {//the whole SkillList routine is replaced by Motion.loadBySkillName()
   public:
@@ -826,6 +888,39 @@ void saveCalib(int8_t *var) {
     EEPROM.update(CALIB + i, var[i]);
     calibratedDuty0[i] = SERVOMIN + PWM_RANGE / 2 + float(middleShift(i) + var[i]) * pulsePerDegree[i] * rotationDirection(i);
   }
+}
+
+void saveMPUcalib(int * var) {
+  for (byte i = 0; i < 6; i++)
+    EEPROM.update(MPUCALIB + i, var[i]);
+}
+
+
+void writeConst() {
+  EEPROM.update(MELODY, sizeof(melody));
+  for (byte i = 0; i < sizeof(melody); i++)
+    EEPROM.update(MELODY - 1 - i, melody[i]);
+  PTLF("Reset joint calibration? (Y/n)");
+#ifndef AUTORUN
+  while (!Serial.available());
+  char resetJointCalibrationQ = Serial.read();
+#endif
+  for (byte i = 0; i < DOF; i++) {
+#ifndef AUTORUN
+    if (resetJointCalibrationQ == 'Y' || resetJointCalibrationQ == 'y')
+      EEPROM.update(CALIB + i, calibs[i]);
+#endif
+    EEPROM.update(PIN + i, pins[i]);
+    EEPROM.update(MID_SHIFT + i, middleShifts[i]);
+    EEPROM.update(ROTATION_DIRECTION + i, rotationDirections[i]);
+    EEPROM.update(SERVO_ANGLE_RANGE + i, servoAngleRanges[i]);
+    for (byte para = 0; para < NUM_ADAPT_PARAM; para++) {
+      EEPROM.update(ADAPT_PARAM + i * NUM_ADAPT_PARAM + para, round(adaptiveParameterArray[i][para]));
+    }
+    /*PT(servoCalib(i));
+      PT(',');*/
+  }
+  //PTL();
 }
 
 void calibratedPWM(byte i, float angle, float speedRatio = 0) {

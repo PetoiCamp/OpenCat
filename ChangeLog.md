@@ -1,5 +1,9 @@
 # Change Log
 
+## Sep 16, 2021
+* Move the EEPROM related functions from WriteInstinct.ino to OpenCat.h.
+* Added a "stand" behavior for Nybble so that it can stand up with its hind legs and tail. 
+
 ## Sep 9, 2021
 * Print the list of calibration offsets before the joints' movements to help the App read the values.
 
