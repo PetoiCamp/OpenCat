@@ -70,7 +70,14 @@ void dmpDataReady() {
 }
 
 // https://brainy-bits.com/blogs/tutorials/ir-remote-arduino
-#include <IRremote.h>
+
+#include "src/ir/IRremote.h"
+//The included library is identical to the IRremote library by shirriff, version 2.6.1
+//Source: https://github.com/Arduino-IRremote/Arduino-IRremote
+//Here we include the decoding functions in our folder only to make it more convenient for newbie users
+//All rights belong to the original author and we follow the MIT license. 
+//You no longer need to modify ~/Documents/Arduino/libraries/src/IRremote/IRremote.h as mentioned in our old manual.
+
 #define SHORT_ENCODING // activating this line will use a shorter encoding of the HEX values
 // the original value is formatted as address  code complement
 //                                   2Bytes  1Byte   1Byte
@@ -491,6 +498,8 @@ void loop() {
       PTL(token);
       if (newCmdIdx < 4)
         beep(newCmdIdx * 4);
+      if (token != T_PAUSE) //any key other than pause will resume the robot's movement
+        tStep = 1;
       // this block handles argumentless tokens
       switch (token) {
         //        case T_HELP: {

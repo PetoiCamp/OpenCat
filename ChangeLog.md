@@ -1,5 +1,10 @@
 # Change Log
 
+## Sep 18, 2021
+* Copied the required files of IRremote library to OpenCat/src/ to help new Arduino users to config the environment. 
+* Cancel "pause" of motion if other commands are received. 
+
+
 ## Sep 16, 2021
 * Move the EEPROM related functions from WriteInstinct.ino to OpenCat.h.
 * Added a "stand" behavior for Nybble so that it can stand up with its hind legs and tail. 
