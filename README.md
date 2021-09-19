@@ -35,6 +35,10 @@ In the serial monitor, set **No line ending** and baudrate as **115200** (or **5
 
 More detailed documentation can be found at the [Petoi Doc Center](https://docs.petoi.com).
 
+You can use our mobile app to control the robots as well:
+* [App Store](https://apps.apple.com/us/app/petoi/id1581548095)
+* Android (coming soon)
+
 For updates:
 * star this repository to receive timely notifications on changes.
 * visit www.petoi.com and subscribe to our official newsletters for project announcements. We also host a forum at [petoi.camp](https://www.petoi.com/forum).
