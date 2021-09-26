@@ -138,14 +138,7 @@ void setup() {
   // initialize device
   mpu.initialize();
 
-  // wait for ready
-  while (Serial.available() && Serial.read()); // empty buffer
-  PTLF("\n* Change \"#define NyBoard_V*_*\" in OpenCat.h according to your NyBoard version!");
-  PTLF("\n* OpenCat Writing Constants to EEPROM...");
-  writeConst(); // only run for the first time when writing to the board.
-  beep(30);
-  saveSkillInfoFromProgmemToOnboardEeprom();
-  assignSkillAddressToOnboardEeprom();
+  configureEEPROM();
 
   // servo
   { pwm.begin();

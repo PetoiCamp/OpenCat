@@ -1,5 +1,8 @@
 # Change Log
 
+## Sep 26, 2021
+* Move the codes for EEPROM to function configureEEPROM() in OpenCat.h;
+
 ## Sep 18, 2021
 * Copied the required files of IRremote library to OpenCat/src/ to help new Arduino users to config the environment. 
 * Cancel "pause" of motion if other commands are received. 

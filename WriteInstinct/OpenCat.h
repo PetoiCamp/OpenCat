@@ -923,6 +923,37 @@ void writeConst() {
   //PTL();
 }
 
+int configureEEPROM() {
+  // wait for ready
+  while (Serial.available() && Serial.read()); // empty buffer
+  PTLF("\n* Change \"#define NyBoard_V*_*\" in OpenCat.h according to your NyBoard version!");
+  PTLF("\n* OpenCat Writing Constants to EEPROM...");
+  writeConst(); // only run for the first time when writing to the board.
+  beep(30);
+  saveSkillInfoFromProgmemToOnboardEeprom();
+  assignSkillAddressToOnboardEeprom();
+  return 1;
+}
+
+#ifdef BITTLE
+int8_t expect[] = {57,  43,  60,  47, -18,   7, -17,   7,};
+#elif defined NYBBLE
+int8_t expect[] = {51,  39, -57, -43, -18,   7,  19,  -7,};
+#endif
+int testEEPROM(char* skill) {
+  motion.loadBySkillName(skill);
+  PTL(motion.period);
+  int len = 0;
+  while (len < 8) {
+    if(motion.dutyAngles[len]!=expect[len])
+      return 0;
+    PT(int8_t(motion.dutyAngles[len]));
+    PT('\t');
+    len++;
+  }
+  return 1;
+}
+
 void calibratedPWM(byte i, float angle, float speedRatio = 0) {
   /*float angle = max(-SERVO_ANG_RANGE/2, min(SERVO_ANG_RANGE/2, angle));
     if (i > 3 && i < 8)
