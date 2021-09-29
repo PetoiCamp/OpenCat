@@ -75,7 +75,7 @@ void dmpDataReady() {
 //The included library is identical to the IRremote library by shirriff, version 2.6.1
 //Source: https://github.com/Arduino-IRremote/Arduino-IRremote
 //Here we include the decoding functions in our folder only to make it more convenient for newbie users
-//All rights belong to the original author and we follow the MIT license. 
+//All rights belong to the original author and we follow the MIT license.
 //You no longer need to modify ~/Documents/Arduino/libraries/src/IRremote/IRremote.h as mentioned in our old manual.
 
 #define SHORT_ENCODING // activating this line will use a shorter encoding of the HEX values
@@ -495,7 +495,12 @@ void loop() {
     //...
     //for obstacle avoidance and auto recovery
     if (newCmdIdx) {
-      PTL(token);
+      if (token == T_GYRO && !checkGyro)//if checkGyro is false, the gyro will be turned on
+        PTL("G");
+      else if (token == T_PAUSE && tStep)//if checkGyro is false, the gyro will be turned on
+        PTL("P");
+      else
+        PTL(token);
       if (newCmdIdx < 4)
         beep(newCmdIdx * 4);
       if (token != T_PAUSE) //any key other than pause will resume the robot's movement

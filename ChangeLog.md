@@ -1,5 +1,13 @@
 # Change Log
 
+## Sep 29, 2021
+* Print the robot's state (paused and gyro) when "g" and "p" is entered:
+
+| State  | True  | False |
+|:----------|:----------|:----------|
+| Pause    | P (paused)    | p (unpaused)    |
+| Gyro   | G (on)    | g (off)   |
+
 ## Sep 26, 2021
 * Move the codes for EEPROM to function configureEEPROM() in OpenCat.h;
 
