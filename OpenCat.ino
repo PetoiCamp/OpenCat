@@ -5,8 +5,8 @@
    Jan.3rd, 2021
    Copyright (c) 2021 Petoi LLC.
 
-   This sketch may also includes others' codes under MIT or other open source liscence.
-   Check those liscences in corresponding module test folders.
+   This sketch may also include others' codes under MIT or other open-source licenses.
+   Check those licenses in corresponding module test folders.
    Feel free to contact us if you find any missing references.
 
    The MIT License
@@ -74,8 +74,8 @@ void dmpDataReady() {
 #include "src/ir/IRremote.h"
 //The included library is identical to the IRremote library by shirriff, version 2.6.1
 //Source: https://github.com/Arduino-IRremote/Arduino-IRremote
-//Here we include the decoding functions in our folder only to make it more convenient for newbie users
-//All rights belong to the original author and we follow the MIT license.
+//Here, we include the decoding functions in our folder only to make it more convenient for newbie users
+//All rights belong to the original author, and we follow the MIT license.
 //You no longer need to modify ~/Documents/Arduino/libraries/src/IRremote/IRremote.h as mentioned in our old manual.
 
 #define SHORT_ENCODING // activating this line will use a shorter encoding of the HEX values
@@ -594,7 +594,7 @@ void loop() {
         case T_CALIBRATE: //calibration
         case T_MOVE: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
         case T_SIMULTANEOUS_MOVE: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
-        case T_MEOW: //meow (repeat, increament)
+        case T_MEOW: //meow (repeat, increment)
         case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
           {
             char *simultaneousMoveInBinary = new char [DOF];

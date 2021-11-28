@@ -2,16 +2,16 @@
     Skill class holds only the lookup information of joint angles.
     One frame of joint angles defines a static posture, while a series of frames defines a periodic motion, usually a gait.
     Skills are instantiated as either:
-      instinct  (trained by Rongzhong Li, saved in external i2c EERPOM) or
+      instinct  (trained by Rongzhong Li, saved in external i2c EEPROM) or
       newbility (taught by other users, saved in PROGMEM)
     A well-tuned (finalized) newbility can also be saved in external i2c EEPROM. Remember that EEPROM has very limited (1,000,000) write cycles!
 
-    SkillList (inherit from QList class) holds a mixture of instincts and newbilities.
-    It also provides a dict(key) function to return the pointer to the skill.
-    Initialization information(individual skill name, address) for SkillList is stored in on-board EEPROM
+    SkillList (inherited from QList class) holds a mixture of instincts and newbilities.
+    It also provides a dict (key) function to return the pointer to the skill.
+    Initialization information(individual skill name, address) for SkillList is stored in onboard EEPROM
 
-    Behavior list (inherit from QList class) holds a time dependent sequence of multiple skills, triggered by certain perceptions.
-    It defines the order, speed, repetition and interval of skills。
+    Behavior list (inherit from QList class) holds a time-dependent sequence of multiple skills triggered by certain perceptions.
+    It defines the order, speed, repetition, and interval of skills。
     (Behavior list is yet to be implemented)
 
     Motion class uses the lookup information of a Skill to construct a Motion object that holds the actual angle array.
@@ -27,12 +27,12 @@
                               v
                            motion that holds actual joint angle array in SRAM
 
-    Behavior list: skill3(speed, repetition and interval), skill1(speed, repetition and interval), ...
+    Behavior list: skill3(speed, repetition, and interval), skill1(speed, repetition, and interval), ...
 
     **
     Updates: One Skill object in the SkillList takes around 20 bytes in SRAM. It takes 200+ bytes for 15+ skills.
-    On a tiny atmega328 chip with only 2KB SRAM, I'm implementing the Skills and SkillList in the on-board EEPROM。
-    Now the skill list starts from on-board EEPROM address SKILLS.
+    On a tiny atmega328 chip with only 2KB SRAM, I'm implementing the Skills and SkillList in the onboard EEPROM。
+    Now the skill list starts from onboard EEPROM address SKILLS.
     Format:
     1 byte skill_1 nameLength + char string name1 + 1 char skillType1 + 1 int address1,
     1 byte skill_2 nameLength + char string name2 + 1 char skillType2 + 1 int address2,
@@ -323,7 +323,7 @@ byte right[] = {
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
 #define INITIAL_SKILL_DATA_ADDRESS 0 //the actual data is stored on the I2C EEPROM. 
-//the first 1000 bytes are reserved for transferring
+//The first 1000 bytes are reserved for transferring
 //the above constants from onboard EEPROM to I2C EEPROM
 
 //servo constants
@@ -346,7 +346,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 // you can also call it with a different address you want
 //Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x41);
 
-// Depending on your servo make, the pulse width min and max may vary, you
+// Depending on your servo make, the pulse width min and max may vary; you
 // want these to be as small/large as possible without hitting the hard stop
 // for max range. You'll have to tweak them as necessary to match the servos you
 // have!
@@ -434,7 +434,7 @@ unsigned long usedTime = 0;
 
 //--------------------
 
-//This function will write a 2 byte integer to the eeprom at the specified address and address + 1
+//This function will write a 2-byte integer to the EEPROM at the specified address and address + 1
 void EEPROMWriteInt(int p_address, int p_value)
 {
   byte lowByte = ((p_value >> 0) & 0xFF);
@@ -443,7 +443,7 @@ void EEPROMWriteInt(int p_address, int p_value)
   EEPROM.update(p_address + 1, highByte);
 }
 
-//This function will read a 2 byte integer from the eeprom at the specified address and address + 1
+//This function will read a 2-byte integer from the EEPROM at the specified address and address + 1
 int EEPROMReadInt(int p_address)
 {
   byte lowByte = EEPROM.read(p_address);
@@ -451,8 +451,8 @@ int EEPROMReadInt(int p_address)
   return ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
 }
 
-#define WIRE_BUFFER 30 //Arduino wire allows 32 byte buffer, with 2 byte for address.
-#define WIRE_LIMIT 16 //That leaves 30 bytes for data. use 16 to balance each writes
+#define WIRE_BUFFER 30 //Arduino wire allows a 32-byte buffer, with 2 bytes for address.
+#define WIRE_LIMIT 16 //That leaves 30 bytes for data. Use 16 to balance each writes
 #define PAGE_LIMIT 32 //AT24C32D 32-byte Page Write Mode. Partial Page Writes Allowed
 #define EEPROM_SIZE (65536/8)
 
