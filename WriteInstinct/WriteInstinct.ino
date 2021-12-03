@@ -2,8 +2,8 @@
    Instincts trained by Rongzhong
    Save calibration data and constants to EEPROM
 
-   This sketch may also includes others' codes under MIT or other open source liscence.
-   Check those liscences in corresponding module test folders.
+   This sketch may also include others' codes under MIT or other open-source licenses.
+   Check those licenses in corresponding module test folders.
    Feel free to contact us if you find any missing references.
 
    Rongzhong Li
@@ -45,7 +45,7 @@
 // Based on the I2Cdev library and previous work by Jeff Rowberg <jeff@rowberg.net>
 // Updates (of the library) should (hopefully) always be available at https://github.com/jrowberg/i2cdevlib
 
-// These offsets were meant to calibrate MPU6050's internal DMP, but can be also useful for reading sensors.
+// These offsets were meant to calibrate MPU6050's internal DMP but can also be useful for reading sensors.
 // The effect of temperature has not been taken into account so I can't promise that it will work if you
 // calibrate indoors and then use it outdoors. Best is to calibrate and use at the same room temperature.
 
