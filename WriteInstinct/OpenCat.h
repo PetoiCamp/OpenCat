@@ -192,7 +192,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define K52 "pee"     //standng with three legs
 
 #ifdef NYBBLE
-#define K60 "lu"      //look up
+#define K60 "stand"//"lu"      //look up
 #define K61 "buttUp"    //butt up
 #else //BITTLE
 #define K60 "ck"      //check around

@@ -1,5 +1,9 @@
 # Change Log
 
+## Dec 3, 2021
+* Modified the "hi" behavior of Nybble so its tail will not push Nybble over;
+* Replaced the "look up" behavior with "stand". Make sure you hold Nybble when first trying it. 
+
 ## Nov 28, 2021
 * Add the march gait that only works well with gyro off; 
 * Fix many typos with the help of Grammarly.
