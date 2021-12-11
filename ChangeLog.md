@@ -1,7 +1,7 @@
 # Change Log
 
 ## Dec 11, 2021
-* Fix bug of "wrong skills" messages after g, p
+* Fix bug of "wrong key!" messages after g, p
 
 ## Dec 3, 2021
 * Modified the "hi" behavior of Nybble so its tail will not push Nybble over;
