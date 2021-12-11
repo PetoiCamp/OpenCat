@@ -681,8 +681,6 @@ void loop() {
         //            skillByName("balance");
         //            break;
         //          }
-
-
         default: if (Serial.available() > 0) {
             String inBuffer = Serial.readStringUntil('\n');
             strcpy(newCmd, inBuffer.c_str());
@@ -699,8 +697,8 @@ void loop() {
         //      PT("\n");
         if (token == T_UNDEFINED) {}; //some words for undefined behaviors
 
-        if (token == T_SKILL) { //validating key
-
+        if (token == T_SKILL&&strcmp(newCmd,"g")&&strcmp(newCmd,"p")) { //validating key
+        //without the "g" and "p" conditions, the program will try to load "g" or "p" as skillname
           motion.loadBySkillName(newCmd);
 
           char lr = newCmd[strlen(newCmd) - 1];
