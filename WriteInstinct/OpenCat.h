@@ -2,16 +2,16 @@
     Skill class holds only the lookup information of joint angles.
     One frame of joint angles defines a static posture, while a series of frames defines a periodic motion, usually a gait.
     Skills are instantiated as either:
-      instinct  (trained by Rongzhong Li, saved in external i2c EERPOM) or
+      instinct  (trained by Rongzhong Li, saved in external i2c EEPROM) or
       newbility (taught by other users, saved in PROGMEM)
     A well-tuned (finalized) newbility can also be saved in external i2c EEPROM. Remember that EEPROM has very limited (1,000,000) write cycles!
 
-    SkillList (inherit from QList class) holds a mixture of instincts and newbilities.
-    It also provides a dict(key) function to return the pointer to the skill.
-    Initialization information(individual skill name, address) for SkillList is stored in on-board EEPROM
+    SkillList (inherited from QList class) holds a mixture of instincts and newbilities.
+    It also provides a dict (key) function to return the pointer to the skill.
+    Initialization information(individual skill name, address) for SkillList is stored in onboard EEPROM
 
-    Behavior list (inherit from QList class) holds a time dependent sequence of multiple skills, triggered by certain perceptions.
-    It defines the order, speed, repetition and interval of skills。
+    Behavior list (inherit from QList class) holds a time-dependent sequence of multiple skills triggered by certain perceptions.
+    It defines the order, speed, repetition, and interval of skills。
     (Behavior list is yet to be implemented)
 
     Motion class uses the lookup information of a Skill to construct a Motion object that holds the actual angle array.
@@ -27,12 +27,12 @@
                               v
                            motion that holds actual joint angle array in SRAM
 
-    Behavior list: skill3(speed, repetition and interval), skill1(speed, repetition and interval), ...
+    Behavior list: skill3(speed, repetition, and interval), skill1(speed, repetition, and interval), ...
 
     **
     Updates: One Skill object in the SkillList takes around 20 bytes in SRAM. It takes 200+ bytes for 15+ skills.
-    On a tiny atmega328 chip with only 2KB SRAM, I'm implementing the Skills and SkillList in the on-board EEPROM。
-    Now the skill list starts from on-board EEPROM address SKILLS.
+    On a tiny atmega328 chip with only 2KB SRAM, I'm implementing the Skills and SkillList in the onboard EEPROM。
+    Now the skill list starts from onboard EEPROM address SKILLS.
     Format:
     1 byte skill_1 nameLength + char string name1 + 1 char skillType1 + 1 int address1,
     1 byte skill_2 nameLength + char string name2 + 1 char skillType2 + 1 int address2,
@@ -157,6 +157,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define T_SKILL     'k'
 #define T_LISTED    'l'
 #define T_MOVE      'm'
+#define T_SIMULTANEOUS_MOVE 'M'
 #define T_MELODY    'o'
 #define T_PAUSE     'p'
 #define T_RAMP      'r'
@@ -183,20 +184,20 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define K32 "wk"      //walk
 
 #define K40 "tr"      //trot
-#ifdef NYBBLE
-#define K41 "lu"      //look up
-#define K42 "buttUp"    //butt up
-#else //BITTLE
-#define K41 "ck"      //check around
-#define K42 "pd"      //play dead
-#endif
+#define K41 "sit"     //sit
+#define K42 "str"     //stretch
 
 #define K50 "hi"      //greeting
 #define K51 "pu"      //push up
 #define K52 "pee"     //standng with three legs
 
-#define K60 "str"     //stretch
-#define K61 "sit"     //sit
+#ifdef NYBBLE
+#define K60 "stand"//"lu"      //look up
+#define K61 "buttUp"    //butt up
+#else //BITTLE
+#define K60 "ck"      //check around
+#define K61 "pd"      //play dead
+#endif
 #define K62 "zero"    //zero position
 
 
@@ -322,7 +323,7 @@ byte right[] = {
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
 #define INITIAL_SKILL_DATA_ADDRESS 0 //the actual data is stored on the I2C EEPROM. 
-//the first 1000 bytes are reserved for transferring
+//The first 1000 bytes are reserved for transferring
 //the above constants from onboard EEPROM to I2C EEPROM
 
 //servo constants
@@ -345,7 +346,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 // you can also call it with a different address you want
 //Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver(0x41);
 
-// Depending on your servo make, the pulse width min and max may vary, you
+// Depending on your servo make, the pulse width min and max may vary; you
 // want these to be as small/large as possible without hitting the hard stop
 // for max range. You'll have to tweak them as necessary to match the servos you
 // have!
@@ -433,7 +434,7 @@ unsigned long usedTime = 0;
 
 //--------------------
 
-//This function will write a 2 byte integer to the eeprom at the specified address and address + 1
+//This function will write a 2-byte integer to the EEPROM at the specified address and address + 1
 void EEPROMWriteInt(int p_address, int p_value)
 {
   byte lowByte = ((p_value >> 0) & 0xFF);
@@ -442,7 +443,7 @@ void EEPROMWriteInt(int p_address, int p_value)
   EEPROM.update(p_address + 1, highByte);
 }
 
-//This function will read a 2 byte integer from the eeprom at the specified address and address + 1
+//This function will read a 2-byte integer from the EEPROM at the specified address and address + 1
 int EEPROMReadInt(int p_address)
 {
   byte lowByte = EEPROM.read(p_address);
@@ -450,8 +451,8 @@ int EEPROMReadInt(int p_address)
   return ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
 }
 
-#define WIRE_BUFFER 30 //Arduino wire allows 32 byte buffer, with 2 byte for address.
-#define WIRE_LIMIT 16 //That leaves 30 bytes for data. use 16 to balance each writes
+#define WIRE_BUFFER 30 //Arduino wire allows a 32-byte buffer, with 2 bytes for address.
+#define WIRE_LIMIT 16 //That leaves 30 bytes for data. Use 16 to balance each writes
 #define PAGE_LIMIT 32 //AT24C32D 32-byte Page Write Mode. Partial Page Writes Allowed
 #define EEPROM_SIZE (65536/8)
 
@@ -502,6 +503,68 @@ void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress
   //PTLF("finish copying to I2C EEPROM");
 }
 
+void saveSkillInfoFromProgmemToOnboardEeprom() {
+  int skillAddressShift = 0;
+  unsigned int i2cEepromAddress = 0; //won't hurt if unused
+#ifdef I2C_EEPROM
+  PTLF("\n* Update Instincts? (Y/n)");
+#ifndef AUTORUN
+  while (!Serial.available());
+  char choice = Serial.read();
+  PT((choice == 'Y' || choice == 'y') ? "Will" : "Won't");
+#endif
+  PTL(" overwrite Instincts on external I2C EEPROM!");
+#endif
+  PTLF("Saving skill info...");
+  for (byte s = 0; s < NUM_SKILLS; s++) {//save skill info to on-board EEPROM
+    byte len = strlen(skillNameWithType[s]);
+    EEPROM.update(SKILLS + skillAddressShift++, len - 1); //the last char in name denotes skill type, I(nstinct) on external eeprom, N(ewbility) on progmem
+    PT(skillNameWithType[s][len - 1] == 'I' ? "I nstinct:\t" : "N ewbility:\t");
+    for (byte l = 0; l < len; l++) {
+      PT(skillNameWithType[s][l]);
+      EEPROM.update(SKILLS + skillAddressShift++, skillNameWithType[s][l]);
+    }
+    PTL();
+    //PTL("Current EEPROM address is " + String(SKILLS + skillAddressShift));
+#ifdef I2C_EEPROM
+    if (!EEPROMOverflow)
+      if (skillNameWithType[s][len - 1] == 'I'
+#ifndef AUTORUN
+          && (choice == 'Y' || choice == 'y')
+#endif
+         ) { //  if there's instinct and there's i2c eeprom, and user decide to update.
+        // save the data array to i2c eeprom. its address will be saved to onboard eeprom
+        EEPROMWriteInt(SKILLS + skillAddressShift, i2cEepromAddress);
+        copyDataFromPgmToI2cEeprom(i2cEepromAddress,  (unsigned int) progmemPointer[s]);
+      }
+#endif
+    skillAddressShift += 2; // one int (2 bytes) for address
+  }
+  PTLF("  ***");
+  PTLF("    On-chip EEPROM has 1024 bytes.");
+  PTF("\tInstinctive dictionary used ");
+  PT(SKILLS + skillAddressShift);
+  PT(" bytes (");
+  PT(float(100) * (SKILLS + skillAddressShift) / 1024);
+  PTLF(" %)!");
+#ifdef I2C_EEPROM
+#ifndef AUTORUN
+  if (choice == 'Y' || choice == 'y')
+#endif
+  {
+    PTF("    Maximal storage of external I2C EEPROM is ");
+    PT(EEPROM_SIZE);
+    PTLF(" bytes.");
+    PT("\tInstinctive data used ");
+    PT(i2cEepromAddress);
+    PT(" bytes (");
+    PT(float(100)*i2cEepromAddress / EEPROM_SIZE);
+    PTLF(" %)!");
+  }
+#endif
+  PTLF("  ***");
+  PTLF("Finished!");
+}
 /*
   class Skill {//the whole SkillList routine is replaced by Motion.loadBySkillName()
   public:
@@ -825,6 +888,70 @@ void saveCalib(int8_t *var) {
     EEPROM.update(CALIB + i, var[i]);
     calibratedDuty0[i] = SERVOMIN + PWM_RANGE / 2 + float(middleShift(i) + var[i]) * pulsePerDegree[i] * rotationDirection(i);
   }
+}
+
+void saveMPUcalib(int * var) {
+  for (byte i = 0; i < 6; i++)
+    EEPROM.update(MPUCALIB + i, var[i]);
+}
+
+
+void writeConst() {
+  EEPROM.update(MELODY, sizeof(melody));
+  for (byte i = 0; i < sizeof(melody); i++)
+    EEPROM.update(MELODY - 1 - i, melody[i]);
+  PTLF("Reset joint calibration? (Y/n)");
+#ifndef AUTORUN
+  while (!Serial.available());
+  char resetJointCalibrationQ = Serial.read();
+#endif
+  for (byte i = 0; i < DOF; i++) {
+#ifndef AUTORUN
+    if (resetJointCalibrationQ == 'Y' || resetJointCalibrationQ == 'y')
+      EEPROM.update(CALIB + i, calibs[i]);
+#endif
+    EEPROM.update(PIN + i, pins[i]);
+    EEPROM.update(MID_SHIFT + i, middleShifts[i]);
+    EEPROM.update(ROTATION_DIRECTION + i, rotationDirections[i]);
+    EEPROM.update(SERVO_ANGLE_RANGE + i, servoAngleRanges[i]);
+    for (byte para = 0; para < NUM_ADAPT_PARAM; para++) {
+      EEPROM.update(ADAPT_PARAM + i * NUM_ADAPT_PARAM + para, round(adaptiveParameterArray[i][para]));
+    }
+    /*PT(servoCalib(i));
+      PT(',');*/
+  }
+  //PTL();
+}
+
+int configureEEPROM() {
+  // wait for ready
+  while (Serial.available() && Serial.read()); // empty buffer
+  PTLF("\n* Change \"#define NyBoard_V*_*\" in OpenCat.h according to your NyBoard version!");
+  PTLF("\n* OpenCat Writing Constants to EEPROM...");
+  writeConst(); // only run for the first time when writing to the board.
+  beep(30);
+  saveSkillInfoFromProgmemToOnboardEeprom();
+  assignSkillAddressToOnboardEeprom();
+  return 1;
+}
+
+#ifdef BITTLE
+int8_t expect[] = {57,  43,  60,  47, -18,   7, -17,   7,};
+#elif defined NYBBLE
+int8_t expect[] = {51,  39, -57, -43, -18,   7,  19,  -7,};
+#endif
+int testEEPROM(char* skill) {
+  motion.loadBySkillName(skill);
+  PTL(motion.period);
+  int len = 0;
+  while (len < 8) {
+    if(motion.dutyAngles[len]!=expect[len])
+      return 0;
+    PT(int8_t(motion.dutyAngles[len]));
+    PT('\t');
+    len++;
+  }
+  return 1;
 }
 
 void calibratedPWM(byte i, float angle, float speedRatio = 0) {

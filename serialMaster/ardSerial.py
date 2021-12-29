@@ -5,6 +5,7 @@ import sys
 import time
 import math
 import numpy as np
+
 import logging
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
@@ -49,6 +50,7 @@ def close_serial(ser):
 def wrapper(task):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
     if len(task) == 2:
+
         serialWriteByte([task[0]])
     elif isinstance(task[1][0], int):
         serialWriteNumToByte(task[0], task[1])

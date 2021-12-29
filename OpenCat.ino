@@ -5,8 +5,8 @@
    Jan.3rd, 2021
    Copyright (c) 2021 Petoi LLC.
 
-   This sketch may also includes others' codes under MIT or other open source liscence.
-   Check those liscences in corresponding module test folders.
+   This sketch may also include others' codes under MIT or other open-source licenses.
+   Check those licenses in corresponding module test folders.
    Feel free to contact us if you find any missing references.
 
    The MIT License
@@ -70,7 +70,18 @@ void dmpDataReady() {
 }
 
 // https://brainy-bits.com/blogs/tutorials/ir-remote-arduino
-#include <IRremote.h>
+
+#include "src/ir/IRremote.h"
+//The included library is identical to the IRremote library by shirriff, version 2.6.1
+//Source: https://github.com/Arduino-IRremote/Arduino-IRremote
+//Here, we include the decoding functions in our folder only to make it more convenient for newbie users
+//All rights belong to the original author, and we follow the MIT license.
+//You no longer need to modify ~/Documents/Arduino/libraries/src/IRremote/IRremote.h as mentioned in our old manual.
+
+#define SHORT_ENCODING // activating this line will use a shorter encoding of the HEX values
+// the original value is formatted as address  code complement
+//                                   2Bytes  1Byte   1Byte
+// it will save 178 Bytes for the final compiled code
 /*-----( Declare objects )-----*/
 IRrecv irrecv(IR_RECEIVER);     // create instance of 'irrecv'
 decode_results results;      // create instance of 'decode_results'
@@ -78,6 +89,7 @@ decode_results results;      // create instance of 'decode_results'
 String translateIR() // takes action based on IR code received
 // describing Remote IR codes.
 {
+#ifndef SHORT_ENCODING
   switch (results.value) {
     //IR signal    key on IR remote           //key mapping
     case 0xFFA25D: /*PTLF(" CH-");   */       return (F(K00));
@@ -109,7 +121,40 @@ String translateIR() // takes action based on IR code received
     case 0xFF52AD: /*PTLF(" 9");  */          return (F(K62));
 
     case 0xFFFFFFFF: return (""); //Serial.println(" REPEAT");
+#else
+  uint8_t trimmed = (results.value >> 8);
+  switch (trimmed) {
+    //IR signal    key on IR remote           //key mapping
+    case 0xA2: /*PTLF(" CH-");   */       return (F(K00));
+    case 0x62: /*PTLF(" CH");  */         return (F(K01));
+    case 0xE2: /*PTLF(" CH+"); */         return (F(K02));
 
+    case 0x22: /*PTLF(" |<<"); */         return (F(K10));
+    case 0x02: /*PTLF(" >>|"); */         return (F(K11));
+    case 0xC2: /*PTLF(" >||"); */         return (F(K12));
+
+    case 0xE0: /*PTLF(" -");   */         return (F(K20));
+    case 0xA8: /*PTLF(" +");  */          return (F(K21));
+    case 0x90: /*PTLF(" EQ"); */          return (F(K22));
+
+    case 0x68: /*PTLF(" 0");  */          return (F(K30));
+    case 0x98: /*PTLF(" 100+"); */        return (F(K31));
+    case 0xB0: /*PTLF(" 200+"); */        return (F(K32));
+
+    case 0x30: /*PTLF(" 1");  */          return (F(K40));
+    case 0x18: /*PTLF(" 2");  */          return (F(K41));
+    case 0x7A: /*PTLF(" 3");  */          return (F(K42));
+
+    case 0x10: /*PTLF(" 4");  */          return (F(K50));
+    case 0x38: /*PTLF(" 5");  */          return (F(K51));
+    case 0x5A: /*PTLF(" 6");  */          return (F(K52));
+
+    case 0x42: /*PTLF(" 7");  */          return (F(K60));
+    case 0x4A: /*PTLF(" 8");  */          return (F(K61));
+    case 0x52: /*PTLF(" 9");  */          return (F(K62));
+
+    case 0xFF: return (""); //Serial.println(" REPEAT");
+#endif
     default: {
         //Serial.println(results.value, HEX);
       }
@@ -282,6 +327,11 @@ void setup() {
   while (Serial.available() && Serial.read()); // empty buffer
   delay(100);
   PTLF("\n* Start *");
+#ifdef BITTLE
+  PTLF("Bittle");
+#elif defined NYBBLE
+  PTLF("Nybble");
+#endif
   PTLF("Initialize I2C");
   PTLF("Connect MPU6050");
   mpu.initialize();
@@ -381,11 +431,6 @@ void setup() {
   soundLightSensorQ = sensorConnectedQ(READING_COUNT);//test if the Petoi Sound&Light sensor is connected
   lightLag = analogRead(LIGHT);
   meow();
-#ifdef BITTLE
-  PTLF("Bittle");
-#elif defined NYBBLE
-  PTLF("Nybble");
-#endif
 }
 
 void loop() {
@@ -403,10 +448,10 @@ void loop() {
   else {
     newCmd[0] = '\0';
     newCmdIdx = 0;
-//    if (soundLightSensorQ && motion.period == 1) {//if the Petoi Sound&Light sensor is connected
-//      //and the robot is not walking (to avoid noise)
-//      newCmdIdx = SoundLightSensorPattern(newCmd);
-//    }
+    if (soundLightSensorQ && motion.period == 1 && token != 'c') { //if the Petoi Sound&Light sensor is connected
+      //and the robot is not walking (to avoid noise)
+      newCmdIdx = SoundLightSensorPattern(newCmd);
+    }
     // input block
     //else if (t == 0) {
     if (irrecv.decode(&results)) {
@@ -450,9 +495,16 @@ void loop() {
     //...
     //for obstacle avoidance and auto recovery
     if (newCmdIdx) {
-      PTL(token);
+      if (token == T_GYRO && !checkGyro)//if checkGyro is false, the gyro will be turned on
+        PTL("G");
+      else if (token == T_PAUSE && tStep)//if checkGyro is false, the gyro will be turned on
+        PTL("P");
+      else
+        PTL(token);
       if (newCmdIdx < 4)
         beep(newCmdIdx * 4);
+      if (token != T_PAUSE) //any key other than pause will resume the robot's movement
+        tStep = 1;
       // this block handles argumentless tokens
       switch (token) {
         //        case T_HELP: {
@@ -499,8 +551,8 @@ void loop() {
           }
 
         // this block handles array like arguments
-        case T_INDEXED: //indexed joint motions: joint0, angle0, joint1, angle1, ...
-        case T_LISTED: //list of all 16 joint: angle0, angle2,... angle15
+        case T_INDEXED: //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
+        case T_LISTED: //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
           //case T_MELODY: //for melody
           {
             String inBuffer = Serial.readStringUntil('~');
@@ -540,12 +592,17 @@ void loop() {
             break;
           }
         case T_CALIBRATE: //calibration
-        case T_MOVE: //move jointIndex to angle
-        case T_MEOW: //meow (repeat, increament)
+        case T_MOVE: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
+        case T_SIMULTANEOUS_MOVE: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
+        case T_MEOW: //meow (repeat, increment)
         case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
           {
+            char *simultaneousMoveInBinary = new char [DOF];
+            for (int i = 0; i < DOF; i += 1) {
+              simultaneousMoveInBinary[i] = currentAng[i];
+            }
             String inBuffer = Serial.readStringUntil('\n');
-            char* temp = new char[30];
+            char* temp = new char[64];
             strcpy(temp, inBuffer.c_str());
             char *pch;
             pch = strtok (temp, " ,");
@@ -559,13 +616,18 @@ void loop() {
                 pch = strtok (NULL, " ,\t");
                 inLen++;
               }
+              simultaneousMoveInBinary[target[0]] = target[1];
+
               PT(token);
               printList(target, 2);
               float angleInterval = 0.2;
               int angleStep = 0;
               if (token == T_CALIBRATE) {
                 //PTLF("calibrating [ targetIdx, angle ]: ");
-
+                PTL();
+                printRange(DOF);
+                printList(servoCalibs);
+                //yield();
                 if (strcmp(lastCmd, "c")) { //first time entering the calibration function
                   strcpy(lastCmd, "c");
                   motion.loadBySkillName("calib");
@@ -581,10 +643,6 @@ void loop() {
 
                   servoCalibs[target[0]] = target[1];
                 }
-                PTL();
-                printRange(DOF);
-                printList(servoCalibs);
-                //yield();
                 int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + motion.dutyAngles[target[0]]) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
                 pwm.setPWM(pin(target[0]), 0,  duty);
               }
@@ -606,6 +664,9 @@ void loop() {
 
               delay(50);
             } while (pch != NULL);
+            if (token == T_SIMULTANEOUS_MOVE)
+              transform(simultaneousMoveInBinary, 1, 6);
+            delete []simultaneousMoveInBinary;
             delete []pch;
             delete []temp;
             break;
@@ -620,8 +681,6 @@ void loop() {
         //            skillByName("balance");
         //            break;
         //          }
-
-
         default: if (Serial.available() > 0) {
             String inBuffer = Serial.readStringUntil('\n');
             strcpy(newCmd, inBuffer.c_str());
@@ -638,8 +697,8 @@ void loop() {
         //      PT("\n");
         if (token == T_UNDEFINED) {}; //some words for undefined behaviors
 
-        if (token == T_SKILL) { //validating key
-
+        if (token == T_SKILL&&strcmp(newCmd,"g")&&strcmp(newCmd,"p")) { //validating key
+        //without the "g" and "p" conditions, the program will try to load "g" or "p" as skillname
           motion.loadBySkillName(newCmd);
 
           char lr = newCmd[strlen(newCmd) - 1];
@@ -722,10 +781,10 @@ void loop() {
             token = T_REST;
           }
         }
-        else {
-          lastCmd[0] = token;
-          memset(lastCmd + 1, '\0', CMD_LEN - 1);
-        }
+      }
+      else {
+        lastCmd[0] = token;
+        memset(lastCmd + 1, '\0', CMD_LEN - 1);
       }
     }
 
