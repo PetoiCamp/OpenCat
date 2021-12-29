@@ -1,15 +1,27 @@
-#!/usr/bin/python
-import serial
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
 import struct
 import sys
 import time
-import math
-import numpy as np
-
 import logging
+from SerialCommunication import *    # module SerialCommunication.py
+
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
-logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+'''
+Level: The level determines the minimum priority level of messages to log. 
+Messages will be logged in order of increasing severity: 
+DEBUG is the least threatening, 
+INFO is also not very threatening, 
+WARNING needs attention, 
+ERROR needs immediate attention, 
+and CRITICAL means “drop everything and find out what’s wrong.” 
+The default starting point is INFO, 
+which means that the logging module will automatically filter out any DEBUG messages.
+'''
+# logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
 
@@ -19,38 +31,9 @@ def encode(in_str, encoding='utf-8'):
     else:
         return in_str.encode(encoding)
 
-
-def get_serial(port='/dev/cu.wchusbserial1430'):
-    return serial.Serial(
-        port=port,
-        baudrate=115200,
-        parity=serial.PARITY_NONE,
-        stopbits=serial.STOPBITS_ONE,
-        bytesize=serial.EIGHTBITS,
-        timeout=1
-    )
-
-
-def open_serial(ser):
-    t = 2
-    if ser.is_open:
-        ser.close()
-    logger.info(f'serial port is opening, please wait for {t} secs')
-    ser.open()
-    time.sleep(t)
-
-
-def close_serial(ser):
-    if ser.is_open:
-        ser.close()
-    logger.info('closing serial port')
-    time.sleep(2)
-
-
 def wrapper(task):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
     if len(task) == 2:
-
         serialWriteByte([task[0]])
     elif isinstance(task[1][0], int):
         serialWriteNumToByte(task[0], task[1])
@@ -72,7 +55,7 @@ def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b i l o 
     elif token == 'c' or token == 'm' or token == 'u' or token == 'b':
         in_str = token + str(var[0]) + " " + str(var[1]) + '\n'
     logger.debug(f"!!!! {in_str}")
-    ser.write(encode(in_str))
+    ser.Send_data(encode(in_str))
 
 
 def serialWriteByte(var=None):
@@ -81,7 +64,7 @@ def serialWriteByte(var=None):
         var = []
     token = var[0][0]
     # print var
-    if (token == 'c' or token == 'm' or token == 'b' or token == 'u') and len(var) >= 2:
+    if (token == 'c' or token == 'm' or token == 'M' or token == 'b' or token == 'u') and len(var) >= 2:
         in_str = ""
         for element in var:
             in_str = in_str + element + " "
@@ -95,47 +78,121 @@ def serialWriteByte(var=None):
     else:
         in_str = token
     logger.debug(f"!!!!!!! {in_str}")
-    ser.write(encode(in_str))
+    ser.Send_data(encode(in_str))
 
 
-# port = '/dev/cu.BittleSPP-3534C8-Port'
-# port = '/dev/ttyS0',  # needed on RaspberryPi
-port = '/dev/cu.wchusbserial1430'  # needed when using Mac USB
+def closeSerialBehavior():
+    try:
+        wrapper(['d', 1])
+        ser.Close_Engine()
+        logger.info("close the serial port.")
+    except Exception as e:
+        ser.Close_Engine()
+        logger.info("close the serial port.")
+        raise e
 
-ser = get_serial(port)
-open_serial(ser)
+
+def flushSeialOutput(counterLimit=300):
+    counter = 0
+    while True:
+        time.sleep(0.01)
+        counter = counter + 1
+        if counter > counterLimit:
+            break
+        if ser.main_engine.in_waiting > 0:
+            x = ser.main_engine.readline()
+            if x != "":
+                logger.debug(f"{x}")
+
+
+# port = '/dev/cu.BittleSPP-3534C8-Port'    # Bluetooth serial port needed when using Mac
+# port = '/dev/cu.wchusbserial1430'    # needed when using Mac
+# port = '/dev/ttyS0'    # needed when using Linux  (RaspberryPi)
+# port = 'COM5'    # needed when using Windows
+
+Communication.Print_Used_Com()
+port = port_list_number
+total = len(port)
+index = 0
+for index in range(total):
+    logger.info(f"port[{index}] is {port[index]} ")
+
+if len(port) > 1:
+    """
+    If there is no response after you input the serial command in the terminal, 
+    you should close the terminal first, 
+    then change the value of "bluetoothPortIndex" in the ardSerial.py (line:128)
+    to connect to another blue tooth serial port, 
+    then reopen the terminal and rerun the script.
+    """
+    bluetoothPortIndex = -1    #0 means connetct to port[0]; -1 means connetct to the last port in the list
+    ser = Communication(port[bluetoothPortIndex], 115200, 0.5)
+    logger.info(f"Connect to blue tooth serial port: {port[bluetoothPortIndex]}.")
+else:
+    usbPortIndex = 0
+    ser = Communication(port[usbPortIndex], 115200, 0.5)
+    logger.info(f"Connect to usb serial port: {port[usbPortIndex]}.")
+
 
 if __name__ == '__main__':
-    counter = 0
     try:
+        flushSeialOutput(500)
+
+        print("If there is no response after you input the serial command in the terminal")
+        print("you should close the terminal first")
+        print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:128)")
+        print("to connect to another blue tooth serial port")
+        print("then reopen the terminal and rerun the script")
+
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
-                wrapper([sys.argv[1], 0])
+                wrapper([sys.argv[1], 1])
+                response = ser.main_engine.read_all()
+                logger.info(f"Response is: {response.decode('utf-8')}")
+                var = sys.argv[1]
+                token = var[0][0]
+                if token == 'k':
+                    if response.decode('utf-8')[0] == 'k':
+                        logger.info("Serial port is connected very well!")
             else:
-                logger.debug(f"{[sys.argv[1][0], sys.argv[1:], 0]}")
-                wrapper([sys.argv[1][0], sys.argv[1:], 0])
-        else:
-            while True:
-                for a in np.arange(0, 2 * math.pi, 0.2):
-                    print(a)
-                    serialWriteByte(["ksit"])
-                    time.sleep(0.04)
+                wrapper([sys.argv[1][0], sys.argv[1:], 1])
+
+        print("You can type 'quit' or 'q' to exit.")
+
+        print("---Start---")
 
         while True:
             time.sleep(0.01)
-            counter = counter + 1
-            if counter > 1000:
-                break
-            # logger.debug(f"number of chars:{str(ser.in_waiting)}")
-            if ser.in_waiting > 0:
-                x = ser.readline()
-                if x != "":
-                    print(x),
+            x = input()
+            if x != "":
+                # print(x)
+                if x == "q" or x == "quit":
+                    break
+                else:
+                    task = x.split()
+                    if len(task) == 1:
+                        wrapper([task, 1])
+                        response = ser.main_engine.read_all()
+                        logger.info(f"Response is: {response.decode('utf-8')}")
+                        token = task[0][0]
+                        if token == 'k':
+                            if response.decode('utf-8')[0] == 'k':
+                                logger.info("Serial port is connected very well!")
+                            else:
+                                logger.info("Serial port is connected failed.")
+                                ser.Close_Engine()
+                                logger.info("close the serial port.")
+                                logger.info("exit")
+                                sys.exit(0)
+                    else:
+                        wrapper([task[0], task[0:], 1])
+                        response = ser.main_engine.read_all()
+                        logger.info(f"Response is: {response.decode('utf-8')}")
+
+        closeSerialBehavior()
+        logger.info("finish!")
 
     except Exception as e:
-        logger.info("exit")
-        wrapper(["d"])
-        close_serial(ser)
-        print("exit")
+        logger.info("Exception")
+        closeSerialBehavior()
         raise e
-
