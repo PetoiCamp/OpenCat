@@ -12,12 +12,12 @@ The script program will automatically identify the serial port number at the ver
 
 Generally, when using a USB adapter to connect to Nybble (or Bittle), there is only one serial port number:
 
-![USB serial port number](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces/-MQ6a951Q6Jn1Zzt5Ajr-887967055/uploads/3w3c9JOXep9ZYXMPNcmP/%E4%B8%B2%E5%8F%A3%E5%88%97%E8%A1%A8.png?alt=media&token=93aec2c6-4b03-4c52-bd81-61ab475de275)
+![USB serial port number](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F-MQ6a951Q6Jn1Zzt5Ajr-887967055%2Fuploads%2F3w3c9JOXep9ZYXMPNcmP%2F%E4%B8%B2%E5%8F%A3%E5%88%97%E8%A1%A8.png?alt=media&token=93aec2c6-4b03-4c52-bd81-61ab475de275)
 
 
 When using the Bluetooth module, there are two serial port numbers:
 
-![Bluetooth serial port number](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces/-MQ6a951Q6Jn1Zzt5Ajr-887967055/uploads/yw1vuUDZpNSUcJ6Uhtdy/%E4%B8%B2%E5%8F%A3%E5%88%97%E8%A1%A802.png?alt=media&token=2f5b1dd8-990b-4d4e-b922-2792746d0acc)
+![Bluetooth serial port number](https://files.gitbook.com/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F-MQ6a951Q6Jn1Zzt5Ajr-887967055%2Fuploads%2Fyw1vuUDZpNSUcJ6Uhtdy%2F%E4%B8%B2%E5%8F%A3%E5%88%97%E8%A1%A802.png?alt=media&token=2f5b1dd8-990b-4d4e-b922-2792746d0acc)
 
 
 Open Terminal (such as Anaconda Prompt), enter the path where the script is located (***\serialMaster), you can use the following command to run the script:
@@ -50,7 +50,7 @@ m 0 -30 0 30    # Command to control Nybble(or Bittle) head to swing left and ri
 The list **testSchedule** in example.py is used to test various serial port commands. Run the following script code to see the execution effect of each serial port command in the list:
 
 for task in testSchedule:
-		wrapper(task)
+	wrapper(task)
 
 You can also refer to the content of the **stepUpSchedule** list (in***\serialMaster\demos\stepup.py), write a list of behaviors according to your actual needs, and realize your creativity.
 
