@@ -10,12 +10,14 @@ import numpy as np
 if __name__ == '__main__':
     try:
         flushSeialOutput(300)
-        print("If there is no response in the terminal")
-        print("you should close the terminal first")
-        print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:129)")
-        print("to connect to another blue tooth serial port")
-        print("then reopen the terminal and rerun the script")
-        print("---Start---")
+        if platform.uname()[1] != 'raspberrypi':
+            print("If there is no response in the terminal")
+            print("you should close the terminal first")
+            print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:129)")
+            print("to connect to another blue tooth serial port")
+            print("then reopen the terminal and rerun the script")
+            print("---Start---")
+
         serialWriteByte(["ksit"])
         time.sleep(2)
         serialWriteByte(['M', '2', '-90', '10', '-80', '11', '-80', '14', '-10', '15', '-10'])

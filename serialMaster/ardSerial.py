@@ -6,6 +6,7 @@ import sys
 import time
 import logging
 from SerialCommunication import *    # module SerialCommunication.py
+import platform
 
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
@@ -107,7 +108,7 @@ def flushSeialOutput(counterLimit=300):
 
 # port = '/dev/cu.BittleSPP-3534C8-Port'    # Bluetooth serial port needed when using Mac
 # port = '/dev/cu.wchusbserial1430'    # needed when using Mac
-# port = '/dev/ttyS0'    # needed when using Linux  (RaspberryPi)
+# port = '/dev/ttyS0'    # needed when plug in RaspberryPi
 # port = 'COM5'    # needed when using Windows
 
 Communication.Print_Used_Com()
@@ -119,30 +120,55 @@ for index in range(total):
 
 if len(port) > 1:
     """
-    If there is no response after you input the serial command in the terminal, 
-    you should close the terminal first, 
+    If there is no response after you input the serial command in the terminal,
+    you should close the terminal first,
     then change the value of "bluetoothPortIndex" in the ardSerial.py (line:128)
-    to connect to another blue tooth serial port, 
+    to connect to another blue tooth serial port,
     then reopen the terminal and rerun the script.
     """
-    bluetoothPortIndex = -1    #0 means connetct to port[0]; -1 means connetct to the last port in the list
-    ser = Communication(port[bluetoothPortIndex], 115200, 0.5)
-    logger.info(f"Connect to blue tooth serial port: {port[bluetoothPortIndex]}.")
+    if platform.uname()[1] == 'raspberrypi':
+        serialPort = '/dev/ttyS0'  # needed when plug in RaspberryPi
+        ser = Communication(serialPort, 115200, 0.5)
+        logger.info(f"Connect to usb serial port: {serialPort}.")
+        serialWriteByte(["d"])
+        time.sleep(0.1)
+        response = ser.main_engine.read_all()
+        logger.info(f"Response is: {response}")
+        if response == b'':
+            ser.Close_Engine()
+            logger.info(f"close the serial port: {serialPort}.")
+            serialPortIndex = 0  # 0 means connect to port[0]; -1 means connect to the last port in the list
+            ser = Communication(port[serialPortIndex], 115200, 0.5)
+            logger.info(f"Connect to serial port: {port[serialPortIndex]}.")
+            print("If there is no response after you input the serial command in the terminal")
+            print("you should close the terminal first")
+            print("then change the value of 'serialPortIndex' in the ardSerial.py (line:140)")
+            print("to connect to another serial port")
+            print("then reopen the terminal and rerun the script")
+    else:
+        bluetoothPortIndex = -1    #0 means connetct to port[0]; -1 means connetct to the last port in the list
+        ser = Communication(port[bluetoothPortIndex], 115200, 0.5)
+        logger.info(f"Connect to blue tooth serial port: {port[bluetoothPortIndex]}.")
 else:
-    usbPortIndex = 0
-    ser = Communication(port[usbPortIndex], 115200, 0.5)
-    logger.info(f"Connect to usb serial port: {port[usbPortIndex]}.")
+    if platform.uname()[1] == 'raspberrypi':
+        serialPort = '/dev/ttyS0'  # needed when plug in RaspberryPi
+        ser = Communication(serialPort, 115200, 0.5)
+        logger.info(f"Connect to usb serial port: {serialPort}.")
+    else:
+        usbPortIndex = 0
+        ser = Communication(port[usbPortIndex], 115200, 0.5)
+        logger.info(f"Connect to usb serial port: {port[usbPortIndex]}.")
 
 
 if __name__ == '__main__':
     try:
         flushSeialOutput(500)
-
-        print("If there is no response after you input the serial command in the terminal")
-        print("you should close the terminal first")
-        print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:128)")
-        print("to connect to another blue tooth serial port")
-        print("then reopen the terminal and rerun the script")
+        if platform.uname()[1] != 'raspberrypi':
+            print("If there is no response after you input the serial command in the terminal")
+            print("you should close the terminal first")
+            print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:149)")
+            print("to connect to another blue tooth serial port")
+            print("then reopen the terminal and rerun the script")
 
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
