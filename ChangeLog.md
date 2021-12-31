@@ -1,5 +1,9 @@
 # Change Log
 
+## Dec 29, 2021
+* Organinzed serialMaster/ and its demo codes
+* fixed the divide by zero bug in calibratedPWM()
+
 ## Dec 11, 2021
 * Fix bug of "wrong key!" messages after g, p
 

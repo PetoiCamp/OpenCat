@@ -945,7 +945,7 @@ int testEEPROM(char* skill) {
   PTL(motion.period);
   int len = 0;
   while (len < 8) {
-    if(motion.dutyAngles[len]!=expect[len])
+    if (motion.dutyAngles[len] != expect[len])
       return 0;
     PT(int8_t(motion.dutyAngles[len]));
     PT('\t');
@@ -962,7 +962,9 @@ void calibratedPWM(byte i, float angle, float speedRatio = 0) {
   currentAng[i] = angle;
   int duty = calibratedDuty0[i] + angle * pulsePerDegree[i] * rotationDirection(i);
   duty = max(SERVOMIN , min(SERVOMAX , duty));
-  byte steps = byte(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)); //default speed is 1 degree per step
+  byte steps = speedRatio ? byte(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)) : 0; 
+  //if default speed is 0, no interpolation will be used
+  //otherwise the speed ratio is compared to 1 degree per second.
   for (byte s = 0; s <= steps; s++) {
     pwm.setPWM(pin(i), 0, duty + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * (duty0 - duty)));
   }
