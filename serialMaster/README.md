@@ -41,9 +41,9 @@ When the script formally starts running, the following prompt information is pri
 
 Next, you can enter serial port commands in Terminal to control Nybble (or Bittle) to do various interesting actions e.g.
 
-Kbalance           # Command to control Nybble(or Bittle) to stand normally
+kbalance           # Command to control Nybble(or Bittle) to stand normally
 
-m 0 -30 0 30    # Command to control Nybble(or Bittle) head to swing left and right
+m 0 -30 0 30       # Command to control Nybble(or Bittle) head to swing left and right
 
 **Method 2**: Run a custom script, e.g.  **example.py**
 
