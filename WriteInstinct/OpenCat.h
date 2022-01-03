@@ -84,7 +84,7 @@
 
 // credit to Adafruit PWM servo driver library
 #include <Wire.h>
-#include <Adafruit_PWMServoDriver.h>
+#include "src/Adafruit-PWM-Servo-Driver-Library/Adafruit_PWMServoDriver.h"
 #include <EEPROM.h>
 //#include <avr/eeprom.h> // doesn't work. <EEPROM.h> works
 

@@ -30,8 +30,8 @@
 #define MAIN_SKETCH
 #include "WriteInstinct/OpenCat.h"
 
-#include <I2Cdev.h>
-#include <MPU6050_6Axis_MotionApps20.h>
+#include "src/mpu6050/I2Cdev.h"
+#include "src/mpu6050/MPU6050_6Axis_MotionApps20.h"
 
 
 #define PACKET_SIZE 42
@@ -71,7 +71,7 @@ void dmpDataReady() {
 
 // https://brainy-bits.com/blogs/tutorials/ir-remote-arduino
 
-#include "src/ir/IRremote.h"
+#include "WriteInstinct/src/ir/IRremote.h"
 //The included library is identical to the IRremote library by shirriff, version 2.6.1
 //Source: https://github.com/Arduino-IRremote/Arduino-IRremote
 //Here, we include the decoding functions in our folder only to make it more convenient for newbie users
