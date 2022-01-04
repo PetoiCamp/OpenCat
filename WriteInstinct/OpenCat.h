@@ -114,8 +114,8 @@ void beep(int8_t note, float duration = 10, int pause = 0, byte repeat = 1 ) {
     delay(duration);
     return;
   }
-  int freq = 220 * pow(1.059463, note - 1); // 1.059463 comes from https://en.wikipedia.org/wiki/Twelfth_root_of_two
-  float period = 1000000.0 / freq;
+  float freq = 220 * pow(1.059463, note - 1); // 1.059463 comes from https://en.wikipedia.org/wiki/Twelfth_root_of_two
+  float period = round(1000000.0 / freq);
   for (byte r = 0; r < repeat; r++) {
     for (float t = 0; t < duration * 1000; t += period) {
       analogWrite(BUZZER, 150);      // Almost any value can be used except 0 and 255
@@ -962,10 +962,10 @@ void calibratedPWM(byte i, float angle, float speedRatio = 0) {
   currentAng[i] = angle;
   int duty = calibratedDuty0[i] + angle * pulsePerDegree[i] * rotationDirection(i);
   duty = max(SERVOMIN , min(SERVOMAX , duty));
-  byte steps = speedRatio ? byte(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)) : 0; 
+  int steps = speedRatio? int(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)) : 0; 
   //if default speed is 0, no interpolation will be used
   //otherwise the speed ratio is compared to 1 degree per second.
-  for (byte s = 0; s <= steps; s++) {
+  for (int s = 0; s <= steps; s++) {
     pwm.setPWM(pin(i), 0, duty + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * (duty0 - duty)));
   }
 }
@@ -994,9 +994,9 @@ template <typename T> void transform( T * target, byte angleDataRatio = 1, float
       maxDiff = max(maxDiff, abs( diff[i - offset]));
     }
 
-    byte steps = byte(round(maxDiff / 1.0/*degreeStep*/ / speedRatio));//default speed is 1 degree per step
+    int steps = int(round(maxDiff / 1.0/*degreeStep*/ / speedRatio));//default speed is 1 degree per step
 
-    for (byte s = 0; s <= steps; s++) {
+    for (int s = 0; s <= steps; s++) {
       for (byte i = offset; i < DOF; i++) {
         float dutyAng = (target[i - offset] * angleDataRatio + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * diff[i - offset]));
         calibratedPWM(i,  dutyAng);

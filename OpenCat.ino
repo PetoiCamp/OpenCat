@@ -640,7 +640,6 @@ void loop() {
                   } else if (target[1] <= -1001) { // Using -1001 for incremental calibration. -1001 is removing 1 degree, 1002 is removing 2 and 1009 is removing 9 degrees
                     target[1] = servoCalibs[target[0]] + target[1] + 1000;
                   }
-
                   servoCalibs[target[0]] = target[1];
                 }
                 int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + motion.dutyAngles[target[0]]) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
@@ -648,21 +647,22 @@ void loop() {
               }
               else if (token == T_MOVE) {
                 //SPF("moving [ targetIdx, angle ]: ");
-                angleStep = floor((target[1] - currentAng[target[0]]) / angleInterval);
-                for (int a = 0; a < abs(angleStep); a++) {
-                  int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + currentAng[target[0]] + a * angleInterval * angleStep / abs(angleStep)) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
-                  pwm.setPWM(pin(target[0]), 0,  duty);
-                }
-                currentAng[target[0]] = motion.dutyAngles[target[0]] = target[1];
+                //                angleStep = floor((target[1] - currentAng[target[0]]) / angleInterval);
+                //                for (int a = 0; a < abs(angleStep); a++) {
+                //                  int duty = SERVOMIN + PWM_RANGE / 2 + float(middleShift(target[0])  + servoCalibs[target[0]] + currentAng[target[0]] + a * angleInterval * angleStep / abs(angleStep)) * pulsePerDegree[target[0]] * rotationDirection(target[0]);
+                //                  pwm.setPWM(pin(target[0]), 0,  duty);
+                //                }
+                calibratedPWM(target[0], target[1], 2);
+                motion.dutyAngles[target[0]] = target[1];
+
               }
               else if (token == T_MEOW) {
                 meow(target[0], 0, 50, 200, 1 + target[1]);
               }
               else if (token == T_BEEP) {
-                beep(target[0], (byte)target[1]);
+                beep(target[0], (float)target[1]);
               }
-
-              delay(50);
+              delay(2);
             } while (pch != NULL);
             if (token == T_SIMULTANEOUS_MOVE)
               transform(simultaneousMoveInBinary, 1, 6);
@@ -697,8 +697,8 @@ void loop() {
         //      PT("\n");
         if (token == T_UNDEFINED) {}; //some words for undefined behaviors
 
-        if (token == T_SKILL&&strcmp(newCmd,"g")&&strcmp(newCmd,"p")) { //validating key
-        //without the "g" and "p" conditions, the program will try to load "g" or "p" as skillname
+        if (token == T_SKILL && strcmp(newCmd, "g") && strcmp(newCmd, "p")) { //validating key
+          //without the "g" and "p" conditions, the program will try to load "g" or "p" as skillname
           motion.loadBySkillName(newCmd);
 
           char lr = newCmd[strlen(newCmd) - 1];
