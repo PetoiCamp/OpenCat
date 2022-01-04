@@ -7,13 +7,6 @@ from ardSerial import *
 if __name__ == '__main__':
     try:
         flushSeialOutput(300)
-        if platform.uname()[1] != 'raspberrypi':
-            print("If there is no response in the terminal")
-            print("you should close the terminal first")
-            print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:129)")
-            print("to connect to another blue tooth serial port")
-            print("then reopen the terminal and rerun the script")
-            print("---Start---")
 
         '''
         testSchedule is used to test various serial port commands
@@ -37,7 +30,7 @@ if __name__ == '__main__':
 # rotated to the 45 degree position, and then rotated to the -45 degree position, and so on.
 # After these motion commands are completed, the next command will
 # be executed after a 2-second delay.
-                        ['m', ['m', '0', '45', '0', '-45','0', '45', '0', '-45'], 2],
+                        ['m', [0, 45, 0, -45, 0, 45, 0, -45], 2],
 
 # Using this format, multiple joint servo rotation commands can be issued at one time,
 # and these joint servo rotation commands are executed AT THE SAME TIME.
@@ -45,7 +38,7 @@ if __name__ == '__main__':
 # rotated to the -15, -20 degree position at the same time.
 # After these motion commands are completed, the next command will
 # be executed after a 2-second delay.
-                        ['M', ['M', '8', '-15', '9', '-20'], 2],
+                        ['M', [8, -15, 9, -20], 2],
                         
 # - d indicates the command to put the robot down and shut down the servos
 # - 2 indicates the postponed time after finishing the command, in seconds
@@ -91,7 +84,7 @@ if __name__ == '__main__':
 # - '14', '14', '21', '21', ‘23', '23', '21' indicate the music tones
 # - '90', '90', '90', '90', '90', '90', '180' indicates the lengths of duration
 # - 5 indicates the postponed time after the music melody is played, in seconds
-                        ['b', ['b', '14', '90', '14', '90', '21', '90', '21', '90', '23', '90', '23', '90', '21', '180'], 5],
+                        ['b', [14, 90, 14, 90, 21, 90, 21, 90, 23, 90, 23, 90, 21, 180], 5],
                         ['d', 2],
                        ]
 

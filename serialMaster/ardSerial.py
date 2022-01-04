@@ -53,8 +53,10 @@ def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b i l o 
     if token == 'l' or token == 'i':
         var = list(map(int, var))
         in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
-    elif token == 'c' or token == 'm' or token == 'u' or token == 'b':
-        in_str = token + str(var[0]) + " " + str(var[1]) + '\n'
+    elif token == 'c' or token == 'm' or token == 'M' or token == 'u' or token == 'b':
+        in_str = token + " "
+        for element in var:
+            in_str = in_str + str(element) + " "
     logger.debug(f"!!!! {in_str}")
     ser.Send_data(encode(in_str))
 
@@ -105,6 +107,14 @@ def flushSeialOutput(counterLimit=300):
             if x != "":
                 logger.debug(f"{x}")
 
+    if platform.uname()[1] != 'raspberrypi':
+        print("If there is no response after you input the serial command in the terminal")
+        print("you should close the terminal first")
+        print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:159)")
+        print("to connect to another Bluetooth serial port")
+        print("then reopen the terminal and rerun the script")
+        print("---Start---")
+
 
 # port = '/dev/cu.BittleSPP-3534C8-Port'    # Bluetooth serial port needed when using Mac
 # port = '/dev/cu.wchusbserial1430'    # needed when using Mac
@@ -122,8 +132,8 @@ if len(port) > 1:
     """
     If there is no response after you input the serial command in the terminal,
     you should close the terminal first,
-    then change the value of "bluetoothPortIndex" in the ardSerial.py (line:128)
-    to connect to another blue tooth serial port,
+    then change the value of "bluetoothPortIndex" in the ardSerial.py (line:159)
+    to connect to another Bluetooth serial port,
     then reopen the terminal and rerun the script.
     """
     if platform.uname()[1] == 'raspberrypi':
@@ -131,7 +141,7 @@ if len(port) > 1:
         ser = Communication(serialPort, 115200, 0.5)
         logger.info(f"Connect to usb serial port: {serialPort}.")
         serialWriteByte(["d"])
-        time.sleep(0.1)
+        time.sleep(0.2)
         response = ser.main_engine.read_all()
         logger.info(f"Response is: {response}")
         if response == b'':
@@ -142,13 +152,13 @@ if len(port) > 1:
             logger.info(f"Connect to serial port: {port[serialPortIndex]}.")
             print("If there is no response after you input the serial command in the terminal")
             print("you should close the terminal first")
-            print("then change the value of 'serialPortIndex' in the ardSerial.py (line:140)")
+            print("then change the value of 'serialPortIndex' in the ardSerial.py (line:150)")
             print("to connect to another serial port")
             print("then reopen the terminal and rerun the script")
     else:
         bluetoothPortIndex = -1    #0 means connetct to port[0]; -1 means connetct to the last port in the list
         ser = Communication(port[bluetoothPortIndex], 115200, 0.5)
-        logger.info(f"Connect to blue tooth serial port: {port[bluetoothPortIndex]}.")
+        logger.info(f"Connect to Bluetooth serial port: {port[bluetoothPortIndex]}.")
 else:
     if platform.uname()[1] == 'raspberrypi':
         serialPort = '/dev/ttyS0'  # needed when plug in RaspberryPi
@@ -163,16 +173,11 @@ else:
 if __name__ == '__main__':
     try:
         flushSeialOutput(500)
-        if platform.uname()[1] != 'raspberrypi':
-            print("If there is no response after you input the serial command in the terminal")
-            print("you should close the terminal first")
-            print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:149)")
-            print("to connect to another blue tooth serial port")
-            print("then reopen the terminal and rerun the script")
 
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
                 wrapper([sys.argv[1], 1])
+                time.sleep(0.2)
                 response = ser.main_engine.read_all()
                 logger.info(f"Response is: {response.decode('utf-8')}")
                 var = sys.argv[1]
@@ -185,8 +190,6 @@ if __name__ == '__main__':
 
         print("You can type 'quit' or 'q' to exit.")
 
-        print("---Start---")
-
         while True:
             time.sleep(0.01)
             x = input()
@@ -198,6 +201,7 @@ if __name__ == '__main__':
                     task = x.split()
                     if len(task) == 1:
                         wrapper([task, 1])
+                        time.sleep(0.2)
                         response = ser.main_engine.read_all()
                         logger.info(f"Response is: {response.decode('utf-8')}")
                         token = task[0][0]
@@ -212,6 +216,7 @@ if __name__ == '__main__':
                                 sys.exit(0)
                     else:
                         wrapper([task[0], task[0:], 1])
+                        time.sleep(0.2)
                         response = ser.main_engine.read_all()
                         logger.info(f"Response is: {response.decode('utf-8')}")
 
