@@ -1,6 +1,6 @@
 # OpenCat
 
-OpenCat is the open-source Arduino and Raspberry Pi-based robotic pet framework developed by Petoi, the maker of futuristic programmable robotic pets.
+OpenCat is the open-source Arduino and Raspberry Pi-based quadruped robotic pet framework developed by Petoi, the maker of futuristic programmable robotic pets.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/walk.gif?raw=true)
 
