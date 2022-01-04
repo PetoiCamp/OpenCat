@@ -110,7 +110,7 @@ def flushSeialOutput(counterLimit=300):
     if platform.uname()[1] != 'raspberrypi':
         print("If there is no response after you input the serial command in the terminal")
         print("you should close the terminal first")
-        print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:160)")
+        print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:159)")
         print("to connect to another Bluetooth serial port")
         print("then reopen the terminal and rerun the script")
         print("---Start---")
@@ -132,7 +132,7 @@ if len(port) > 1:
     """
     If there is no response after you input the serial command in the terminal,
     you should close the terminal first,
-    then change the value of "bluetoothPortIndex" in the ardSerial.py (line:160)
+    then change the value of "bluetoothPortIndex" in the ardSerial.py (line:159)
     to connect to another Bluetooth serial port,
     then reopen the terminal and rerun the script.
     """
@@ -152,7 +152,7 @@ if len(port) > 1:
             logger.info(f"Connect to serial port: {port[serialPortIndex]}.")
             print("If there is no response after you input the serial command in the terminal")
             print("you should close the terminal first")
-            print("then change the value of 'serialPortIndex' in the ardSerial.py (line:151)")
+            print("then change the value of 'serialPortIndex' in the ardSerial.py (line:150)")
             print("to connect to another serial port")
             print("then reopen the terminal and rerun the script")
     else:
