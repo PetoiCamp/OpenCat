@@ -732,7 +732,6 @@ void loop() {
           //          else
           if (motion.period <= 1 && random(100) % 2)
             motion.mirror();
-
           if (motion.period < 1) {
             int8_t repeat = motion.loopCycle[2] - 1;
             byte frameSize = 20;
