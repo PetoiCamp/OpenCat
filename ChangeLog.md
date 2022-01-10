@@ -1,5 +1,8 @@
 # Change Log
 
+## Jan 11, 2022
+* Create a mirror function to allow the robot pick random directions of behaviors. It makes the robot more unpredictable and helps it get rid of an infinite loop, such as failed fall-recovering against a wall.  
+
 ## Jan 3, 2022
 * Put the dependent libraries within the OpenCat folder so that no more downloading is required to configure OpenCat's environment in Arduino. 
 

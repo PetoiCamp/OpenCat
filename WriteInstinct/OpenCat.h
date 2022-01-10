@@ -599,6 +599,7 @@ class Motion {
   public:
     byte pins[DOF];           //the mapping between PCB pins and the joint indexes
     int8_t period;            //the period of a skill. 1 for posture, >1 for gait, <-1 for behavior
+    byte frameSize;
     int expectedRollPitch[2]; //expected body orientation (roll, pitch)
     byte angleDataRatio;      //divide large angles by 1 or 2. if the max angle of a skill is >128, all the angls will be divided by 2
     byte loopCycle[3];        //the looping section of a behavior (starting row, ending row, repeating cycles)
@@ -635,7 +636,6 @@ class Motion {
         expectedRollPitch[i] = (int8_t)pgm_read_byte(pgmAddress + 1 + i);
       angleDataRatio = pgm_read_byte(pgmAddress + 3);
       byte skillHeader = 4;
-      byte frameSize;
       if (period < -1) {
         frameSize = 20;
         for (byte i = 0; i < 3; i++)
@@ -663,8 +663,6 @@ class Motion {
       for (int i = 0; i < 2; i++)
         expectedRollPitch[i] = (int8_t)Wire.read();
       angleDataRatio = Wire.read();
-
-      byte frameSize;
       if (period < -1) {
         skillHeader = 7;
         frameSize = 20;
@@ -676,9 +674,7 @@ class Motion {
         frameSize = period > 1 ? WALKING_DOF : 16;
       int len = abs(period) * frameSize;
       //delete []dutyAngles;//check here
-
       dutyAngles = new char[len];
-
       int readFromEE = 0;
       int readToWire = 0;
       while (len > 0) {
@@ -729,6 +725,18 @@ class Motion {
           loadDataByOnboardEepromAddress(sk->onBoardEepromAddress);
         }
     */
+    void mirror() {
+      expectedRollPitch[0]=-expectedRollPitch[0];
+      for (int k = 0; k < abs(period); k++) {
+        dutyAngles[k * frameSize ] = -dutyAngles[k * frameSize ];
+        dutyAngles[k * frameSize + 2] = -dutyAngles[k * frameSize + 2];
+        for (int col = 2; col < DOF / 2 ; col++) {
+          int8_t temp = dutyAngles[k * frameSize + 2 * col];
+          dutyAngles[k * frameSize + 2 * col] = dutyAngles[k * frameSize + 2 * col + 1];
+          dutyAngles[k * frameSize + 2 * col + 1] = temp;
+        }
+      }
+    }
 
     void info() {
       PTL("period: " + String(period) + ",\tdelayBetweenFrames: " + ",\texpected (pitch,roll): (" + expectedRollPitch[0]*degPerRad + "," + expectedRollPitch[1]*degPerRad + ")");
