@@ -726,7 +726,7 @@ class Motion {
         }
     */
     void mirror() {
-      expectedRollPitch[0]=-expectedRollPitch[0];
+      expectedRollPitch[0] = -expectedRollPitch[0];
       for (int k = 0; k < abs(period); k++) {
         dutyAngles[k * frameSize ] = -dutyAngles[k * frameSize ];
         dutyAngles[k * frameSize + 2] = -dutyAngles[k * frameSize + 2];
@@ -970,7 +970,7 @@ void calibratedPWM(byte i, float angle, float speedRatio = 0) {
   currentAng[i] = angle;
   int duty = calibratedDuty0[i] + angle * pulsePerDegree[i] * rotationDirection(i);
   duty = max(SERVOMIN , min(SERVOMAX , duty));
-  int steps = speedRatio? int(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)) : 0; 
+  int steps = speedRatio ? int(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)) : 0;
   //if default speed is 0, no interpolation will be used
   //otherwise the speed ratio is compared to 1 degree per second.
   for (int s = 0; s <= steps; s++) {
