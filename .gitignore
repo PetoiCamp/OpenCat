@@ -1,4 +1,3 @@
 
-ModuleTests/.DS_Store
-.DS_Store
+*.DS_Store
 *.pyc
