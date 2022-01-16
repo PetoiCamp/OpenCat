@@ -517,10 +517,9 @@ void loop() {
             break;
           }
         case T_GYRO: {
-            if (!checkGyro)
-              checkBodyMotion();
-            //            countDown = COUNT_DOWN;
             checkGyro = !checkGyro;
+            if (checkGyro)
+              checkBodyMotion();
             token = T_SKILL;
             break;
           }
