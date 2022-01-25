@@ -149,7 +149,7 @@ void setup()
   PTL("Takes time. Wait for next message...");
   for (int i = 0; i < SIZE; i++)  {
     i2c_eeprom_write_byte( i, '#');
-    delay(2);
+    delay(5);
   }
   PTL("Done clearing!");
 #else
