@@ -12,7 +12,7 @@ Inspired by Boston Dynamics' Big Dog, Dr. Rongzhong Li started the project in hi
 
 The project is still a complex system only for skilled makers, yet we want to share our design and work with the community by mass production and bring down the hardware and software costs. OpenCat has been deployed on Petoi's bionic palm-sized, realistic lifelike [cute robot cat Nybble](https://www.petoi.com/collections/robots/products/petoi-nybble-robot-cat?utm_source=github&utm_medium=code&utm_campaign=nybble) and [high-performance robot dog Bittle](https://www.petoi.com/collections/robots/products/petoi-bittle-robot-dog?utm_source=github&utm_medium=code&utm_campaign=bittle). We now have established a production line and can ship these [affordable robotic kits and accessories](https://www.petoi.com/store?utm_source=github&utm_medium=code&utm_campaign=store) worldwide.
 
-This project provides a base open-source platform to create amazing programmable gaits, locomotion and deployment of inverse kinematics quadruped robots via C/C++/Python programming languages.  Our users have also deployed [NVIDIA Issac simulations and reinforcement learning on our robots](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg).
+This project provides a base open-source platform to create amazing programmable gaits, locomotion, and deployment of inverse kinematics quadruped robots and bring simulations to the real world via C/C++/Python programming languages.  Our users have deployed [NVIDIA Issac simulations and reinforcement learning on our robots](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg). Our users have also successfully deployed OpenCat on their DIY 3D-print robot pets.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/stand.gif?raw=true)
 
@@ -27,6 +27,7 @@ Also, Check out [all of the OpenCat and Petoi robot user showcases](https://www.
 
 OpenCat software works on both Nybble and Bittle, controlled by NyBoard based on ATmega328P. To run the code on our robot models, first change the model and board definition in **OpenCat.h**, then upload **WriteInstinct.ino**.
 
+
 ```
 #include "InstinctBittle.h" //activate the correct header file according to your model
 //#include "InstinctNybble.h"
@@ -40,7 +41,7 @@ Set **No line ending** in the serial monitor and baudrate as **115200** (or **57
 
 More detailed documentation can be found at the [Petoi Doc Center](https://docs.petoi.com).
 
-You can use our mobile app to control the robots as well:
+You can use our mobile app to remote-control the robots as well:
 * IOS: [App Store](https://apps.apple.com/us/app/petoi/id1581548095)
 * Android: [Google Play](https://play.google.com/store/apps/details?id=com.petoi.petoiapp)
 
