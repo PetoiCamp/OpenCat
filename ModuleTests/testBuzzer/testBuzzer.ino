@@ -1,12 +1,10 @@
 /* Customized note and melody player for OpenCat, and MEOW \(=^_^=)/
-   It also serves to test the baud rate of the serial moniter and the crystal frequency.
+   It also serves to test the baud rate of the serial monitor and the crystal frequency.
    OpenCat happens to use 57600 baud rate (and a 20MHz crystal on Petoi's dedicated PCB).
-   If you cannot see this sentence on serial monitor,
+   If you cannot see this sentence on the serial monitor,
       there's something wrong with your Arduino IDE's configuration.
 
-   The beep() is better if played with a passive buzzer
-   The meow() can only be played with an active buzzer on PWM pins
-   On most Arduino, the PWM pins are identified with a "~" sign, like ~3, ~5, ~6, ~9, ~10 and ~11.
+   On most Arduino, the PWM pins are identified with a "~" sign, like ~3, ~5, ~6, ~9, ~10, and ~11.
    If your buzzer cannot meow(), it's probably a passive buzzer.
 
    Rongzhong Li
