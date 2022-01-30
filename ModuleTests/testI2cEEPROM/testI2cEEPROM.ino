@@ -8,7 +8,7 @@
    Copyright (c) 2018 Petoi LLC.
 
   The MIT license
-  
+
   Permission is hereby granted, free of charge, to any person obtaining a copy
   of this software and associated documentation files (the "Software"), to deal
   in the Software without restriction, including without limitation the rights
@@ -37,7 +37,7 @@
 #define PT(s) Serial.print(s)  //makes life easier
 #define PTL(s) Serial.println(s)
 #define SIZE 65536/8
-#define START 65536/8-70
+#define START 65536/8-200
 //#define CLEAR
 #define WRITE
 
@@ -49,6 +49,7 @@ void i2c_eeprom_write_byte( unsigned int eeaddress, byte data ) {
   Wire.write((int)(eeaddress & 0xFF)); // LSB
   Wire.write(rdata);
   Wire.endTransmission();
+  delay(5);  // needs 5ms for write
 }
 
 void i2c_eeprom_read_buffer( unsigned int eeaddress, byte *buffer, int length ) {
@@ -76,6 +77,7 @@ byte i2c_eeprom_read_byte( unsigned int eeaddress ) {
 
 void writeLong(unsigned int &eeAddress, char *data, int len) {
   //byte locationInPage = eeAddress % PAGE_LIMIT;
+  i2c_eeprom_write_byte(eeAddress++, len);
   PTL("write " + String(len) + " bytes");
   int writtenToEE = 0;
   while (len > 0) {
@@ -83,16 +85,12 @@ void writeLong(unsigned int &eeAddress, char *data, int len) {
     Wire.write((int)((eeAddress) >> 8));   // MSB
     Wire.write((int)((eeAddress) & 0xFF)); // LSB
     PT("* current address: ");
-    PT((unsigned int)eeAddress);
+    PT((unsigned int)eeAddress % (SIZE));
     PTL("\t0 1 2 3 4 5 6 7 8 9 a b c d e f ");
     PT("\t\t\t\t");
     byte writtenToWire = 0;
     do
     {
-      if (eeAddress==SIZE){
-        PTL();
-        PTL("EEPROM overflow!\n");
-      }
       PT(data[writtenToEE]);
       PT(" ");
       Wire.write((byte)data[writtenToEE]);
@@ -105,12 +103,15 @@ void writeLong(unsigned int &eeAddress, char *data, int len) {
     delay(6);  // needs 5ms for page write
     PTL();
     PTL("wrote " + String(writtenToWire) + " bytes.");
+    if (eeAddress >= SIZE) {
+      PTL("EEPROM overflow! Wrap around to the beginning of the address!\n");
+    }
   }
   PTL("finish writing");
 }
 
 void readLong(unsigned int &eeAddress, char *data) {
-  int len = i2c_eeprom_read_byte(eeAddress);
+  int len = i2c_eeprom_read_byte(eeAddress++);
   PTL("read " + String(len) + " bytes");
   int readFromEE = 0;
   int readToWire = 0;
@@ -134,8 +135,13 @@ void readLong(unsigned int &eeAddress, char *data) {
   PTL("finish reading");
 }
 
-char data[] = " The quick brown fox jumps over the lazy dog. \
-The five boxing wizards jump quickly. Pack my box with five dozen liquor jugs."; // data to write
+char data[] = "The quick brown fox jumps over the lazy dog. \
+The five boxing wizards jump quickly. Pack my box with five dozen liquor jugs. \
+//observe how the overflow wrapping works
+D is a musical note a whole tone above C, and is known as Re within the fixed-Do solfege system. \
+An enharmonic note is Cdouble sharp, which is a diatonic semitone below D. \
+When calculated in equal temperament with a reference of A above middle C as 440 Hz, \
+the frequency of middle D (D4) is approximately 293.665 Hz. See pitch for a discussion of historical variations in frequency."; // data to write
 
 //char data[]={16,-3,5,7,9};
 void setup()
@@ -149,12 +155,12 @@ void setup()
   PTL("Takes time. Wait for next message...");
   for (int i = 0; i < SIZE; i++)  {
     i2c_eeprom_write_byte( i, '#');
-    delay(5);
+    delay(4);
   }
   PTL("Done clearing!");
 #else
   unsigned int eeAddress = START;
-  data[0] = strlen(data);
+  //  data[0] = strlen(data);
 #ifdef WRITE
   writeLong(eeAddress, data, strlen(data));
   PTL("current EE address: " + String(eeAddress));
@@ -174,7 +180,7 @@ void setup()
   PTL("read by individual bytes for checking:");
   int c = 0;
   for (long r = START; r < START + strlen(data); r++) {
-    PT((char)i2c_eeprom_read_byte(r));
+    PT((char)i2c_eeprom_read_byte(r + 1));//the first character will be the length, skipped.
     if (++c == 16) {
       PTL();
       c = 0;
@@ -183,7 +189,7 @@ void setup()
       PT(' ');
   }
   PTL();
-  PTL("read from address 0");
+  PTL("read from address 0"); 
   c = 0;
   for (long r = 0; r < strlen(data); r++) {
     PT((char)i2c_eeprom_read_byte(r));
