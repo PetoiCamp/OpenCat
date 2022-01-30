@@ -36,7 +36,8 @@
 */
 
 #define BUZZER 5 // the PWM pin the ACTIVE buzzer is attached to
-int loopCounter = 0;
+#define BASE_PITCH 1046.50
+
 // tone 1 corresponds to A3, tone 2 corresponds to B3, tone 13 corresponds to A4, etc.
 // tone: pause,1,  2,  3,  4,  5,  6,  7,  high1,  high2
 // code: 0,    1,  3,  5,  6,  8,  10, 12, 13,      15
@@ -44,10 +45,9 @@ int loopCounter = 0;
 byte melodyNormalBoot[] = {8, 13, 10, 13, 8, 5, 8, 3, 5, 8, 0, //tone
                            4,  4,  8,  8, 4, 8, 8, 8, 8, 4, 2  //relative duration, 8 means 1/8 note length
                           };
-byte melodyInit[] = {15, 12, 15, 12, 15, 12, 8, 0, 10, 13, 12, 10, 15,//tone
-                     4,  4,  4,  4,  4,  4,  2, 32, 4, 4,  4,  4,  2,//relative duration, 8 means 1/8 note length
+byte melodyInit[] = {15, 12, 15, 12, 15, 12, 8, 10, 13, 12, 10, 15,//tone
+                     4,  4,  4,  4,  4,  4,  2, 4, 4,  4,  4,  2,//relative duration, 8 means 1/8 note length
                     };
-#define BASE_PITCH 1046.50
 
 void beepDIY(int note, float duration = 10, int pause = 0, byte repeat = 1 ) {
   if (note == 0) {
@@ -101,18 +101,7 @@ void meow( int startF = 1,  int endF = 25) {
   for (float amp = startF; s * amp < s * endF; amp += increment) {
     beep(amp, 5);
   }
-  
 }
-
-//void playMelody(byte m[], int len) {
-//  for (int i = 0; i < len; i++) {
-//    if (!m[i])
-//      delay(1000 / m[len + i]);
-//    else
-//      tone(BUZZER, 1046.50 * pow(1.05946, m[i]), // C
-//           1000 / m[len + i]);
-//  }
-//}
 
 void setup()
 {
@@ -122,14 +111,16 @@ void setup()
   Serial.println("\tthere's something wrong with your Arduino IDE's configuration.");
 }
 
+int loopCounter = 0;
 void loop() {
   if (loopCounter == 0) {
     beep(1, 500, 500);
     beep(13, 500, 500);
+    delay(500);
     playMelody(melodyNormalBoot, sizeof(melodyNormalBoot) / 2);
     playMelody(melodyInit, sizeof(melodyInit) / 2);
     Serial.println(loopCounter++);
-    delay(1000);
+    delay(500);
   }
   else if (loopCounter < 2) {
     meow(1, 20);
