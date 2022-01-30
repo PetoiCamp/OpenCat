@@ -1,5 +1,9 @@
 # Change Log
 
+## Jan 30, 2022
+* Fix type conversion warnings of skill data.
+* Add demo for testBuzzer.ino using Arduino's built-in tone function. However, it cannot be used for the main program because ATmega328P has only two timers, used up by the IR and IMU. 
+
 ## Jan 11, 2022
 * Create a mirror function to allow the robot pick random directions of behaviors. It makes the robot more unpredictable and helps it get rid of an infinite loop, such as failed fall-recovering against a wall.  
 

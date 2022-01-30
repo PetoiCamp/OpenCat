@@ -40,11 +40,16 @@ int loopCounter = 0;
 // tone 1 corresponds to A3, tone 2 corresponds to B3, tone 13 corresponds to A4, etc.
 // tone: pause,1,  2,  3,  4,  5,  6,  7,  high1,  high2
 // code: 0,    1,  3,  5,  6,  8,  10, 12, 13,      15
-byte melody[] = {8, 13, 10, 13, 8,  0,  5,  8,  3,  5, 8,//tone
-                 8, 8,  32, 32, 8, 32, 32, 32, 32, 32, 8 //relative duration, 8 means 1/8 note length
-                };
 
-void beep(int note, float duration = 10, int pause = 0, byte repeat = 1 ) {
+byte melodyNormalBoot[] = {8, 13, 10, 13, 8, 5, 8, 3, 5, 8, 0, //tone
+                           4,  4,  8,  8, 4, 8, 8, 8, 8, 4, 2  //relative duration, 8 means 1/8 note length
+                          };
+byte melodyInit[] = {15, 12, 15, 12, 15, 12, 8, 0, 10, 13, 12, 10, 15,//tone
+                     4,  4,  4,  4,  4,  4,  2, 32, 4, 4,  4,  4,  2,//relative duration, 8 means 1/8 note length
+                    };
+#define BASE_PITCH 1046.50
+
+void beepDIY(int note, float duration = 10, int pause = 0, byte repeat = 1 ) {
   if (note == 0) {
     analogWrite(BUZZER, 0);
     delay(duration);
@@ -64,22 +69,50 @@ void beep(int note, float duration = 10, int pause = 0, byte repeat = 1 ) {
     delay(pause);
   }
 }
-void playMelody(byte m[], int len) {
-  for (int i = 0; i < len; i++)
-    beep(m[i], 1000 / m[len + i], 100);
-}
 
-void meow(int repeat = 1, int pause = 200, int startF = 150,  int endF = 255, int increment = 5) {
-  for (int r = 0; r < repeat; r++) {
-    for (int amp = startF; amp <= endF; amp += increment) {
-      analogWrite(BUZZER, amp);
-      delay(30); // wait for 30 milliseconds to allow the buzzer to vibrate
-    }
-    delay(500);
-    analogWrite(BUZZER, 0);
+void beep(float note, float duration = 50, int pause = 0, byte repeat = 1 ) {
+  for (byte r = 0; r < repeat; r++) {
+    if (note == 0)
+      delay(duration);
+    else
+      tone(BUZZER, BASE_PITCH * pow(1.05946, note), duration);
     delay(pause);
   }
 }
+
+void playMelody(byte m[], int len) {
+  for (int i = 0; i < len; i++) {
+    if (!m[i])
+      delay(4000 / m[len + i]);
+    else
+      tone(BUZZER, BASE_PITCH * pow(1.05946, m[i]), 1000 / m[len + i]);
+    delay( 1000 / m[len + i]);
+  }
+  delay(100);
+}
+
+template <typename T> int8_t sign(T val) {
+  return (T(0) < val) - (val < T(0));
+}
+
+void meow( int startF = 1,  int endF = 25) {
+  int s = sign(endF - startF);
+  float increment = 0.1 * s;
+  for (float amp = startF; s * amp < s * endF; amp += increment) {
+    beep(amp, 5);
+  }
+  
+}
+
+//void playMelody(byte m[], int len) {
+//  for (int i = 0; i < len; i++) {
+//    if (!m[i])
+//      delay(1000 / m[len + i]);
+//    else
+//      tone(BUZZER, 1046.50 * pow(1.05946, m[i]), // C
+//           1000 / m[len + i]);
+//  }
+//}
 
 void setup()
 {
@@ -93,13 +126,15 @@ void loop() {
   if (loopCounter == 0) {
     beep(1, 500, 500);
     beep(13, 500, 500);
-    playMelody(melody, sizeof(melody) / 2);
+    playMelody(melodyNormalBoot, sizeof(melodyNormalBoot) / 2);
+    playMelody(melodyInit, sizeof(melodyInit) / 2);
     Serial.println(loopCounter++);
     delay(1000);
   }
   else if (loopCounter < 2) {
-    meow(1, 1000, 100);
-    meow(2, 100);
+    meow(1, 20);
+    delay(500);
+    meow(30, 5);
     Serial.println(loopCounter++);
   }
 }

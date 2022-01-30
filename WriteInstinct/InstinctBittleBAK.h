@@ -1,7 +1,7 @@
 #define BITTLE
 #define NUM_SKILLS 31
 
-const char bdF[] PROGMEM = { 
+const int8_t bdF[] PROGMEM = { 
 15, 0, 0, 1,
   56,  56,  72,  72, -21, -21, -35, -35,
   46,  46,  52,  52,   7,   7,   9,   9,
@@ -19,7 +19,7 @@ const char bdF[] PROGMEM = {
   61,  61,  72,  72, -35, -35, -35, -35,
   61,  61,  72,  72, -35, -35, -35, -35,
 };
-const char bk[] PROGMEM = { 
+const int8_t bk[] PROGMEM = { 
 35, 0, 0, 1,
   46,  54,  46,  54,  -5, -23,  -5, -23,
   43,  58,  43,  58,  -5, -24,  -5, -24,
@@ -57,7 +57,7 @@ const char bk[] PROGMEM = {
   50,  48,  50,  48,  -5, -22,  -5, -22,
   47,  53,  47,  53,  -5, -23,  -5, -23,
 };
-const char bkL[] PROGMEM = { 
+const int8_t bkL[] PROGMEM = { 
 26, 0, 0, 1,
   51,  58,  51,  53,  -7, -24,  -5, -13,
   51,  65,  47,  55,  -7, -23,  -5, -13,
@@ -86,7 +86,7 @@ const char bkL[] PROGMEM = {
   53,  48,  56,  50,  -7, -22,  -4, -13,
   52,  54,  53,  52,  -7, -23,  -5, -13,
 };
-const char bkR[] PROGMEM = { 
+const int8_t bkR[] PROGMEM = { 
 26, 0, 0, 1,
   51,  53,  51,  58,  -5, -13,  -7, -24,
   47,  55,  51,  65,  -5, -13,  -7, -23,
@@ -115,7 +115,7 @@ const char bkR[] PROGMEM = {
   56,  50,  53,  48,  -4, -13,  -7, -22,
   53,  52,  52,  54,  -5, -13,  -7, -23,
 };
-const char crF[] PROGMEM = { 
+const int8_t crF[] PROGMEM = { 
 36, 0, -3, 1,
   55,  57,  51,  56, -15, -19,  -7, -16,
   59,  51,  54,  49, -15, -19,  -7, -16,
@@ -154,7 +154,7 @@ const char crF[] PROGMEM = {
   49,  64,  46,  61, -14, -18,  -6, -16,
   53,  58,  50,  57, -15, -19,  -7, -16,
 };
-const char crL[] PROGMEM = { 
+const int8_t crL[] PROGMEM = { 
 29, 0, -3, 1,
   55,  57,  51,  52, -15, -19,  -7, -10,
   56,  50,  55,  51, -15, -19,  -6, -10,
@@ -186,7 +186,7 @@ const char crL[] PROGMEM = {
   53,  66,  45,  54, -15, -18,  -6, -10,
   54,  58,  50,  53, -15, -19,  -7, -10,
 };
-const char crR[] PROGMEM = { 
+const int8_t crR[] PROGMEM = { 
 29, 0, -3, 1,
   55,  56,  51,  56, -15, -16,  -7, -16,
   60,  55,  51,  48, -14, -16,  -7, -16,
@@ -218,7 +218,7 @@ const char crR[] PROGMEM = {
   48,  58,  49,  63, -14, -17,  -7, -16,
   53,  57,  50,  57, -15, -16,  -7, -16,
 };
-const char trF[] PROGMEM = { 
+const int8_t trF[] PROGMEM = { 
 21, 0, 0, 1,
   49,  56,  56,  63,   6,  -4,   8,  -2,
   55,  46,  59,  54,   8,  -5,  12,  -5,
@@ -242,7 +242,7 @@ const char trF[] PROGMEM = {
   36,  69,  44,  71,   6,   7,   5,  15,
   44,  64,  50,  68,   5,   0,   6,   5,
 };
-const char trL[] PROGMEM = { 
+const int8_t trL[] PROGMEM = { 
 18, 0, 0, 1,
   44,  56,  54,  58,   3,  -5,   7,   5,
   47,  40,  58,  54,   3,  -4,  11,   2,
@@ -263,7 +263,7 @@ const char trL[] PROGMEM = {
   42,  67,  47,  61,   3,   4,   5,   8,
   44,  58,  53,  58,   3,  -4,   7,   5,
 };
-const char trR[] PROGMEM = { 
+const int8_t trR[] PROGMEM = { 
 18, 0, 0, 1,
   44,  49,  55,  65,   5,   1,   5,   0,
   49,  44,  56,  53,   6,   1,   6,  -5,
@@ -284,7 +284,7 @@ const char trR[] PROGMEM = {
   35,  54,  52,  71,   6,   2,   5,  16,
   43,  49,  55,  66,   5,   1,   5,   2,
 };
-const char vt[] PROGMEM = { 
+const int8_t vt[] PROGMEM = { 
 21, 0, 0, 1,
   57,  43,  60,  47, -18,   7, -17,   7,
   50,  43,  53,  47,  -5,   7,  -5,   7,
@@ -308,7 +308,7 @@ const char vt[] PROGMEM = {
   66,  43,  71,  47, -35,   7, -35,   7,
   63,  43,  67,  47, -30,   7, -29,   7,
 };
-const char wkF[] PROGMEM = { 
+const int8_t wkF[] PROGMEM = { 
 54, 0, 0, 1,
    9,  49,  53,  45,  24,  20,  -2,  15,
    8,  50,  41,  46,  28,  21,  -1,  15,
@@ -365,7 +365,7 @@ const char wkF[] PROGMEM = {
   16,  48,  69,  42,  12,  17,  11,  14,
   12,  49,  63,  44,  17,  18,   1,  15,
 };
-const char wkL[] PROGMEM = { 
+const int8_t wkL[] PROGMEM = { 
 40, 0, 0, 1,
   34,  52,  57,  46,  13,  24,  -6,  13,
   34,  53,  47,  47,  13,  27,  -7,  13,
@@ -408,7 +408,7 @@ const char wkL[] PROGMEM = {
   36,  50,  69,  45,   9,  21,   0,  13,
   34,  51,  64,  45,  13,  23,  -6,  13,
 };
-const char wkR[] PROGMEM = { 
+const int8_t wkR[] PROGMEM = { 
 40, 0, 0, 1,
    8,  48,  51,  45,  28,  14,   6,  17,
   10,  49,  48,  47,  27,  14,   5,  16,
@@ -452,35 +452,35 @@ const char wkR[] PROGMEM = {
    9,  47,  52,  43,  24,  14,   7,  17,
 };
 
-const char balance[] PROGMEM = { 
+const int8_t balance[] PROGMEM = { 
 1, 0, 0, 1,
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,};
-const char buttUp[] PROGMEM = { 
+const int8_t buttUp[] PROGMEM = { 
 1, 0, 15, 1,
    20,  40,   0,   0,   5,   5,   3,   3,  90,  90,  45,  45, -60, -60,   5,   5,};
-const char calib[] PROGMEM = { 
+const int8_t calib[] PROGMEM = { 
 1, 0, 0, 1,
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,};
-const char dropped[] PROGMEM = { 
+const int8_t dropped[] PROGMEM = { 
 1, 0, -75, 1,
     0,  30,   0,   0,  -5,  -5,  15,  15, -75, -75,  45,  45,  60,  60, -30, -30,};
-const char lifted[] PROGMEM = { 
+const int8_t lifted[] PROGMEM = { 
 1, 0, 75, 1,
     0, -20,   0,   0,   0,   0,   0,   0,  60,  60,  75,  75,  45,  45,  75,  75,};
-const char rest[] PROGMEM = { 
+const int8_t rest[] PROGMEM = { 
 1, 0, 0, 1,
   -30, -80, -45,   0,  -3,  -3,   3,   3,  75,  75,  75,  75, -55, -55, -55, -55,};
-const char sit[] PROGMEM = { 
+const int8_t sit[] PROGMEM = { 
 1, 0, -30, 1,
     0,   0, -45,   0,  -5,  -5,  20,  20,  45,  45, 105, 105,  45,  45, -45, -45,};
-const char str[] PROGMEM = { 
+const int8_t str[] PROGMEM = { 
 1, 0, 20, 1,
     0,  30,   0,   0,  -5,  -5,   0,   0, -75, -75,  30,  30,  60,  60,   0,   0,};
-const char zero[] PROGMEM = { 
+const int8_t zero[] PROGMEM = { 
 1, 0, 0, 1,
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,};
 
-const char bf[] PROGMEM = { 
+const int8_t bf[] PROGMEM = { 
 -8, 0, 0, 1,
  5, 8, 1, 
     0,   0,   0,   0,   0,   0,   0,   0,  75,  75,  75,  75, -55, -55, -40, -40,	10, 0, 0, 0,
@@ -492,20 +492,20 @@ const char bf[] PROGMEM = {
     0,   0,   0,   0,   0,   0,   0,   0, -20, -20, 100, 100, -75, -75, -60, -60,	 0, 3, 0, 0,
     0,   0,   0,   0,   0,   0,   0,   0,  45,  45, 127, 127,   0,   0, -70, -70,	 0, 3, 0, 0,
 };
-const char ck[] PROGMEM = { 
+const int8_t ck[] PROGMEM = { 
 -2, 0, 5, 1,
  0, 1, 2, 
    45,   0,   0,   0,   0,   0,   0,   0,  45,  35,  38,  50, -30, -10,   0, -20,	 6, 1, 0, 0,
   -45,   0,   0,   0,   0,   0,   0,   0,  35,  45,  50,  38, -10, -30, -20,   0,	 6, 1, 0, 0,
 };
-const char hi[] PROGMEM = { 
+const int8_t hi[] PROGMEM = { 
 -3, 0, -30, 1,
  1, 2, 3, 
     0, -20, -60,   0,   0,   0,   0,   0,  30,  30,  90,  80,  60,  60, -40, -30,	 4, 1, 0, 0,
    35,  -5, -60,   0,   0,   0,   0,   0, -75,  30,  75,  60,  40,  75, -30,   0,	10, 0, 0, 0,
    40,   0, -35,   0,   0,   0,   0,   0, -60,  30,  75,  60,  60,  75, -30,   0,	10, 0, 0, 0,
 };
-const char pd[] PROGMEM = { 
+const int8_t pd[] PROGMEM = { 
 -7, 0, 0, 1,
  4, 5, 2, 
     0,   0, -45,   0,  -5,  -5,  20,  20,  45,  45, 105, 105,  45,  45, -45, -45,	 8, 0, 0, 0,
@@ -516,7 +516,7 @@ const char pd[] PROGMEM = {
    45,   0,   0,   0,   0,   0,   0,   0,  45, -75,  90,  25, -60,   0, -60,  30,	30, 0, 0, 0,
    45,   0,   0,   0,   0,   0,   0,   0,  45, -75,  90,  25, -60,   0, -60,  45,	16,20, 0, 0,
 };
-const char pee[] PROGMEM = { 
+const int8_t pee[] PROGMEM = { 
 -4, 0, 10, 1,
  2, 3, 3, 
    30,  20,   0,   0,  15, -10,  60, -10,  40,  40,  90,  45,  10,  60,  70,  45,	 6, 0, 0, 0,
@@ -524,7 +524,7 @@ const char pee[] PROGMEM = {
    30,  20,   0,   0,  15, -10,  60, -10,  40,  40,  90,  45,  10,  50,  70,  45,	16, 0, 0, 0,
    30,  20,   0,   0,  15, -10,  60, -10,  40,  40, 103,  45,  10,  50,  80,  45,	16, 0, 0, 0,
 };
-const char pu[] PROGMEM = { 
+const int8_t pu[] PROGMEM = { 
 -8, 0, -15, 1,
  6, 7, 3, 
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,	 5, 0, 0, 0,
@@ -536,14 +536,14 @@ const char pu[] PROGMEM = {
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  95,  95,  60,  60,  60,  60,	 6, 1, 0, 0,
    30,   0,   0,   0,   0,   0,   0,   0,  75,  70,  80,  80, -50, -50,  60,  60,	 8, 0, 0, 0,
 };
-const char rc[] PROGMEM = { 
+const int8_t rc[] PROGMEM = { 
 -3, 0, 0, 2,
  0, 0, 0, 
     0,   0,   0,   0,   0,   0,   0,   0, -88, -43,  67,  87,  42, -35,  42,  42,	15, 0, 0, 0,
     0,   0,   0,   0,   0,   0,   0,   0, -83, -88,  87,  42,  42,  42,  42, -40,	15, 0, 0, 0,
    -8, -20, -11,   0,  -1,  -1,   0,   0,  18,  18,  18,  18, -14, -14, -14, -14,	10, 0, 0, 0,
 };
-const char stp[] PROGMEM = { 
+const int8_t stp[] PROGMEM = { 
 -22, 0, 0, 1,
  0, 0, 0, 
     0,   0,   0,   0,   0,   0,   0,   0,  25,  40,  30,  40,  40,  20,  30,  20,	 8, 0, 0, 0,
@@ -573,10 +573,10 @@ const char stp[] PROGMEM = {
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
-  const char* progmemPointer[] = {bdF, bk, bkL, bkR, crF, crL, crR, trF, trL, trR, vt, wkF, wkL, wkR, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, hi, pd, pee, pu, rc, stp, };
+  const int8_t* progmemPointer[] = {bdF, bk, bkL, bkR, crF, crL, crR, trF, trL, trR, vt, wkF, wkL, wkR, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, hi, pd, pee, pu, rc, stp, };
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses
-  const char* progmemPointer[] = {zero, };
+  const int8_t* progmemPointer[] = {zero, };
 #endif
 //the total byte of instincts is 4696
 //the maximal array size is 437 bytes of wkF. 

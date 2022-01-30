@@ -134,7 +134,7 @@ void setup() {
     PT("\t");
     }
     PTL();*/
-  beep(100, 50);
+  beep(30, 50);
   // initialize device
   mpu.initialize();
 
@@ -246,7 +246,7 @@ void loop() {
     newCmd = 3;
   }
   if (newCmd) {
-    beep(newCmd * 10);
+    beep(newCmd * 5);
     // this block handles argumentless tokens
 
     switch (token) {
@@ -582,7 +582,7 @@ void calibration() {
     */
 
     if (ready == 6) {
-      beep(100, 1000);
+      beep(30, 1000);
 #ifdef PIXEL_PIN
       for (int i = 0; i < NUMPIXELS - 1; i++) { // For each pixel...
         pixels.setPixelColor(i, pixels.Color(0, 0, LIT_ON));

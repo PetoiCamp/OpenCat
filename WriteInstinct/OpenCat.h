@@ -611,7 +611,7 @@ class Motion {
       dutyAngles = NULL;
     }
 
-    int lookupAddressByName(char* skillName) {
+    int lookupAddressByName(const char* skillName) {
       int skillAddressShift = 0;
       for (byte s = 0; s < NUM_SKILLS; s++) {//save skill info to on-board EEPROM, load skills to SkillList
         byte nameLen = EEPROM.read(SKILLS + skillAddressShift++);
@@ -657,7 +657,7 @@ class Motion {
       Wire.write((int)((eeAddress) & 0xFF)); // LSB
       Wire.endTransmission();
       byte skillHeader = 4;
-      Wire.requestFrom(DEVICE_ADDRESS, skillHeader);
+      Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)skillHeader);
       period = Wire.read();
       //PTL("read " + String(period) + " frames");
       for (int i = 0; i < 2; i++)
@@ -666,7 +666,7 @@ class Motion {
       if (period < -1) {
         skillHeader = 7;
         frameSize = 20;
-        Wire.requestFrom(DEVICE_ADDRESS, 3);
+        Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)3);
         for (byte i = 0; i < 3; i++)
           loopCycle[i] = Wire.read();
       }
@@ -679,7 +679,7 @@ class Motion {
       int readToWire = 0;
       while (len > 0) {
         //PTL("request " + String(min(WIRE_BUFFER, len)));
-        Wire.requestFrom(DEVICE_ADDRESS, min(WIRE_BUFFER, len));
+        Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)min(WIRE_BUFFER, len));
         readToWire = 0;
         do {
           if (Wire.available()) dutyAngles[readFromEE++] = Wire.read();
@@ -714,7 +714,7 @@ class Motion {
 #endif
     }
 
-    void loadBySkillName(char* skillName) {//get lookup information from on-board EEPROM and read the data array from storage
+    void loadBySkillName(const char* skillName) {//get lookup information from on-board EEPROM and read the data array from storage
       int onBoardEepromAddress = lookupAddressByName(skillName);
       if (onBoardEepromAddress == -1)
         return;
@@ -1018,7 +1018,7 @@ template <typename T> void transform( T * target, byte angleDataRatio = 1, float
 }
 
 
-void skillByName(char* skillName, byte angleDataRatio = 1, float speedRatio = 1, bool shutServoAfterward = true) {
+void skillByName(const char* skillName, byte angleDataRatio = 1, float speedRatio = 1, bool shutServoAfterward = true) {
   motion.loadBySkillName(skillName);
   transform(motion.dutyAngles, angleDataRatio, speedRatio);
   if (shutServoAfterward) {

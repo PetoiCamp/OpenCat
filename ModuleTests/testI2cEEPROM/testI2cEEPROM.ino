@@ -127,7 +127,6 @@ void readLong(unsigned int &eeAddress, char *data) {
       if (Wire.available()) data[readFromEE] = Wire.read();
       PT( (char)data[readFromEE]);
       readFromEE++;
-      //eeAddress++;
     } while (--len > 0 && ++readToWire < WIRE_BUFFER);
     PTL();
   }
@@ -136,12 +135,12 @@ void readLong(unsigned int &eeAddress, char *data) {
 }
 
 char data[] = "The quick brown fox jumps over the lazy dog. \
-The five boxing wizards jump quickly. Pack my box with five dozen liquor jugs. \
-//observe how the overflow wrapping works
+The five boxing wizards jump quickly. Pack my box with five dozen liquor jugs. \ 
 D is a musical note a whole tone above C, and is known as Re within the fixed-Do solfege system. \
 An enharmonic note is Cdouble sharp, which is a diatonic semitone below D. \
 When calculated in equal temperament with a reference of A above middle C as 440 Hz, \
 the frequency of middle D (D4) is approximately 293.665 Hz. See pitch for a discussion of historical variations in frequency."; // data to write
+//observe how the overflow wrapping works
 
 //char data[]={16,-3,5,7,9};
 void setup()
