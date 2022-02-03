@@ -69,12 +69,13 @@
 #define I2C_EEPROM //comment this line out if you don't have an I2C EEPROM in your DIY board. 
 
 //postures and movements trained by RongzhongLi
-#include "InstinctBittle.h" //activate the correct header file according to your model
-//#include "InstinctNybble.h"
+//#include "InstinctBittle.h" //activate the correct header file according to your model
+#include "InstinctNybble.h"
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
-#define NyBoard_V1_0
+//#define NyBoard_V1_0
+#define NyBoard_V2_0 //not released yet
 
 //#define DEVELOPER
 #ifdef DEVELOPER
@@ -258,6 +259,21 @@ byte pins[] = {12, 11, 3, 4,
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
 //define PIXEL_PIN 10
+
+#elif defined NyBoard_V2_0
+byte pins[] = {12, 11, 4, 3,
+//               13, 10, 5, 2,
+//               14, 9, 6, 1,
+               13, 10, 6, 2,
+               14, 9, 5, 1,
+               15, 8, 7, 0
+              };
+#define BATT A7
+#define LOW_BATT 640
+#define DEVICE_ADDRESS 0x54
+#define BAUD_RATE 115200
+#define IR_RECEIVER 3 // Signal Pin of IR receiver to Arduino Digital Pin 3
+//define PIXEL_PIN 10
 #endif
 
 #ifdef PIXEL_PIN
@@ -322,7 +338,7 @@ byte right[] = {
 #define SKILLS 200         // 1 byte for skill name length, followed by the char array for skill name
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
-#define INITIAL_SKILL_DATA_ADDRESS 0 //the actual data is stored on the I2C EEPROM. 
+#define INITIAL_SKILL_DATA_ADDRESS 1000 //the actual data is stored on the I2C EEPROM. 
 //The first 1000 bytes are reserved for transferring
 //the above constants from onboard EEPROM to I2C EEPROM
 
@@ -470,7 +486,7 @@ void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress
   else
     frameSize = period > 1 ? WALKING_DOF : 16;
   int len = abs(period) * frameSize + skillHeader;
-  int writtenToEE = INITIAL_SKILL_DATA_ADDRESS;
+  int writtenToEE = 0;
   while (len > 0) {
     Wire.beginTransmission(DEVICE_ADDRESS);
     Wire.write((int)((eeAddress) >> 8));   // MSB
@@ -505,7 +521,7 @@ void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress
 
 void saveSkillInfoFromProgmemToOnboardEeprom() {
   int skillAddressShift = 0;
-  unsigned int i2cEepromAddress = 0; //won't hurt if unused
+  unsigned int i2cEepromAddress = INITIAL_SKILL_DATA_ADDRESS; //won't hurt if unused
 #ifdef I2C_EEPROM
   PTLF("\n* Update Instincts? (Y/n)");
 #ifndef AUTORUN
