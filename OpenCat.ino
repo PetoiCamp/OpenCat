@@ -224,25 +224,25 @@ void getYPR() {//get YPR angles from FIFO data, takes time
 
 #endif
 #endif
-      for (byte g = 1; g < 3; g++)
+      for (byte g = 0; g < 3; g++) //use g = 1 to skip yaw if it's not used
         ypr[g] *= degPerRad;        //ypr converted to degree
 
       // overflow is detected after the ypr is read. it's necessary to keep a lag record of previous reading.  -- RzLi --
 #ifdef FIX_OVERFLOW
-      for (byte g = 1; g < 3; g++) {
+      for (byte g = 0; g < 3; g++) {//use g = 1 to skip yaw if it's not used
         yprLag[lag][g] = ypr[g];
         ypr[g] = yprLag[(lag - 1 + HISTORY) % HISTORY][g] ;
       }
       lag = (lag + 1) % HISTORY;
 #endif
-
-#ifdef DEVELOPER
-      PT(ypr[0]);
-      PTF("\t");
-      PT(ypr[1]);
-      PTF("\t");
-      PTL(ypr[2]);
-#endif
+      if (printGyro) {
+        PT("yaw, pitch, roll:\t");
+        PT(ypr[0]);
+        PTF("\t");
+        PT(ypr[1]);
+        PTF("\t");
+        PTL(ypr[2]);
+      }
     }
   }
 }
@@ -478,7 +478,6 @@ void loop() {
       if (checkGyro) {
         if (!(timer % skipGyro)) {
           checkBodyMotion();
-
         }
         else if (mpuInterrupt || fifoCount >= packetSize)
         {
@@ -520,6 +519,11 @@ void loop() {
             checkGyro = !checkGyro;
             if (checkGyro)
               checkBodyMotion();
+            token = T_SKILL;
+            break;
+          }
+        case T_PRINT_GYRO: {
+            printGyro = !printGyro;
             token = T_SKILL;
             break;
           }

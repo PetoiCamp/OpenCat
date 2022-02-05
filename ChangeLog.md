@@ -1,4 +1,6 @@
 # Change Log
+## Feb 5, 2022
+* Add T_PRINT_GYRO 'V' to toggle printing of Gyro data. 
 
 ## Jan 30, 2022
 * Fix type conversion warnings of skill data.

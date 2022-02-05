@@ -151,6 +151,7 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define T_CALIBRATE 'c'
 #define T_REST      'd'
 #define T_GYRO      'g'
+#define T_PRINT_GYRO'V' //verbose print Gyro data
 #define T_HELP      'h'
 #define T_INDEXED   'i'
 #define T_JOINTS    'j'
@@ -417,6 +418,7 @@ byte newCmdIdx = 0;
 byte hold = 0;
 int8_t offsetLR = 0;
 bool checkGyro = true;
+bool printGyro = false;
 int8_t skipGyro = 2;
 
 #define COUNT_DOWN 60
