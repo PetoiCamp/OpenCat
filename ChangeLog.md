@@ -1,4 +1,8 @@
 # Change Log
+## Feb 6, 2022
+* Add a 'v' token to print the MPU for once and a 'V' token to print the MPU for every loop. 
+* Fix a bug when reading IMU acceleration data.
+
 ## Feb 5, 2022
 * Add T_PRINT_GYRO 'V' to toggle printing of Gyro data. 
 

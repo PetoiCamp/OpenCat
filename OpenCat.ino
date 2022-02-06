@@ -58,7 +58,10 @@ uint8_t fifoBuffer[PACKET_SIZE]; // FIFO storage buffer
 
 // orientation/motion vars
 Quaternion q;           // [w, x, y, z]         quaternion container
+VectorInt16 aa;         // [x, y, z]            accel sensor measurements
 VectorFloat gravity;    // [x, y, z]            gravity vector
+VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
+VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
 
 // ================================================================
 // ===               INTERRUPT DETECTION ROUTINE                ===
@@ -168,8 +171,6 @@ String translateIR() // takes action based on IR code received
   // number keys for different postures or behaviors
 }
 
-
-
 void getFIFO() {//get FIFO only without further processing
   while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
 
@@ -181,6 +182,22 @@ void getFIFO() {//get FIFO only without further processing
   fifoCount -= packetSize;
 }
 
+void printMPU6Axis() {
+  PT("yaw, pitch, roll, aaWorld.x, aaWorld.y, aaWorld.z, aaReal.z:\t");
+  PT(ypr[0]);
+  PTF("\t");
+  PT(ypr[1]);
+  PTF("\t");
+  PT(ypr[2]);
+  PTF("\t");
+  PT(aaWorld.x);
+  PTF("\t");
+  PT(aaWorld.y);
+  PTF("\t");
+  PT(aaWorld.z);
+  PTF("\t");
+  PTL(aaReal.z);
+}
 void getYPR() {//get YPR angles from FIFO data, takes time
   // wait for MPU interrupt or extra packet(s) available
   //while (!mpuInterrupt && fifoCount < packetSize) ;
@@ -215,8 +232,11 @@ void getYPR() {//get YPR angles from FIFO data, takes time
 #ifdef OUTPUT_READABLE_YAWPITCHROLL
       // display Euler angles in degrees
       mpu.dmpGetQuaternion(&q, fifoBuffer);
+      mpu.dmpGetAccel(&aa, fifoBuffer);
       mpu.dmpGetGravity(&gravity, &q);
       mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+      mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+      mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
 
 #ifdef MPU_YAW180
       ypr[2] = -ypr[2];
@@ -235,14 +255,8 @@ void getYPR() {//get YPR angles from FIFO data, takes time
       }
       lag = (lag + 1) % HISTORY;
 #endif
-      if (printGyro) {
-        PT("yaw, pitch, roll:\t");
-        PT(ypr[0]);
-        PTF("\t");
-        PT(ypr[1]);
-        PTF("\t");
-        PTL(ypr[2]);
-      }
+      if (printGyro)
+        printMPU6Axis();
     }
   }
 }
@@ -523,6 +537,10 @@ void loop() {
             break;
           }
         case T_PRINT_GYRO: {
+            printMPU6Axis();
+            break;
+          }
+        case T_VERBOSELY_PRINT_GYRO: {
             printGyro = !printGyro;
             token = T_SKILL;
             break;
@@ -592,6 +610,7 @@ void loop() {
         case T_JOINTS: { //show the list of current joint anles
             printRange(DOF);
             printList(currentAng);
+            token = T_SKILL;
             break;
           }
         case T_CALIBRATE: //calibration

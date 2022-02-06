@@ -151,7 +151,6 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define T_CALIBRATE 'c'
 #define T_REST      'd'
 #define T_GYRO      'g'
-#define T_PRINT_GYRO'V' //verbose print Gyro data
 #define T_HELP      'h'
 #define T_INDEXED   'i'
 #define T_JOINTS    'j'
@@ -164,6 +163,8 @@ void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int
 #define T_RAMP      'r'
 #define T_SAVE      's'
 #define T_MEOW      'u'
+#define T_PRINT_GYRO            'v' //print Gyro data
+#define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
 #define T_UNDEFINED 'w'
 #define T_XLEG      'x'
 
