@@ -1,4 +1,8 @@
 # Change Log
+
+## Feb 16, 2022
+* Improve the successful rate of Nybble's roll recover behavior, the "rc" in InstinctNybble.h.
+
 ## Feb 6, 2022
 * Add a 'v' token to print the MPU for once and a 'V' token to print the MPU for every loop. 
 * Fix a bug when reading IMU acceleration data.
