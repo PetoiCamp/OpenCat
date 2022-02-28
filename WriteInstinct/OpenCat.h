@@ -324,7 +324,7 @@ byte right[] = {
 #define SKILLS 200         // 1 byte for skill name length, followed by the char array for skill name
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
-#define INITIAL_SKILL_DATA_ADDRESS 0 //the actual data is stored on the I2C EEPROM. 
+#define INITIAL_SKILL_DATA_ADDRESS 1024 //the actual data is stored on the I2C EEPROM. 
 //The first 1000 bytes are reserved for transferring
 //the above constants from onboard EEPROM to I2C EEPROM
 
@@ -473,7 +473,7 @@ void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress
   else
     frameSize = period > 1 ? WALKING_DOF : 16;
   int len = abs(period) * frameSize + skillHeader;
-  int writtenToEE = INITIAL_SKILL_DATA_ADDRESS;
+  int writtenToEE = 0;
   while (len > 0) {
     Wire.beginTransmission(DEVICE_ADDRESS);
     Wire.write((int)((eeAddress) >> 8));   // MSB
@@ -508,7 +508,7 @@ void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress
 
 void saveSkillInfoFromProgmemToOnboardEeprom() {
   int skillAddressShift = 0;
-  unsigned int i2cEepromAddress = 0; //won't hurt if unused
+  unsigned int i2cEepromAddress = INITIAL_SKILL_DATA_ADDRESS; //won't hurt if unused
 #ifdef I2C_EEPROM
   PTLF("\n* Update Instincts? (Y/n)");
 #ifndef AUTORUN
@@ -555,7 +555,7 @@ void saveSkillInfoFromProgmemToOnboardEeprom() {
   if (choice == 'Y' || choice == 'y')
 #endif
   {
-    PTF("    Maximal storage of external I2C EEPROM is ");
+    PTF("    External I2C EEPROM has ");
     PT(EEPROM_SIZE);
     PTLF(" bytes.");
     PT("\tInstinctive data used ");
