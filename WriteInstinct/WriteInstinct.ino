@@ -32,9 +32,6 @@
 #include "OpenCat.h"
 #define INSTINCT_SKETCH
 
-
-
-
 // the following MPU calibration codes are modified based on http://wired.chillibasket.com/2015/01/calibrating-mpu6050/
 // Rongzhong Li
 // Sep 16, 2018

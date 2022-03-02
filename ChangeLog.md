@@ -1,5 +1,8 @@
 # Change Log
 
+## Mar 2, 2022
+* Add support for NyBoardV1\_1.
+
 ## Feb 16, 2022
 * Improve the successful rate of Nybble's roll recover behavior, the "rc" in InstinctNybble.h.
 

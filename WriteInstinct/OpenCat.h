@@ -74,7 +74,8 @@
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
-#define NyBoard_V1_0
+//#define NyBoard_V1_0    //https://docs.petoi.com/nyboard/nyboard-v1_0
+#define NyBoard_V1_1      //https://docs.petoi.com/nyboard/nyboard-v1_1
 
 //#define DEVELOPER
 #ifdef DEVELOPER
@@ -260,6 +261,18 @@ byte pins[] = {12, 11, 3, 4,
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
 //define PIXEL_PIN 10
+
+#elif defined NyBoard_V1_1
+byte pins[] = {12, 11, 3, 4,
+               13, 10, 5, 2,
+               14, 9, 6, 1,
+               15, 8, 7, 0
+              };
+#define BATT A7
+#define LOW_BATT 640
+#define DEVICE_ADDRESS 0x54
+#define BAUD_RATE 115200
+#define LED_PIN 10
 #endif
 
 #ifdef PIXEL_PIN
