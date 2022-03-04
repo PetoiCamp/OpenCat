@@ -69,8 +69,9 @@
 #define I2C_EEPROM //comment this line out if you don't have an I2C EEPROM in your DIY board. 
 
 //postures and movements trained by RongzhongLi
-#include "InstinctBittle.h" //activate the correct header file according to your model
+//#include "InstinctBittle.h" //activate the correct header file according to your model
 //#include "InstinctNybble.h"
+#include "InstinctBittleShortExample.h"
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
@@ -771,8 +772,7 @@ void assignSkillAddressToOnboardEeprom() {
   PT(sizeof(progmemPointer) / 2);
   PTL(" skill addresses...");
   for (byte s = 0; s < sizeof(progmemPointer) / 2; s++) { //save skill info to on-board EEPROM, load skills to SkillList
-    if (s)
-      PTL(s);
+    PTL(s);
     byte nameLen = EEPROM.read(SKILLS + skillAddressShift++); //without last type character
     //PTL(nameLen);
     /*for (int n = 0; n < nameLen; n++)
