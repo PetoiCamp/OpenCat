@@ -1,5 +1,26 @@
 # Change Log
 
+## Mar 17, 2022
+### OpenCat2.0 is pushed to the branch 2.0 for beta testers.
+### New Features:
+* Completely redesign of the code structure to make it easier to understand and insert 3rd party codes.
+* Combine WriteInstinct.ino and OpenCat.ino into a single OpenCat.ino. Use the MAIN_SKETCH macro to switch between the mode. 
+* Fixed many bugs in the original workflow, for example, the robot won’t skip commands randomly.
+* Improved the smoothness of motion and the speed of adjustment. 
+* Optimize the token definitions.
+* A better documented serialMaster Python module and a sample of sequential commands in example.py. 
+* Print the token after finishing one task as a confirmation to the master program. 
+* Used a new MPU6050 function to avoid using the interrupt pin. Enter the calibration state by booting up the robot with one side up. 
+* Write a formalized servo class inherited from the AdafruitPWM servo library. Tune the mapping between angles and pulse width.
+* Use the built-in tone function to generate clean beeps and melody.
+* Add random mind when the robot boots up. Use token ‘z’ to turn on/off the feature. 
+* Add angle limit to avoid self-collision.
+* Put the skill-related functions into the Skill Class. Combine reused code blocks into one function.
+* Make more use of the EEPROM and PRGMEM memory to save resources for flash and SRAM.
+* Allow both “newline” and “no line ending” for the serial monitor.
+* Mirror rightward gaits from the leftward gaits, to save static memory. 
+* Add support for LD3320 voice recognition module (the current code works for Chinese).
+
 ## Jan 30, 2022
 * Fix type conversion warnings of skill data.
 * Add demo for testBuzzer.ino using Arduino's built-in tone function. However, it cannot be used for the main program because ATmega328P has only two timers, used up by the IR and IMU. 
