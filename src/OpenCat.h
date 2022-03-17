@@ -62,7 +62,7 @@ int angleLimit[][2] = {
 };
 
 #ifdef NyBoard_V0_1
-byte pwm_pin[] = {7, 0, 8, 15,
+byte pwm_pin[] = {7, 0, 15, 8,
                   6, 1, 14, 9,
                   5, 2, 13, 10,
                   4, 3, 12, 11
@@ -73,7 +73,7 @@ byte pwm_pin[] = {7, 0, 8, 15,
 #define BAUD_RATE 57600
 
 #elif defined NyBoard_V0_2
-byte pwm_pin[] = {4, 3, 11, 12,
+byte pwm_pin[] = {4, 3, 12, 11,
                   5, 2, 13, 10,
                   6, 1, 14, 9,
                   7, 0, 15, 8
@@ -84,7 +84,7 @@ byte pwm_pin[] = {4, 3, 11, 12,
 #define BAUD_RATE 57600
 
 #elif defined NyBoard_V1_0
-byte pwm_pin[] = {12, 11, 3, 4,
+byte pwm_pin[] = {12, 11, 4, 3,
                   13, 10, 5, 2,
                   14, 9, 6, 1,
                   15, 8, 7, 0
@@ -96,7 +96,7 @@ byte pwm_pin[] = {12, 11, 3, 4,
 //#define NEOPIXEL_PIN 10
 
 #elif defined NyBoard_V1_1
-byte pwm_pin[] = {12, 11, 3, 4,
+byte pwm_pin[] = {12, 11, 4, 3,
                   13, 10, 5, 2,
                   14, 9, 6, 1,
                   15, 8, 7, 0
