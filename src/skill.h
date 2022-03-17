@@ -407,9 +407,11 @@ int testEEPROM(char* skillData) {
 
 #ifndef MAIN_SKETCH
 void writeConst() {
-  saveMelody(MELODY_NORMAL, melodyNormalBoot, sizeof(melodyNormalBoot));
-  saveMelody(MELODY_INIT, melodyInit, sizeof(melodyInit));
-  saveMelody(MELODY_LOW_BATTERY, melodyLowBattery, sizeof(melodyLowBattery));
+  int melodyAddress = MELODY_NORMAL;
+  saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
+  saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
+  saveMelody(melodyAddress, melodyLowBattery, sizeof(melodyLowBattery));
+  saveMelody(melodyAddress, melody1, sizeof(melody1));
   playMelody(MELODY_INIT);
 #ifndef AUTO_INIT
   PTLF("Reset joint offsets? (Y/n)");

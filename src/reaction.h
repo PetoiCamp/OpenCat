@@ -126,7 +126,6 @@ void reaction() {
       // this block handles array like arguments
       case T_INDEXED_SIMULTANEOUS_BIN: //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
       case T_LISTED_BIN: //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
-        //case T_MELODY: //for melody
         {
           int targetFrame[DOF];
           for (int i = 0; i < DOF; i++) {
@@ -228,6 +227,10 @@ void reaction() {
           }
           delete []targetFrame;
           delete []pch;
+          break;
+        }
+      case T_MELODY: {
+          playMelody(MELODY_1);
           break;
         }
       case T_SAVE: {

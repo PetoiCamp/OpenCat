@@ -1,7 +1,7 @@
 #define LENGTH_FACTOR 2
 #define BASE_PITCH 1046.50
-// tone: pause,1,  2,  3,  4,  5,  6,  7,  1,  2, 3,
-// code: 0,    1,  3,  5,  6,  8,  10, 12, 13, 15, 17
+// tone: pause,1,  2,  3,  4,  5,  6,  7,  1,  2, 3, 4
+// code: 0,    8, 10, 12, 13, 15, 17, 19, 20, 22,24,25
 
 byte melodyNormalBoot[] = {8, 13, 10, 13, 8, 5, 8, 3, 5, 8,  //tone
                            4,  4,  8,  8, 4, 8, 8, 8, 8, 4,  //relative duration, 8 means 1/8 note length
@@ -12,6 +12,9 @@ byte melodyInit[] = {15, 12, 15, 12, 15, 12, 8, 0, 10, 13, 12, 10, 15,//tone
 byte melodyLowBattery[] = {15, 11, 13, 10, 11, //tone
                            4,  4,  4,  4,  4, //relative duration, 8 means 1/8 note length
                           };
+byte melody1[] = {15, 8, 10, 12, 13, 15, 8, 8, 0, 17, 13, 15, 17, 19, 20, 8, 8,
+                   1, 2,  2,  2,  2,  1, 2, 4, 8,  1,  2,  2,  2,  2,  1, 2, 4
+                 };
 
 void beep(float note, float duration = 50, int pause = 0, byte repeat = 1 ) {
   for (byte r = 0; r < repeat; r++) {
