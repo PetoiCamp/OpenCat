@@ -10,7 +10,8 @@
 * Optimize the token definitions.
 * A better documented serialMaster Python module and a sample of sequential commands in example.py. 
 * Print the token after finishing one task as a confirmation to the master program. 
-* Used a new MPU6050 function to avoid using the interrupt pin. Enter the calibration state by booting up the robot with one side up. 
+* Used a new MPU6050 function to avoid using the interrupt pin. Accelerate the IMU calibration process. 
+* Enter the joint calibration state by booting up the robot with one side up. 
 * Write a formalized servo class inherited from the AdafruitPWM servo library. Tune the mapping between angles and pulse width.
 * Use the built-in tone function to generate clean beeps and melody.
 * Add random mind when the robot boots up. Use token ‘z’ to turn on/off the feature. 
