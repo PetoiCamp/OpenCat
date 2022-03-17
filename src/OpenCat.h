@@ -241,7 +241,7 @@ int frame;
 byte tStep = 0;
 
 #ifdef DEVELOPER
-#include <MemoryFree.h> //http://playground.arduino.cc/Code/AvailableMemory
+#include "MemoryFree/MemoryFree.h" //http://playground.arduino.cc/Code/AvailableMemory
 #endif
 #include <EEPROM.h>
 #include "sound.h"
