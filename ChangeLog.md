@@ -3,7 +3,7 @@
 ## Mar 17, 2022
 ### OpenCat2.0 is pushed to the branch 2.0 for beta testers.
 ### New Features:
-* Completely redesign of the code structure to make it easier to understand and insert 3rd party codes.
+* Complete redesign of the code structure to make it easier to understand and insert 3rd party codes.
 * Combine WriteInstinct.ino and OpenCat.ino into a single OpenCat.ino. Use the MAIN_SKETCH macro to switch between the mode. 
 * Fixed many bugs in the original workflow, for example, the robot won’t skip commands randomly.
 * Improved the smoothness of motion and the speed of adjustment. 
