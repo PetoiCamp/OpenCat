@@ -130,13 +130,6 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #define REGULAR P1S
 #define KNEE P1S
 
-#elif defined CUB
-#define HEAD
-#define LL_LEG
-#define WALKING_DOF 12
-#define REGULAR P1S
-#define KNEE P1K
-
 #endif
 
 //on-board EEPROM addresses
@@ -202,8 +195,7 @@ int8_t servoCalib[DOF] = {0, 0, 0, 0,
 
 enum ServoModel_t {
   G41 = 0,
-  P1S,
-  P2K
+  P1S
 };
 
 #define SERVO_FREQ 320

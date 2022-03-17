@@ -92,7 +92,6 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
       //servo parameters
       ServoModel servoG41   (180,    SERVO_FREQ,      500,      2500);
       ServoModel servoP1S   (290,    SERVO_FREQ,      500,      2500);//1s/4 = 250ms 250ms/2500us=100Hz
-      ServoModel servoP2K   (290,    SERVO_FREQ,      500,      2500);
       for (int s = 0; s < numServo; s++) {
         ServoModel *model;
         switch (servoModelList[s]) {
@@ -101,9 +100,6 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
             break;
           case P1S:
             model = &servoP1S;
-            break;
-          case P2K:
-            model = &servoP2K;
             break;
         }
 
