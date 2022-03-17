@@ -4,22 +4,22 @@
 ### OpenCat2.0 is pushed to the branch 2.0 for beta testers.
 ### New Features:
 * Complete redesign of the code structure to make it easier to understand and insert 3rd party codes.
-* Combine WriteInstinct.ino and OpenCat.ino into a single OpenCat.ino. Use the MAIN_SKETCH macro to switch between the mode. 
-* Fixed many bugs in the original workflow, for example, the robot won’t skip commands randomly.
-* Improved the smoothness of motion and the speed of adjustment. 
-* Optimize the token definitions.
-* A better documented serialMaster Python module and a sample of sequential commands in example.py. 
+* Combine WriteInstinct.ino and OpenCat.ino into a single OpenCat.ino. Use the MAIN_SKETCH macro to switch between the modes. 
+* Fixed many bugs in the original workflow. For example, the robot no longer skips commands randomly.
+* Improved the smoothness of motion and the speed of tilt adaption. 
+* Optimized the token definitions.
+* A better documented serialMaster Python module and provide a command scheduler in example.py. 
 * Print the token after finishing one task as a confirmation to the master program. 
 * Used a new MPU6050 function to avoid using the interrupt pin. Accelerate the IMU calibration process. 
 * Enter the joint calibration state by booting up the robot with one side up. 
-* Write a formalized servo class inherited from the AdafruitPWM servo library. Tune the mapping between angles and pulse width.
+* Write a formalized servo class inherited from the AdafruitPWM servo library. Make it easier to change parameters of 3rd party servos.
 * Use the built-in tone function to generate clean beeps and melody.
 * Add random mind when the robot boots up. Use token ‘z’ to turn on/off the feature. 
-* Add angle limit to avoid self-collision.
-* Put the skill-related functions into the Skill Class. Combine reused code blocks into one function.
+* Add angle limits to avoid most cased of of self-collision.
+* Put the skill-related functions into the Skill Class. Combine reused code blocks into single functions.
 * Make more use of the EEPROM and PRGMEM memory to save resources for flash and SRAM.
-* Allow both “newline” and “no line ending” for the serial monitor.
 * Mirror rightward gaits from the leftward gaits, to save static memory. 
+* Allow both “newline” and “no line ending” for the serial monitor.
 * Add support for LD3320 voice recognition module (the current code works for Chinese).
 
 ## Jan 30, 2022
