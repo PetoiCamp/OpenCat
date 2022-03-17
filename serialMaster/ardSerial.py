@@ -40,7 +40,7 @@ def wrapper(task):  # task Structure is [token, var=[], time]
         serialWriteNumToByte(task[0], task[1])
     else:
         serialWriteByte(task[1])
-    time.sleep(task[-1])
+
 
 
 def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b i l o within Python
@@ -50,10 +50,10 @@ def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b i l o 
     in_str = ""
     if var is None:
         var = []
-    if token == 'l' or token == 'i':
+    if token == 'L' or token == 'I' or token =='K':
         var = list(map(int, var))
         in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
-    elif token == 'c' or token == 'm' or token == 'M' or token == 'u' or token == 'b':
+    elif token == 'c' or token == 'm' or token == 'i' or token == 'u' or token == 'b':
         in_str = token + " "
         for element in var:
             in_str = in_str + str(element) + " "
@@ -67,11 +67,11 @@ def serialWriteByte(var=None):
         var = []
     token = var[0][0]
     # print var
-    if (token == 'c' or token == 'm' or token == 'M' or token == 'b' or token == 'u') and len(var) >= 2:
+    if (token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u') and len(var) >= 2:
         in_str = ""
         for element in var:
             in_str = in_str + element + " "
-    elif token == 'l' or token == 'i':
+    elif token == 'L' or token == 'I':
         if len(var[0]) > 1:
             var.insert(1, var[0][1:])
         var[1:] = list(map(int, var[1:]))
@@ -86,7 +86,7 @@ def serialWriteByte(var=None):
 
 def closeSerialBehavior():
     try:
-        wrapper(['d', 1])
+#        wrapper(['d', 1])
         ser.Close_Engine()
         logger.info("close the serial port.")
     except Exception as e:
@@ -111,7 +111,7 @@ def flushSeialOutput(counterLimit=300):
         print("If there is no response after you input the serial command in the terminal")
         print("you should close the terminal first")
         print("then change the value of 'bluetoothPortIndex' in the ardSerial.py (line:159)")
-        print("to connect to another Bluetooth serial port")
+        print("to connect to another serial port")
         print("then reopen the terminal and rerun the script")
         print("---Start---")
 
@@ -133,7 +133,7 @@ if len(port) > 1:
     If there is no response after you input the serial command in the terminal,
     you should close the terminal first,
     then change the value of "bluetoothPortIndex" in the ardSerial.py (line:159)
-    to connect to another Bluetooth serial port,
+    to connect to another serial port,
     then reopen the terminal and rerun the script.
     """
     if platform.uname()[1] == 'raspberrypi':
@@ -158,7 +158,7 @@ if len(port) > 1:
     else:
         bluetoothPortIndex = -1    #0 means connetct to port[0]; -1 means connetct to the last port in the list
         ser = Communication(port[bluetoothPortIndex], 115200, 0.5)
-        logger.info(f"Connect to Bluetooth serial port: {port[bluetoothPortIndex]}.")
+        logger.info(f"Connect to serial port: {port[bluetoothPortIndex]}.")
 else:
     if platform.uname()[1] == 'raspberrypi':
         serialPort = '/dev/ttyS0'  # needed when plug in RaspberryPi
@@ -179,11 +179,11 @@ if __name__ == '__main__':
                 wrapper([sys.argv[1], 1])
                 time.sleep(0.2)
                 response = ser.main_engine.read_all()
-                logger.info(f"Response is: {response.decode('utf-8')}")
+                logger.info(f"Response is: {response.decode('ISO-8859-1')}")
                 var = sys.argv[1]
                 token = var[0][0]
                 if token == 'k':
-                    if response.decode('utf-8')[0] == 'k':
+                    if response.decode('ISO-8859-1')[0] == 'k':
                         logger.info("Serial port is connected very well!")
             else:
                 wrapper([sys.argv[1][0], sys.argv[1:], 1])
@@ -202,11 +202,11 @@ if __name__ == '__main__':
                     if len(task) == 1:
                         wrapper([task, 1])
                         time.sleep(0.2)
-                        response = ser.main_engine.read_all()
-                        logger.info(f"Response is: {response.decode('utf-8')}")
+                        response = ser.main_engine.read_all().decode('ISO-8859-1')
+                        logger.info(f"Response is: {response}")
                         token = task[0][0]
                         if token == 'k':
-                            if response.decode('utf-8')[0] == 'k':
+                            if response[0] == 'k':
                                 logger.info("Serial port is connected very well!")
                             else:
                                 logger.info("Serial port is connected failed.")
@@ -217,8 +217,8 @@ if __name__ == '__main__':
                     else:
                         wrapper([task[0], task[0:], 1])
                         time.sleep(0.2)
-                        response = ser.main_engine.read_all()
-                        logger.info(f"Response is: {response.decode('utf-8')}")
+                        response = ser.main_engine.read_all().decode('ISO-8859-1')
+                        logger.info(f"Response is: {response}")
 
         closeSerialBehavior()
         logger.info("finish!")

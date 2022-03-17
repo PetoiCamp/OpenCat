@@ -13,15 +13,15 @@ if __name__ == '__main__':
 
         serialWriteByte(["ksit"])
         time.sleep(2)
-        serialWriteByte(['M', '2', '-90', '10', '-80', '11', '-80', '14', '-10', '15', '-10'])
+        serialWriteByte(['i', '2', '-90', '10', '-80', '11', '-80', '14', '-10', '15', '-10'])
         time.sleep(1)
-        serialWriteByte(['M', '8', '-10', '9', '-10', '10', '-60', '11', '-60'])
+        serialWriteByte(['i', '8', '-10', '9', '-10', '10', '-60', '11', '-60'])
         time.sleep(0.5)
         while True:
             for a in np.arange(0, 5 * math.pi, 0.4):
                 # print(a)
                 tilt = math.cos(2*a)
-                serialWriteByte(['i', '0', str(int(30 * math.sin(a))), '1', str(int(15 * tilt - 60)), '12', str(int(20 * tilt + 50)), '13', str(int(-20 * tilt + 50))])
+                serialWriteByte(['I', '0', str(int(30 * math.sin(a))), '1', str(int(15 * tilt - 60)), '12', str(int(20 * tilt + 50)), '13', str(int(-20 * tilt + 50))])
                 time.sleep(0.13)
 
             time.sleep(1)
