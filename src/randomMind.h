@@ -13,8 +13,9 @@ const char mind7[] PROGMEM = "kjy";
 const char mind8[] PROGMEM = "kvt";
 const char mind9[] PROGMEM = "i0 -45 1 45";
 const char mind10[] PROGMEM = "m2 0 2 -20 2 -40";
+const char mind11[] PROGMEM = "o ";
 
-const char* const mindList[] PROGMEM = {mind1, mind2, mind3, mind4, mind5, mind8,
+const char* const mindList[] PROGMEM = {mind1, mind2, mind3, mind4, mind5, mind8, mind11,
 #ifdef BITTLE
                                         mind6, mind7,
 #else
@@ -23,7 +24,7 @@ const char* const mindList[] PROGMEM = {mind1, mind2, mind3, mind4, mind5, mind8
                                        };
 
 #else
-const char *mindList[] = {"ksit", "kbalance", "kpee", "kpu", "m0 -45 1 30 0 45 0 0", "kvt",
+const char *mindList[] = {"ksit", "kbalance", "kpee", "kpu", "m0 -45 1 30 0 45 0 0", "kvt", "o ",
 #ifdef BITTLE
                           "kck", "kjy",
 #else
