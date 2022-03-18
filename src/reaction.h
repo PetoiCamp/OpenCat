@@ -230,8 +230,8 @@ void reaction() {
         }
 #ifdef  T_SKILL_DATA
       case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
-          skill.loadFrameByCmdString();
           token = T_SKILL;
+          skill.loadFrameByCmdString();
           break;
         }
 #endif
@@ -254,7 +254,6 @@ void reaction() {
     }
     PT("period ");PTL(skill.period);
     if (token != T_SKILL || skill.period > 0) {
-      PTL("done");
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
     }
 

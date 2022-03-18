@@ -153,7 +153,7 @@ class Skill {
     }
 
     int dataLen(int8_t p) {
-      byte skillHeader = p > 0 ? 3 : 6;
+      byte skillHeader = p > 0 ? 4 : 7;
       frameSize = p > 1 ?
                   WALKING_DOF :       //gait
                   p == 1 ? DOF : //posture
@@ -164,9 +164,10 @@ class Skill {
 
     void loadDataFromProgmem(unsigned int pgmAddress) {
       //      dataBuffer = new int8_t [bufferLen + 1];
+//      dataBuffer[0] = pgm_read_byte(pgmAddress++);
       int bufferLen = dataLen(period);
       for (int i = 0; i < bufferLen; i++)
-        dataBuffer[i] = pgm_read_byte(pgmAddress + 1 + i);
+        dataBuffer[i] = pgm_read_byte(pgmAddress ++);
       //      dataBuffer[bufferLen] = '\0';
     }
 
@@ -176,7 +177,7 @@ class Skill {
       Wire.write((int)((eeAddress) & 0xFF)); // LSB
       Wire.endTransmission();
       Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)1);
-      Wire.read();
+      dataBuffer[0]=Wire.read();
       int bufferLen = dataLen(period);
       //      int tail = bufferLen;
       int readFromEE = 0;
@@ -186,7 +187,7 @@ class Skill {
         Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)min(WIRE_BUFFER, bufferLen));
         readToWire = 0;
         do {
-          if (Wire.available()) dataBuffer[readFromEE++] = Wire.read();
+          if (Wire.available()) dataBuffer[1+readFromEE++] = Wire.read();
           /*PT( (int8_t)dutyAngles[readFromEE - 1]);
             PT('\t')*/
         } while (--bufferLen > 0 && ++readToWire < WIRE_BUFFER);
@@ -195,25 +196,24 @@ class Skill {
       //      dataBuffer[tail] = '\0';
     }
 
-    void formatSkill(int8_t * ptr) {
+    void formatSkill() {
       for (int i = 0; i < 2; i++)
-        expectedRollPitch[i] = (int8_t)ptr[i];
-      angleDataRatio = ptr[2];
-      byte skillHeader = 3;
+        expectedRollPitch[i] = (int8_t)dataBuffer[1+i];
+      angleDataRatio = dataBuffer[3];
+      byte skillHeader = 4;
       if (period < 0) {
         for (byte i = 0; i < 3; i++)
-          loopCycle[i] = ptr[skillHeader++];
+          loopCycle[i] = dataBuffer[skillHeader++];
       }
 #ifdef POSTURE_WALKING_FACTOR
       postureOrWalkingFactor = (period == 1 ? 1 : POSTURE_WALKING_FACTOR);
 #endif
       firstMotionJoint = (period <= 1) ? 0 : DOF - WALKING_DOF;
 
-      dutyAngles = ptr + skillHeader;
+      dutyAngles = dataBuffer + skillHeader;
 #ifdef DEVELOPER
       info();
 #endif
-      info();
 
     }
 
@@ -229,7 +229,7 @@ class Skill {
     void loadFrameByCmdString() {
       period = dataBuffer[0];
       dataLen(period);
-      formatSkill(dataBuffer + 1);
+      formatSkill();
       int frame = 0;
       transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
     }
@@ -249,12 +249,13 @@ class Skill {
       else                    //copy newbility data array from progmem
 #endif
         loadDataFromProgmem(dataArrayAddress);
-      formatSkill(dataBuffer);
+      formatSkill();
       if (period > 1 && offsetLR < 0
           || period <= 1 && random(100) % 2 && token != T_CALIBRATE)
         mirror();
       int frame = 0;
       transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
+      delay(10);
     }
 
     void mirror() {
@@ -323,10 +324,8 @@ class Skill {
             c = loopCycle[0] - 1;
             repeat--;
           }
-          delay(10);
+//          delay(10);
         }
-        PTL("beh");
-        PTL(token);
       }
       else {//postures and gaits
 

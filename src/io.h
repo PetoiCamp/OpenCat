@@ -8,6 +8,16 @@ char getUserInputChar() {//take only the first character, allow "no line ending"
   return result;
 }
 
+int readSerialUntil(char * destination, char terminator) {
+  int c = 0;
+  do {
+    if (Serial.available())
+      destination[c++] = Serial.read();
+  } while ((char)destination[c - 1] != terminator);
+  destination[c - 1] = '\0';
+  return c;
+}
+
 void read_serial() {
 #ifdef GYRO_PIN
   if (token != T_SKILL && !checkGyro)
@@ -17,27 +27,20 @@ void read_serial() {
     newCmdIdx = 2;
     token = Serial.read();
     if (token == T_SKILL_DATA) {
-      int c = 0;
-      do {
-        if (Serial.available()) {
-          dataBuffer[c++] = Serial.read();
-        }
-      } while ((char)dataBuffer[c - 1] != '~');
+      readSerialUntil(dataBuffer, '~');
     }
     else if (Serial.available() > 0) {
+      String cmdBuffer;
       if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN) {
         cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
       }
       else
-
         cmdBuffer = Serial.readStringUntil('\n');
       cmdLen = cmdBuffer.length();
       for (int i = 0; i < cmdLen; i++) {
         newCmd[i] = cmdBuffer[i];
       }
       newCmd[cmdLen] = '\0';
-
-
       //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
 #ifdef DEVELOPER
       PTF(" memory "); PTL(freeMemory());

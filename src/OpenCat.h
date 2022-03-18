@@ -8,7 +8,7 @@ byte newCmdIdx = 0;
 #else
 
 #define RANDOM_MIND //allow the robot to behave randomly
-#define GYRO_PIN  0
+//#define GYRO_PIN  0
 
 #endif
 
@@ -229,7 +229,6 @@ float currentAdjust[DOF] = {};
 char lastToken;
 char *lastCmd = new char[5];
 int8_t* dataBuffer = new int8_t[450];
-String cmdBuffer;
 byte cmdLen;
 bool checkGyro = true;
 bool printGyro = false;
