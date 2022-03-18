@@ -9,6 +9,7 @@
 * Improved the smoothness of motion and the speed of tilt adaption. 
 * Optimized the token definitions.
 * A better documented serialMaster Python module and provide a command scheduler in example.py. 
+* Allow sending a whole skill array in realtime through serial then run it locally.
 * Print the token after finishing one task as a confirmation to the master program. 
 * Used a new MPU6050 function to avoid using the interrupt pin. Accelerate the IMU calibration process. 
 * Enter the joint calibration state by booting up the robot with one side up. 

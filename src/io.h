@@ -26,26 +26,28 @@ void read_serial() {
   if (Serial.available() > 0) {
     newCmdIdx = 2;
     token = Serial.read();
-    if (token == T_SKILL_DATA) {
+#ifdef  T_SKILL_DATA
+    if (token == T_SKILL_DATA) 
       readSerialUntil(dataBuffer, '~');
-    }
-    else if (Serial.available() > 0) {
-      String cmdBuffer;
-      if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN) {
-        cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
-      }
-      else
-        cmdBuffer = Serial.readStringUntil('\n');
-      cmdLen = cmdBuffer.length();
-      for (int i = 0; i < cmdLen; i++) {
-        newCmd[i] = cmdBuffer[i];
-      }
-      newCmd[cmdLen] = '\0';
-      //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
-#ifdef DEVELOPER
-      PTF(" memory "); PTL(freeMemory());
+    else
 #endif
-    }
+      if (Serial.available() > 0) {
+        String cmdBuffer;
+        if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN) 
+          cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
+        else
+          cmdBuffer = Serial.readStringUntil('\n');
+          
+        cmdLen = cmdBuffer.length();
+        for (int i = 0; i < cmdLen; i++) {
+          newCmd[i] = cmdBuffer[i];
+        }
+        newCmd[cmdLen] = '\0';
+        //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+#ifdef DEVELOPER
+        PTF(" memory "); PTL(freeMemory());
+#endif
+      }
   }
 }
 

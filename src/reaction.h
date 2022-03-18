@@ -48,7 +48,11 @@ void resetCmd() {
   //  }
   //  else
   //    saverThreshold = POWER_SAVER_SHORT;
-  if (strcmp(newCmd, "rc") && token != T_SKILL_DATA) {
+  if (strcmp(newCmd, "rc")
+#ifdef  T_SKILL_DATA
+      && token != T_SKILL_DATA
+#endif
+     ) {
     delete [] lastCmd;
     lastCmd = new char(strlen(newCmd) + 1);
     strcpy(lastCmd, newCmd);
@@ -252,7 +256,6 @@ void reaction() {
           break;
         }
     }
-    PT("period ");PTL(skill.period);
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
     }

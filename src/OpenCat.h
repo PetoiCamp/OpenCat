@@ -232,7 +232,7 @@ int8_t* dataBuffer = new int8_t[450];
 byte cmdLen;
 bool checkGyro = true;
 bool printGyro = false;
-bool autoSwitch = false;//true;
+bool autoSwitch = true;
 bool walkingQ = false;
 byte exceptions = 0;
 
