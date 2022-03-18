@@ -67,12 +67,12 @@ class Skill {
       for (byte s = 0; s < eeprom(NUM_SKILLS); s++) {//save skill info to on-board EEPROM
         byte len = strlen(skillNameWithType[s]); //len includes type. the saved value doesn't
         EEPROM.update(SKILLS + skillAddressShift++, len - 1); //the last char in name denotes skill type, I(nstinct) on external eeprom, N(ewbility) on progmem
-//        PT(skillNameWithType[s][len - 1] == 'I' ? "I nstinct\t" : "N ewbility\t");
+        //        PT(skillNameWithType[s][len - 1] == 'I' ? "I nstinct\t" : "N ewbility\t");
         for (byte l = 0; l < len; l++) {
-//          PT(skillNameWithType[s][l]);
+          //          PT(skillNameWithType[s][l]);
           EEPROM.update(SKILLS + skillAddressShift++, skillNameWithType[s][l]);
         }
-//        PTL();
+        //        PTL();
         int8_t period = pgm_read_byte(progmemPointer[s]);
         EEPROM.update(SKILLS + skillAddressShift++, period);
 
@@ -156,7 +156,7 @@ class Skill {
       byte skillHeader = p > 0 ? 3 : 6;
       frameSize = p > 1 ?
                   WALKING_DOF :       //gait
-                  period == 1 ? DOF : //posture
+                  p == 1 ? DOF : //posture
                   DOF + 4;            //behavior
       int len = skillHeader + abs(p) * frameSize;
       return len;
@@ -200,15 +200,21 @@ class Skill {
         expectedRollPitch[i] = (int8_t)ptr[i];
       angleDataRatio = ptr[2];
       byte skillHeader = 3;
-      if (period < -1) {
+      if (period < 0) {
         for (byte i = 0; i < 3; i++)
           loopCycle[i] = ptr[skillHeader++];
       }
 #ifdef POSTURE_WALKING_FACTOR
       postureOrWalkingFactor = (period == 1 ? 1 : POSTURE_WALKING_FACTOR);
 #endif
-      int len = abs(period) * frameSize;
+      firstMotionJoint = (period <= 1) ? 0 : DOF - WALKING_DOF;
+
       dutyAngles = ptr + skillHeader;
+#ifdef DEVELOPER
+      info();
+#endif
+      info();
+
     }
 
     void skillByName(const char* skillName, byte angleDataRatio = 1, float speedRatio = 1, bool shutServoAfterward = true) {
@@ -221,10 +227,11 @@ class Skill {
     }
 
     void loadFrameByCmdString() {
-      period = (int8_t)dataBuffer[0];
-      PTL(period);
+      period = dataBuffer[0];
       dataLen(period);
-      formatSkill((int8_t)dataBuffer + 1);
+      formatSkill(dataBuffer + 1);
+      int frame = 0;
+      transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
     }
     void loadFrame(const char* skillName) {//get lookup information from on-board EEPROM and read the data array from storage
       char lr = skillName[strlen(skillName) - 1];
@@ -243,20 +250,11 @@ class Skill {
 #endif
         loadDataFromProgmem(dataArrayAddress);
       formatSkill(dataBuffer);
-
-      firstMotionJoint = (period <= 1) ? 0 : DOF - WALKING_DOF;
-#ifdef DEVELOPER
-      info();
-#endif
-#ifdef POSTURE_WALKING_FACTOR
-      postureOrWalkingFactor = (period == 1 ? 1 : POSTURE_WALKING_FACTOR);
-#endif
       if (period > 1 && offsetLR < 0
           || period <= 1 && random(100) % 2 && token != T_CALIBRATE)
         mirror();
       int frame = 0;
       transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
-
     }
 
     void mirror() {
@@ -327,6 +325,7 @@ class Skill {
           }
           delay(10);
         }
+        PTL("beh");
         PTL(token);
       }
       else {//postures and gaits

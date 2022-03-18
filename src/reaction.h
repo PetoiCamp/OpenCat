@@ -123,46 +123,6 @@ void reaction() {
             token = T_SKILL;
           break;
         }
-      // this block handles array like arguments
-      case T_INDEXED_SIMULTANEOUS_BIN: //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
-      case T_LISTED_BIN: //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
-        {
-          int targetFrame[DOF];
-          for (int i = 0; i < DOF; i++) {
-            targetFrame[i] = currentAng[i];
-          }
-          if (token == T_INDEXED_SIMULTANEOUS_BIN) {
-            for (int i = 0; i < cmdLen; i += 2) {
-              targetFrame[newCmd[i]] = newCmd[i + 1];
-            }
-          }
-          else {// if (token == T_LISTED_BIN) {
-            for (int i = 0; i < DOF; i += 1) {
-              targetFrame[i] = newCmd[i];
-            }
-            PTL();
-          }
-          transform(targetFrame, 1, 3); //need to add angleDataRatio if the angles are large
-          delay(10);
-          break;
-        }
-      //      case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
-      //
-      //          skill.loadFrameByCmdString();
-      //          skill.transformToSkill();
-      //          newCmdIdx = 0;
-      //          token = T_SKILL;
-      //          //          newCmd[0] = '\0';
-      //          break;
-      //        }
-      case T_SKILL: {
-          if (skill.period <= 1 || strcmp(lastCmd, newCmd)) {//won't transform for the same gait.
-            //it's better to compare skill->skillName and newCmd.
-            //but need more logics for non skill cmd in between
-            skill.loadFrame(newCmd);
-          }
-          break;
-        }
       case T_CALIBRATE: //calibration
       case T_MOVE: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
@@ -245,6 +205,43 @@ void reaction() {
           }
           break;
         }
+      // this block handles array like arguments
+      case T_INDEXED_SIMULTANEOUS_BIN: //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
+      case T_LISTED_BIN: //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
+        {
+          int targetFrame[DOF];
+          for (int i = 0; i < DOF; i++) {
+            targetFrame[i] = currentAng[i];
+          }
+          if (token == T_INDEXED_SIMULTANEOUS_BIN) {
+            for (int i = 0; i < cmdLen; i += 2) {
+              targetFrame[newCmd[i]] = newCmd[i + 1];
+            }
+          }
+          else {// if (token == T_LISTED_BIN) {
+            for (int i = 0; i < DOF; i += 1) {
+              targetFrame[i] = newCmd[i];
+            }
+            PTL();
+          }
+          transform(targetFrame, 1, 3); //need to add angleDataRatio if the angles are large
+          delay(10);
+          break;
+        }
+#ifdef  T_SKILL_DATA
+      case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
+          skill.loadFrameByCmdString();
+          token = T_SKILL;
+          break;
+        }
+#endif
+      case T_SKILL: {
+          if (skill.period <= 1 // for repeating behaviors
+              || strcmp(lastCmd, newCmd)) {//won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
+            skill.loadFrame(newCmd);
+          }
+          break;
+        }
 #endif
       case T_REST: {
           strcpy(newCmd, "rest");
@@ -255,7 +252,9 @@ void reaction() {
           break;
         }
     }
+    PT("period ");PTL(skill.period);
     if (token != T_SKILL || skill.period > 0) {
+      PTL("done");
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
     }
 

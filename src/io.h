@@ -14,28 +14,29 @@ void read_serial() {
 #endif
     delay(3);//leave enough time for serial read
   if (Serial.available() > 0) {
-    token = Serial.read();
     newCmdIdx = 2;
-    if (Serial.available() > 0) {
-      String cmdBuffer;
-#ifdef  MAIN_SKETCH
-      if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN || token == T_SKILL_DATA) {
-        if (dataBuffer)
-          //          delete [] dataBuffer;
-          cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
+    token = Serial.read();
+    if (token == T_SKILL_DATA) {
+      int c = 0;
+      do {
+        if (Serial.available()) {
+          dataBuffer[c++] = Serial.read();
+        }
+      } while ((char)dataBuffer[c - 1] != '~');
+    }
+    else if (Serial.available() > 0) {
+      if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN) {
+        cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
       }
       else
-#endif
+
         cmdBuffer = Serial.readStringUntil('\n');
       cmdLen = cmdBuffer.length();
-
       for (int i = 0; i < cmdLen; i++) {
-        if (token == T_SKILL_DATA)
-          dataBuffer[i] = cmdBuffer[i];
-        else
-          newCmd[i] = cmdBuffer[i];
+        newCmd[i] = cmdBuffer[i];
       }
       newCmd[cmdLen] = '\0';
+
 
       //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
 #ifdef DEVELOPER
@@ -109,7 +110,7 @@ template <typename T> void printList(T * arr, byte len = DOF) {
   }
   PTL(temp);
 }
-template <typename T> void printTable(T *list) {
+template <typename T> void printTable(T * list) {
   printRange(0, DOF);
   printList(list, DOF);
 }

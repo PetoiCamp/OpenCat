@@ -58,8 +58,6 @@
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  //  while (Serial.available() && Serial.read())
-  //    delay(1);
   PTLF(">Flush>");
 
   // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -74,7 +72,6 @@ void setup() {
 #ifdef GYRO_PIN
   imuSetup();
 #endif
-
 #ifdef IR_PIN
   irrecv.enableIRIn(); // Start the receiver
   gait.reserve(4);
@@ -96,9 +93,11 @@ void setup() {
   PTLF("Cub");
 #endif
   delay(1000);
+#ifdef GYRO_PIN
   read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs
   newCmdIdx = 2;
+#endif
   playMelody(MELODY_NORMAL);
 
 #else               // ** save parameters to device's static memory
