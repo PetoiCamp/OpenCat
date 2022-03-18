@@ -8,7 +8,7 @@ byte newCmdIdx = 0;
 #else
 
 #define RANDOM_MIND //allow the robot to behave randomly
-//#define GYRO_PIN  0
+#define GYRO_PIN  0
 
 #endif
 
