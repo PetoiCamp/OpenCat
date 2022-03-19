@@ -15,7 +15,7 @@ int readSerialUntil(char * destination, char terminator) {
       destination[c++] = Serial.read();
   } while ((char)destination[c - 1] != terminator);
   destination[c - 1] = '\0';
-  return c-1;
+  return c - 1;
 }
 
 void read_serial() {
@@ -32,22 +32,21 @@ void read_serial() {
     else
 #endif
       if (Serial.available() > 0) {
+        String cmdBuffer;//may overflow after many iterations. I use this method only to support "no line ending" in the serial monitor
         if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN) {
-          cmdLen = readSerialUntil(newCmd, '~');//'~' ASCII code = 126; may introduce bug when the angle is 126
+          cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
         }
-        else {
-          String cmdBuffer;
-          cmdBuffer = Serial.readStringUntil('\n'); //may overflow after many iterations. I use this method only to support "no line ending" in the serial monitor
-                                                    
-          cmdLen = cmdBuffer.length();
-          for (int i = 0; i < cmdLen; i++)
-            newCmd[i] = cmdBuffer[i];
-          newCmd[cmdLen] = '\0';
-          //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+        else
+          cmdBuffer = Serial.readStringUntil('\n'); 
+        cmdLen = cmdBuffer.length();
+        for (int i = 0; i < cmdLen; i++)
+          newCmd[i] = cmdBuffer[i];
+        newCmd[cmdLen] = '\0';
+        //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
 #ifdef DEVELOPER
-          PTF(" memory "); PTL(freeMemory());
+        PTF(" memory "); PTL(freeMemory());
 #endif
-        }
+
       }
   }
 }

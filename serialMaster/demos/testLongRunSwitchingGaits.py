@@ -126,110 +126,22 @@ if __name__ == '__main__':
         testSchedule is used to test various serial port commands
         '''
         testSchedule = [
-            
-            # - 'kbalance' indicates the command to control Bittle to stand normally
-            # - 2 indicates the postponed time after finishing the command, in seconds
-            # - the skill data is stored locally on the robot
-            ['kbalance', 1],
-
-            # - m indicates the command to control the rotation of the joint servo
-            # - 0 indicates the index number of joint servo
-            # - -50 indicates the rotation angle (this angle refers to the origin, rather than additive) the unit is degree
-            # - 1.5 indicates the postponed time after finishing the command, in seconds. It can be a float number.
-            ['m', [0, -50], 1.5],
-
-            # Using this format, multiple joint servo rotation commands can be sent at one time,
-            # and these joint servo rotation commands are executed SEQUENTIALLY,
-            # not at the same time.
-            # The meaning of this example is: the joint servo with index number 0 is first
-            # rotated to the 45 degree position, and then rotated to the -45 degree position, and so on.
-            # After these motion commands are completed, the next command will
-            # be executed after a 2-second delay.
-            ['m', [8, -5, 8, 10, 8, -5, 8, 10, 8, -5, 8, 10], 2],
-
-            # Using this format, multiple joint servo rotation commands can be issued at one time,
-            # and these joint servo rotation commands are executed AT THE SAME TIME.
-            # The meaning of this example is: the joint servos with index numbers 8, 9 are
-            # rotated to the -15, -20 degree position at the same time.
-            # After these motion commands are completed, the next command will
-            # be executed after a 2-second delay.
-            ['i', [8, -15, 9, -20], 1],
-
-            # - d indicates the command to put the robot down and shut down the servos
-            # - 2 indicates the postponed time after finishing the command, in seconds
-            ['d', 1],
-
-            # - c indicates the command to enter calibration mode
-            # - 2 indicates the postponed time after finishing the command, in seconds
-            # After these motion commands are completed, the next command will
-            # be executed after a 2-second delay.
-            ['c', 1],
-
-            # - c indicates the command to enter calibration mode
-            # - 0 indicates the index number of joint servo
-            # - -9 indicates the rotation angle, the unit is degree
-            # - 2 indicates the postponed time after finishing the command, in seconds
-            ['c', [0, -9], 1],
-            ['a', 0],
-
-            # - i indicates the command to rotate multiple joint servos at the same time
-            # - 8, 9, 10, 11, 0 indicate the index numbers of joint servos
-            # - 50, 50, 50, 50, 0 indicate the rotation angle (this angle refers to the origin,
-            #                     rather than additive), the unit is degree
-            # - 3 indicates the postponed time after finishing the command, in seconds
-            ['I', [8, -20, 0, 0, 9, 50, 10, -20, 11, 50, 14, 80], 1],
-            ['I', [8, 20, 0, 40, 9, -20, 10, 50, 11, -20], 1],
-
-            # - l indicates the command to control all joint servos to rotate at the same time
-            #     (currently the command supports 16 degrees of freedom, that is, 16 servos)
-            # - 20,0,0,0,0,0,0,0,45,45,45,45,36,36,36,36 indicate the rotation
-            #               angle of each joint servo corresponding to 0-15 (this angle refers to
-            #               the origin, rather than additive), the unit is degree
-            # - 5 indicates the postponed time after finishing the command, in seconds
-            ['L', [20, 0, 0, 0, 0, 0, 0, 0, 25, 0, 45, 45, 80, 80, 36, 36], 1],
-
-            # - b indicates the command to control the buzzer to beep
-            # - 10 indicates the music tone
-            # - 255 indicates the lengths of duration, the value range is 0~255
-            # - 2 indicates the postponed time after completing the pronunciation, in seconds
-            ['b', [10, 255], 2],
-
-            # Using this format, multiple tone commands can be issued at one time,
-            # and a simple melody can be played.
-            # The meaning of this example is: play a simple melody, and delay 5 seconds after
-            # the music melody is played.
-            # - '15', '12', '15', '12', '8' indicate the music tones
-            # - '90', '90', '90', '90', '90' indicates the lengths of duration
-            # - 3 indicates the postponed time after the music melody is played, in seconds
-
-            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 8, 90#, 10, 90, 13, 90, 12, 90, 10, 90, 15, 90
-            ],3],
-
-            # - 'K' indicates the skill data to send to Bittle in realtime
-            # they are sent to the robot on the go and executed locally on the robot
-            # no overhead of communication and waiting for both sides.
-            ['kvt', 2],
-            ['K',sit, 1],
-            ['kck', 1],
-            ['K', vt, 3],
-            ['ksit', 1],
-            ['K', ck, 1],  # compare it with the previous 'kck' command
-            ['d', 0]
+            ['K', vt, 0.5],
+            ['K', wkF, 1],
         ]
         time.sleep(2);
-        for task in testSchedule:  # execute the tasks in the testSchedule
+        while True:
+         for task in testSchedule:  # execute the tasks in the testSchedule
             print(task)
             token = task[0][0]
             wrapper(task)
             printSerialMessage(token)
-
             time.sleep(task[-1])
 
         closeSerialBehavior()
         logger.info("finish!")
 
     except Exception as e:
-        wrapper(['d',1])
         logger.info("Exception")
         closeSerialBehavior()
         raise e
