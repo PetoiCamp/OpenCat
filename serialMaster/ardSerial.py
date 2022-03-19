@@ -129,7 +129,7 @@ def closeSerialBehavior():
         raise e
 
 
-def flushSeialOutput(counterLimit=300):
+def flushSerialOutput(counterLimit=300):
     counter = 0
     while True:
         time.sleep(0.01)
