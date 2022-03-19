@@ -47,6 +47,7 @@ To configure the board:
 5. Press the upload button (add pic)
 
 6. Open the serial monitor (add pic)
+
 Set the serial monitor as **no line ending** and **115200** baud rate (add pic)
 The serial prompts:
 ```
@@ -57,7 +58,7 @@ Calibrate the IMU? (Y/n):
 Y    (Input ‘Y’ and hit enter, if you have never calibrated the IMU (Inertial Measurement Unit) or want to redo calibration)
 ```
 
-The robot will read hundreds of sensor data and save the offsets
+Put the robot flat on the table and don't touch it. The robot will read hundreds of sensor data and save the offsets. It will beep when the calibration finishes. 
 
 When the serial monitor prints "Ready!", you can close the serial monitor to do the next step.
 
