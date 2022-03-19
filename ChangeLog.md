@@ -15,8 +15,8 @@
 * Enter the joint calibration state by booting up the robot with one side up. 
 * Write a formalized servo class inherited from the AdafruitPWM servo library. Make it easier to change parameters of 3rd party servos.
 * Use the built-in tone function to generate clean beeps and melody.
-* Add random mind when the robot boots up. Use token ‘z’ to turn on/off the feature. 
-* Add angle limits to avoid most cased of of self-collision.
+* Add random actions when the robot boots up. Use token ‘z’ to turn on/off the feature. 
+* Add angle limits to avoid most cases of of self-collision.
 * Put the skill-related functions into the Skill Class. Combine reused code blocks into single functions.
 * Make more use of the EEPROM and PRGMEM memory to save resources for flash and SRAM.
 * Mirror rightward gaits from the leftward gaits, to save static memory. 

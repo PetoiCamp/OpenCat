@@ -30,8 +30,9 @@ Also, Check out [all of the OpenCat and Petoi robot user showcases](https://www.
 OpenCat software works on both Nybble and Bittle, controlled by NyBoard based on ATmega328P. More detailed documentation can be found at the [Petoi Doc Center](https://docs.petoi.com).
 
 To configure the board:
-1. Select your robot and board version.
+1. Open the file OpenCat.ino, select your robot and board version.
 #define BITTLE    //Petoi 9 DOF robot dog: 1 on head + 8 on leg
+
 #define NyBoard_V1_0
 
 2. Comment out ```#define MAIN_SKETCH``` and upload. Upload and follow the serial prompts to proceed
@@ -46,6 +47,7 @@ To configure the board:
 5. Press the upload button (add pic)
 
 6. Open the serial monitor (add pic)
+
 Set the serial monitor as **no line ending** and **115200** baud rate (add pic)
 The serial prompts:
 ```
@@ -56,7 +58,7 @@ Calibrate the IMU? (Y/n):
 Y    (Input ‘Y’ and hit enter, if you have never calibrated the IMU (Inertial Measurement Unit) or want to redo calibration)
 ```
 
-The robot will read hundreds of sensor data and save the offsets
+Put the robot flat on the table and don't touch it. The robot will read hundreds of sensor data and save the offsets. It will beep when the calibration finishes. 
 
 When the serial monitor prints "Ready!", you can close the serial monitor to do the next step.
 
