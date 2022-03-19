@@ -16,19 +16,13 @@ if __name__ == '__main__':
         token = 'i'
         while True:
             for i in range(-10,10):
-                print (['i',[12,i,13,i,14,i,15,i],0])
-                wrapper(['i',[12,i,13,i,14,i,15,i],0])
-                while True:
-                    response = ser.main_engine.readline().decode('ISO-8859-1')
-                    if response != '':
-                        print(response)
-                    if response == token+'\r\n':
-                        break
-                    time.sleep(0.01)
-            logger.info(f"Response is:\n {response}")
+                print (['I',[12,i,13,i,14,i,15,i],0])
+                wrapper(['I',[12,i,13,i,14,i,15,i],0])
+                printSerialMessage(token)
+                time.sleep(0.02)
             for i in range(10,-10,-1):
-                print (['i',[12,i,13,i,14,i,15,i],0])
-                wrapper(['i',[12,i,13,i,14,i,15,i],0])
+                print (['I',[12,i,13,i,14,i,15,i],0])
+                wrapper(['I',[12,i,13,i,14,i,15,i],0])
                 printSerialMessage(token)
                 time.sleep(0.02)
             

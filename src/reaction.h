@@ -68,7 +68,7 @@ void reaction() {
   if (newCmdIdx) {
     //    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
 #ifdef MAIN_SKETCH
-    if (token != T_BEEP && token != T_MEOW)
+    if (token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN )
       beep(10 + newCmdIdx * 2, 20); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE)
       checkGyro = true;
@@ -151,7 +151,8 @@ void reaction() {
               pch = strtok (NULL, " ,\t");
               inLen++;
             }
-            printList(target, 2);
+//            if (token == T_CALIBRATE)
+              printList(target, 2);
             targetFrame[target[0]] = target[1];
 
             int angleStep = 0;
@@ -226,10 +227,9 @@ void reaction() {
             for (int i = 0; i < DOF; i += 1) {
               targetFrame[i] = newCmd[i];
             }
-            PTL();
           }
           transform(targetFrame, 1, 3); //need to add angleDataRatio if the angles are large
-          delay(10);
+          delay(5);
           break;
         }
 #ifdef  T_SKILL_DATA
