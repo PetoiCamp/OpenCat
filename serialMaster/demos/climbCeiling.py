@@ -17,7 +17,6 @@ if __name__ == '__main__':
         testSchedule = [
 # - 'kbalance' indicates the command to control Bittle to stand normally
 # - 2 indicates the postponed time after finishing the command, in seconds
-                        ['z',0.5],
                         ['g',0.5],
                         ['kbalance', 1],
                         ['ksit',2],
@@ -42,13 +41,7 @@ if __name__ == '__main__':
             print(task)
             token = task[0][0]
             wrapper(task)
-            while True:
-                response = ser.main_engine.readline().decode('ISO-8859-1')
-                if response != '':
-                    print(response)
-                if response == token+'\r\n':
-                    break
-            logger.info(f"Response is:\n {response}")
+            printSerialMessage(token)
             time.sleep(task[-1])
 
         closeSerialBehavior()

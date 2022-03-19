@@ -207,7 +207,6 @@ else:
 if __name__ == '__main__':
     try:
 #        flushSeialOutput(500)
-        wrapper(['z', 1]) #turn off automatical behaviors
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
                 cmd = sys.argv[1]
@@ -232,7 +231,6 @@ if __name__ == '__main__':
                     task = x.split()
                     if len(task) == 1:
                         wrapper([task, 1])
-                        
                     else:
                         wrapper([task[0], task[0:], 1])
                     token = task[0][0]

@@ -126,8 +126,6 @@ if __name__ == '__main__':
         testSchedule is used to test various serial port commands
         '''
         testSchedule = [
-            # 'z' turns off the automatic behaviors
-            ['z',1],
             
             # - 'kbalance' indicates the command to control Bittle to stand normally
             # - 2 indicates the postponed time after finishing the command, in seconds

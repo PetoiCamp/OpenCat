@@ -7,11 +7,8 @@ from ardSerial import *
 
 if __name__ == '__main__':
     try:
-        flushSeialOutput(300)
-
-       
+#        flushSeialOutput(300)
         time.sleep(3);
-        wrapper(['z',1])
         wrapper(['g',1])
         time.sleep(1);
         wrapper(['kbalance', 2])
@@ -32,13 +29,8 @@ if __name__ == '__main__':
             for i in range(10,-10,-1):
                 print (['i',[12,i,13,i,14,i,15,i],0])
                 wrapper(['i',[12,i,13,i,14,i,15,i],0])
-                while True:
-                    response = ser.main_engine.readline().decode('ISO-8859-1')
-                    if response != '':
-                        print(response)
-                    if response == token+'\r\n':
-                        break
-                    time.sleep(0.01)
+                printSerialMessage(token)
+                time.sleep(0.02)
             
         closeSerialBehavior()
         logger.info("finish!")
