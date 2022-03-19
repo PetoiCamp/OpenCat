@@ -58,6 +58,7 @@
 
 void setup() {
   Serial.begin(BAUD_RATE);
+  Serial.setTimeout(10);
   PTLF(">Flush>");
 
   // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -113,7 +114,7 @@ void setup() {
 void loop() {
 #ifdef MAIN_SKETCH
 #ifdef VOLTAGE_DETECTION_PIN
-  //  while (lowBattery()); //block the loop if battery is low
+    while (lowBattery()); //block the loop if battery is low
 #endif
 #ifdef RANDOM_MIND
   if (autoSwitch)
