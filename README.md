@@ -30,8 +30,9 @@ Also, Check out [all of the OpenCat and Petoi robot user showcases](https://www.
 OpenCat software works on both Nybble and Bittle, controlled by NyBoard based on ATmega328P. More detailed documentation can be found at the [Petoi Doc Center](https://docs.petoi.com).
 
 To configure the board:
-1. Select your robot and board version.
+1. Open the file OpenCat.ino, select your robot and board version.
 #define BITTLE    //Petoi 9 DOF robot dog: 1 on head + 8 on leg
+
 #define NyBoard_V1_0
 
 2. Comment out ```#define MAIN_SKETCH``` and upload. Upload and follow the serial prompts to proceed
