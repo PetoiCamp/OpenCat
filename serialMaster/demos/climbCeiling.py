@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 
+# A complex skill to make Bittle climb up a steel ceiling with meganets on its feet.
 # Demo: https://youtu.be/ravFaiJzrpo
 import sys
 sys.path.append("..")
@@ -35,15 +36,23 @@ if __name__ == '__main__':
                         ['I',[14,90,10,-20],1],
                         ['kbalance',2],
                         ['i',[0,-80],2],
-                        ['krest',1],
+                        ['d',1],
                         ]
+        compactSkillData = []
         for task in testSchedule:  # execute the tasks in the testSchedule
             print(task)
             token = task[0][0]
+#            if token == 'i':
+#                compactSkillData.append(task[1])
+#            if token == 'I':
+#                compactSkillData.append(task[1])
+#            if token == 'm':
+#                compactSkillData.append(task[1])
+            
             wrapper(task)
             printSerialMessage(token)
             time.sleep(task[-1])
-
+        print(compactSkillData)
         closeSerialBehavior()
         logger.info("finish!")
 
