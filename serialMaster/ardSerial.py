@@ -110,10 +110,17 @@ def serialWriteByte(var=None):
     logger.debug(f"!!!!!!! {in_str}")
     ser.Send_data(encode(in_str))
 
+def printSerialMessage(token):
+    while True:
+        response = ser.main_engine.readline().decode('ISO-8859-1')
+        if response != '':
+            print(response)
+        if response.lower() == token.lower() +'\r\n':
+            break
 
 def closeSerialBehavior():
     try:
-#        wrapper(['d', 1])
+        wrapper(['d', 1])
         ser.Close_Engine()
         logger.info("close the serial port.")
     except Exception as e:
@@ -199,21 +206,17 @@ else:
 
 if __name__ == '__main__':
     try:
-        flushSeialOutput(500)
-
+#        flushSeialOutput(500)
+        wrapper(['z', 1]) #turn off automatical behaviors
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
+                cmd = sys.argv[1]
+                token = cmd[0][0]
                 wrapper([sys.argv[1], 1])
-                time.sleep(0.2)
-                response = ser.main_engine.read_all()
-                logger.info(f"Response is: {response.decode('ISO-8859-1')}")
-                var = sys.argv[1]
-                token = var[0][0]
-                if token == 'k':
-                    if response.decode('ISO-8859-1')[0] == 'k':
-                        logger.info("Serial port is connected very well!")
+#                time.sleep(0.2)
             else:
                 wrapper([sys.argv[1][0], sys.argv[1:], 1])
+            printSerialMessage(token)
 
         print("You can type 'quit' or 'q' to exit.")
 
@@ -228,24 +231,11 @@ if __name__ == '__main__':
                     task = x.split()
                     if len(task) == 1:
                         wrapper([task, 1])
-                        time.sleep(0.2)
-                        response = ser.main_engine.read_all().decode('ISO-8859-1')
-                        logger.info(f"Response is: {response}")
-                        token = task[0][0]
-                        if token == 'k':
-                            if response[0] == 'k':
-                                logger.info("Serial port is connected very well!")
-                            else:
-                                logger.info("Serial port is connected failed.")
-                                ser.Close_Engine()
-                                logger.info("close the serial port.")
-                                logger.info("exit")
-                                sys.exit(0)
+                        
                     else:
                         wrapper([task[0], task[0:], 1])
-                        time.sleep(0.2)
-                        response = ser.main_engine.read_all().decode('ISO-8859-1')
-                        logger.info(f"Response is: {response}")
+                    token = task[0][0]
+                    printSerialMessage(token)
 
         closeSerialBehavior()
         logger.info("finish!")

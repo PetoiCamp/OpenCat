@@ -223,13 +223,7 @@ if __name__ == '__main__':
             print(task)
             token = task[0][0]
             wrapper(task)
-            while True:
-                response = ser.main_engine.readline().decode('ISO-8859-1')
-                if response != '':
-                    print(response)
-#                    logger.info(f"Response is:\n {response}")
-                if response.lower() == token.lower() +'\r\n':
-                    break
+            printSerialMessage(token)
 
             time.sleep(task[-1])
 
