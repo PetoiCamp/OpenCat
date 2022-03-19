@@ -50,15 +50,42 @@ def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b i l o 
     in_str = ""
     if var is None:
         var = []
-    if token == 'L' or token == 'I' or token =='K':
+    if token =='K':
         var = list(map(int, var))
-        in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
-    elif token == 'c' or token == 'm' or token == 'i' or token == 'u' or token == 'b':
-        in_str = token + " "
-        for element in var:
-            in_str = in_str + str(element) + " "
-    logger.debug(f"!!!! {in_str}")
-    ser.Send_data(encode(in_str))
+        period = var[0]
+#        print(encode(in_str))
+        if period >0:
+            skillHeader = 4
+        else:
+            skillHeader = 7
+            
+        in_str = token.encode() + struct.pack('b' * skillHeader, *var[0:skillHeader])#+'~'.encode()
+        ser.Send_data(in_str)
+        time.sleep(0.005)
+        if period >1:
+            frameSize = 8   #gait
+        elif period ==1:
+            frameSize = 16  #posture
+        else:
+            frameSize = 20     #behavior
+        for f in range(abs(period)):
+            in_str = struct.pack('b' * (frameSize), *var[skillHeader + f * frameSize:skillHeader + (f + 1) * frameSize])# + '~'.encode()
+            if f == abs(period)-1:
+                in_str = in_str + '~'.encode()
+            ser.Send_data(in_str)
+            time.sleep(0.005)
+    else:
+        if token == 'L' or token == 'I':
+            var = list(map(int, var))
+            in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
+            
+        elif token == 'c' or token == 'm' or token == 'i' or token == 'u' or token == 'b':
+            in_str = token + " "
+            for element in var:
+                in_str = in_str + str(element) + " "
+        logger.debug(f"!!!! {in_str}")
+#        print(encode(in_str))
+        ser.Send_data(encode(in_str))
 
 
 def serialWriteByte(var=None):
@@ -191,7 +218,7 @@ if __name__ == '__main__':
         print("You can type 'quit' or 'q' to exit.")
 
         while True:
-            time.sleep(0.01)
+            time.sleep(0.001)
             x = input()
             if x != "":
                 # print(x)
