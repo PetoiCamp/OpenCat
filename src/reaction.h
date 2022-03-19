@@ -152,7 +152,7 @@ void reaction() {
               inLen++;
             }
 //            if (token == T_CALIBRATE)
-              printList(target, 2);
+//              printList(target, 2);
             targetFrame[target[0]] = target[1];
 
             int angleStep = 0;
