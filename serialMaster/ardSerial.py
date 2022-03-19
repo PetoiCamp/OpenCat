@@ -215,6 +215,7 @@ if __name__ == '__main__':
                 wrapper([sys.argv[1], 1])
 #                time.sleep(0.2)
             else:
+                token = sys.argv[1][0]
                 wrapper([sys.argv[1][0], sys.argv[1:], 1])
             printSerialMessage(token)
 
