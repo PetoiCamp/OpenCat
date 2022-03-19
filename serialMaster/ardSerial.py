@@ -8,7 +8,6 @@ import logging
 from SerialCommunication import *    # module SerialCommunication.py
 import platform
 
-
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
 Level: The level determines the minimum priority level of messages to log. 

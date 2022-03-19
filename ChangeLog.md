@@ -1,5 +1,8 @@
 # Change Log
 
+## Mar 20, 2022
+* A schedulerToSkill function in serialMaster to summerize the motion commands and generate a new skill. 
+
 ## Mar 17, 2022
 ### OpenCat2.0 is pushed to the branch 2.0 for beta testers.
 ### New Features:
