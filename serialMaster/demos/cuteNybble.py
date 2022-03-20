@@ -9,7 +9,7 @@ import numpy as np
 
 if __name__ == '__main__':
     try:
-        flushSeialOutput(300)
+        flushSerialOutput(300)
 
         serialWriteByte(["ksit"])
         time.sleep(2)

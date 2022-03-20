@@ -58,7 +58,7 @@
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  Serial.setTimeout(10);
+  Serial.setTimeout(5);
   PTLF(">Flush>");
 
   // join I2C bus (I2Cdev library doesn't do this automatically)
@@ -93,7 +93,7 @@ void setup() {
 #elif defined CUB
   PTLF("Cub");
 #endif
-  delay(1000);
+//  delay(1000);
 #ifdef GYRO_PIN
   read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs

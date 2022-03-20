@@ -7,6 +7,7 @@ import time
 import logging
 from SerialCommunication import *    # module SerialCommunication.py
 import platform
+import copy
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
@@ -41,8 +42,7 @@ def wrapper(task):  # task Structure is [token, var=[], time]
         serialWriteByte(task[1])
 
 
-
-def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b i l o within Python
+def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b I K L o within Python
     # print("Num Token "); print(token);print(" var ");print(var);print("\n\n");
     logger.debug(f'serialWriteNumToByte, token={token}, var={var}')
 
@@ -148,6 +148,88 @@ def flushSerialOutput(counterLimit=300):
         print("then reopen the terminal and rerun the script")
         print("---Start---")
 
+balance = [
+    1, 0, 0, 1,
+    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30]
+buttUp = [
+    1, 0, 15, 1,
+    20,  40,   0,   0,   5,   5,   3,   3,  90,  90,  45,  45, -60, -60,   5,   5]
+calib = [
+    1, 0, 0, 1,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0]
+dropped = [
+    1, 0, -75, 1,
+    0,  30,   0,   0,  -5,  -5,  15,  15, -75, -75,  45,  45,  60,  60, -30, -30]
+lifted = [
+    1, 0, 75, 1,
+    0, -20,   0,   0,   0,   0,   0,   0,  60,  60,  75,  75,  45,  45,  75,  75]
+rest = [
+    1, 0, 0, 1,
+    -30, -80, -45,   0,  -3,  -3,   3,   3,  70,  70,  70,  70, -55, -55, -55, -55]
+sit = [
+    1, 0, -30, 1,
+    0,   0, -45,   0,  -5,  -5,  20,  20,  45,  45, 105, 105,  45,  45, -45, -45]
+stretch = [
+    1, 0, 20, 1,
+    0,  30,   0,   0,  -5,  -5,   0,   0, -75, -75,  30,  30,  60,  60,   0,   0]
+zero = [
+    1, 0, 0, 1,
+    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0]
+
+postureTable = {
+    "balance": balance,
+    "buttUp": buttUp,
+    "calib": calib,
+    "dropped": dropped,
+    "lifted": lifted,
+    "rest": rest,
+    "sit": sit,
+    "str": stretch,
+    "zero": zero
+}
+
+
+def schedulerToSkill(postureTable,testSchedule):
+    compactSkillData = []
+    newSkill = []
+    outputStr = ""
+
+    for task in testSchedule:  # execute the tasks in the testSchedule
+        #            print(task)
+        token = task[0][0]
+        if token == 'k':
+            currentRow = postureTable[task[0][1:]][-16:]
+            skillRow = copy.deepcopy(currentRow)
+            compactSkillData.append(skillRow + [8, int(task[1]*1000/500), 0, 0])
+            newSkill = newSkill + skillRow + [8, int(task[1]*1000/500), 0, 0]
+
+        elif token == 'i' or token == 'I':
+            currentRow = copy.deepcopy(skillRow)
+            for e in range(0, len(task[1]), 2):
+                #                    print(task[1][e],task[1][e+1])
+                currentRow[task[1][e]] = task[1][e+1]
+            skillRow = copy.deepcopy(currentRow)
+            compactSkillData.append(skillRow + [8, int(task[2]*1000/500), 0, 0])
+            newSkill = newSkill + skillRow + [8, int(task[2]*1000/500), 0, 0]
+
+        elif token == 'm':
+            currentRow = copy.deepcopy(skillRow)
+            for e in range(0, len(task[1]), 2):
+                currentRow[task[1][e]] = task[1][e+1]
+                skillRow = copy.deepcopy(currentRow)
+                compactSkillData.append(skillRow + [8, int(task[2]*1000/500), 0, 0])
+                newSkill = newSkill + skillRow + [8, int(task[2]*1000/500), 0, 0]
+
+    print('{')
+    print('{:>4},{:>4},{:>4},{:>4},'.format(*[-len(compactSkillData), 0, 0, 1]))
+    print('{:>4},{:>4},{:>4},'.format(*[0, 0, 0]))
+    for row in compactSkillData:
+        print('{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4}, {:>4},{:>4},{:>4},{:>4},'.format(*row))
+    print('};')
+
+    newSkill = [-len(compactSkillData), 0, 0, 1, 0, 0, 0] + newSkill
+    print(newSkill)
+    wrapper(['K', newSkill, 1])
 
 # port = '/dev/cu.BittleSPP-3534C8-Port'    # Bluetooth serial port needed when using Mac
 # port = '/dev/cu.wchusbserial1430'    # needed when using Mac
