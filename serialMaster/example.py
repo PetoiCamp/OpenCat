@@ -120,7 +120,7 @@ wkF = [
 
 if __name__ == '__main__':
     try:
-        flushSeialOutput(300)
+        flushSerialOutput(300)
 
         '''
         testSchedule is used to test various serial port commands
@@ -172,7 +172,7 @@ if __name__ == '__main__':
             ['c', [0, -9], 1],
             ['a', 0],
 
-            # - i indicates the command to rotate multiple joint servos at the same time
+            # - I indicates the command to rotate multiple joint servos at the same time
             # - 8, 9, 10, 11, 0 indicate the index numbers of joint servos
             # - 50, 50, 50, 50, 0 indicate the rotation angle (this angle refers to the origin,
             #                     rather than additive), the unit is degree
@@ -180,7 +180,7 @@ if __name__ == '__main__':
             ['I', [8, -20, 0, 0, 9, 50, 10, -20, 11, 50, 14, 80], 1],
             ['I', [8, 20, 0, 40, 9, -20, 10, 50, 11, -20], 1],
 
-            # - l indicates the command to control all joint servos to rotate at the same time
+            # - L indicates the command to control all joint servos to rotate at the same time
             #     (currently the command supports 16 degrees of freedom, that is, 16 servos)
             # - 20,0,0,0,0,0,0,0,45,45,45,45,36,36,36,36 indicate the rotation
             #               angle of each joint servo corresponding to 0-15 (this angle refers to
