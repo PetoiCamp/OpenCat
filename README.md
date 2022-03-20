@@ -31,24 +31,27 @@ OpenCat software works on both Nybble and Bittle, controlled by NyBoard based on
 
 To configure the board:
 
-1. Open the file OpenCat.ino, select your robot and board version.
+1. Download the repo and unfold. Remove the **-main** (or any branch name) suffix of the folder. 
+
+
+2. Open the file OpenCat.ino, select your robot and board version.
 ```cpp
 #define BITTLE    //Petoi 9 DOF robot dog: 1 on head + 8 on leg
 #define NyBoard_V1_0
 ```
 
-2. Comment out ```#define MAIN_SKETCH``` and upload. Upload and follow the serial prompts to proceed
+3. Comment out ```#define MAIN_SKETCH``` and upload. Upload and follow the serial prompts to proceed
 ```cpp
 // #define MAIN_SKETCH
 ```
 
-3. If you activate ```#define AUTO_INIT```, the program will automatically set up without prompts.
+4. If you activate ```#define AUTO_INIT```, the program will automatically set up without prompts.
 
-4. Plug the USB uploader to the NyBoard and install the driver if no USB port is found under Arduino -> Tools -> Port (add pic)
+5. Plug the USB uploader to the NyBoard and install the driver if no USB port is found under Arduino -> Tools -> Port (add pic)
 
-5. Press the upload button (add pic)
+6. Press the upload button (add pic)
 
-6. Open the serial monitor (add pic)
+7. Open the serial monitor (add pic)
 
 Set the serial monitor as **no line ending** and **115200** baud rate (add pic)
 The serial prompts:
@@ -64,7 +67,7 @@ Put the robot flat on the table and don't touch it. The robot will read hundreds
 
 When the serial monitor prints "Ready!", you can close the serial monitor to do the next step.
 
-7. Uncomment ```#define MAIN_SKETCH``` to make it active. Then upload.
+8. Uncomment ```#define MAIN_SKETCH``` to make it active. Then upload.
 ```cpp
 #define MAIN_SKETCH
 ```
@@ -73,16 +76,16 @@ This time the code becomes the normal program for the major functionalities.
 
 When the serial monitor prints "Ready!", you can close the serial monitor to do the next step.
 
-8. If you have never calibrated the joints’ offsets or reset the offsets in Step2, you need to do calibrate them. If you boot up the robot with one side up, it will enter the calibration state automatically for you to install the legs. Otherwise, it will enter the normal rest state. 
+9. If you have never calibrated the joints’ offsets or reset the offsets in Step2, you need to do calibrate them. If you boot up the robot with one side up, it will enter the calibration state automatically for you to install the legs. Otherwise, it will enter the normal rest state. 
 
-9. You can use the serial monitor to calibrate it directly. Or you may plug in the Bluetooth dongle, and use the Petoi app (on Android/iOS) for a more user-friendly interface. The mobile app is available on:
+10. You can use the serial monitor to calibrate it directly. Or you may plug in the Bluetooth dongle, and use the Petoi app (on Android/iOS) for a more user-friendly interface. The mobile app is available on:
 
 * IOS: [App Store](https://apps.apple.com/us/app/petoi/id1581548095)
 * Android: [Google Play](https://play.google.com/store/apps/details?id=com.petoi.petoiapp)
 
 You can refer to the calibration section in the user manual (https://bittle.petoi.com/6-calibration) and Guide for the Petoi App(https://docs.petoi.com/app-guide).
 
-10. you can use the infrared remote or other applications (such as the Petoi App, python, serial monitor ... etc.) to play with the robot (https://bittle.petoi.com/7-play-with-bittle).
+11. you can use the infrared remote or other applications (such as the Petoi App, python, serial monitor ... etc.) to play with the robot (https://bittle.petoi.com/7-play-with-bittle).
 
 For updates:
 * star this repository to receive timely notifications on changes.
