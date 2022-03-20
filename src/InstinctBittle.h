@@ -614,6 +614,31 @@ const int8_t ck[] PROGMEM = {
    45,   0,   0,   0,   0,   0,   0,   0,  45,  35,  38,  50, -30, -10,   0, -20,	 6, 1, 0, 0,
   -45,   0,   0,   0,   0,   0,   0,   0,  35,  45,  50,  38, -10, -30, -20,   0,	 6, 1, 0, 0,
 };
+const int8_t climbCeiling[] PROGMEM = {
+-21,  0,  0,  1,
+0,  0,  0,
+0,  0,  0,  0,  0,  0,  0,  0,  30, 30, 30, 30, 30, 30, 30, 30, 8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, 45, 45, 105,  105,  45, 45, -45,  -45,  8,  4,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -90,  20, 105,  75, 45, 90, -45,  -30,  8,  1,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -100, 20, 105,  75, 30, 90, -45,  -30,  8,  1,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -128, 20, 105,  75, 30, 90, -45,  -30,  8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -128, 20, 105,  75, 85, 90, -45,  -30,  8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -128, -100, 105,  75, 85, 90, -45,  -30,  8,  1,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -128, -100, 105,  75, 85, 45, -45,  -30,  8,  1,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -128, -128, 70, 75, 85, 85, -20,  -20,  8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -80,  -80,  127,  127,  10, 10, -80,  -80,  8,  1,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -80,  -80,  -15,  -15,  10, 10, 70, 70, 8,  3,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, -70,  -70,  30, 30, -10,  -10,  70, 70, 8,  1,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, 50, 50, 127,  127,  -50,  -50,  90, 90, 8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, 50, 50, 127,  -20,  -50,  -50,  90, 90, 8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, 50, 50, 127,  -20,  -50,  -50,  90, 40, 8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, 50, 50, 127,  -20,  -50,  -50,  90, 90, 8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, 50, 50, 127,  -20,  -50,  -50,  0,  90, 8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, 50, 50, -20,  -20,  -50,  -50,  0,  90, 8,  2,  0,  0,
+0,  0,  -45,  0,  -5, -5, 20, 20, 50, 50, -20,  -20,  -50,  -50,  90, 90, 8,  2,  0,  0,
+0,  0,  0,  0,  0,  0,  0,  0,  30, 30, 30, 30, 30, 30, 30, 30, 8,  4,  0,  0,
+-80,  20, 0,  0,  0,  0,  0,  0,  30, 30, 30, 30, 30, 30, 30, 30, 8,  4,  0,  0,
+};
 const int8_t hi[] PROGMEM = { 
 -3, 0, -30, 1,
  1, 2, 3, 
@@ -695,13 +720,13 @@ const int8_t stp[] PROGMEM = {
 };
   const char* skillNameWithType[]={"bdFI","bkI","bkLI","crFI","crLI",
 //  "mhFI","mhLI","mhRI",
-  "trFI","trLI","vtI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","bfI","ckI","hiI","jyI","pdI","peeI","puI","rcI","stpI",};
+  "trFI","trLI","vtI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","bfI","ckI","ccI","hiI","jyI","pdI","peeI","puI","rcI","stpI",};
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
   const int8_t* progmemPointer[] = {bdF, bk, bkL, crF, crL, 
 //  mhF, mhL, mhR, 
-  trF, trL, vt, wkF, wkL, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, hi,jy, pd, pee, pu, rc, stp, };
+  trF, trL, vt, wkF, wkL, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, climbCeiling, hi,jy, pd, pee, pu, rc, stp, };
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses
   const int8_t* progmemPointer[] = {zero};
