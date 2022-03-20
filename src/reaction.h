@@ -151,8 +151,10 @@ void reaction() {
               pch = strtok (NULL, " ,\t");
               inLen++;
             }
-//            if (token == T_CALIBRATE)
-//              printList(target, 2);
+            if (token == T_CALIBRATE) {
+              PT(token);
+              printList(target, 2);
+            }
             targetFrame[target[0]] = target[1];
 
             int angleStep = 0;

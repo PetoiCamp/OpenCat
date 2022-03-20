@@ -6,26 +6,28 @@ long voiceTimer;
 // format:
 //    phrase:token+command
 //    should NOT be more than 40 chars
-const char voice1[] PROGMEM = "ma pi jing:m0 50 0 -10 0 30"; //马屁精
+const char voice1[] PROGMEM = "ma pi jing:m0 50 0 -10 0 30";  //马屁精
 const char voice2[] PROGMEM = "ni hao:khi";                   //你好
 const char voice3[] PROGMEM = "qi li:kbalance";               //起立
 const char voice4[] PROGMEM = "zuo xia:ksit";                 //坐下
-const char voice5[] PROGMEM = "fu wo cheng:kpu";             //俯卧撑
+const char voice5[] PROGMEM = "fu wo cheng:kpu";              //俯卧撑
 const char voice6[] PROGMEM = "jia you:kjy";                  //加油
 const char voice7[] PROGMEM = "ta bu:kvt";                    //踏步
 const char voice8[] PROGMEM = "liang zhi lao hu:b8 90 10 90 12 90 8 90";  //两只老虎
 const char voice9[] PROGMEM = "shui jiao:d ";                 //睡觉
 const char voice10[] PROGMEM = "guan cha:kck";                //观察
+const char voice11[] PROGMEM = "he lou:khi";                  //hello
+const char voice12[] PROGMEM = "si dan de a pu:kbalance";      //stand up
 const char* const voiceTable[] PROGMEM = {voice1, voice2, voice3, voice4,
                                           voice5, voice6, voice7, voice8,
-                                          voice9, voice10
+                                          voice9, voice10, voice11, voice12
                                          };
 #else
 const char* voiceTable[] = {"ma pi jing", "m0 50 0 -10",
                             "ni hao", "khi",
                             "qi li", "kbalance",
                             "zuo xia", "ksit",
-                            "fu wo cheng"，"kpu"，
+                            "fu wo cheng", "kpu",
                             "jia you", "kjy",
                             "ta bu", "kvt",
                             "liang zhi lao hu", "b8 90 10 90 12 90 8 90",
@@ -37,7 +39,6 @@ const char* voiceTable[] = {"ma pi jing", "m0 50 0 -10",
 void voiceSetup()
 {
   Serial.println("Init voice");// ld3320
-
   E_WORK_MODE asr_mode = LOOP_MODE;      // 0：循环识别模式  1：口令模式，以第一个词条为口令  2、按键模式，按下开始识别
   ld3320_reset();
   ld3320_config_mode(asr_mode);  // 循环模式
