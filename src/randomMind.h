@@ -1,4 +1,4 @@
-#define EVERY_X_SECONDS 1
+#define EVERY_X_SECONDS 3
 
 #define MIND_PROGMEM
 
