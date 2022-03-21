@@ -1,32 +1,30 @@
-#define EVERY_X_SECONDS 10
+#define EVERY_X_SECONDS 1
 
 #define MIND_PROGMEM
 
 #ifdef MIND_PROGMEM
+const char mind0[] PROGMEM = "allRand";
 const char mind1[] PROGMEM = "ksit";
 const char mind2[] PROGMEM = "kbalance";
 const char mind3[] PROGMEM = "kpee";
 const char mind4[] PROGMEM = "kpu";
-const char mind5[] PROGMEM = "m0 -45 1 20 0 45 0 0";
 const char mind6[] PROGMEM = "kck";
 const char mind7[] PROGMEM = "kjy";
 const char mind8[] PROGMEM = "kvt";
-const char mind9[] PROGMEM = "i0 -45 1 45";
-const char mind10[] PROGMEM = "m2 0 2 -20 2 -40";
 const char mind11[] PROGMEM = "o ";
+const char mind12[] PROGMEM = "u ";
+const char mind13[] PROGMEM = "kstr";
 
-const char* const mindList[] PROGMEM = {mind1, mind2, mind3, mind4, mind5, mind8, mind11,
+const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind0, mind1, mind1, mind12, mind13, mind3, mind4, mind6, mind11,
 #ifdef BITTLE
-                                        mind6, mind7,
-#else
-                                        mind9, mind10
+                                        mind7,
 #endif
                                        };
 
 #else
-const char *mindList[] = {"ksit", "kbalance", "kpee", "kpu", "m0 -45 1 30 0 45 0 0", "kvt", "o ",
+const char *mindList[] = {"ksit", "kbalance", "kpee", "kpu", "m0 -45 1 30 0 45 0 0", "kck", "o ",
 #ifdef BITTLE
-                          "kck", "kjy",
+                          "kjy", "kvt",
 #else
                           "M0 -45 1 10", "m2 0 2 -20 2 20"
 #endif
@@ -39,15 +37,27 @@ void randomMind() {
   if (millis() - idleTimer > 1000) {//every second throw a dice
     idleTimer = millis();
     if (randomChoice < randomMindListLength) {
+      if (randomChoice == 0) {
+        token = T_INDEXED_SIMULTANEOUS_BIN;
+        char allRand[] = {0, currentAng[0] + rand() % 80 - 40, 1, currentAng[0] + rand() % 80 - 40, 2, currentAng[0] + rand() % 80 - 40,
+                          12, currentAng[0] + rand() % 10 - 5, 13, currentAng[0] + rand() % 10 - 5
+                         };
+        cmdLen = 10;
+        for (byte i = 0; i < cmdLen; i++)
+          newCmd[i] = allRand[i];
+        newCmd[cmdLen] = '\0';
+      }
+      else {
 #ifdef MIND_PROGMEM
-      strcpy_P(newCmd, (char *)pgm_read_word(&mindList[randomChoice]));
-      token = newCmd[0];
-      PTL(newCmd);
-      strcpy(newCmd, newCmd + 1);// this is duable only because newCmd+1 is after newCmd!
+        strcpy_P(newCmd, (char *)pgm_read_word(&mindList[randomChoice]));
+        token = newCmd[0];
+        strcpy(newCmd, newCmd + 1);// this is duable only because newCmd+1 is after newCmd!
 #else
-      token = mindList[randomChoice][0];
-      strcpy(newCmd, mindList[randomChoice] + 1);
+        token = mindList[randomChoice][0];
+        strcpy(newCmd, mindList[randomChoice] + 1);
 #endif
+      }
+      PTL(newCmd);
       newCmdIdx = 5;
     }
   }

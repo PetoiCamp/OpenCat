@@ -585,7 +585,7 @@ const int8_t rest[] PROGMEM = {
 };
 const int8_t sit[] PROGMEM = { 
 1, 0, -20, 1,
-    0, -20, -60,   0,  -5,  -5,  20,  20,  30,  30, -90, -90,  60,  60,  45,  45,
+    10, -20, -60,   0,  -5,  -5,  20,  20,  30,  30, -90, -90,  60,  60,  45,  45,
 };
 const int8_t sleep[] PROGMEM = { 
 1, 0, 0, 1,
@@ -593,13 +593,19 @@ const int8_t sleep[] PROGMEM = {
 };
 const int8_t str[] PROGMEM = { 
 1, 0, 15, 1,
-    0,  30,   0,   0,  -5,  -5,   0,   0, -75, -75, -45, -45,  60,  60, -45, -45,
+    10,  70,   -30,   0,  -5,  -5,   0,   0, -75, -75, -45, -45,  60,  60, -45, -45,
 };
 const int8_t zero[] PROGMEM = { 
 1, 0, 0, 1,
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
 };
-
+const int8_t ck[] PROGMEM = { 
+-3, 0, 0, 1,
+1,2,1,
+    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  -30,  -30,  30,  30,  -30,  -30, 8,0,0,0,
+   -35,  10, -60,   0,   0,   0,   0,   0,  70,  55,  -35, -40,   -10,  -15, -45, -20,    8, 0, 0, 0,
+   35,   55, 35,   0,   0,   0,   0,   0, 55,  70,  -40,  -35,  -15,  -10, -20, -45,    8, 20, 0, 0}
+   ;
 const int8_t hi[] PROGMEM = { 
 -3, 0, -30, 1,
  1, 2, 3, 
@@ -646,11 +652,11 @@ const int8_t stand[] PROGMEM = {
    20, -20,   7,   0,  -5,  -5,  20,  20, -50,  60,  -5,  -5,  60, -30, -60, -60,	  8,  2, 0, 0,
   -20, -40,  -7,   0,  -5,  -5,  20,  20,  50, -70,  -5,  -5,  40,  60, -60, -60,	  32, 0, 0, 0,
 };
-  const char* skillNameWithType[]={"bdI","biI","bkI","bkLI","crFI","crLI","lyI","trFI","trLI","vtI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","luI","restI","sitI","sleepI","strI","zeroN","hiI","peeI","puI","rcI","standI",};
+  const char* skillNameWithType[]={"bdI","biI","bkI","bkLI","crFI","crLI","lyI","trFI","trLI","vtI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","luI","restI","sitI","sleepI","strI","zeroN","ckI","hiI","peeI","puI","rcI","standI",};
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
-  const int8_t* progmemPointer[] = {bd, bi, bk, bkL, crF, crL, ly, trF, trL, vt, wkF, wkL, balance, buttUp, calib, dropped, lifted, lu, rest, sit, sleep, str, zero, hi, pee, pu, rc, stand, };
+  const int8_t* progmemPointer[] = {bd, bi, bk, bkL, crF, crL, ly, trF, trL, vt, wkF, wkL, balance, buttUp, calib, dropped, lifted, lu, rest, sit, sleep, str, zero, ck, hi, pee, pu, rc, stand, };
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses
   const int8_t* progmemPointer[] = {zero, };

@@ -13,7 +13,7 @@ byte melodyLowBattery[] = {15, 11, 13, 10, 11, //tone
                            4,  4,  4,  4,  4, //relative duration, 8 means 1/8 note length
                           };
 byte melody1[] = {15, 8, 10, 12, 13, 15, 8, 8, 0, 17, 13, 15, 17, 19, 20, 8, 8,
-                   1, 2,  2,  2,  2,  1, 2, 4, 8,  1,  2,  2,  2,  2,  1, 2, 4
+                  1, 2,  2,  2,  2,  1, 2, 4, 8,  1,  2,  2,  2,  2,  1, 2, 4
                  };
 
 void beep(float note, float duration = 50, int pause = 0, byte repeat = 1 ) {
@@ -31,19 +31,6 @@ void playMelody(int start) {
   for (int i = 0; i < len; i++)
     beep(EEPROM.read(start - 1 - i), 1000 / EEPROM.read(start - 1 - len - i), 50);
 }
-//
-//void meow(int repeat = 0, int pause = 200, int startF = 50,  int endF = 200, int increment = 5) {
-//  for (int r = 0; r < repeat + 1; r++) {
-//    for (int amp = startF; amp <= endF; amp += increment) {
-//      analogWrite(BUZZER, amp);
-//      delay(15); // wait for 15 milliseconds to allow the buzzer to vibrate
-//    }
-//    delay(100 + 500 / increment);
-//    analogWrite(BUZZER, 0);
-//    if (repeat)
-//      delay(pause * 2);
-//  }
-//}
 
 void playTone(uint16_t tone1, uint16_t duration) {
   if (tone1 < 50 || tone1 > 15000) return; // these do not play on a piezo
@@ -55,12 +42,12 @@ void playTone(uint16_t tone1, uint16_t duration) {
   }
 }
 
-void chirp(int startF = 180,  int endF = 200, int duration = 10) {  // Bird chirp
-  for (uint8_t i = startF; i < endF; i++) {
-    playTone(i, duration);
-  }
+void meow(byte repeat = 2, byte duration = 10, byte startF = 210 + rand() % 10,  byte endF = 220 + rand() % 10) { // Bird chirp
+  for (byte r = 0; r < repeat; r++)
+    for (byte i = startF; i < endF; i++) {
+      playTone(i, duration);
+    }
 }
 void soundFallOver() {
-  for (int i = 0; i < 2; i++)
-    chirp();
+  meow();
 }

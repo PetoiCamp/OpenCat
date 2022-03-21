@@ -68,7 +68,7 @@ void reaction() {
   if (newCmdIdx) {
     //    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
 #ifdef MAIN_SKETCH
-    if (token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN )
+    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN )
       beep(10 + newCmdIdx * 2, 20); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE)
       checkGyro = true;
@@ -130,7 +130,7 @@ void reaction() {
       case T_CALIBRATE: //calibration
       case T_MOVE: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
-      //      case T_MEOW: //meow
+      case T_MEOW: //meow
       case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
         {
           int *targetFrame = new int[DOF];
@@ -173,7 +173,6 @@ void reaction() {
                 }
                 servoCalib[target[0]] = target[1];
               }
-
               int duty = EEPROMReadInt(ZERO_POSITIONS + target[0] * 2) + float(servoCalib[target[0]])  * eeprom(ROTATION_DIRECTION, target[0]);
               pwm.writeAngle(target[0], duty);
               printTable(servoCalib);
@@ -181,9 +180,9 @@ void reaction() {
             else if (token == T_MOVE) {
               transform(targetFrame, 1, 2);
             }
-            //            else if (token == T_MEOW) {
-            //              meow(target[0], target[1]);
-            //            }
+            else if (token == T_MEOW) {
+              meow(rand() % 2 + 1, (rand() % 2 + 2) * 10);
+            }
             else if (token == T_BEEP) {
               beep(target[0], target[1], 50);
             }
