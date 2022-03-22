@@ -49,8 +49,12 @@
 #define NyBoard_V1_0
 //#define NyBoard_V1_1
 
-//#define VOICE
-//#define ULTRASONIC
+//choose only one of the following modes (they will diable the gyro to save programming space)
+//#define RANDOM_MIND     //let the robot do random stuffs
+//#define ULTRASONIC      //for Nybble's ultrasonic sensor
+//#define VOICE           //for LD3320 module
+
+
 #include "src/OpenCat.h"
 
 void setup() {

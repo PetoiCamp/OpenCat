@@ -1,14 +1,10 @@
-#define EVERY_X_SECONDS 3
+#define EVERY_X_SECONDS 1
 
-#define MIND_PROGMEM
-
-#ifdef MIND_PROGMEM
-const char mind0[] PROGMEM = "IallRand";
+const char mind0[] PROGMEM = "IRand";
 const char mind1[] PROGMEM = "ksit";
 const char mind2[] PROGMEM = "kbalance";
 const char mind3[] PROGMEM = "kpee";
 const char mind4[] PROGMEM = "kpu";
-//const char mind5[] PROGMEM = "m0 -30 1 20 0 30 0 0";
 const char mind6[] PROGMEM = "kck";
 const char mind7[] PROGMEM = "kjy";
 const char mind8[] PROGMEM = "kvt";
@@ -16,33 +12,29 @@ const char mind11[] PROGMEM = "o ";
 const char mind12[] PROGMEM = "u ";
 const char mind13[] PROGMEM = "kstr";
 
-const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12, mind13, mind6,
+const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind0, mind0, mind1, mind12, mind13, 
 #ifdef BITTLE
-                                        mind7, mind8,
+                                        mind8, mind6,
 #endif
                                        };
 
-#else
-const char *mindList[] = {"ksit", "kbalance", "kpee", "kpu", "m0 -45 1 30 0 45 0 0", "kck", "o ",
-#ifdef BITTLE
-                          "kjy", "kvt",
-#else
-                          "M0 -45 1 10", "m2 0 2 -20 2 20"
-#endif
-                         };
-#endif
 long idleTimer;
 byte randomMindListLength = sizeof(mindList) / 2;
 
 void allRandom() {
-  char tokenSet[] = {T_INDEXED_SIMULTANEOUS_BIN, T_MOVE};
-  token = tokenSet[random()%2];
-  char allRand[] = {0, currentAng[0] + rand() % 80 - 40, 1, currentAng[0] + rand() % 80 - 40, 2, currentAng[0] + rand() % 80 - 40,
-                    12, currentAng[0] + rand() % 10 - 5, 13, currentAng[0] + rand() % 10 - 5
-                   };
-  cmdLen = 10;
-  for (byte i = 0; i < cmdLen; i++)
-    newCmd[i] = allRand[i];
+  char tokenSet[] = {T_INDEXED_SIMULTANEOUS_BIN, T_MOVE_BIN};
+  int8_t jointSet[] = {0, 1, 2, 12, 13};
+  int8_t rangeSet[] = {120, 80, 180, 20, 20};
+
+  token = tokenSet[random() % 2];
+  cmdLen = rand() % 3 + 3;
+  for (byte r = 0; r < cmdLen; r++) {
+    byte j = rand() % sizeof(jointSet);
+    newCmd[r * 2] = jointSet[j];
+    newCmd[r * 2 + 1] = currentAng[jointSet[j]] + rand() % rangeSet[j] - rangeSet[j] / 2;
+//    PT(jointSet[j]);PT('\t');PTL(int(newCmd[r * 2 + 1]));
+  }
+  cmdLen *= 2;
   newCmd[cmdLen] = '\0';
 }
 void randomMind() {
@@ -54,16 +46,12 @@ void randomMind() {
         allRandom();
       }
       else {
-#ifdef MIND_PROGMEM
         strcpy_P(newCmd, (char *)pgm_read_word(&mindList[randomChoice]));
         token = newCmd[0];
         strcpy(newCmd, newCmd + 1);// this is duable only because newCmd+1 is after newCmd!
-#else
-        token = mindList[randomChoice][0];
-        strcpy(newCmd, mindList[randomChoice] + 1);
-#endif
+
       }
-      PTL(newCmd);
+//      PTL(newCmd);
       newCmdIdx = 5;
     }
   }

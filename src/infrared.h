@@ -132,7 +132,7 @@ String translateIR() // takes action based on IR code received
 }
 
 
-String gait = "wk";
+String gait = "tr";
 char direct = 'F';
 
 
@@ -148,7 +148,7 @@ String irParser(String raw) {
       if (gait == "bk")
         gait = "vt";
       else if (gait == "vt")
-        gait = "wk";
+        gait = "tr";
     }
     return gait + direct;
   }

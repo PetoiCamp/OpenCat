@@ -43,12 +43,7 @@ bool lowBattery() {
 
 void resetCmd() {
   //  PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
-  //  if (lastToken != T_SKILL) {
-  //    saverThreshold = POWER_SAVER_LONG;
-  //  }
-  //  else
-  //    saverThreshold = POWER_SAVER_SHORT;
-  if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN
+  if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN && token != T_MOVE_BIN
 #ifdef  T_SKILL_DATA
       && token != T_SKILL_DATA
 #endif
@@ -128,7 +123,7 @@ void reaction() {
           break;
         }
       case T_CALIBRATE: //calibration
-      case T_MOVE: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
+      case T_MOVE_ASC: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
       case T_MEOW: //meow
       case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
@@ -177,7 +172,7 @@ void reaction() {
               pwm.writeAngle(target[0], duty);
               printTable(servoCalib);
             }
-            else if (token == T_MOVE) {
+            else if (token == T_MOVE_ASC) {
               transform(targetFrame, 1, 2);
             }
             else if (token == T_MEOW) {
@@ -212,6 +207,7 @@ void reaction() {
           break;
         }
       // this block handles array like arguments
+      case T_MOVE_BIN:
       case T_INDEXED_SIMULTANEOUS_BIN: //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
       case T_LISTED_BIN: //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
         {
@@ -219,9 +215,13 @@ void reaction() {
           for (int i = 0; i < DOF; i++) {
             targetFrame[i] = currentAng[i];
           }
-          if (token == T_INDEXED_SIMULTANEOUS_BIN) {
+          if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_MOVE_BIN) {
             for (int i = 0; i < cmdLen; i += 2) {
               targetFrame[newCmd[i]] = newCmd[i + 1];
+              if (token == T_MOVE_BIN) {
+                transform(targetFrame, 1, 2);
+                delay(50);
+              }
             }
           }
           else {// if (token == T_LISTED_BIN) {
@@ -229,8 +229,9 @@ void reaction() {
               targetFrame[i] = newCmd[i];
             }
           }
-          transform(targetFrame, 1, 3); //need to add angleDataRatio if the angles are large
-          delay(5);
+          if (token != T_MOVE_BIN)
+            transform(targetFrame, 1, 3); //need to add angleDataRatio if the angles are large
+          delay(10);
           break;
         }
 #ifdef  T_SKILL_DATA

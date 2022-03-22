@@ -1,8 +1,6 @@
 #include "ld3320_ch/asr_ld3320.h"
 long voiceTimer;
-#define VOICE_PROGMEM
 
-#ifdef VOICE_PROGMEM
 // format:
 //    phrase:token+command
 //    should NOT be more than 40 chars
@@ -22,19 +20,6 @@ const char* const voiceTable[] PROGMEM = {voice1, voice2, voice3, voice4,
                                           voice5, voice6, voice7, voice8,
                                           voice9, voice10, voice11, voice12
                                          };
-#else
-const char* voiceTable[] = {"ma pi jing", "m0 50 0 -10",
-                            "ni hao", "khi",
-                            "qi li", "kbalance",
-                            "zuo xia", "ksit",
-                            "fu wo cheng", "kpu",
-                            "jia you", "kjy",
-                            "ta bu", "kvt",
-                            "liang zhi lao hu", "b8 90 10 90 12 90 8 90",
-                            "shui jiao", "d ",
-                            "guan cha", "kck"
-                           };
-#endif
 
 void voiceSetup()
 {
@@ -42,16 +27,13 @@ void voiceSetup()
   E_WORK_MODE asr_mode = LOOP_MODE;      // 0：循环识别模式  1：口令模式，以第一个词条为口令  2、按键模式，按下开始识别
   ld3320_reset();
   ld3320_config_mode(asr_mode);  // 循环模式
-#ifdef VOICE_PROGMEM
+
   for (byte v = 0; v < sizeof(voiceTable) / 2; v++) {
     char *ptr;
     strcpy_P(newCmd, (char *)pgm_read_word(&(voiceTable[v])));
     ptr = strtok (newCmd, ":");
     ld3320_add_words(v, ptr);
-#else
-  for (byte v = 0; v < sizeof(voiceTable) / 4; v++) {
-    ld3320_add_words(v, voiceTable[v * 2]);
-#endif
+
     PTL(v);
   }
   //  ld3320_add_words(0, "ma pi jing");  // 马屁精
@@ -75,7 +57,6 @@ void read_voice()
     if (result != 0xFF) {
       //    Serial.print("asr result is:");
       //    Serial.println(result);   //返回识别结果，即识别到的词条编号
-#ifdef VOICE_PROGMEM
       for (byte v = 0; v < sizeof(voiceTable) / 2; v++) {
         if (result == v) {
           char *ptr;
@@ -84,12 +65,7 @@ void read_voice()
           ptr = strtok (NULL, ":");
           token = ptr[0];
           strcpy(newCmd, ptr + 1);
-#else
-      for (byte v = 0; v < sizeof(voiceTable) / 4; v++) {
-        if (result == v) {
-          token = voiceTable[v * 2 + 1][0];
-          strcpy(newCmd, voiceTable[v * 2 + 1] + 1);
-#endif
+
           PTL(newCmd);
           break;
         }

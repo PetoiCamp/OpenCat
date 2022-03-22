@@ -162,7 +162,8 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #define T_SKILL       'k'
 #define T_SKILL_DATA  'K'
 #define T_LISTED_BIN  'L'
-#define T_MOVE        'm'
+#define T_MOVE_ASC    'm'
+#define T_MOVE_BIN    'M'
 #define T_MELODY      'o'
 #define T_PAUSE       'p'
 #define T_RAMP        'r'
@@ -282,19 +283,15 @@ template <typename T> void printTable(T * list) {
 
 #ifdef VOICE
 #include "voice.h"
-#define RANDOM_MIND //allow the robot to behave randomly
 #elif defined ULTRASONIC
 #include "ultrasonic.h"
-#define RANDOM_MIND //allow the robot to behave randomly
+#elif defined RANDOM_MIND
+#include "randomMind.h"
 #else
-//#define RANDOM_MIND //allow the robot to behave randomly
 #define GYRO_PIN  0
 #endif
-#include "io.h"
 
-#ifdef RANDOM_MIND
-#include "randomMind.h"
-#endif
+#include "io.h"
 
 #ifdef GYRO_PIN
 #include "imu.h"
