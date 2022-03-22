@@ -66,7 +66,7 @@ void resetCmd() {
 
 void reaction() {
   if (newCmdIdx) {
-    //    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+//    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
 #ifdef MAIN_SKETCH
     if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN )
       beep(10 + newCmdIdx * 2, 20); //ToDo: check the muted sound when newCmdIdx = -1

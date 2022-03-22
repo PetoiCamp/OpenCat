@@ -8,6 +8,7 @@ const char mind1[] PROGMEM = "ksit";
 const char mind2[] PROGMEM = "kbalance";
 const char mind3[] PROGMEM = "kpee";
 const char mind4[] PROGMEM = "kpu";
+//const char mind5[] PROGMEM = "m0 -30 1 20 0 30 0 0";
 const char mind6[] PROGMEM = "kck";
 const char mind7[] PROGMEM = "kjy";
 const char mind8[] PROGMEM = "kvt";
@@ -15,9 +16,9 @@ const char mind11[] PROGMEM = "o ";
 const char mind12[] PROGMEM = "u ";
 const char mind13[] PROGMEM = "kstr";
 
-const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind0, mind1, mind1, mind12, mind13, mind3, mind4, mind6, mind11,
+const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12, mind13, mind6,
 #ifdef BITTLE
-                                        mind7,
+                                        mind7, mind8,
 #endif
                                        };
 
@@ -33,10 +34,9 @@ const char *mindList[] = {"ksit", "kbalance", "kpee", "kpu", "m0 -45 1 30 0 45 0
 long idleTimer;
 byte randomMindListLength = sizeof(mindList) / 2;
 
-
 void allRandom() {
-
-  token = T_INDEXED_SIMULTANEOUS_BIN;
+  char tokenSet[] = {T_INDEXED_SIMULTANEOUS_BIN, T_MOVE};
+  token = tokenSet[random()%2];
   char allRand[] = {0, currentAng[0] + rand() % 80 - 40, 1, currentAng[0] + rand() % 80 - 40, 2, currentAng[0] + rand() % 80 - 40,
                     12, currentAng[0] + rand() % 10 - 5, 13, currentAng[0] + rand() % 10 - 5
                    };

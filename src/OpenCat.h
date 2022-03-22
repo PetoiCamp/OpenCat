@@ -125,23 +125,23 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #endif
 
 //on-board EEPROM addresses
-#define MELODY_NORMAL 1023 //melody will be saved at the end of the 1KB EEPROM, and is read reversely. That allows some flexibility on the melody length. 
-#define MELODY_INIT 1002
-#define MELODY_LOW_BATTERY 975
-#define MELODY_1 964
-#define PWM_PIN       0                 // 16 byte array
-#define CALIB     16              // 16 byte array
-#define MPUCALIB  32           // 9 int byte array 9x2 =18
-#define MID_SHIFT 50         // 16 byte array
-#define ROTATION_DIRECTION  66 // 16 byte array
-#define ADAPT_PARAM         82          // 16 x 2 byte array
-#define ANGLE_LIMIT         114        // 16*2*2 = 64   82+64 = 178
-#define ZERO_POSITIONS      178        // 16*2 = 32   178+32 = 210
-#define CALIBRATED_ZERO_POSITIONS 210  // 16*2 = 32   210+32 = 242
-#define ANGLE2PULSE_FACTOR 242          // 16*2 = 32  
-#define B_OFFSET           274
-#define NUM_SKILLS         275
-#define SKILLS             276        // 1 byte for skill name length, followed by the char array for skill name
+#define MELODY_NORMAL       1023 //melody will be saved at the end of the 1KB EEPROM, and is read reversely. That allows some flexibility on the melody length. 
+#define MELODY_INIT         1002
+#define MELODY_LOW_BATTERY  975
+#define MELODY_1            964
+#define PWM_PIN             0         // 16 byte array
+#define CALIB               16        // 16 byte array
+#define MID_SHIFT           32        // 16 byte array
+#define ROTATION_DIRECTION  48        // 16 byte array
+#define ZERO_POSITIONS      64        // 16*2 = 32   64+32 = 96
+#define CALIBRATED_ZERO_POSITIONS 96  // 16*2 = 32   96+32 = 128
+#define ADAPT_PARAM         128       // 16 x 2 byte array 128+32 = 160
+#define ANGLE2PULSE_FACTOR  160       // 16*2 = 32  160+32 = 192
+#define ANGLE_LIMIT         192       // 16*2*2 = 64   192+64 = 256
+#define MPUCALIB            256       // 9 int byte array 9x2 =18  256+18=274
+#define B_OFFSET            274
+#define NUM_SKILLS          275
+#define SKILLS              276       // 1 byte for skill name length, followed by the char array for skill name
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
 //the actual data is stored on the I2C EEPROM.
