@@ -287,7 +287,7 @@ template <typename T> void printTable(T * list) {
 #include "ultrasonic.h"
 #define RANDOM_MIND //allow the robot to behave randomly
 #else
-#define RANDOM_MIND //allow the robot to behave randomly
+//#define RANDOM_MIND //allow the robot to behave randomly
 #define GYRO_PIN  0
 #endif
 #include "io.h"
