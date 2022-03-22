@@ -220,7 +220,7 @@ void reaction() {
               targetFrame[newCmd[i]] = newCmd[i + 1];
               if (token == T_MOVE_BIN) {
                 transform(targetFrame, 1, 2);
-                delay(50);
+                delay(10);
               }
             }
           }
@@ -230,7 +230,7 @@ void reaction() {
             }
           }
           if (token != T_MOVE_BIN)
-            transform(targetFrame, 1, 3); //need to add angleDataRatio if the angles are large
+            transform(targetFrame, 1, 2); //need to add angleDataRatio if the angles are large
           delay(10);
           break;
         }
