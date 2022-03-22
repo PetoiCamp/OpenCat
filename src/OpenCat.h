@@ -1,24 +1,9 @@
-//#define VOICE
-char token;
-char *newCmd = new char[40];
-byte newCmdIdx = 0;
-
-#ifdef VOICE
-#include "voice.h"
-#else
-
-#define RANDOM_MIND //allow the robot to behave randomly
-#define GYRO_PIN  0
-
-#endif
-
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
 #define IR_PIN    4   // Signal Pin of IR receiver to Arduino Digital Pin 4
 // -----------------------------------------------------------------------
 #define BUZZER    5
-#define ULTRA_SOUND
 
 #define SOUND A2
 #define LIGHT A3
@@ -233,8 +218,12 @@ int currentAng[DOF] = { -30, -80, -45, 0,
 float currentAdjust[DOF] = {};
 
 //control related variables
+
+char token;
 char lastToken;
+char *newCmd = new char[40];
 char *lastCmd = new char[5];
+byte newCmdIdx = 0;
 int8_t* dataBuffer = new int8_t[450];
 byte cmdLen;
 bool checkGyro = true;
@@ -246,16 +235,61 @@ byte exceptions = 0;
 int frame;
 byte tStep = 0;
 
+#define PT(s) Serial.print(s)  //makes life easier
+#define PTL(s) Serial.println(s)
+#define PTF(s) Serial.print(F(s))//trade flash memory for dynamic memory with F() function
+#define PTLF(s) Serial.println(F(s))
+void printRange(int r0 = 0, int r1 = 0) {
+  if (r1 == 0)
+    for (byte i = 0; i < r0; i++) {
+      PT(i);
+      PT('\t');
+    }
+  else
+    for (byte i = r0; i < r1; i++) {
+      PT(i);
+      PT('\t');
+    }
+  PTL();
+}
+template <typename T> void printList(T * arr, byte len = DOF) {
+  String temp = "";
+  for (byte i = 0; i < len; i++) {
+    temp += String(int(arr[i]));
+    temp += '\t';
+    //PT((T)(arr[i]));
+    //PT('\t');
+  }
+  PTL(temp);
+}
+template <typename T> void printTable(T * list) {
+  printRange(0, DOF);
+  printList(list, DOF);
+}
+
 #ifdef DEVELOPER
 #include "MemoryFree/MemoryFree.h" //http://playground.arduino.cc/Code/AvailableMemory
 #endif
 #include <EEPROM.h>
+
+
 #include "sound.h"
 
 #if defined IR_PIN && defined MAIN_SKETCH
 #include "infrared.h"
 #endif
 
+
+#ifdef VOICE
+#include "voice.h"
+#define RANDOM_MIND //allow the robot to behave randomly
+#elif defined ULTRASONIC
+#include "ultrasonic.h"
+#define RANDOM_MIND //allow the robot to behave randomly
+#else
+#define RANDOM_MIND //allow the robot to behave randomly
+#define GYRO_PIN  0
+#endif
 #include "io.h"
 
 #ifdef RANDOM_MIND

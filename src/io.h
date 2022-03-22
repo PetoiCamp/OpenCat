@@ -37,7 +37,7 @@ void read_serial() {
           cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
         }
         else
-          cmdBuffer = Serial.readStringUntil('\n'); 
+          cmdBuffer = Serial.readStringUntil('\n');
         cmdLen = cmdBuffer.length();
         for (int i = 0; i < cmdLen; i++)
           newCmd[i] = cmdBuffer[i];
@@ -52,6 +52,9 @@ void read_serial() {
 }
 
 void readSignal() {
+#ifdef ULTRASONIC
+  read_ultrasonic();
+#endif
 #if defined IR_PIN && defined MAIN_SKETCH
   read_infrared();//  newCmdIdx = 1
 #endif
@@ -92,33 +95,7 @@ template <typename T> int8_t sign(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
-void printRange(int r0 = 0, int r1 = 0) {
-  if (r1 == 0)
-    for (byte i = 0; i < r0; i++) {
-      PT(i);
-      PT('\t');
-    }
-  else
-    for (byte i = r0; i < r1; i++) {
-      PT(i);
-      PT('\t');
-    }
-  PTL();
-}
-template <typename T> void printList(T * arr, byte len = DOF) {
-  String temp = "";
-  for (byte i = 0; i < len; i++) {
-    temp += String(int(arr[i]));
-    temp += '\t';
-    //PT((T)(arr[i]));
-    //PT('\t');
-  }
-  PTL(temp);
-}
-template <typename T> void printTable(T * list) {
-  printRange(0, DOF);
-  printList(list, DOF);
-}
+
 //short tools
 
 template <typename T> void printEEPROMList(int EEaddress, byte len = DOF) {

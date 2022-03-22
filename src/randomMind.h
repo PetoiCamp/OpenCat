@@ -3,7 +3,7 @@
 #define MIND_PROGMEM
 
 #ifdef MIND_PROGMEM
-const char mind0[] PROGMEM = "allRand";
+const char mind0[] PROGMEM = "IallRand";
 const char mind1[] PROGMEM = "ksit";
 const char mind2[] PROGMEM = "kbalance";
 const char mind3[] PROGMEM = "kpee";
@@ -32,20 +32,26 @@ const char *mindList[] = {"ksit", "kbalance", "kpee", "kpu", "m0 -45 1 30 0 45 0
 #endif
 long idleTimer;
 byte randomMindListLength = sizeof(mindList) / 2;
+
+
+void allRandom() {
+
+  token = T_INDEXED_SIMULTANEOUS_BIN;
+  char allRand[] = {0, currentAng[0] + rand() % 80 - 40, 1, currentAng[0] + rand() % 80 - 40, 2, currentAng[0] + rand() % 80 - 40,
+                    12, currentAng[0] + rand() % 10 - 5, 13, currentAng[0] + rand() % 10 - 5
+                   };
+  cmdLen = 10;
+  for (byte i = 0; i < cmdLen; i++)
+    newCmd[i] = allRand[i];
+  newCmd[cmdLen] = '\0';
+}
 void randomMind() {
   int randomChoice = random() % (randomMindListLength * EVERY_X_SECONDS); //on average every EVERY_X_SECONDS seconds
   if (millis() - idleTimer > 1000) {//every second throw a dice
     idleTimer = millis();
     if (randomChoice < randomMindListLength) {
       if (randomChoice == 0) {
-        token = T_INDEXED_SIMULTANEOUS_BIN;
-        char allRand[] = {0, currentAng[0] + rand() % 80 - 40, 1, currentAng[0] + rand() % 80 - 40, 2, currentAng[0] + rand() % 80 - 40,
-                          12, currentAng[0] + rand() % 10 - 5, 13, currentAng[0] + rand() % 10 - 5
-                         };
-        cmdLen = 10;
-        for (byte i = 0; i < cmdLen; i++)
-          newCmd[i] = allRand[i];
-        newCmd[cmdLen] = '\0';
+        allRandom();
       }
       else {
 #ifdef MIND_PROGMEM

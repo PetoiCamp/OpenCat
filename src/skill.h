@@ -308,7 +308,7 @@ class Skill {
               PT(currentYpr);
               PT('\t');
               PTL(triggerAngle);
-              if ((180 - fabs(currentYpr) > 2)  //skip the angle when the reading jumps from 180 to -180
+              if ((180 - fabs(currentYpr) > 2)  //IMU_SKIP the angle when the reading jumps from 180 to -180
                   && (triggerAxis * currentYpr < triggerAxis * triggerAngle && triggerAxis * previousYpr > triggerAxis * triggerAngle )
                  ) //the sign of triggerAxis will deterine whether the current angle should be larger or smaller than the trigger angle
                 break;
@@ -331,7 +331,7 @@ class Skill {
 
 #ifdef GYRO_PIN
         //                if (imuUpdated)
-        if (!(frame % SKIP)) {
+        if (!(frame % IMU_SKIP)) {
           for (byte i = 0; i < 2; i++) {
             RollPitchDeviation[i] = ypr[2 - i]  - expectedRollPitch[i]; //all in degrees
             RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i])) - levelTolerance[i], float(0));//filter out small angles
@@ -371,7 +371,7 @@ class Skill {
         calibratedPWM(jointIndex, duty
 #ifdef GYRO_PIN
                       + (checkGyro && !exceptions ?
-                         (!(frame % SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
+                         (!(frame % IMU_SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
 #endif
                      );
         jointIndex++;

@@ -48,7 +48,7 @@ void resetCmd() {
   //  }
   //  else
   //    saverThreshold = POWER_SAVER_SHORT;
-  if (strcmp(newCmd, "rc")
+  if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN
 #ifdef  T_SKILL_DATA
       && token != T_SKILL_DATA
 #endif

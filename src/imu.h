@@ -138,7 +138,7 @@ VectorFloat gravity;    // [x, y, z]            gravity vector
 float euler[3];         // [psi, theta, phi]    Euler angle container
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 
-#define SKIP 2
+#define IMU_SKIP 2
 int16_t imuOffset[9] = {0, 0, 0,
                         0, 0, 0,
                         0, 0, 0
@@ -194,7 +194,7 @@ bool read_IMU() {
 }
 
 void readEnvironment() {
-  if (checkGyro && !(frame % SKIP))
+  if (checkGyro && !(frame % IMU_SKIP))
     read_IMU();
 }
 
