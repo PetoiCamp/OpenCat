@@ -67,12 +67,12 @@ class Skill {
       for (byte s = 0; s < eeprom(NUM_SKILLS); s++) {//save skill info to on-board EEPROM
         byte len = strlen(skillNameWithType[s]); //len includes type. the saved value doesn't
         EEPROM.update(SKILLS + skillAddressShift++, len - 1); //the last char in name denotes skill type, I(nstinct) on external eeprom, N(ewbility) on progmem
-        //        PT(skillNameWithType[s][len - 1] == 'I' ? "I nstinct\t" : "N ewbility\t");
+        PT(skillNameWithType[s][len - 1] == 'I' ? "I nstinct\t" : "N ewbility\t");
         for (byte l = 0; l < len; l++) {
-          //          PT(skillNameWithType[s][l]);
+          PT(skillNameWithType[s][l]);
           EEPROM.update(SKILLS + skillAddressShift++, skillNameWithType[s][l]);
         }
-        //        PTL();
+        PTL();
         int8_t period = pgm_read_byte(progmemPointer[s]);
         EEPROM.update(SKILLS + skillAddressShift++, period);
 
@@ -106,7 +106,7 @@ class Skill {
       int skillAddressShift = 0;
       PTLF("Load skills");
       for (byte s = 0; s < sizeof(progmemPointer) / 2; s++) { //save skill info to on-board EEPROM, load skills to SkillList
-        //    PTL(s);
+        //        PTL(s);
         byte nameLen = EEPROM.read(SKILLS + skillAddressShift++); //without last type character
         //    for (int n = 0; n < nameLen; n++)
         //      PT((char)EEPROM.read(SKILLS + skillAddressShift + n));
@@ -164,7 +164,7 @@ class Skill {
 
     void loadDataFromProgmem(unsigned int pgmAddress) {
       //      dataBuffer = new int8_t [bufferLen + 1];
-//      dataBuffer[0] = pgm_read_byte(pgmAddress++);
+      //      dataBuffer[0] = pgm_read_byte(pgmAddress++);
       int bufferLen = dataLen(period);
       for (int i = 0; i < bufferLen; i++)
         dataBuffer[i] = pgm_read_byte(pgmAddress ++);
@@ -177,7 +177,7 @@ class Skill {
       Wire.write((int)((eeAddress) & 0xFF)); // LSB
       Wire.endTransmission();
       Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)1);
-      dataBuffer[0]=Wire.read();
+      dataBuffer[0] = Wire.read();
       int bufferLen = dataLen(period);
       //      int tail = bufferLen;
       int readFromEE = 0;
@@ -187,7 +187,7 @@ class Skill {
         Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)min(WIRE_BUFFER, bufferLen));
         readToWire = 0;
         do {
-          if (Wire.available()) dataBuffer[1+readFromEE++] = Wire.read();
+          if (Wire.available()) dataBuffer[1 + readFromEE++] = Wire.read();
           /*PT( (int8_t)dutyAngles[readFromEE - 1]);
             PT('\t')*/
         } while (--bufferLen > 0 && ++readToWire < WIRE_BUFFER);
@@ -198,7 +198,7 @@ class Skill {
 
     void formatSkill() {
       for (int i = 0; i < 2; i++)
-        expectedRollPitch[i] = (int8_t)dataBuffer[1+i];
+        expectedRollPitch[i] = (int8_t)dataBuffer[1 + i];
       angleDataRatio = dataBuffer[3];
       byte skillHeader = 4;
       if (period < 0) {
@@ -324,7 +324,7 @@ class Skill {
             c = loopCycle[0] - 1;
             repeat--;
           }
-//          delay(10);
+          //          delay(10);
         }
       }
       else {//postures and gaits
@@ -405,6 +405,7 @@ int testEEPROM(char* skillData) {
 
 #ifndef MAIN_SKETCH
 void writeConst() {
+//  flushEEPROM(-1);
   int melodyAddress = MELODY_NORMAL;
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
   saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
@@ -420,6 +421,7 @@ void writeConst() {
 #ifndef AUTO_INIT
     if (resetJointCalibrationQ == 'Y' || resetJointCalibrationQ == 'y') {
       EEPROM.update(CALIB + i, servoCalib[i]);
+      delay(5);
     }
 #endif
     EEPROM.update(PWM_PIN + i, pwm_pin[i]);

@@ -258,9 +258,12 @@ void imuSetup() {
       EEPROMWriteInt(MPUCALIB + 6, mpu.getXGyroOffset());
       EEPROMWriteInt(MPUCALIB + 8, mpu.getYGyroOffset());
       EEPROMWriteInt(MPUCALIB + 10, mpu.getZGyroOffset());
+
 #ifndef AUTO_INIT
     }
 #endif
+    PTLF("\nEEPROM contents:");
+    printEPROM();
     beep(18, 50, 70, 6);
 #endif
     //    mpu.PrintActiveOffsets(); //it takes 7% flash!

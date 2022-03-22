@@ -98,13 +98,7 @@ template <typename T> int8_t sign(T val) {
 
 //short tools
 
-template <typename T> void printEEPROMList(int EEaddress, byte len = DOF) {
-  for (byte i = 0; i < len; i++) {
-    PT((T)(EEPROM.read(EEaddress + i)));
-    PT('\t');
-  }
-  PTL();
-}
+
 void EEPROMWriteInt(int p_address, int p_value)
 {
   byte lowByte = ((p_value >> 0) & 0xFF);
@@ -122,6 +116,29 @@ int EEPROMReadInt(int p_address)
 }
 inline int8_t eeprom(int address, byte x = 0, byte y = 0, byte yDim = 1) {
   return EEPROM.read(address + x * yDim + y);
+}
+
+void flushEEPROM(char b) {
+  for (int j = 0; j < 1024; j++) {
+    EEPROM.update(j, b);
+  }
+}
+
+void printEPROM() {
+  for (int i = 0; i < 1024; i++) {
+    PT(eeprom(i));
+    PT('\t');
+    if ((i % 16)==15)
+      PTL();
+  }
+}
+
+template <typename T> void printEEPROMList(int EEaddress, byte len = DOF) {
+  for (byte i = 0; i < len; i++) {
+    PT((T)(EEPROM.read(EEaddress + i)));
+    PT('\t');
+  }
+  PTL();
 }
 
 void saveCalib(int8_t *var) {

@@ -41,8 +41,8 @@
 //#define AUTO_INIT //automatically select 'Y' for the prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-//#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+//#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
@@ -65,7 +65,8 @@ void setup() {
   //#elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   //  Fastwire::setup(400, true);
   //#endif
-  servoSetup();
+  
+  //----------------------------------
 #ifdef MAIN_SKETCH  // **
 #ifdef GYRO_PIN
   imuSetup();
@@ -74,6 +75,7 @@ void setup() {
   irrecv.enableIRIn(); // Start the receiver
   gait.reserve(4);
 #endif
+  servoSetup();
   randomSeed(analogRead(0));//use the fluctuation of voltage caused by servos as entropy pool
 
   skill.assignSkillAddressToOnboardEeprom();
@@ -81,7 +83,6 @@ void setup() {
 #ifdef VOICE
   voiceSetup();
 #endif
-
   PTLF("\n* Start *");
 #ifdef BITTLE
   PTLF("Bittle");
@@ -90,16 +91,17 @@ void setup() {
 #elif defined CUB
   PTLF("Cub");
 #endif
-//  delay(1000);
+  playMelody(MELODY_NORMAL);
 #ifdef GYRO_PIN
   read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs
   newCmdIdx = 2;
 #endif
-  playMelody(MELODY_NORMAL);
-
+  //----------------------------------
 #else               // ** save parameters to device's static memory
   configureEEPROM();
+
+  servoSetup(); //servo needs to be after configureEEPROM and before imuSetup
 #ifdef GYRO_PIN
   imuSetup();
 #endif
@@ -111,7 +113,7 @@ void setup() {
 void loop() {
 #ifdef MAIN_SKETCH
 #ifdef VOLTAGE_DETECTION_PIN
-    while (lowBattery()); //block the loop if battery is low
+  while (lowBattery()); //block the loop if battery is low
 #endif
 #ifdef RANDOM_MIND
   if (autoSwitch)
