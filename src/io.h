@@ -52,10 +52,25 @@ void read_serial() {
 }
 
 void readSignal() {
+
 #ifdef ULTRASONIC
+  if (distance > 60) {
+    ultraInterval = 1000;
+    autoSwitch = true;
+  }
+  else {
+    ultraInterval = 0;
+    autoSwitch = false;
+  }
   read_ultrasonic();
 #endif
-#if defined IR_PIN && defined MAIN_SKETCH
+
+#ifdef RANDOM_MIND
+  if (autoSwitch)
+    randomMind();//make the robot do random demos
+#endif
+
+#if defined IR_PIN
   read_infrared();//  newCmdIdx = 1
 #endif
   read_serial();  //  newCmdIdx = 2
@@ -128,7 +143,7 @@ void printEPROM() {
   for (int i = 0; i < 1024; i++) {
     PT(eeprom(i));
     PT('\t');
-    if ((i % 16)==15)
+    if ((i % 16) == 15)
       PTL();
   }
 }

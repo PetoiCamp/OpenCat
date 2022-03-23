@@ -12,7 +12,7 @@ const char mind11[] PROGMEM = "o ";
 const char mind12[] PROGMEM = "u ";
 const char mind13[] PROGMEM = "kstr";
 
-const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind0, mind0, mind1, mind12, //mind6,
+const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12, 
 #ifdef BITTLE
                                         mind8, mind6,
 #endif
@@ -25,7 +25,7 @@ void allRandom() {
 
   int8_t jointSet[] = {0, 1, 2, 8, 9,  12, 13, 14, 15};
   PTL(sizeof(jointSet));
-  byte rangeSet[] = {90, 80, 180, 10, 10, 20, 20, 5, 5};
+  byte rangeSet[] = {120, 90, 180, 10, 10, 20, 20, 5, 5};
 
   token = tokenSet[random() % 2];
   cmdLen = rand() % 4 + 4;
@@ -44,7 +44,7 @@ void randomMind() {
   if (millis() - idleTimer > 1000) {//every second throw a dice
     idleTimer = millis();
     if (randomChoice < randomMindListLength) {
-      if (randomChoice < 5) {
+      if (randomChoice < 3) {
         allRandom();
       }
       else {

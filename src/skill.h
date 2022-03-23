@@ -413,7 +413,7 @@ void writeConst() {
   saveMelody(melodyAddress, melody1, sizeof(melody1));
   playMelody(MELODY_INIT);
 #ifndef AUTO_INIT
-  PTLF("Reset joint offsets? (Y/n)");
+  PTLF("Reset joint offsets? (Y/n)");//(Input ‘Y’ and hit enter, if you want to reset all the joint offsets to 0)
   char resetJointCalibrationQ = getUserInputChar();
   PTL(resetJointCalibrationQ);
 #endif

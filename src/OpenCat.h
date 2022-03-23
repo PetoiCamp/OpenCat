@@ -283,10 +283,14 @@ template <typename T> void printTable(T * list) {
 
 #ifdef VOICE
 #include "voice.h"
+
 #elif defined ULTRASONIC
+#include "randomMind.h"
 #include "ultrasonic.h"
+
 #elif defined RANDOM_MIND
 #include "randomMind.h"
+
 #else
 #define GYRO_PIN  0
 #endif

@@ -28,7 +28,7 @@ bool lowBattery() {
     PT(voltage / 99);
     PTL('V');
     playMelody(MELODY_LOW_BATTERY);
-    delay(1000);
+    delay(2000);
     return true;
   }
   //  if (safeRest) {
@@ -176,7 +176,7 @@ void reaction() {
               transform(targetFrame, 1, 2);
             }
             else if (token == T_MEOW) {
-              meow(rand() % 2 + 1, (rand() % 2 + 2) * 10);
+              meow(rand() % 2 + 1, (rand() % 4 + 2) * 5);
             }
             else if (token == T_BEEP) {
               beep(target[0], target[1], 50);

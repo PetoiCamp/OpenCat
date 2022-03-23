@@ -41,17 +41,18 @@
 //#define AUTO_INIT //automatically select 'Y' for the prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-//#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+//#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
 #define NyBoard_V1_0
 //#define NyBoard_V1_1
 
-//choose only one of the following modes (they will diable the gyro to save programming space)
-//#define RANDOM_MIND       //let the robot do random stuffs. use token 'z' to activate/deactivate
-//#define ULTRASONIC      //for Nybble's ultrasonic sensor
+//you can also activate the following modes (they will diable the gyro to save programming space)
+//allowed combinations: RANDOM_MIND, ULTRASONIC, RANDOM_MIND + ULTRASONIC, VOICE
+#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
+#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
 
 
@@ -61,7 +62,7 @@ void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(5);
   PTLF(">Flush>");
-  delay(2000);
+  //  delay(2000);
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
@@ -119,10 +120,6 @@ void loop() {
 #ifdef MAIN_SKETCH
 #ifdef VOLTAGE_DETECTION_PIN
   while (lowBattery()); //block the loop if battery is low
-#endif
-#ifdef RANDOM_MIND
-  if (autoSwitch)
-    randomMind();//make the robot do random demos
 #endif
   readSignal();
 #ifdef GYRO_PIN

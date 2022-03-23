@@ -63,29 +63,29 @@ void RgbUltrasonic::SetRgbEffect(E_RGB_INDEX index, long Color, uint8_t effect)
             mRgb->setColor(1, Color);
             mRgb->setColor(4, Color);
             mRgb->show();
-            delay(200);
+            delay(100);
             mRgb->setColor(1, 0);
             mRgb->setColor(4, 0);
             mRgb->setColor(2, Color);
             mRgb->setColor(5, Color);
             mRgb->show();
-            delay(200);
+            delay(100);
             mRgb->setColor(2, 0);
             mRgb->setColor(5, 0);
             mRgb->setColor(3, Color);
             mRgb->setColor(6, Color);
             mRgb->show();
-            delay(200);
+            delay(100);
             mRgb->setColor(3, 0);
             mRgb->setColor(6, 0);
             mRgb->show();
             break;
         case E_EFFECT_FLASH:
-            for (byte i = 0; i < 6; i++) {
+            for (byte i = 0; i < 3; i++) {
                SetRgbColor(E_RGB_ALL, Color);
-               delay(100);
+               delay(20);
                SetRgbColor(E_RGB_ALL, 0);
-               delay(100);
+//               delay(5);
             }
             break;
     }
