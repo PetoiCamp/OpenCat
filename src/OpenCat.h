@@ -276,7 +276,7 @@ template <typename T> void printTable(T * list) {
 
 #include "sound.h"
 
-#if defined IR_PIN && defined MAIN_SKETCH
+#if defined IR_PIN
 #include "infrared.h"
 #endif
 

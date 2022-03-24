@@ -54,14 +54,6 @@ void read_serial() {
 void readSignal() {
 
 #ifdef ULTRASONIC
-  if (distance > 60) {
-    ultraInterval = 1000;
-    autoSwitch = true;
-  }
-  else {
-    ultraInterval = 0;
-    autoSwitch = false;
-  }
   read_ultrasonic();
 #endif
 

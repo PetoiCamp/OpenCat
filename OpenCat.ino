@@ -51,8 +51,8 @@
 
 //you can also activate the following modes (they will diable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND, ULTRASONIC, RANDOM_MIND + ULTRASONIC, VOICE
-#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
-#define ULTRASONIC      //for Nybble's ultrasonic sensor
+//#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
+//#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
 
 

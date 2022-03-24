@@ -12,13 +12,14 @@ const char mind11[] PROGMEM = "o ";
 const char mind12[] PROGMEM = "u ";
 const char mind13[] PROGMEM = "kstr";
 
-const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12, 
+const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12,
 #ifdef BITTLE
                                         mind8, mind6,
 #endif
                                        };
 
 long idleTimer;
+int randomInterval = 1000;;
 void allRandom() {
 
   char tokenSet[] = {T_INDEXED_SIMULTANEOUS_BIN, T_MOVE_BIN};
@@ -32,7 +33,7 @@ void allRandom() {
   for (byte r = 0; r < cmdLen; r++) {
     byte j = rand() % sizeof(jointSet);
     newCmd[r * 2] = jointSet[j];
-    newCmd[r * 2 + 1] = int8_t(currentAng[jointSet[j]] + rand() % rangeSet[j] - rangeSet[j] / 2);
+    newCmd[r * 2 + 1] = (int8_t)min(max(currentAng[jointSet[j]] + rand() % rangeSet[j] - rangeSet[j] / 2, -128), 127);
     PT(jointSet[j]); PT('\t'); PTL(int(newCmd[r * 2 + 1]));
   }
   cmdLen *= 2;
@@ -41,7 +42,7 @@ void allRandom() {
 void randomMind() {
   byte randomMindListLength = sizeof(mindList) / 2;
   int randomChoice = random() % (randomMindListLength * EVERY_X_SECONDS); //on average every EVERY_X_SECONDS seconds
-  if (millis() - idleTimer > 1000) {//every second throw a dice
+  if (millis() - idleTimer > randomInterval) {//every second throw a dice
     idleTimer = millis();
     if (randomChoice < randomMindListLength) {
       if (randomChoice < 3) {
