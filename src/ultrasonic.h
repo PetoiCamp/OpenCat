@@ -19,7 +19,6 @@ void read_ultrasonic() {
     ultraTimer = millis();
     ultraInterval = 0;
     randomInterval = 1000;
-    autoSwitch = false;
     distance = mRUS04.GetUltrasonicDistance();
 
     if (distance > 60) {
@@ -42,9 +41,9 @@ void read_ultrasonic() {
       mRUS04.SetRgbEffect(E_RGB_ALL, RGB_RED, E_EFFECT_FLASH);
       meow(rand() % 3 + 1, distance * 2);
       token = T_INDEXED_SIMULTANEOUS_BIN;
-      char allRand[] = {0, currentAng[0] + rand() % 40 - 20, 1, currentAng[0] + rand() % 80 - 40, 2, currentAng[0] + rand() % 80 - 40
+      char allRand[] = {0, currentAng[0] + rand() % 20 - 10, 1, currentAng[1] + rand() % 20 - 10, 2, currentAng[2] + rand() % 80 - 40
                        };
-      cmdLen = 3;
+      cmdLen = 6;
       for (byte i = 0; i < cmdLen; i++)
         newCmd[i] = allRand[i];
       newCmd[cmdLen] = '\0';
@@ -62,17 +61,18 @@ void read_ultrasonic() {
       mRUS04.SetRgbColor(E_RGB_ALL, colors[max(min(distance / 7, 5), 0)]);
       token = T_LISTED_BIN;
       int8_t mid[] = {0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,};
-      int8_t allParameter[] = { currentAng[0] / 2 - distance / 2, currentAng[1] / 2 + distance / 1.5 , distance * 3  - 50, 0,
-                                0, 0, 0, 0,
-                                mid[8] - 20 + distance / 2 , mid[9] - 20 + distance, mid[10] - 25 + distance, mid[11] - 25 + distance,
-                                mid[12] + 30 - distance, mid[13] + 30 - distance, mid[14] + 50 - distance * 2, mid[15] + 50 - distance * 2
-                              };
+      int allParameter[] = { currentAng[0] * 2 / 3 - distance / 2, -10 + currentAng[1] * 2 / 3 + distance / 1.5 , (distance * 3  - 50)*(rand() % 50 < 1 ? rand() % 2 - 1 : 1), 0,
+                             0, 0, 0, 0,
+                             mid[8] - 15 + distance / 2 , mid[9] - 15 + distance / 2, mid[10] - 30 + distance, mid[11] - 30 + distance,
+                             mid[12] + 35 - distance, mid[13] + 35 - distance, mid[14] + 40 - distance, mid[15] + 40 - distance
+                           };
       //      printList(allParameter);
       cmdLen = 16;
       for (byte i = 0; i < cmdLen; i++)
-        newCmd[i] = allParameter[i];
+        newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
       newCmd[cmdLen] = '\0';
       newCmdIdx = 6;
+      randomInterval = 5000;
     }
   }
 }

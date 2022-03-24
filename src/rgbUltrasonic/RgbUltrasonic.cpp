@@ -49,11 +49,11 @@ void RgbUltrasonic::SetRgbEffect(E_RGB_INDEX index, long Color, uint8_t effect)
 {
     switch((E_RGB_EFFECT)effect) {
         case E_EFFECT_BREATHING:
-            for (long i = 5; i < 50; i++) {
+            for (long i = 50; i >= 5; i--) {
                 SetRgbColor(index, (i<<16)|(i<<8)|i);
                 delay((i < 18) ? 18: (256/i));
             }
-            for (long i = 50; i >= 5; i--) {
+            for (long i = 5; i < 50; i++) {
                 SetRgbColor(index, (i<<16)|(i<<8)|i);
                 delay((i < 18) ? 18: (256/i));
             }
@@ -82,10 +82,9 @@ void RgbUltrasonic::SetRgbEffect(E_RGB_INDEX index, long Color, uint8_t effect)
             break;
         case E_EFFECT_FLASH:
             for (byte i = 0; i < 3; i++) {
-               SetRgbColor(E_RGB_ALL, Color);
-               delay(20);
-               SetRgbColor(E_RGB_ALL, 0);
-//               delay(5);
+                SetRgbColor(E_RGB_ALL, 0);
+                delay(20);
+                SetRgbColor(E_RGB_ALL, Color);
             }
             break;
     }

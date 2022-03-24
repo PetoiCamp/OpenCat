@@ -26,7 +26,7 @@ void allRandom() {
 
   int8_t jointSet[] = {0, 1, 2, 8, 9,  12, 13, 14, 15};
   PTL(sizeof(jointSet));
-  byte rangeSet[] = {120, 90, 180, 10, 10, 20, 20, 5, 5};
+  byte rangeSet[] = {90, 90, 180, 5, 5, 10, 10, 5, 5};
 
   token = tokenSet[random() % 2];
   cmdLen = rand() % 4 + 4;
@@ -34,7 +34,7 @@ void allRandom() {
     byte j = rand() % sizeof(jointSet);
     newCmd[r * 2] = jointSet[j];
     newCmd[r * 2 + 1] = (int8_t)min(max(currentAng[jointSet[j]] + rand() % rangeSet[j] - rangeSet[j] / 2, -128), 127);
-    PT(jointSet[j]); PT('\t'); PTL(int(newCmd[r * 2 + 1]));
+//    PT(jointSet[j]); PT('\t'); PTL(int(newCmd[r * 2 + 1]));
   }
   cmdLen *= 2;
   newCmd[cmdLen] = '\0';
