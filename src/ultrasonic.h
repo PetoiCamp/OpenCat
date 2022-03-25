@@ -20,6 +20,9 @@ void read_ultrasonic() {
     ultraInterval = 0;
     randomInterval = 1000;
     distance = mRUS04.GetUltrasonicDistance();
+    if (distance == 640) {
+      return;
+    }
 
     if (distance > 60) {
       mRUS04.SetRgbEffect(E_RGB_ALL, RGB_WHITE, E_EFFECT_BREATHING);
@@ -60,7 +63,7 @@ void read_ultrasonic() {
       distance -= 6;
       mRUS04.SetRgbColor(E_RGB_ALL, colors[max(min(distance / 7, 5), 0)]);
       token = T_LISTED_BIN;
-      int8_t mid[] = {0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,};
+      int mid[] = {0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,};
       int allParameter[] = { currentAng[0] * 2 / 3 - distance / 2, -10 + currentAng[1] * 2 / 3 + distance / 1.5 , (distance * 3  - 50)*(rand() % 50 < 1 ? rand() % 2 - 1 : 1), 0,
                              0, 0, 0, 0,
                              mid[8] - 15 + distance / 2 , mid[9] - 15 + distance / 2, mid[10] - 30 + distance, mid[11] - 30 + distance,
