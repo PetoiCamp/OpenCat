@@ -2,7 +2,7 @@
 
 ## Mar 20, 2022
 * A schedulerToSkill function in serialMaster to summerize the motion commands and generate a new skill array that can be directly used in the instinct.h.
-* Design a convinient macro switch for regular walker, ultrasonic, and voice modes. 
+* Design a convenient macro switch for regular walker, ultrasonic, and voice modes. 
 ```cpp
 //you can activate the following modes (they will diable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND, ULTRASONIC, RANDOM_MIND + ULTRASONIC, VOICE
