@@ -32,7 +32,7 @@ MuVisionSensor Mu1(ALT_MU_ADDRESS);
 int xCoord, yCoord; //the x y returned by the sensor
 int xDiff, yDiff; //the scaled distance from the center of the frame
 int currentX = 0, currentY = 0; //the current x y of the camera's direction in the world coordinate
-int range = 100; //the frame size 0~100 on X and Y direction
+int imgRange = 100; //the frame size 0~100 on X and Y direction
 int skip = 1;//, counter; //an efforts to reduce motion frequency without using delay. set skip >1 to take effect
 int i2cdelay = 3;
 long noResultTime = 0;
@@ -101,27 +101,29 @@ void read_camera() {
 
   if (objectDetected[0] || objectDetected[1]) {
     //    if (!(counter % skip)) {
-    xDiff = max(min((xCoord - range / 2) / 3, 30), -30);
-    yDiff = max(min((yCoord - range / 2) / 3, 20), -20);
+    xDiff = max(min((xCoord - imgRange / 2) / 3, 32), -32);
+    yDiff = max(min((yCoord - imgRange / 2) / 3, 24), -24);
+    if (abs(xDiff) > 2 || abs(yDiff) > 2) {
 
-    currentX = max(min(currentX - min(xDiff, 40), 80), -90);
-    currentY = max(min(currentY - min(yDiff, 30), 60), -75);
+      currentX = max(min(currentX - xDiff, 90), -90);
+      currentY = max(min(currentY - yDiff, 75), -75);
 
 
-    int allParameter[DOF] = {currentX, 0, 0, 0, \
-                             0, 0, 0, 0, \
-                             60 - currentY / 2 + currentX / 6, 60 - currentY / 2 - currentX / 6, 90 + currentY / 3 - currentX / 8, 90 + currentY / 3 + currentX / 8, \
-                             15 + currentY / 1.2  - currentX / 3, 15 + currentY / 1.2 + currentX / 3, -30 - currentY / 3 + currentX / 4, -30 - currentY / 3 - currentX / 4\
-                            };
-    //      transform(a, 4);
-    cmdLen = DOF;
-    token = T_LISTED_BIN;
-    for (byte i = 0; i < cmdLen; i++)
-      newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
-    newCmd[cmdLen] = '\0';
-    transformSpeed = 0;
-    newCmdIdx = 6;
-    //    }
+      int allParameter[DOF] = {currentX, 0, 0, 0, \
+                               0, 0, 0, 0, \
+                               60 - currentY / 2 + currentX / 6, 60 - currentY / 2 - currentX / 6, 90 + currentY / 3 - currentX / 8, 90 + currentY / 3 + currentX / 8, \
+                               10 + currentY / 1.2  - currentX / 2, 10 + currentY / 1.2 + currentX / 2, -30 - currentY / 3 + currentX / 4, -30 - currentY / 3 - currentX / 4\
+                              };
+      //      transform(a, 4);
+      cmdLen = DOF;
+      token = T_LISTED_BIN;
+      for (byte i = 0; i < cmdLen; i++)
+        newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
+      newCmd[cmdLen] = '\0';
+      transformSpeed = 16;
+      newCmdIdx = 6;
+      //    }
+    }
   }
   else if (millis() - noResultTime > 2000) {// if no object is detected for 2 seconds, switch object
     objectIdx = (objectIdx + 1) % (sizeof(object) / 2);
