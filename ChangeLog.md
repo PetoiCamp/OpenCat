@@ -1,24 +1,32 @@
 # Change Log
 
 ## Mar 20, 2022
-* A schedulerToSkill function in serialMaster to summerize the motion commands and generate a new skill array that can be directly used in the instinct.h. 
+* A schedulerToSkill function in serialMaster to summerize the motion commands and generate a new skill array that can be directly used in the instinct.h.
+* Design a convinient macro switch for regular walker, ultrasonic, and voice modes. 
+```cpp
+//you can activate the following modes (they will diable the gyro to save programming space)
+//allowed combinations: RANDOM_MIND, ULTRASONIC, RANDOM_MIND + ULTRASONIC, VOICE
+//#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
+//#define ULTRASONIC      //for Nybble's ultrasonic sensor
+//#define VOICE           //for LD3320 module
+```
 
 ## Mar 17, 2022
 ### OpenCat2.0 is pushed to the branch 2.0 for beta testers.
 ### New Features:
 * Complete redesign of the code structure to make it easier to understand and insert 3rd party codes.
-* Combine WriteInstinct.ino and OpenCat.ino into a single OpenCat.ino. Use the MAIN_SKETCH macro to switch between the modes. 
+* **Combine WriteInstinct.ino and OpenCat.ino into a single OpenCat.ino.** Use the ```#define MAIN_SKETCH``` macro to switch between the modes. 
 * Fixed many bugs in the original workflow. For example, the robot no longer skips commands randomly.
-* Improved the smoothness of motion and the speed of tilt adaption. 
+* Improved the smoothness of motion and the speed of balance adaption. 
 * Optimized the token definitions.
 * A better documented serialMaster Python module and provide a command scheduler in example.py. 
-* Designd a new token "K" to send a whole skill array in realtime through serial then run it locally.
+* **Designd a new token "K"** to send a whole skill array from the Python serial master through serial in realtime then run it locally on the robot.
 * Print the token after finishing one task as a confirmation to the master program. 
-* Used a new MPU6050 function to avoid using the interrupt pin. Accelerate the IMU calibration process. 
+* Used a new MPU6050 function to avoid using the interrupt pin. **Accelerate the IMU calibration process.** 
 * Enter the joint calibration state by booting up the robot with one side up. 
 * Write a formalized servo class inherited from the AdafruitPWM servo library. Make it easier to change parameters of 3rd party servos.
-* Use the built-in tone function to generate clean beeps and melody.
-* Add random actions when the robot boots up. Use token ‘z’ to turn on/off the feature. 
+* **Use the built-in tone function to generate clean beeps and melody.**
+* Add random actions for the robot. Use token ‘z’ to turn on/off the feature. 
 * Add angle limits to avoid most cases of of self-collision.
 * Put the skill-related functions into the Skill Class. Combine reused code blocks into single functions.
 * Make more use of the EEPROM and PRGMEM memory to save resources for flash and SRAM.
