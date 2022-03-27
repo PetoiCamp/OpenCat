@@ -69,8 +69,7 @@ void read_ultrasonic() {
                              mid[8] - 15 + distance / 2 , mid[9] - 15 + distance / 2, mid[10] - 30 + distance, mid[11] - 30 + distance,
                              mid[12] + 35 - distance, mid[13] + 35 - distance, mid[14] + 40 - distance, mid[15] + 40 - distance
                            };
-      //      printList(allParameter);
-      cmdLen = 16;
+      cmdLen = DOF;
       for (byte i = 0; i < cmdLen; i++)
         newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
       newCmd[cmdLen] = '\0';

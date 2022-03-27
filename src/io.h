@@ -69,6 +69,9 @@ void readSignal() {
 #ifdef VOICE
   read_voice();
 #endif
+#ifdef CAMERA
+  read_camera();
+#endif
   // powerSaver -> 4
   // randomMind -> 5
   // other -> 6

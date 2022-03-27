@@ -284,6 +284,9 @@ template <typename T> void printTable(T * list) {
 #ifdef VOICE
 #include "voice.h"
 
+#elif defined CAMERA
+#include "camera.h"
+
 #elif defined ULTRASONIC
 #include "randomMind.h"
 #include "ultrasonic.h"

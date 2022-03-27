@@ -50,10 +50,11 @@
 //#define NyBoard_V1_1
 
 //you can also activate the following modes (they will diable the gyro to save programming space)
-//allowed combinations: RANDOM_MIND, ULTRASONIC, RANDOM_MIND + ULTRASONIC, VOICE
+//allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
 //#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
+#define CAMERA
 
 
 #include "src/OpenCat.h"
@@ -88,6 +89,9 @@ void setup() {
 #ifdef VOICE
   voiceSetup();
 #endif
+#ifdef CAMERA
+  cameraSetup();
+#endif
 
   playMelody(MELODY_NORMAL);
 #ifdef GYRO_PIN
@@ -119,7 +123,7 @@ void setup() {
 void loop() {
 #ifdef MAIN_SKETCH
 #ifdef VOLTAGE_DETECTION_PIN
-  while (lowBattery()); //block the loop if battery is low
+  //  while (lowBattery()); //block the loop if battery is low
 #endif
   readSignal();
 #ifdef GYRO_PIN

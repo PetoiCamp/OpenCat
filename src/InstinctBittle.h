@@ -1,5 +1,5 @@
 #define BITTLE
-#define NUM_SKILLS 33
+//#define NUM_SKILLS 33
 
 const int8_t bdF[] PROGMEM = { 
 15, 0, 0, 1,
