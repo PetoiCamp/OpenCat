@@ -231,7 +231,7 @@ void reaction() {
           }
           if (token != T_MOVE_BIN)
             transform(targetFrame, 1, transformSpeed); //need to add angleDataRatio if the angles are large
-          printList(targetFrame);
+//          printList(targetFrame);
           //          delay(5);
           break;
         }

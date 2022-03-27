@@ -232,6 +232,7 @@ bool printGyro = false;
 bool autoSwitch = false;
 bool walkingQ = false;
 byte exceptions = 0;
+byte transformSpeed = 2;
 
 int frame;
 byte tStep = 0;
