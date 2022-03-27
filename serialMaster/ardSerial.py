@@ -103,7 +103,7 @@ def serialWriteByte(var=None):
         var[1:] = list(map(int, var[1:]))
         in_str = token.encode() + struct.pack('b' * (len(var) - 1), *var[1:]) + '~'.encode()
     elif token == 'w' or token == 'k':
-        in_str = var[0] + '\n'
+        in_str = var[0]
     else:
         in_str = token
     logger.debug(f"!!!!!!! {in_str}")
