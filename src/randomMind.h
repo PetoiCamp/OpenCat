@@ -14,7 +14,7 @@ const char mind13[] PROGMEM = "kstr";
 
 const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12,
 #ifdef BITTLE
-                                        mind8, mind6,
+                                        mind6, //mind8, 
 #endif
                                        };
 
@@ -32,12 +32,12 @@ void allRandom() {
   cmdLen = rand() % 4 + 4;
   for (byte r = 0; r < cmdLen; r++) {
     byte j = rand() % sizeof(jointSet);
-    newCmd[r * 2] = jointSet[j];
-    newCmd[r * 2 + 1] = (int8_t)min(max(currentAng[jointSet[j]] + rand() % rangeSet[j] - rangeSet[j] / 2, -128), 127);
-//    PT(jointSet[j]); PT('\t'); PTL(int(newCmd[r * 2 + 1]));
+    dataBuffer[r * 2] = jointSet[j];
+    dataBuffer[r * 2 + 1] = (int8_t)min(max(currentAng[jointSet[j]] + rand() % rangeSet[j] - rangeSet[j] / 2, -128), 127);
+    //    PT(jointSet[j]); PT('\t'); PTL(int(dataBuffer[r * 2 + 1]));
   }
   cmdLen *= 2;
-  newCmd[cmdLen] = '\0';
+  dataBuffer[cmdLen] = '\0';
 }
 void randomMind() {
   byte randomMindListLength = sizeof(mindList) / 2;
@@ -49,9 +49,12 @@ void randomMind() {
         allRandom();
       }
       else {
-        strcpy_P(newCmd, (char *)pgm_read_word(&mindList[randomChoice]));
-        token = newCmd[0];
-        strcpy(newCmd, newCmd + 1);// this is duable only because newCmd+1 is after newCmd!
+        strcpy_P(dataBuffer, (char *)pgm_read_word(&mindList[randomChoice]));
+        token = dataBuffer[0];
+        if (token == T_SKILL)
+          strcpy(newCmd, dataBuffer + 1);// this is duable only because newCmd+1 is after newCmd!
+        else
+          strcpy(dataBuffer, dataBuffer + 1);// this is duable only because dataBuffer+1 is after dataBuffer!
 
       }
       //      PTL(newCmd);

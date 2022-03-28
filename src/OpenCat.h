@@ -220,13 +220,18 @@ float currentAdjust[DOF] = {};
 
 //control related variables
 
+int frame;
+byte tStep = 0;
+
 char token;
 char lastToken;
-char *newCmd = new char[40];
+#define CMD_LEN 10  //the last char will be '\0' so only CMD_LEN-1 elements are allowed 
+char *newCmd = new char[CMD_LEN];
 char *lastCmd = new char[5];
 byte newCmdIdx = 0;
-int8_t* dataBuffer = new int8_t[450];
-byte cmdLen;
+int cmdLen;
+int8_t* dataBuffer = new int8_t[470];
+
 bool checkGyro = true;
 bool printGyro = false;
 bool autoSwitch = false;
@@ -234,13 +239,17 @@ bool walkingQ = false;
 byte exceptions = 0;
 byte transformSpeed = 2;
 
-int frame;
-byte tStep = 0;
-
 #define PT(s) Serial.print(s)  //makes life easier
 #define PTL(s) Serial.println(s)
 #define PTF(s) Serial.print(F(s))//trade flash memory for dynamic memory with F() function
 #define PTLF(s) Serial.println(F(s))
+
+
+template <typename T> int8_t sign(T val) {
+  return (T(0) < val) - (val < T(0));
+}
+
+
 void printRange(int r0 = 0, int r1 = 0) {
   if (r1 == 0)
     for (byte i = 0; i < r0; i++) {
@@ -284,7 +293,6 @@ template <typename T> void printTable(T * list) {
 
 #ifdef VOICE
 #include "voice.h"
-
 #elif defined CAMERA
 #include "camera.h"
 

@@ -26,33 +26,30 @@ void read_serial() {
   if (Serial.available() > 0) {
     newCmdIdx = 2;
     token = Serial.read();
-#ifdef  T_SKILL_DATA
+
     if (token == T_SKILL_DATA)
       readSerialUntil(dataBuffer, '~');
-    else
-#endif
-      if (Serial.available() > 0) {
-        String cmdBuffer;//may overflow after many iterations. I use this method only to support "no line ending" in the serial monitor
-        if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN || T_MOVE_BIN) {
-          cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
-        }
-        else
-          cmdBuffer = Serial.readStringUntil('\n');
-        cmdLen = cmdBuffer.length();
-        for (int i = 0; i < cmdLen; i++)
-          newCmd[i] = cmdBuffer[i];
-        newCmd[cmdLen] = '\0';
-        //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
-#ifdef DEVELOPER
-        PTF(" memory "); PTL(freeMemory());
-#endif
-
+    else if (Serial.available() > 0) {
+      String cmdBuffer;//may overflow after many iterations. I use this method only to support "no line ending" in the serial monitor
+      if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN || T_MOVE_BIN) {
+        cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
       }
+      else
+        cmdBuffer = Serial.readStringUntil('\n');
+      cmdLen = cmdBuffer.length();
+      char *destination = (token == T_SKILL) ? newCmd : dataBuffer;
+      for (int i = 0; i < cmdLen; i++)
+        destination[i] = cmdBuffer[i];
+      destination[cmdLen] = '\0';
+      //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+#ifdef DEVELOPER
+      PTF(" memory "); PTL(freeMemory());
+#endif
+    }
   }
 }
 
 void readSignal() {
-
 #ifdef ULTRASONIC
   read_ultrasonic();
 #endif
@@ -99,10 +96,6 @@ bool sensorConnectedQ(int n) {
     delay(1);
   }
   return sqrt(mean) > 20 ? true : false;
-}
-
-template <typename T> int8_t sign(T val) {
-  return (T(0) < val) - (val < T(0));
 }
 
 

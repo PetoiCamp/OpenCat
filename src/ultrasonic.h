@@ -48,8 +48,8 @@ void read_ultrasonic() {
                        };
       cmdLen = 6;
       for (byte i = 0; i < cmdLen; i++)
-        newCmd[i] = allRand[i];
-      newCmd[cmdLen] = '\0';
+        dataBuffer[i] = allRand[i];
+      dataBuffer[cmdLen] = '\0';
       newCmdIdx = 6;
     }
     else if (distance < 6) {
@@ -69,10 +69,11 @@ void read_ultrasonic() {
                              mid[8] - 15 + distance / 2 , mid[9] - 15 + distance / 2, mid[10] - 30 + distance, mid[11] - 30 + distance,
                              mid[12] + 35 - distance, mid[13] + 35 - distance, mid[14] + 40 - distance, mid[15] + 40 - distance
                            };
-      cmdLen = DOF;
+      //      printList(allParameter);
+      cmdLen = 16;
       for (byte i = 0; i < cmdLen; i++)
-        newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
-      newCmd[cmdLen] = '\0';
+        dataBuffer[i] = (int8_t)min(max(allParameter[i], -128), 127);
+      dataBuffer[cmdLen] = '\0';
       newCmdIdx = 6;
       randomInterval = 5000;
     }

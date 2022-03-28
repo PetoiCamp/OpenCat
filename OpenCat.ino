@@ -96,7 +96,7 @@ void setup() {
   playMelody(MELODY_NORMAL);
 #ifdef GYRO_PIN
   read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
-  token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs
+  token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs  
   newCmdIdx = 2;
 #endif
   PTLF("\n* Start *");

@@ -30,8 +30,8 @@ void voiceSetup()
 
   for (byte v = 0; v < sizeof(voiceTable) / 2; v++) {
     char *ptr;
-    strcpy_P(newCmd, (char *)pgm_read_word(&(voiceTable[v])));
-    ptr = strtok (newCmd, ":");
+    strcpy_P(dataBuffer, (char *)pgm_read_word(&(voiceTable[v])));
+    ptr = strtok (dataBuffer, ":");
     ld3320_add_words(v, ptr);
 
     PTL(v);
@@ -60,13 +60,15 @@ void read_voice()
       for (byte v = 0; v < sizeof(voiceTable) / 2; v++) {
         if (result == v) {
           char *ptr;
-          strcpy_P(newCmd, (char *)pgm_read_word(&(voiceTable[v])));
-          ptr = strtok (newCmd, ":");
+          strcpy_P(dataBuffer, (char *)pgm_read_word(&(voiceTable[v])));
+          ptr = strtok (dataBuffer, ":");
           ptr = strtok (NULL, ":");
           token = ptr[0];
-          strcpy(newCmd, ptr + 1);
-
-          PTL(newCmd);
+          if (token == T_SKILL)
+            strcpy(newCmd, ptr + 1);
+          else
+            strcpy(dataBuffer, ptr + 1);
+          PTL(dataBuffer);
           break;
         }
       }

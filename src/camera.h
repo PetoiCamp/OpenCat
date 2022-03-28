@@ -118,10 +118,11 @@ void read_camera() {
       cmdLen = DOF;
       token = T_LISTED_BIN;
       for (byte i = 0; i < cmdLen; i++)
-        newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
-      newCmd[cmdLen] = '\0';
+        dataBuffer[i] = (int8_t)min(max(allParameter[i], -128), 127);
+      dataBuffer[cmdLen] = '\0';
       transformSpeed = 16;
       newCmdIdx = 6;
+//      printList(dataBuffer);
       //    }
     }
   }

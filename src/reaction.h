@@ -43,11 +43,7 @@ bool lowBattery() {
 
 void resetCmd() {
   //  PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
-  if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN && token != T_MOVE_BIN
-#ifdef  T_SKILL_DATA
-      && token != T_SKILL_DATA
-#endif
-     ) {
+  if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN && token != T_MOVE_BIN && token != T_SKILL_DATA) {
     delete [] lastCmd;
     lastCmd = new char(strlen(newCmd) + 1);
     strcpy(lastCmd, newCmd);
@@ -122,6 +118,22 @@ void reaction() {
             token = T_SKILL;
           break;
         }
+      case T_MELODY: {
+          playMelody(MELODY_1);
+          break;
+        }
+      case T_SAVE: {
+          PTLF("save offset");
+          saveCalib(servoCalib);
+          break;
+        }
+      case T_ABORT: {
+          PTLF("aborted");
+          for (byte i = 0; i < DOF; i++) {
+            servoCalib[i] = eeprom(CALIB, i);
+          }
+          break;
+        }
       case T_CALIBRATE: //calibration
       case T_MOVE_ASC: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
@@ -135,7 +147,7 @@ void reaction() {
           //          char* temp = new char[64];
           //          strcpy(temp, newCmd);
           char *pch;
-          pch = strtok (newCmd, " ,");
+          pch = strtok (dataBuffer, " ,");
           do {  //it supports combining multiple commands at one time
             //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
             //the combined commands should be less than four. string len <=30 to be exact.
@@ -190,49 +202,27 @@ void reaction() {
           delete []pch;
           break;
         }
-      case T_MELODY: {
-          playMelody(MELODY_1);
-          break;
-        }
-      case T_SAVE: {
-          PTLF("save offset");
-          saveCalib(servoCalib);
-          break;
-        }
-      case T_ABORT: {
-          PTLF("aborted");
-          for (byte i = 0; i < DOF; i++) {
-            servoCalib[i] = eeprom(CALIB, i);
-          }
-          break;
-        }
+
       // this block handles array like arguments
       case T_MOVE_BIN:
-      case T_INDEXED_SIMULTANEOUS_BIN: //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
-      case T_LISTED_BIN: //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
-        {
+      case T_INDEXED_SIMULTANEOUS_BIN: {//indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
           int targetFrame[DOF];
           for (int i = 0; i < DOF; i++) {
             targetFrame[i] = currentAng[i];
           }
-          if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_MOVE_BIN) {
-            for (int i = 0; i < cmdLen; i += 2) {
-              targetFrame[newCmd[i]] = newCmd[i + 1];
-              if (token == T_MOVE_BIN) {
-                transform(targetFrame, 1, 2);
-                delay(10);
-              }
+          for (int i = 0; i < cmdLen; i += 2) {
+            targetFrame[dataBuffer[i]] = dataBuffer[i + 1];
+            if (token == T_MOVE_BIN) {
+              transform(targetFrame, 1, 2);
+              delay(10);
             }
           }
-          else {// if (token == T_LISTED_BIN) {
-            for (int i = 0; i < DOF; i += 1) {
-              targetFrame[i] = newCmd[i];
-            }
-          }
-          if (token != T_MOVE_BIN)
-            transform(targetFrame, 1, transformSpeed); //need to add angleDataRatio if the angles are large
-//          printList(targetFrame);
-          //          delay(5);
+          if (token == T_INDEXED_SIMULTANEOUS_BIN)
+            transform(targetFrame, 1, transformSpeed);
+          break;
+        }
+      case T_LISTED_BIN: {//list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
+          transform(dataBuffer, 1, transformSpeed); //need to add angleDataRatio if the angles are large
           break;
         }
 #ifdef  T_SKILL_DATA
