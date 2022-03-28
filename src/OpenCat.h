@@ -152,6 +152,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 //token list
 #define T_ABORT       'a'
 #define T_BEEP        'b'
+#define T_BEEP_BIN    'B'
 #define T_CALIBRATE   'c'
 #define T_REST        'd'
 #define T_GYRO        'g'

@@ -74,7 +74,7 @@ def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b I K L 
             ser.Send_data(in_str)
             time.sleep(0.005)
     else:
-        if token == 'L' or token == 'I':
+        if token == 'L' or token == 'I' or token == 'B':
             var = list(map(int, var))
             in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
             

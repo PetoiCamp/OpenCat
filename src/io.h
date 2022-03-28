@@ -31,7 +31,7 @@ void read_serial() {
       readSerialUntil(dataBuffer, '~');
     else if (Serial.available() > 0) {
       String cmdBuffer;//may overflow after many iterations. I use this method only to support "no line ending" in the serial monitor
-      if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN || T_MOVE_BIN) {
+      if (token == T_INDEXED_SIMULTANEOUS_BIN || token == T_LISTED_BIN || token == T_MOVE_BIN || token == T_BEEP_BIN) {
         cmdBuffer = Serial.readStringUntil('~');//'~' ASCII code = 126; may introduce bug when the angle is 126
       }
       else

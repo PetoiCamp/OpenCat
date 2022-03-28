@@ -188,22 +188,18 @@ if __name__ == '__main__':
             # - 5 indicates the postponed time after finishing the command, in seconds
             ['L', [20, 0, 0, 0, 0, 0, 0, 0, 25, 0, 45, 45, 80, 80, 36, 36], 1],
 
-            # - b indicates the command to control the buzzer to beep
-            # - 10 indicates the music tone
-            # - 255 indicates the lengths of duration, the value range is 0~255
+            # - b indicates the command to control the buzzer to beep, encrypted in ASCII
+            # - 15 indicates the music tone
+            # - 90 indicates the lengths of duration, the value range is 0~255
             # - 2 indicates the postponed time after completing the pronunciation, in seconds
-            ['b', [10, 255], 2],
+            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 15, 90, 12, 90, 8, 90, 10, 90, 13, 90, 12, 90, 10, 90, 15, 90,],2],
 
-            # Using this format, multiple tone commands can be issued at one time,
-            # and a simple melody can be played.
-            # The meaning of this example is: play a simple melody, and delay 5 seconds after
+            # Using this format, multiple tone commands can be encrypted in binary
             # the music melody is played.
-            # - '15', '12', '15', '12', '8' indicate the music tones
-            # - '90', '90', '90', '90', '90' indicates the lengths of duration
-            # - 3 indicates the postponed time after the music melody is played, in seconds
-
-            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 8, 90#, 10, 90, 13, 90, 12, 90, 10, 90, 15, 90
-            ],3],
+            # - '20', '22', '24', '15', '20' indicate the music tones
+            # - '4', '4', '4', '4', '4' indicates 3 second/lengths of duration
+            # - 2 indicates the postponed time after the music melody is played, in seconds
+            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 24, 4, 24, 2, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 8, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4], 2],
 
             # - 'K' indicates the skill data to send to Bittle in realtime
             # they are sent to the robot on the go and executed locally on the robot

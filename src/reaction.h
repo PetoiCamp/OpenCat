@@ -225,6 +225,11 @@ void reaction() {
           transform(dataBuffer, 1, transformSpeed); //need to add angleDataRatio if the angles are large
           break;
         }
+      case T_BEEP_BIN: {
+          for (byte b = 0; b < cmdLen / 2; b++)
+            beep(dataBuffer[2 * b], 3000 / dataBuffer[2 * b + 1] , 500 / dataBuffer[2 * b + 1]);
+          break;
+        }
 #ifdef  T_SKILL_DATA
       case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
           token = T_SKILL;
