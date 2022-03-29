@@ -207,8 +207,11 @@ if __name__ == '__main__':
             ['kvt', 2],
             ['K',sit, 1],
             ['kck', 1],
+            # 'T' calls the last temp skill data of 'K' received from the serial port
+            ['T', 2],
             ['K', vt, 3],
             ['ksit', 1],
+            ['T', 2],
             ['K', ck, 1],  # compare it with the previous 'kck' command
             ['d', 0]
         ]

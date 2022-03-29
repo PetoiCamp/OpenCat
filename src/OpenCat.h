@@ -170,7 +170,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #define T_PAUSE       'p'
 #define T_RAMP        'r'
 #define T_SAVE        's'
-#define T_TEMP        'T'
+#define T_TEMP        'T'           //call the last skill data received from the serial port
 #define T_MEOW        'u'
 #define T_PRINT_GYRO            'v' //print Gyro data
 #define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data

@@ -114,7 +114,7 @@ class Skill {
             // save the data array to i2c eeprom. its address will be saved to onboard eeprom
             EEPROMWriteInt(SKILLS + skillAddressShift, i2cEepromAddress);
             copyDataFromPgmToI2cEeprom(i2cEepromAddress,  (unsigned int) progmemPointer[s]);
-            PT(int(SKILLS + skillAddressShift + 2)); PT(" I2C EE "); PTL(int(i2cEepromAddress));
+//            PT(int(SKILLS + skillAddressShift + 2)); PT(" I2C EE "); PTL(int(i2cEepromAddress));
           }
 #endif
         skillAddressShift += 2; // one int (2 bytes) for address
