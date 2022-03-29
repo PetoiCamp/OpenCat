@@ -1,5 +1,9 @@
 # Change Log
 
+## Mar 29, 2022
+* Use dataBuffer to hold the incoming serial commands to allow a longer melody and other instructions. newCmd will only be used to hold skill names that are shorter. 
+* Save the serial skill data from the dataBuffer to I2C EEPROM so that it can be recalled. 
+
 ## Mar 20, 2022
 * A schedulerToSkill function in serialMaster to summerize the motion commands and generate a new skill array that can be directly used in the instinct.h.
 * Design a convenient macro switch for regular walker, ultrasonic, and voice modes. 
