@@ -230,10 +230,18 @@ void reaction() {
             beep(dataBuffer[2 * b], 3000 / dataBuffer[2 * b + 1] , 500 / dataBuffer[2 * b + 1]);
           break;
         }
+      case T_TEMP: {//call the last skill data received from the serial port
+          skill.loadDataFromI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF));
+          skill.loadFrameByDataBuffer();
+          PTL(token);
+          token = T_SKILL;
+          break;
+        }
 #ifdef  T_SKILL_DATA
       case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
+          skill.copyBufferToI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF), dataBuffer);
+          skill.loadFrameByDataBuffer();
           token = T_SKILL;
-          skill.loadFrameByCmdString();
           break;
         }
 #endif

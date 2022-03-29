@@ -68,23 +68,9 @@ void read_voice()
             strcpy(newCmd, ptr + 1);
           else
             strcpy(dataBuffer, ptr + 1);
-          PTL(dataBuffer);
           break;
         }
       }
-      //      switch (result) {
-      //        case 0: token = 'm'; strcpy(newCmd, "0 50 0 -10"); break;
-      //        case 1: token = 'k'; strcpy(newCmd, "hi"); break;
-      //        case 2: token = 'k'; strcpy(newCmd, "balance"); break;
-      //        case 3:
-      //        case 4: token = 'k'; strcpy(newCmd, "sit"); break;
-      //        case 5: token = 'k'; strcpy(newCmd, "jy"); break;
-      //        case 6: token = 'k'; strcpy(newCmd, "vt"); break;
-      //        case 7: token = 'b'; strcpy(newCmd, "8 90 10 90 12 90 8 90"); break;
-      //        case 8: token = 'd'; strcpy(newCmd, "rest"); break;
-      //        case 9: token = 'k'; strcpy(newCmd, "ck"); break;
-      //        //case : token = ''; strcpy(newCmd,""); break;
-      //    }
       newCmdIdx = 6;
       voiceTimer = millis();
     }

@@ -141,7 +141,8 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #define MPUCALIB            256       // 9 int byte array 9x2 =18  256+18=274
 #define B_OFFSET            274
 #define NUM_SKILLS          275
-#define SKILLS              276       // 1 byte for skill name length, followed by the char array for skill name
+#define SERIAL_BUFF         276
+#define SKILLS              278       // 1 byte for skill name length, followed by the char array for skill name
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
 //the actual data is stored on the I2C EEPROM.
@@ -169,6 +170,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #define T_PAUSE       'p'
 #define T_RAMP        'r'
 #define T_SAVE        's'
+#define T_TEMP        'T'
 #define T_MEOW        'u'
 #define T_PRINT_GYRO            'v' //print Gyro data
 #define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
@@ -245,40 +247,6 @@ byte transformSpeed = 2;
 #define PTF(s) Serial.print(F(s))//trade flash memory for dynamic memory with F() function
 #define PTLF(s) Serial.println(F(s))
 
-
-template <typename T> int8_t sign(T val) {
-  return (T(0) < val) - (val < T(0));
-}
-
-
-void printRange(int r0 = 0, int r1 = 0) {
-  if (r1 == 0)
-    for (byte i = 0; i < r0; i++) {
-      PT(i);
-      PT('\t');
-    }
-  else
-    for (byte i = r0; i < r1; i++) {
-      PT(i);
-      PT('\t');
-    }
-  PTL();
-}
-template <typename T> void printList(T * arr, byte len = DOF) {
-  String temp = "";
-  for (byte i = 0; i < len; i++) {
-    temp += String(int(arr[i]));
-    temp += '\t';
-    //PT((T)(arr[i]));
-    //PT('\t');
-  }
-  PTL(temp);
-}
-template <typename T> void printTable(T * list) {
-  printRange(0, DOF);
-  printList(list, DOF);
-}
-
 #ifdef DEVELOPER
 #include "MemoryFree/MemoryFree.h" //http://playground.arduino.cc/Code/AvailableMemory
 #endif
@@ -308,6 +276,7 @@ template <typename T> void printTable(T * list) {
 #define GYRO_PIN  0
 #endif
 
+#include "eeprom.h"
 #include "io.h"
 
 #ifdef GYRO_PIN

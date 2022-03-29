@@ -26,6 +26,37 @@ class Skill {
       dutyAngles = NULL;
       jointIndex = 0;
     }
+
+    void copyBufferToI2cEeprom(unsigned int eeAddress, int8_t *dataBuffer) {
+      period = dataBuffer[0];//automatically cast to char*
+      int len = dataLen(period) + 1;
+      int writtenToEE = 0;
+      while (len > 0) {
+        Wire.beginTransmission(DEVICE_ADDRESS);
+        Wire.write((int)((eeAddress) >> 8));   // MSB
+        Wire.write((int)((eeAddress) & 0xFF)); // LSB
+        byte writtenToWire = 0;
+        do {
+          if (eeAddress == EEPROM_SIZE) {
+            PTL();
+            PTLF("I2C EEPROM overflow! Delete some skills!\n");
+            EEPROMOverflow = true;
+#ifdef BUZZER
+            beep(10, 100, 50, 2);
+#endif
+            return;
+          }
+          Wire.write((byte)dataBuffer[writtenToEE++]);
+          writtenToWire++;
+          eeAddress++;
+        } while ((--len > 0 ) && (eeAddress  % PAGE_LIMIT ) && (writtenToWire < WIRE_LIMIT));//be careful with the chained conditions
+        //self-increment may not work as expected
+        Wire.endTransmission();
+        delay(6);  // needs 5ms for page write
+        //PTL("\nwrote " + String(writtenToWire) + " bytes.");
+      }
+      //PTLF("finish copying to I2C EEPROM");
+    }
 #ifndef MAIN_SKETCH
     void copyDataFromPgmToI2cEeprom(unsigned int &eeAddress, unsigned int pgmAddress) {
       period = pgm_read_byte(pgmAddress);//automatically cast to char*
@@ -83,10 +114,12 @@ class Skill {
             // save the data array to i2c eeprom. its address will be saved to onboard eeprom
             EEPROMWriteInt(SKILLS + skillAddressShift, i2cEepromAddress);
             copyDataFromPgmToI2cEeprom(i2cEepromAddress,  (unsigned int) progmemPointer[s]);
+            PT(int(SKILLS + skillAddressShift + 2)); PT(" I2C EE "); PTL(int(i2cEepromAddress));
           }
 #endif
         skillAddressShift += 2; // one int (2 bytes) for address
       }
+      EEPROMWriteInt(SERIAL_BUFF, (unsigned int)i2cEepromAddress);//SERIAL_BUFF saves the I2C EEPROM tail address for saving a buffer received from the serial port
       PTL();
 #ifdef I2C_EEPROM
       {
@@ -171,7 +204,7 @@ class Skill {
       //      dataBuffer[bufferLen] = '\0';
     }
 
-    void loadDataFromI2cEeprom(unsigned int &eeAddress) {
+    void loadDataFromI2cEeprom(unsigned int eeAddress) {
       Wire.beginTransmission(DEVICE_ADDRESS);
       Wire.write((int)((eeAddress) >> 8));   // MSB
       Wire.write((int)((eeAddress) & 0xFF)); // LSB
@@ -226,12 +259,12 @@ class Skill {
       }
     }
 
-    void loadFrameByCmdString() {
+    void loadFrameByDataBuffer() {
       period = dataBuffer[0];
       dataLen(period);
       formatSkill();
       int frame = 0;
-      transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
+      transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
     }
     void loadFrame(const char* skillName) {//get lookup information from on-board EEPROM and read the data array from storage
       char lr = skillName[strlen(skillName) - 1];
@@ -255,7 +288,7 @@ class Skill {
         mirror();
       int frame = 0;
       transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
-      delay(10);
+//      delay(10);
     }
 
     void mirror() {
@@ -405,7 +438,7 @@ int testEEPROM(char* skillData) {
 
 #ifndef MAIN_SKETCH
 void writeConst() {
-//  flushEEPROM(-1);
+  //  flushEEPROM(-1);
   int melodyAddress = MELODY_NORMAL;
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
   saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
