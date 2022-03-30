@@ -63,8 +63,10 @@ void reaction() {
       beep(10 + newCmdIdx * 2, 20); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE)
       checkGyro = true;
-    if (token != T_PAUSE)
+    if (token != T_PAUSE && !tStep) {
       tStep = 1;
+      PTL(T_PAUSE);
+    }
 #endif
     switch (token) {
 #ifdef MAIN_SKETCH
@@ -97,18 +99,15 @@ void reaction() {
           //            ramp = -ramp;
           //            token = ramp > 0 ? 'R' : 'r';
           //          }
-          PTL(token);
-          if (lastToken == T_SKILL)
-            token = T_SKILL;
+          //          PTL(token);
+          //          if (lastToken == T_SKILL)
+          //            token = T_SKILL;
           break;
         }
       case T_PAUSE: {
           tStep = !tStep; //tStep can be -1
           token = tStep ? 'p' : 'P';      //P for pause activated
-          PTL(token);
-          if (tStep)
-            token = T_SKILL;
-          else
+          if (!tStep)
             pwm.shutServos();
           break;
         }
@@ -158,10 +157,6 @@ void reaction() {
               pch = strtok (NULL, " ,\t");
               inLen++;
             }
-            if (token == T_CALIBRATE) {
-              PT(token);
-              printList(target, 2);
-            }
             targetFrame[target[0]] = target[1];
 
             int angleStep = 0;
@@ -183,6 +178,8 @@ void reaction() {
               int duty = EEPROMReadInt(ZERO_POSITIONS + target[0] * 2) + float(servoCalib[target[0]])  * eeprom(ROTATION_DIRECTION, target[0]);
               pwm.writeAngle(target[0], duty);
               printTable(servoCalib);
+              PT(token);
+              printList(target, 2);
             }
             else if (token == T_MOVE_ASC) {
               transform(targetFrame, 1, 2);
@@ -264,6 +261,9 @@ void reaction() {
     }
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
+      char lowerToken = tolower(token);
+      if ((lowerToken == T_GYRO || lowerToken == T_PRINT_GYRO) && lastToken == T_SKILL || token == 'p')
+        token = T_SKILL;
     }
 
     //    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));

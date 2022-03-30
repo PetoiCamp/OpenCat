@@ -37,12 +37,12 @@
   3. Uncomment #define MAIN_SKETCH to make it active. Then upload the program for main functions.
 */
 
-#define MAIN_SKETCH
+#define MAIN_SKETCH //the Petoi App only works when this mode is on
 //#define AUTO_INIT //automatically select 'Y' for the prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-//#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+//#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
@@ -63,7 +63,7 @@ void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(5);
   PTLF(">Flush>");
-  //  delay(2000);
+  delay(2000);//change the delay if the app doesn't recognize the Petoi device. 
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();

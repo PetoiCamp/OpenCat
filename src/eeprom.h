@@ -19,7 +19,7 @@ inline int8_t eeprom(int address, byte x = 0, byte y = 0, byte yDim = 1) {
   return EEPROM.read(address + x * yDim + y);
 }
 
-void flushEEPROM(char b) {
+void flushEEPROM(char b = -1) {
   for (int j = 0; j < 1024; j++) {
     EEPROM.update(j, b);
   }

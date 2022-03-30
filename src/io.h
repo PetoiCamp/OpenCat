@@ -20,7 +20,7 @@ template <typename T> void printList(T * arr, byte len = DOF) {
   String temp = "";
   for (byte i = 0; i < len; i++) {
     temp += String(int(arr[i]));
-    temp += '\t';
+    temp += ",\t";
     //PT((T)(arr[i]));
     //PT('\t');
   }
@@ -52,14 +52,10 @@ int readSerialUntil(char * destination, char terminator) {
 }
 
 void read_serial() {
-#ifdef GYRO_PIN
-  if (token != T_SKILL && !checkGyro)
-#endif
-    delay(3);//leave enough time for serial read
   if (Serial.available() > 0) {
     newCmdIdx = 2;
     token = Serial.read();
-
+    delay(1); //leave enough time for serial read
     if (token == T_SKILL_DATA) {
       readSerialUntil(dataBuffer, '~');
     }
@@ -75,11 +71,12 @@ void read_serial() {
       for (int i = 0; i < cmdLen; i++)
         destination[i] = cmdBuffer[i];
       destination[cmdLen] = '\0';
-      //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+
 #ifdef DEVELOPER
       PTF(" memory "); PTL(freeMemory());
 #endif
     }
+//    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
   }
 }
 

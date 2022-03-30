@@ -114,7 +114,7 @@ class Skill {
             // save the data array to i2c eeprom. its address will be saved to onboard eeprom
             EEPROMWriteInt(SKILLS + skillAddressShift, i2cEepromAddress);
             copyDataFromPgmToI2cEeprom(i2cEepromAddress,  (unsigned int) progmemPointer[s]);
-//            PT(int(SKILLS + skillAddressShift + 2)); PT(" I2C EE "); PTL(int(i2cEepromAddress));
+            //            PT(int(SKILLS + skillAddressShift + 2)); PT(" I2C EE "); PTL(int(i2cEepromAddress));
           }
 #endif
         skillAddressShift += 2; // one int (2 bytes) for address
@@ -288,7 +288,7 @@ class Skill {
         mirror();
       int frame = 0;
       transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
-//      delay(10);
+      //      delay(10);
     }
 
     void mirror() {
@@ -438,7 +438,7 @@ int testEEPROM(char* skillData) {
 
 #ifndef MAIN_SKETCH
 void writeConst() {
-  //  flushEEPROM(-1);
+  //  flushEEPROM();
   int melodyAddress = MELODY_NORMAL;
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
   saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
