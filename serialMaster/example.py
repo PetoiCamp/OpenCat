@@ -128,15 +128,15 @@ if __name__ == '__main__':
         testSchedule = [
             
             # - 'kbalance' indicates the command to control Bittle to stand normally
-            # - 2 indicates the postponed time after finishing the command, in seconds
+            # - 1 indicates the postponed time after finishing the command, in seconds
             # - the skill data is stored locally on the robot
             ['kbalance', 1],
 
             # - m indicates the command to control the rotation of the joint servo
             # - 0 indicates the index number of joint servo
             # - -50 indicates the rotation angle (this angle refers to the origin, rather than additive) the unit is degree
-            # - 1.5 indicates the postponed time after finishing the command, in seconds. It can be a float number.
-            ['m', [0, -50], 1.5],
+            # - 0.5 indicates the postponed time after finishing the command, in seconds. It can be a float number.
+            ['m', [0, -50], 0.5],
 
             # Using this format, multiple joint servo rotation commands can be sent at one time,
             # and these joint servo rotation commands are executed SEQUENTIALLY,
@@ -145,7 +145,7 @@ if __name__ == '__main__':
             # rotated to the 45 degree position, and then rotated to the -45 degree position, and so on.
             # After these motion commands are completed, the next command will
             # be executed after a 2-second delay.
-            ['m', [8, -5, 8, 10, 8, -5, 8, 10, 8, -5, 8, 10], 2],
+            ['m', [8, -5, 8, 10, 8, -5, 8, 10, 8, -5, 8, 10], 1],
 
             # Using this format, multiple joint servo rotation commands can be issued at one time,
             # and these joint servo rotation commands are executed AT THE SAME TIME.
@@ -192,14 +192,14 @@ if __name__ == '__main__':
             # - 15 indicates the music tone
             # - 90 indicates the lengths of duration, the value range is 0~255
             # - 2 indicates the postponed time after completing the pronunciation, in seconds
-            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 15, 90, 12, 90, 8, 90, 10, 90, 13, 90, 12, 90, 10, 90, 15, 90,],2],
+            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 15, 90, 12, 90, 8, 90, 10, 90, 13, 90, 12, 90, 10, 90, 15, 90,],1],
 
             # Using this format, multiple tone commands can be encrypted in binary
             # the music melody is played.
             # - '20', '22', '24', '15', '20' indicate the music tones
             # - '4', '4', '4', '4', '4' indicates 3 second/lengths of duration
             # - 2 indicates the postponed time after the music melody is played, in seconds
-            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 24, 4, 24, 2, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 8, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4], 2],
+            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 24, 4, 24, 2, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 8, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4], 1],
 
             # - 'K' indicates the skill data to send to Bittle in realtime
             # they are sent to the robot on the go and executed locally on the robot
@@ -209,20 +209,19 @@ if __name__ == '__main__':
             ['kck', 1],
             # 'T' calls the last temp skill data of 'K' received from the serial port
             ['T', 2],
-            ['K', vt, 3],
+            ['K', vt, 2],
             ['ksit', 1],
             ['T', 2],
             ['K', ck, 1],  # compare it with the previous 'kck' command
             ['d', 0]
         ]
+        
         time.sleep(2);
         for task in testSchedule:  # execute the tasks in the testSchedule
             print(task)
-            token = task[0][0]
             wrapper(task)
-            printSerialMessage(token)
-
-            time.sleep(task[-1])
+        
+        schedulerToSkill(testSchedule[:11]) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots. 
 
         closeSerialBehavior()
         logger.info("finish!")

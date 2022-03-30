@@ -40,6 +40,9 @@ def wrapper(task):  # task Structure is [token, var=[], time]
         serialWriteNumToByte(task[0], task[1])
     else:
         serialWriteByte(task[1])
+    token = task[0][0]
+    printSerialMessage(token)
+    time.sleep(task[-1])
 
 
 def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b I K L o within Python
@@ -103,7 +106,7 @@ def serialWriteByte(var=None):
         var[1:] = list(map(int, var[1:]))
         in_str = token.encode() + struct.pack('b' * (len(var) - 1), *var[1:]) + '~'.encode()
     elif token == 'w' or token == 'k':
-        in_str = var[0]
+        in_str = var[0] + '\n'
     else:
         in_str = token
     logger.debug(f"!!!!!!! {in_str}")
@@ -189,7 +192,7 @@ postureTable = {
 }
 
 
-def schedulerToSkill(postureTable,testSchedule):
+def schedulerToSkill(testSchedule):
     compactSkillData = []
     newSkill = []
     outputStr = ""

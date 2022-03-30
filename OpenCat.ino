@@ -41,8 +41,8 @@
 //#define AUTO_INIT //automatically select 'Y' for the prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-//#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+//#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2

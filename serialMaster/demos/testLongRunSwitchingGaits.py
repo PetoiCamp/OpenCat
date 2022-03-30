@@ -126,17 +126,14 @@ if __name__ == '__main__':
         testSchedule is used to test various serial port commands
         '''
         testSchedule = [
-            ['K', vt, 0.5],
-            ['K', wkF, 1],
+            ['K', vt, 1],
+            ['K', wkF, 1.5],
         ]
         time.sleep(2);
         while True:
          for task in testSchedule:  # execute the tasks in the testSchedule
             print(task)
-            token = task[0][0]
             wrapper(task)
-            printSerialMessage(token)
-            time.sleep(task[-1])
 
         closeSerialBehavior()
         logger.info("finish!")

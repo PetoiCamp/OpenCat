@@ -239,7 +239,7 @@ void reaction() {
         }
 #ifdef  T_SKILL_DATA
       case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
-          skill.copyBufferToI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF), dataBuffer);
+          skill.copyDataFromBufferToI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF), dataBuffer);
           skill.loadFrameByDataBuffer();
           token = T_SKILL;
           break;

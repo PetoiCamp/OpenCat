@@ -27,7 +27,7 @@ class Skill {
       jointIndex = 0;
     }
 
-    void copyBufferToI2cEeprom(unsigned int eeAddress, int8_t *dataBuffer) {
+    void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t *dataBuffer) {
       period = dataBuffer[0];//automatically cast to char*
       int len = dataLen(period) + 1;
       int writtenToEE = 0;
