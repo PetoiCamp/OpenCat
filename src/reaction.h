@@ -61,11 +61,13 @@ void reaction() {
 #ifdef MAIN_SKETCH
     if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN )
       beep(10 + newCmdIdx * 2, 20); //ToDo: check the muted sound when newCmdIdx = -1
-    if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE)
+    if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE){
       checkGyro = true;
+      PTL('G');
+    }
     if (token != T_PAUSE && !tStep) {
       tStep = 1;
-      PTL(T_PAUSE);
+      PTL('p');
     }
 #endif
     switch (token) {
@@ -243,8 +245,8 @@ void reaction() {
         }
 #endif
       case T_SKILL: {
-          if (skill.period <= 1 // for repeating behaviors
-              || strcmp(lastCmd, newCmd)) {//won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
+          if (strcmp(lastCmd, newCmd) //won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
+              || skill.period <= 1) { // for repeating behaviors
             skill.loadFrame(newCmd);
           }
           break;

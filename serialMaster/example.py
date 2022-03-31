@@ -131,7 +131,7 @@ if __name__ == '__main__':
             # - 1 indicates the postponed time after finishing the command, in seconds
             # - the skill data is stored locally on the robot
             ['kbalance', 1],
-
+            
             # - m indicates the command to control the rotation of the joint servo
             # - 0 indicates the index number of joint servo
             # - -50 indicates the rotation angle (this angle refers to the origin, rather than additive) the unit is degree
