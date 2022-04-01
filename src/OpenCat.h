@@ -141,8 +141,8 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 //on-board EEPROM addresses
 #define MELODY_NORMAL       1023 //melody will be saved at the end of the 1KB EEPROM, and is read reversely. That allows some flexibility on the melody length. 
 #define MELODY_INIT         1002
-#define MELODY_LOW_BATTERY  975
-#define MELODY_1            964
+#define MELODY_LOW_BATTERY  977
+#define MELODY_1            966
 #define PWM_PIN             0         // 16 byte array
 #define CALIB               16        // 16 byte array
 #define MID_SHIFT           32        // 16 byte array

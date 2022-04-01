@@ -60,7 +60,7 @@ void reaction() {
     //    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
 #ifdef MAIN_SKETCH
     if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN )
-      beep(10 + newCmdIdx * 2, 20); //ToDo: check the muted sound when newCmdIdx = -1
+      beep(10 + newCmdIdx * 2); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE){
       checkGyro = true;
       PTL('G');
@@ -226,7 +226,7 @@ void reaction() {
         }
       case T_BEEP_BIN: {
           for (byte b = 0; b < cmdLen / 2; b++)
-            beep(dataBuffer[2 * b], 3000 / dataBuffer[2 * b + 1] , 500 / dataBuffer[2 * b + 1]);
+            beep(dataBuffer[2 * b], 1000 / dataBuffer[2 * b + 1]);
           break;
         }
       case T_TEMP: {//call the last skill data received from the serial port

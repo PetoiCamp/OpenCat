@@ -13,8 +13,7 @@
 #define MU_ADDRESS        0x50 //in later versions we set the I2C device to 0x50, 0x51, 0x52, 0x53
 #define ALT_MU_ADDRESS    0x60
 
-#include <MuVisionSensor.h>
-
+#include <MuVisionSensor.h>//you need to download the library https://github.com/mu-opensource/MuVisionSensor3 into your ~/Documents/Arduino/libraries/
 #ifdef I2C_MODE
 #include <Wire.h>
 #endif

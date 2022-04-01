@@ -192,7 +192,7 @@ if __name__ == '__main__':
             # - 15 indicates the music tone
             # - 90 indicates the lengths of duration, the value range is 0~255
             # - 2 indicates the postponed time after completing the pronunciation, in seconds
-            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 15, 90, 12, 90, 8, 90, 10, 90, 13, 90, 12, 90, 10, 90, 15, 90,],1],
+            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 15, 90, 12, 90, 8, 180, 10, 90, 13, 90, 12, 90, 10, 90, 15, 180,],1],
 
             # Using this format, multiple tone commands can be encrypted in binary
             # the music melody is played.
