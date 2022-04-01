@@ -56,12 +56,12 @@ bool sensorConnectedQ(int n) {
     a = analogRead(A2);
     b = analogRead(A3);
     mean = mean + ((a - b) * (a - b) - mean) / (i + 1);
-    //    Serial.print(a);
-    //    Serial.print('\t');
-    //    Serial.print(b);
-    //    Serial.print('\t');
-    //    Serial.print(mean);
-    //    Serial.println('\t');
+        Serial.print(a);
+        Serial.print('\t');
+        Serial.print(b);
+        Serial.println('\t');
+//        Serial.print(mean);
+//        Serial.println('\t');
 
     if (abs(a - b) > 50 && abs(b - bLag) < 5) {
       //      Serial.print(a);
@@ -139,6 +139,6 @@ void loop() {
   //stats();
   //  sensorConnectedQ(READING_COUNT);
   bool con = sensorConnectedQ(READING_COUNT);
-  Serial.println(con);
+//  Serial.println(con);
   //  con ? beep(10, 200) : beep(20, 200);
 }

@@ -5,6 +5,7 @@
 #include "rgbUltrasonic/RgbUltrasonic.h"
 
 RgbUltrasonic mRUS04(6, 7);//(signal, RGB)
+//RgbUltrasonic mRUS04(8, 9);//(signal, RGB)
 //The RGB LED ultrasonic module should be plugged in the fourth grove socket with D6, D7
 
 int interval = 3;

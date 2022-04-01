@@ -86,6 +86,7 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
 //#define NEOPIXEL_PIN 10
+//#define NUMPIXELS 7
 
 #elif defined NyBoard_V1_1
 byte pwm_pin[] = {12, 11, 4, 3,
@@ -98,11 +99,24 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
 #define LED_PIN 10
+
+#elif defined NyBoard_V1_2
+byte pwm_pin[] = {12, 11, 4, 3,
+                  13, 10, 5, 2,
+                  14, 9, 6, 1,
+                  15, 8, 7, 0
+                 };
+#define VOLTAGE_DETECTION_PIN A7
+#define LOW_VOLTAGE 650
+#define DEVICE_ADDRESS 0x54
+#define BAUD_RATE 115200
+#define LED_PIN 10
+#define NEOPIXEL_PIN 3
+#define NUMPIXELS 1
 #endif
 
 #ifdef NEOPIXEL_PIN
 #include <Adafruit_NeoPixel.h>
-#define NUMPIXELS 7
 #define LIT_ON 30
 Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #endif

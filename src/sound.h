@@ -23,6 +23,7 @@ void beep(float note, float duration = 50, int pause = 0, byte repeat = 1 ) {
     else
       delay(duration * LENGTH_FACTOR);
     delay(pause * LENGTH_FACTOR);
+    noTone(BUZZER);
   }
 }
 
