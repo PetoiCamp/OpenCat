@@ -115,8 +115,6 @@ void reaction() {
         }
       case T_JOINTS: { //show the list of current joint anles
           printTable(currentAng);
-          if (lastToken == T_SKILL)
-            token = T_SKILL;
           break;
         }
       case T_MELODY: {
@@ -264,7 +262,7 @@ void reaction() {
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
-      if ((lowerToken == T_GYRO || lowerToken == T_PRINT_GYRO) && lastToken == T_SKILL || token == 'p')
+      if ((lowerToken == T_GYRO || lowerToken == T_PRINT_GYRO || lowerToken == T_JOINTS) && lastToken == T_SKILL || token == 'p')
         token = T_SKILL;
     }
 
