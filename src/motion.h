@@ -23,14 +23,14 @@ float postureOrWalkingFactor;
 #endif
 
 #ifdef X_LEG  // >< leg
-int8_t adaptiveParameterArray[16][2] = {
+float adaptiveParameterArray[16][2] = { // they will be saved as int8_t in EEPROM
   { -panF, 0}, { -panF, -tiltF}, { -2 * panF, 0}, {0, 0},
   {sRF, -sPF}, { -sRF, -sPF}, { -sRF, sPF}, {sRF, sPF},
   {uRF, uPF}, {uRF, uPF}, { -uRF, uPF}, { -uRF, uPF},
   {lRF, lPF}, {lRF, lPF}, { -lRF, lPF}, { -lRF, lPF}
 };
 #else         // >> leg
-int8_t adaptiveParameterArray[16][2] = {
+float adaptiveParameterArray[16][2] = { // they will be saved as int8_t in EEPROM
   { -panF, 0}, { -panF / 2, -tiltF}, { -2 * panF, 0}, {0, 0},
   {sRF, -sPF}, { -sRF, -sPF}, { -sRF, sPF}, {sRF, sPF},
   {uRF, uPF}, {uRF, uPF}, {uRF, uPF}, {uRF, uPF},

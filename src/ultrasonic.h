@@ -8,8 +8,6 @@ RgbUltrasonic mRUS04(6, 7);//(signal, RGB)
 //RgbUltrasonic mRUS04(8, 9);//(signal, RGB)
 //The RGB LED ultrasonic module should be plugged in the fourth grove socket with D6, D7
 
-int interval = 3;
-#define ULTRASONIC_IMU_SKIP 10
 long colors[] = {RGB_RED, RGB_PURPLE, RGB_GREEN, RGB_BLUE, RGB_YELLOW, RGB_WHITE};
 long ultraTimer;
 int ultraInterval = 1000;
@@ -45,11 +43,11 @@ void read_ultrasonic() {
       mRUS04.SetRgbEffect(E_RGB_ALL, RGB_RED, E_EFFECT_FLASH);
       meow(rand() % 3 + 1, distance * 2);
       token = T_INDEXED_SIMULTANEOUS_BIN;
-      char allRand[] = {0, currentAng[0] + rand() % 20 - 10, 1, currentAng[1] + rand() % 20 - 10, 2, currentAng[2] + rand() % 80 - 40
+      int allRand[] = {0, currentAng[0] + rand() % 20 - 10, 1, currentAng[1] + rand() % 20 - 10, 2, currentAng[2] + rand() % 80 - 40
                        };
       cmdLen = 6;
       for (byte i = 0; i < cmdLen; i++)
-        dataBuffer[i] = allRand[i];
+        dataBuffer[i] = (int8_t)allRand[i];
       dataBuffer[cmdLen] = '\0';
       newCmdIdx = 6;
     }

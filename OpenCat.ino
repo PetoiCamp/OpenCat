@@ -48,13 +48,14 @@
 //#define NyBoard_V0_2
 #define NyBoard_V1_0
 //#define NyBoard_V1_1
+//#define NyBoard_V1_2
 
 //you can also activate the following modes (they will diable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
 //#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
-//#define CAMERA          //for Mu Vision camera
+#define CAMERA          //for Mu Vision camera
 
 
 #include "src/OpenCat.h"
@@ -63,7 +64,7 @@ void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(5);
   PTLF(">Flush>");
-  delay(2000);//change the delay if the app doesn't recognize the Petoi device. 
+  delay(2000);//change the delay if the app doesn't recognize the Petoi device.
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
@@ -93,7 +94,18 @@ void setup() {
   cameraSetup();
 #endif
 
+#ifdef PWM_LED_PIN
+  pinMode(PWM_LED_PIN, OUTPUT);
+  analogWrite(PWM_LED_PIN, 200);
+#endif
+
+#ifdef NEOPIXEL_PIN
+  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
+  strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+#endif
+
   playMelody(MELODY_NORMAL);
+
 #ifdef GYRO_PIN
   read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs
@@ -110,7 +122,6 @@ void setup() {
   //----------------------------------
 #else               // ** save parameters to device's static memory
   configureEEPROM();
-
   servoSetup(); //servo needs to be after configureEEPROM and before imuSetup
 #ifdef GYRO_PIN
   imuSetup();

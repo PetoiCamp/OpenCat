@@ -57,7 +57,7 @@ void read_serial() {
     token = Serial.read();
     delay(1); //leave enough time for serial read
     if (token == T_SKILL_DATA) {
-      readSerialUntil(dataBuffer, '~');
+      readSerialUntil((char*)dataBuffer, '~');
     }
     else if (Serial.available() > 0) {
       String cmdBuffer;//may overflow after many iterations. I use this method only to support "no line ending" in the serial monitor
@@ -67,7 +67,7 @@ void read_serial() {
       else
         cmdBuffer = Serial.readStringUntil('\n');
       cmdLen = cmdBuffer.length();
-      char *destination = (token == T_SKILL) ? newCmd : dataBuffer;
+      char *destination = (token == T_SKILL) ? newCmd : (char*)dataBuffer;
       for (int i = 0; i < cmdLen; i++)
         destination[i] = cmdBuffer[i];
       destination[cmdLen] = '\0';

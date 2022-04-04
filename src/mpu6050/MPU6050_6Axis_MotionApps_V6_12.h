@@ -521,7 +521,7 @@ uint8_t MPU6050::dmpGetGravity(int16_t *data, const uint8_t* packet) {
     data[0] = ((int32_t)qI[1] * qI[3] - (int32_t)qI[0] * qI[2]) / 16384;
     data[1] = ((int32_t)qI[0] * qI[1] + (int32_t)qI[2] * qI[3]) / 16384;
     data[2] = ((int32_t)qI[0] * qI[0] - (int32_t)qI[1] * qI[1]
-	       - (int32_t)qI[2] * qI[2] + (int32_t)qI[3] * qI[3]) / (2 * 16384);
+	       - (int32_t)qI[2] * qI[2] + (int32_t)qI[3] * qI[3]) / 2 / 16384;
     return status;
 }
 

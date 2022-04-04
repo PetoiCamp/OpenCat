@@ -146,7 +146,7 @@ void reaction() {
           //          char* temp = new char[64];
           //          strcpy(temp, newCmd);
           char *pch;
-          pch = strtok (dataBuffer, " ,");
+          pch = strtok ((char*)dataBuffer, " ,");
           do {  //it supports combining multiple commands at one time
             //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
             //the combined commands should be less than four. string len <=30 to be exact.

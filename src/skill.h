@@ -461,7 +461,7 @@ void writeConst() {
     EEPROM.update(MID_SHIFT + i, middleShift[i]);
     EEPROM.update(ROTATION_DIRECTION + i, rotationDirection[i]);
     for (byte j = 0; j < 2; j++) {
-      EEPROM.update(ADAPT_PARAM + i * 2 + j, round(adaptiveParameterArray[i][j]));
+      EEPROM.update(ADAPT_PARAM + i * 2 + j, (int8_t)round(adaptiveParameterArray[i][j]));
       EEPROMWriteInt(ANGLE_LIMIT + i * 4 + j * 2, angleLimit[i][j]);
     }
   }

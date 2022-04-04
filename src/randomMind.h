@@ -49,12 +49,12 @@ void randomMind() {
         allRandom();
       }
       else {
-        strcpy_P(dataBuffer, (char *)pgm_read_word(&mindList[randomChoice]));
+        strcpy_P((char *)dataBuffer, (char *)pgm_read_word(&mindList[randomChoice]));
         token = dataBuffer[0];
         if (token == T_SKILL)
-          strcpy(newCmd, dataBuffer + 1);// this is duable only because newCmd+1 is after newCmd!
+          strcpy(newCmd, (char *)dataBuffer + 1);// this is duable only because newCmd+1 is after newCmd!
         else
-          strcpy(dataBuffer, dataBuffer + 1);// this is duable only because dataBuffer+1 is after dataBuffer!
+          strcpy((char *)dataBuffer, (char *)dataBuffer + 1);// this is duable only because dataBuffer+1 is after dataBuffer!
 
       }
       //      PTL(newCmd);
