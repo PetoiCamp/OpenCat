@@ -55,7 +55,7 @@
 //#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
-#define CAMERA          //for Mu Vision camera
+//#define CAMERA          //for Mu Vision camera
 
 
 #include "src/OpenCat.h"
