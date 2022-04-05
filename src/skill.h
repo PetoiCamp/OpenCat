@@ -18,14 +18,14 @@ class Skill {
     byte firstMotionJoint;
     int8_t* dutyAngles;         //the data array for skill angles and parameters
 
-//    Skill() {
-//      period = 0;
-//      transformSpeed = 2;
-//      expectedRollPitch[0] = yprTilt[2] = 0;
-//      expectedRollPitch[1] = yprTilt[1] = 0;
-//      dutyAngles = NULL;
-//      jointIndex = 0;
-//    }
+    //    Skill() {
+    //      period = 0;
+    //      transformSpeed = 2;
+    //      expectedRollPitch[0] = yprTilt[2] = 0;
+    //      expectedRollPitch[1] = yprTilt[1] = 0;
+    //      dutyAngles = NULL;
+    //      jointIndex = 0;
+    //    }
 
     void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t *dataBuffer) {
       period = dataBuffer[0];//automatically cast to char*
@@ -181,7 +181,7 @@ class Skill {
         delete[]readName;
         skillAddressShift += 4;//1 byte type, 1 byte period, 1 int address
       }
-      PTLF("wrong key!");
+      PTLF("?");//key not found
       return -1;
     }
 
@@ -309,11 +309,10 @@ class Skill {
     }
 
     void info() {
-      PTL("period:" + String(period) + ",\texpected (pitch,roll): (" + expectedRollPitch[0] + "," + expectedRollPitch[1] + ")");
+      PTL("period:" + String(period) + ",\texpected(pitch,roll):(" + expectedRollPitch[0] + "," + expectedRollPitch[1] + ")");
       for (int k = 0; k < abs(period); k++) {
         for (int col = 0; col < frameSize ; col++) {
-          PT(String((int8_t)dutyAngles[k * frameSize + col]) + ", ");
-          PT('\t');
+          PT(String((int8_t)dutyAngles[k * frameSize + col]) + ",\t");
         }
         PTL();
       }
@@ -338,11 +337,11 @@ class Skill {
             //            long triggerTimer = millis();
             while (1) {
               read_IMU();
-              print6Axis();
-              currentYpr = ypr[abs(triggerAxis)]  ;
-              PT(currentYpr);
-              PT('\t');
-              PTL(triggerAngle);
+              currentYpr = ypr[abs(triggerAxis)];
+              //              print6Axis();
+              //              PT(currentYpr);
+              //              PT('\t');
+              //              PTL(triggerAngle);
               if ((180 - fabs(currentYpr) > 2)  //IMU_SKIP the angle when the reading jumps from 180 to -180
                   && (triggerAxis * currentYpr < triggerAxis * triggerAngle && triggerAxis * previousYpr > triggerAxis * triggerAngle )
                  ) //the sign of triggerAxis will deterine whether the current angle should be larger or smaller than the trigger angle
@@ -395,12 +394,12 @@ class Skill {
 #endif
         //          PT(jointIndex); PT('\t');
         float duty;
-        if (jointIndex < firstMotionJoint && abs(period) > 1) 
+        if (jointIndex < firstMotionJoint && abs(period) > 1)
           duty = (jointIndex != 1 ? offsetLR : 0) //look left or right
                  + 10 * sin (frame * (jointIndex + 2) * M_PI / abs(period));
-        else 
+        else
           duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint];
-        
+
         //          PT(duty); PT('\t');
         calibratedPWM(jointIndex, duty
 #ifdef GYRO_PIN

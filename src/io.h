@@ -74,7 +74,7 @@ void read_serial() {
       destination[cmdLen] = '\0';
 
 #ifdef DEVELOPER
-      PTF(" memory "); PTL(freeMemory());
+      PTF("Mem:"); PTL(freeMemory());
 #endif
     }
 //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));

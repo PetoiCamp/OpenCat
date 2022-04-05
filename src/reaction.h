@@ -73,8 +73,8 @@ void reaction() {
 #ifdef MAIN_SKETCH
 #ifdef GYRO:
       case T_GYRO:
-      case T_PRINT_GYRO:
-      case T_VERBOSELY_PRINT_GYRO:
+//      case T_PRINT_GYRO:
+//      case T_VERBOSELY_PRINT_GYRO:
 #endif
       case T_RANDOM_MIND:
         //      case T_RAMP:
@@ -84,13 +84,13 @@ void reaction() {
             checkGyro = !checkGyro;
             token = checkGyro ? 'G' : 'g';  //G for activated gyro
           }
-          else if (token == T_PRINT_GYRO) {
-            print6Axis();
-          }
-          else if (token == T_VERBOSELY_PRINT_GYRO) {
-            printGyro = !printGyro;
-            token = printGyro ? 'V' : 'v';  //V for verbosely print gyro data
-          }
+//          else if (token == T_PRINT_GYRO) {
+//            print6Axis();
+//          }
+//          else if (token == T_VERBOSELY_PRINT_GYRO) {
+//            printGyro = !printGyro;
+//            token = printGyro ? 'V' : 'v';  //V for verbosely print gyro data
+//          }
 #endif
 #ifdef RANDOM_MIND
           else if (token == T_RANDOM_MIND) {
@@ -137,7 +137,7 @@ void reaction() {
       case T_CALIBRATE: //calibration
       case T_MOVE_ASC: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
-      case T_TILT:
+      case T_TILT:  //tilt the robot, format: t axis angle. 0:yaw, 1:pitch, 2:roll
       case T_MEOW: //meow
       case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
         {
@@ -270,7 +270,7 @@ void reaction() {
     //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
     resetCmd();
 #ifdef DEVELOPER
-    PTF("free memory:");
+    PTF("Mem:");
     PTL(freeMemory());
 #endif
   }
