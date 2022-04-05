@@ -110,15 +110,9 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define LOW_VOLTAGE 650
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
-#define LED_PIN 10
-#define NEOPIXEL_PIN 3
+#define LED_PIN 3
+#define NEOPIXEL_PIN 10
 #define NUMPIXELS 1
-#endif
-
-#ifdef NEOPIXEL_PIN
-#include <Adafruit_NeoPixel.h>
-#define LIT_ON 30
-Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #endif
 
 #ifdef NYBBLE
@@ -184,6 +178,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #define T_PAUSE       'p'
 #define T_RAMP        'r'
 #define T_SAVE        's'
+#define T_TILT        't'
 #define T_TEMP        'T'           //call the last skill data received from the serial port
 #define T_MEOW        'u'
 #define T_PRINT_GYRO            'v' //print Gyro data
@@ -244,10 +239,12 @@ char token;
 char lastToken;
 #define CMD_LEN 10  //the last char will be '\0' so only CMD_LEN-1 elements are allowed 
 char *newCmd = new char[CMD_LEN];
-char *lastCmd = new char[5];
+char *lastCmd = new char[2];
 byte newCmdIdx = 0;
 int cmdLen;
-int8_t* dataBuffer = new int8_t[470];
+int8_t *dataBuffer = new int8_t[450];
+
+
 
 bool checkGyro = true;
 bool printGyro = false;
@@ -273,6 +270,10 @@ byte transformSpeed = 2;
 #include "infrared.h"
 #endif
 
+#ifdef NEOPIXEL_PIN
+#include <Adafruit_NeoPixel.h>
+Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+#endif
 
 #ifdef VOICE
 #include "voice.h"

@@ -1,6 +1,6 @@
 /*
    The driver for OpenCat, runs on ATmega328P-based NyBoard (as Arduino Uno).
-   Compatible with Petoi Nybble, Bittle and many other 8 or 12 DoF quadruped robots.
+   Compatible with Petoi Nybble, Bittle, and many other 8 or 12 DoF quadruped robots.
    Drives up to 16 PWM servos.
 
    Rongzhong Li
@@ -8,7 +8,7 @@
    Copyright (c) 2022 Petoi LLC.
 
    This sketch may also include others' codes under MIT or other open-source licenses.
-   Check those licenses in corresponding module test folders.
+   Check those licenses in the corresponding module test folders.
    Feel free to contact us if you find any missing references.
 
   The MIT License
@@ -41,14 +41,14 @@
 //#define AUTO_INIT //automatically select 'Y' for the prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-//#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+//#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
-#define NyBoard_V1_0
+//#define NyBoard_V1_0
 //#define NyBoard_V1_1
-//#define NyBoard_V1_2
+#define NyBoard_V1_2
 
 //you can also activate the following modes (they will diable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
@@ -63,7 +63,7 @@
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(5);
-  PTLF(">Flush>");
+  PTLF(">");
   delay(2000);//change the delay if the app doesn't recognize the Petoi device.
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -82,6 +82,15 @@ void setup() {
   irrecv.enableIRIn(); // Start the receiver
   gait.reserve(4);
 #endif
+
+#ifdef LED_PIN
+  pinMode(LED_PIN, OUTPUT);
+#endif
+#ifdef NEOPIXEL_PIN
+  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
+  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+#endif
+
   servoSetup();
   randomSeed(analogRead(0));//use the fluctuation of voltage caused by servos as entropy pool
 
@@ -92,16 +101,6 @@ void setup() {
 #endif
 #ifdef CAMERA
   cameraSetup();
-#endif
-
-#ifdef PWM_LED_PIN
-  pinMode(PWM_LED_PIN, OUTPUT);
-  analogWrite(PWM_LED_PIN, 200);
-#endif
-
-#ifdef NEOPIXEL_PIN
-  strip.begin();           // INITIALIZE NeoPixel strip object (REQUIRED)
-  strip.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
 #endif
 
   playMelody(MELODY_NORMAL);
@@ -128,7 +127,7 @@ void setup() {
 #endif
 #endif              // **
 
-  PTL("Ready!");
+  PTLF("Ready!");
 }
 
 void loop() {
@@ -136,12 +135,12 @@ void loop() {
 #ifdef VOLTAGE_DETECTION_PIN
   while (lowBattery()); //block the loop if battery is low
 #endif
-  readSignal();
 #ifdef GYRO_PIN
   readEnvironment();
   if (token != T_CALIBRATE && exceptions) //the gyro reaction switch can be toggled on/off by the 'g' token
     dealWithExceptions(); //fall over, lifted, etc.
 #endif
+  readSignal();
   reaction();
 #endif
 }

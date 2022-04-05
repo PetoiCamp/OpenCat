@@ -50,6 +50,3 @@ void meow(byte repeat = 2, byte duration = 10, byte startF = 210 + rand() % 10, 
       playTone(i, duration);
     }
 }
-void soundFallOver() {
-  meow();
-}

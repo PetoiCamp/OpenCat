@@ -4,7 +4,7 @@ void dealWithExceptions() {
   //  for (int m = 0; m < 2; m++)
   //    meow(30 - m * 12, 42 - m * 12, 20);
   //  beep(15, 100, 100, 2);
-  soundFallOver();
+  meow();
   token = T_SKILL;
   strcpy(newCmd, "rc");
   newCmdIdx = -1;
@@ -18,31 +18,30 @@ bool lowBattery() {
     //adjust the thresholds according to your batteries' voltage
     //if set too high, the robot will stop working when the battery still has power.
     //If too low, the robot may not alarm before the battery shuts off
-    //    if (!safeRest) {
-    //      strcpy(lastCmd, "rest");
-    //      skill.loadFrame(lastCmd);
-    //      pwm.shutServos();
-    //      safeRest = true;
-    //    }
-    PTF("Low power: ");
+    PTF("Low power:");
     PT(voltage / 99);
     PTL('V');
     playMelody(MELODY_LOW_BATTERY);
-    delay(2000);
+    int8_t bStep = 1;
+    for (byte brightness = 1; brightness > 0; brightness += bStep) {
+#ifdef NEOPIXEL_PIN
+      pixel.setPixelColor(0, pixel.Color(brightness, 0, 0));
+      pixel.show();
+#elif defined LED_PIN
+      analogWrite(LED_PIN, 255 - brightness);
+#endif
+      if (brightness == 255)
+        bStep = -1;
+      delay(10);
+    }
     return true;
   }
-  //  if (safeRest) {
-  //    strcpy(lastCmd, "rest");
-  //    skill.loadFrame(lastCmd);
-  //    pwm.shutServos();
-  //    safeRest = false;
-  //  }
   return false;
 }
 #endif
 
 void resetCmd() {
-  //  PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+  //  PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
   if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN && token != T_MOVE_BIN && token != T_SKILL_DATA) {
     delete [] lastCmd;
     lastCmd = new char(strlen(newCmd) + 1);
@@ -57,11 +56,11 @@ void resetCmd() {
 
 void reaction() {
   if (newCmdIdx) {
-    //    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+    //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
 #ifdef MAIN_SKETCH
-    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN )
+    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_TILT)
       beep(10 + newCmdIdx * 2); //ToDo: check the muted sound when newCmdIdx = -1
-    if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE){
+    if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
       checkGyro = true;
       PTL('G');
     }
@@ -72,25 +71,27 @@ void reaction() {
 #endif
     switch (token) {
 #ifdef MAIN_SKETCH
+#ifdef GYRO:
       case T_GYRO:
       case T_PRINT_GYRO:
       case T_VERBOSELY_PRINT_GYRO:
+#endif
       case T_RANDOM_MIND:
         //      case T_RAMP:
         {
+#ifdef GYRO_PIN
           if (token == T_GYRO) {
             checkGyro = !checkGyro;
             token = checkGyro ? 'G' : 'g';  //G for activated gyro
           }
-#ifdef GYRO_PIN
           else if (token == T_PRINT_GYRO) {
             print6Axis();
           }
-#endif
           else if (token == T_VERBOSELY_PRINT_GYRO) {
             printGyro = !printGyro;
             token = printGyro ? 'V' : 'v';  //V for verbosely print gyro data
           }
+#endif
 #ifdef RANDOM_MIND
           else if (token == T_RANDOM_MIND) {
             autoSwitch = !autoSwitch;
@@ -122,7 +123,7 @@ void reaction() {
           break;
         }
       case T_SAVE: {
-          PTLF("save offset");
+          PTLF("saved");
           saveCalib(servoCalib);
           break;
         }
@@ -136,17 +137,17 @@ void reaction() {
       case T_CALIBRATE: //calibration
       case T_MOVE_ASC: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
+      case T_TILT:
       case T_MEOW: //meow
       case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
         {
-          int *targetFrame = new int[DOF];
+          int targetFrame[DOF];
           for (int i = 0; i < DOF; i += 1) {
             targetFrame[i] = currentAng[i];
           }
-          //          char* temp = new char[64];
-          //          strcpy(temp, newCmd);
           char *pch;
-          pch = strtok ((char*)dataBuffer, " ,");
+          char *input = (token == T_TILT) ? newCmd : (char*)dataBuffer;
+          pch = strtok ((char*)input, " ,");
           do {  //it supports combining multiple commands at one time
             //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
             //the combined commands should be less than four. string len <=30 to be exact.
@@ -158,7 +159,6 @@ void reaction() {
               inLen++;
             }
             targetFrame[target[0]] = target[1];
-
             int angleStep = 0;
             if (token == T_CALIBRATE) {
               checkGyro = false;
@@ -168,21 +168,24 @@ void reaction() {
                 skill.loadFrame(newCmd);
               }
               if (inLen == 2) {
-                if (target[1] >= 1001) { // Using 1001 for incremental calibration. 1001 is adding 1 degree, 1002 is adding 2 and 1009 is adding 9 degrees
-                  target[1] += (servoCalib[target[0]] - 1000);
-                } else if (target[1] <= -1001) { // Using -1001 for incremental calibration. -1001 is removing 1 degree, 1002 is removing 2 and 1009 is removing 9 degrees
-                  target[1] += (servoCalib[target[0]] + 1000);
-                }
+                //                if (target[1] >= 1001) { // Using 1001 for incremental calibration. 1001 is adding 1 degree, 1002 is adding 2 and 1009 is adding 9 degrees
+                //                  target[1] += (servoCalib[target[0]] - 1000);
+                //                } else if (target[1] <= -1001) { // Using -1001 for incremental calibration. -1001 is removing 1 degree, 1002 is removing 2 and 1009 is removing 9 degrees
+                //                  target[1] += (servoCalib[target[0]] + 1000);
+                //                }
                 servoCalib[target[0]] = target[1];
               }
               int duty = EEPROMReadInt(ZERO_POSITIONS + target[0] * 2) + float(servoCalib[target[0]])  * eeprom(ROTATION_DIRECTION, target[0]);
               pwm.writeAngle(target[0], duty);
               printTable(servoCalib);
-              PT(token);
-              printList(target, 2);
+              //              PT(token);
+              //              printList(target, 2);
             }
             else if (token == T_MOVE_ASC) {
               transform(targetFrame, 1, 2);
+            }
+            else if (token == T_TILT) {
+              yprTilt[target[0]] = target[1];
             }
             else if (token == T_MEOW) {
               meow(rand() % 2 + 1, (rand() % 4 + 2) * 5);
@@ -193,9 +196,7 @@ void reaction() {
           } while (pch != NULL);
           if (token == T_INDEXED_SIMULTANEOUS_ASC) {
             transform(targetFrame, 1, 2);
-
           }
-          delete []targetFrame;
           delete []pch;
           break;
         }
@@ -211,7 +212,7 @@ void reaction() {
             targetFrame[dataBuffer[i]] = dataBuffer[i + 1];
             if (token == T_MOVE_BIN) {
               transform(targetFrame, 1, 2);
-              delay(10);
+              //              delay(10);
             }
           }
           if (token == T_INDEXED_SIMULTANEOUS_BIN)
@@ -255,21 +256,21 @@ void reaction() {
           skill.loadFrame(newCmd);
           pwm.shutServos();
           checkGyro = false;
-          PTL('g');
+          PTL(T_GYRO);
           break;
         }
     }
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
-      if ((lowerToken == T_GYRO || lowerToken == T_PRINT_GYRO || lowerToken == T_JOINTS) && lastToken == T_SKILL || token == 'p')
+      if ((lowerToken == T_GYRO || lowerToken == T_PRINT_GYRO || token == T_JOINTS) && lastToken == T_SKILL || token == T_PAUSE || token == T_TILT)
         token = T_SKILL;
     }
 
-    //    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+    //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
     resetCmd();
 #ifdef DEVELOPER
-    PTF("free memory: ");
+    PTF("free memory:");
     PTL(freeMemory());
 #endif
   }
@@ -284,12 +285,12 @@ void reaction() {
         currentAdjust[i] = 0;
     }
     else {
-      strcpy(newCmd, "balance");
+      strcpy(newCmd, "bal");
     }
     if (strcmp(newCmd, ""))
       skill.loadFrame(newCmd);
     PTL(token);//behavior can confirm completion by sending the token back
-    //      PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+    //      PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
   }
 #endif
 }

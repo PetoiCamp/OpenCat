@@ -15,7 +15,7 @@ decode_results results;
 #define K02 "g"       //turn off gyro feedback to boost speed
 
 #define K10 "L"       //left
-#define K11 "balance" //neutral stand up posture
+#define K11 "bal" //neutral stand up posture
 #define K12 "R"       //right
 
 #define K20 "p"       //pause motion and shut off all servos
@@ -132,24 +132,22 @@ String translateIR() // takes action based on IR code received
   // number keys for different postures or behaviors
 }
 
-
 String gait = "tr";
 char direct = 'F';
-
 
 String irParser(String raw) {
   //  PT(raw); PT('\t'); PT(gait); PT('\t'); PTL(direct);
   if (raw == "B") {
-    gait = (gait == "vt") ? "bk" : "vt";
+    gait = "bk";//(gait == "vt") ? "bk" : "vt";
     return gait;
   }
   if (raw == "F" || raw == "L" || raw == "R") {
     direct = raw[0];
     if (direct == 'F') {
-      if (gait == "bk")
-        gait = "vt";
-      else if (gait == "vt")
-        gait = "tr";
+      //      if (gait == "bk")
+      //        gait = "vt";
+      //      else if (gait == "vt")
+      gait = "tr";
     }
     return gait + direct;
   }

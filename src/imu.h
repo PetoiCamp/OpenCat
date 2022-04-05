@@ -137,6 +137,7 @@ VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measure
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float euler[3];         // [psi, theta, phi]    Euler angle container
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+int8_t yprTilt[3];
 
 #define IMU_SKIP 2
 int16_t imuOffset[9] = {0, 0, 0,
@@ -204,18 +205,17 @@ void readEnvironment() {
 
 //This function will write a 2-byte integer to the EEPROM at the specified address and address + 1
 
-
 void imuSetup() {
   do {
     delay(100);
     // initialize device
-    PTF("Init IMU... ");
+    PTLF("Init IMU");
     mpu.initialize();
     //    pinMode(GYRO_PIN, INPUT);
     // verify connection
     //    PTLF("Test connection");
   } while (!mpu.testConnection());
-  PTLF("Connected");
+//  PTLF("Connected");
 
   // load and configure the DMP
   //  PTLF("Init DMP");
@@ -241,14 +241,14 @@ void imuSetup() {
     // Calibration Time: generate offsets and calibrate our MPU6050
 #ifndef MAIN_SKETCH
 #ifndef AUTO_INIT
-    PTLF("Calibrate IMU? (Y/n): ");
+    PTLF("Calibrate IMU?(Y/n):");
     char choice = getUserInputChar();
     PTL(choice);
     if (choice == 'Y' || choice == 'y') {
 #endif
       PTLF("\nLay the robot FLAT on a table");
       beep(8, 400, 600, 5);
-      beep(15, 400, 600, 1);
+      beep(15, 400, 600);
       PTLF("Calibrate the IMU ");
       mpu.CalibrateAccel(10);
       mpu.CalibrateGyro(10);
@@ -263,12 +263,12 @@ void imuSetup() {
     }
 #endif
     PTLF("\nEEPROM contents:");
-    printEPROM();
+    printEEPROM();
     beep(18, 50, 70, 6);
 #endif
     //    mpu.PrintActiveOffsets(); //it takes 7% flash!
     // turn on the DMP, now that it's ready
-    PTLF("Enable DMP");
+//    PTLF("Enable DMP");
     mpu.setDMPEnabled(true);
 
     // enable Arduino interrupt detection

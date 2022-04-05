@@ -1,3 +1,4 @@
+//short tools
 template <typename T> int8_t sign(T val) {
   return (T(0) < val) - (val < T(0));
 }
@@ -67,7 +68,7 @@ void read_serial() {
       else
         cmdBuffer = Serial.readStringUntil('\n');
       cmdLen = cmdBuffer.length();
-      char *destination = (token == T_SKILL) ? newCmd : (char*)dataBuffer;
+      char *destination = (token == T_SKILL||token == T_TILT) ? newCmd : (char*)dataBuffer;
       for (int i = 0; i < cmdLen; i++)
         destination[i] = cmdBuffer[i];
       destination[cmdLen] = '\0';
@@ -76,7 +77,7 @@ void read_serial() {
       PTF(" memory "); PTL(freeMemory());
 #endif
     }
-//    PTL("lastT: " + String(lastToken) + "\tT: " + String(token) + "\tLastCmd: " + String(lastCmd) + "\tCmd: " + String(newCmd));
+//    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
   }
 }
 
@@ -128,6 +129,3 @@ bool sensorConnectedQ(int n) {
   }
   return sqrt(mean) > 20 ? true : false;
 }
-
-
-//short tools

@@ -3,7 +3,7 @@
 // balancing parameters
 #define ROLL_LEVEL_TOLERANCE 3//the body is still considered as level, no angle adjustment
 #define PITCH_LEVEL_TOLERANCE 2
-float levelTolerance[2] = {ROLL_LEVEL_TOLERANCE, PITCH_LEVEL_TOLERANCE}; //the body is still considered as level, no angle adjustment
+int8_t levelTolerance[2] = {ROLL_LEVEL_TOLERANCE, PITCH_LEVEL_TOLERANCE}; //the body is still considered as level, no angle adjustment
 
 //the following coefficients will be divided by radPerDeg in the adjust() function. so (float) 0.1 can be saved as (int8_t) 1
 //this trick allows using int8_t array insead of float array, saving 96 bytes and allows storage on EEPROM

@@ -13,19 +13,19 @@ class Skill {
     float transformSpeed;
     byte frameSize;
     int expectedRollPitch[2]; //expected body orientation (roll, pitch)
-    byte angleDataRatio;      //divide large angles by 1 or 2. if the max angle of a skill is >128, all the angls will be divided by 2
+    byte angleDataRatio;      //divide large angles by 1 or 2. if the max angle of skill is >128, all the angles will be divided by 2
     byte loopCycle[3];        //the looping section of a behavior (starting row, ending row, repeating cycles)
     byte firstMotionJoint;
     int8_t* dutyAngles;         //the data array for skill angles and parameters
 
-    Skill() {
-      period = 0;
-      transformSpeed = 2;
-      expectedRollPitch[0] = 0;
-      expectedRollPitch[1] = 0;
-      dutyAngles = NULL;
-      jointIndex = 0;
-    }
+//    Skill() {
+//      period = 0;
+//      transformSpeed = 2;
+//      expectedRollPitch[0] = yprTilt[2] = 0;
+//      expectedRollPitch[1] = yprTilt[1] = 0;
+//      dutyAngles = NULL;
+//      jointIndex = 0;
+//    }
 
     void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t *dataBuffer) {
       period = dataBuffer[0];//automatically cast to char*
@@ -230,8 +230,10 @@ class Skill {
     }
 
     void formatSkill() {
-      for (int i = 0; i < 2; i++)
+      for (int i = 0; i < 2; i++) {
         expectedRollPitch[i] = (int8_t)dataBuffer[1 + i];
+        yprTilt[2 - i] = 0;
+      }
       angleDataRatio = dataBuffer[3];
       byte skillHeader = 4;
       if (period < 0) {
@@ -307,7 +309,7 @@ class Skill {
     }
 
     void info() {
-      PTL("period: " + String(period) + ",\texpected (pitch,roll): (" + expectedRollPitch[0] + "," + expectedRollPitch[1] + ")");
+      PTL("period:" + String(period) + ",\texpected (pitch,roll): (" + expectedRollPitch[0] + "," + expectedRollPitch[1] + ")");
       for (int k = 0; k < abs(period); k++) {
         for (int col = 0; col < frameSize ; col++) {
           PT(String((int8_t)dutyAngles[k * frameSize + col]) + ", ");
@@ -367,7 +369,7 @@ class Skill {
         if (!(frame % IMU_SKIP)) {
           for (byte i = 0; i < 2; i++) {
             RollPitchDeviation[i] = ypr[2 - i]  - expectedRollPitch[i]; //all in degrees
-            RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i])) - levelTolerance[i], float(0));//filter out small angles
+            RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i])) - levelTolerance[i], float(0)) + yprTilt[2 - i]; //filter out small angles
           }
         }
 #endif
@@ -393,13 +395,12 @@ class Skill {
 #endif
         //          PT(jointIndex); PT('\t');
         float duty;
-        if (jointIndex < firstMotionJoint && abs(period) > 1)
+        if (jointIndex < firstMotionJoint && abs(period) > 1) 
           duty = (jointIndex != 1 ? offsetLR : 0) //look left or right
                  + 10 * sin (frame * (jointIndex + 2) * M_PI / abs(period));
-
-        else {
+        else 
           duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint];
-        }
+        
         //          PT(duty); PT('\t');
         calibratedPWM(jointIndex, duty
 #ifdef GYRO_PIN
@@ -446,7 +447,7 @@ void writeConst() {
   saveMelody(melodyAddress, melody1, sizeof(melody1));
   playMelody(MELODY_INIT);
 #ifndef AUTO_INIT
-  PTLF("Reset joint offsets? (Y/n)");//(Input ‘Y’ and hit enter, if you want to reset all the joint offsets to 0)
+  PTLF("Reset joint offsets?(Y/n)");//(Input ‘Y’ and hit enter, if you want to reset all the joint offsets to 0)
   char resetJointCalibrationQ = getUserInputChar();
   PTL(resetJointCalibrationQ);
 #endif

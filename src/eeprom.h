@@ -15,6 +15,7 @@ int EEPROMReadInt(int p_address)
   byte highByte = EEPROM.read(p_address + 1);
   return ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
 }
+
 inline int8_t eeprom(int address, byte x = 0, byte y = 0, byte yDim = 1) {
   return EEPROM.read(address + x * yDim + y);
 }
@@ -25,7 +26,7 @@ void flushEEPROM(char b = -1) {
   }
 }
 
-void printEPROM() {
+void printEEPROM() {
   for (int i = 0; i < 1024; i++) {
     PT(eeprom(i));
     PT('\t');
@@ -56,7 +57,6 @@ void saveMelody(int &address, byte melody[], int len ) {
     EEPROM.update(address --, melody[i]);
   PTL(address);
 }
-
 
 inline int loadAngleLimit(byte idx, byte dim) {
   return EEPROMReadInt(ANGLE_LIMIT + idx * 4 + dim * 2);
