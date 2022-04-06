@@ -52,10 +52,10 @@ int readSerialUntil(char * destination, char terminator) {
   return c - 1;
 }
 
-template <typename T> void arrayNCPY(T * destination, const T * source, int len){//deep copy regardless of '\0'
-  for(int i=0;i<len;i++)  
-    destination[i]= source[i];
-  }
+template <typename T> void arrayNCPY(T * destination, const T * source, int len) { //deep copy regardless of '\0'
+  for (int i = 0; i < len; i++)
+    destination[i] = source[i];
+}
 
 void read_serial() {
   if (Serial.available() > 0) {
@@ -73,17 +73,17 @@ void read_serial() {
       else
         cmdBuffer = Serial.readStringUntil('\n');
       cmdLen = cmdBuffer.length();
-      char *destination = (token == T_SKILL||token == T_TILT) ? newCmd : (char*)dataBuffer;
-//      for (int i = 0; i < cmdLen; i++)
-//        destination[i] = cmdBuffer[i];
-        arrayNCPY(destination,cmdBuffer.c_str(),cmdLen);
+      char *destination = (token == T_SKILL || token == T_TILT) ? newCmd : (char*)dataBuffer;
+      //      for (int i = 0; i < cmdLen; i++)
+      //        destination[i] = cmdBuffer[i];
+      arrayNCPY(destination, cmdBuffer.c_str(), cmdLen);
       destination[cmdLen] = '\0';
 
 #ifdef DEVELOPER
       PTF("Mem:"); PTL(freeMemory());
 #endif
     }
-//    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
+    //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
   }
 }
 
