@@ -41,14 +41,14 @@
 //#define AUTO_INIT //automatically select 'Y' for the prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-//#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+//#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
 //#define NyBoard_V1_0
-//#define NyBoard_V1_1
-#define NyBoard_V1_2
+#define NyBoard_V1_1
+//#define NyBoard_V1_2
 
 //you can also activate the following modes (they will diable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA

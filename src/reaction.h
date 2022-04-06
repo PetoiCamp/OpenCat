@@ -285,7 +285,7 @@ void reaction() {
         currentAdjust[i] = 0;
     }
     else {
-      strcpy(newCmd, "bal");
+      strcpy(newCmd, "balance");
     }
     if (strcmp(newCmd, ""))
       skill.loadFrame(newCmd);

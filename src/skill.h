@@ -18,14 +18,14 @@ class Skill {
     byte firstMotionJoint;
     int8_t* dutyAngles;         //the data array for skill angles and parameters
 
-    //    Skill() {
-    //      period = 0;
-    //      transformSpeed = 2;
-    //      expectedRollPitch[0] = yprTilt[2] = 0;
-    //      expectedRollPitch[1] = yprTilt[1] = 0;
-    //      dutyAngles = NULL;
-    //      jointIndex = 0;
-    //    }
+    Skill() {
+//      period = 0;
+//      transformSpeed = 2;
+//      expectedRollPitch[0] = yprTilt[2] = 0;
+//      expectedRollPitch[1] = yprTilt[1] = 0;
+//      dutyAngles = NULL;
+//      jointIndex = 0;
+    }
 
     void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t *dataBuffer) {
       period = dataBuffer[0];//automatically cast to char*
@@ -230,6 +230,7 @@ class Skill {
     }
 
     void formatSkill() {
+      transformSpeed = 2;
       for (int i = 0; i < 2; i++) {
         expectedRollPitch[i] = (int8_t)dataBuffer[1 + i];
         yprTilt[2 - i] = 0;
@@ -244,7 +245,6 @@ class Skill {
       postureOrWalkingFactor = (period == 1 ? 1 : POSTURE_WALKING_FACTOR);
 #endif
       firstMotionJoint = (period <= 1) ? 0 : DOF - WALKING_DOF;
-
       dutyAngles = dataBuffer + skillHeader;
 #ifdef DEVELOPER
       info();
@@ -265,7 +265,7 @@ class Skill {
       period = dataBuffer[0];
       dataLen(period);
       formatSkill();
-      int frame = 0;
+      frame = 0;
       transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
     }
     void loadFrame(const char* skillName) {//get lookup information from on-board EEPROM and read the data array from storage
@@ -288,7 +288,7 @@ class Skill {
       if (period > 1 && offsetLR < 0
           || period <= 1 && random(100) % 2 && token != T_CALIBRATE)
         mirror();
-      int frame = 0;
+      frame = 0;
       transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
       //      delay(10);
     }
@@ -362,7 +362,6 @@ class Skill {
         }
       }
       else {//postures and gaits
-
 #ifdef GYRO_PIN
         //                if (imuUpdated)
         if (!(frame % IMU_SKIP)) {
@@ -372,7 +371,7 @@ class Skill {
           }
         }
 #endif
-        if (jointIndex == DOF) {
+        if (jointIndex >= DOF) {
           jointIndex = 0;
           // timer = (timer + 1) % abs(skill.period);
           frame += tStep;

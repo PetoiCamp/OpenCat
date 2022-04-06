@@ -15,7 +15,7 @@ decode_results results;
 #define K02 "g"       //turn off gyro feedback to boost speed
 
 #define K10 "L"       //left
-#define K11 "bal" //neutral stand up posture
+#define K11 "balance" //neutral stand up posture
 #define K12 "R"       //right
 
 #define K20 "p"       //pause motion and shut off all servos
