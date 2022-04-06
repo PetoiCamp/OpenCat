@@ -1,5 +1,10 @@
 # Change Log
 
+## Apr 6, 2022
+* Add ui.py in pyUI to allow changing the robot's postures and body tilts with sliders. 
+* Improve the structure of ardSerial.py to allow continuous inputs when it's used as a commandline tool. 
+* Fix a bug when a static posture is called after a gait by resetting the frame to 0.
+
 ## Mar 29, 2022
 * Use dataBuffer to hold the incoming serial commands to allow a longer melody and other instructions. newCmd will only be used to hold skill names that are shorter. 
 * Save the serial skill data from the dataBuffer to I2C EEPROM so that it can be recalled. 
