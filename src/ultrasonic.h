@@ -46,8 +46,9 @@ void read_ultrasonic() {
       int allRand[] = {0, currentAng[0] + rand() % 20 - 10, 1, currentAng[1] + rand() % 20 - 10, 2, currentAng[2] + rand() % 80 - 40
                        };
       cmdLen = 6;
-      for (byte i = 0; i < cmdLen; i++)
-        dataBuffer[i] = (int8_t)allRand[i];
+//      for (byte i = 0; i < cmdLen; i++)
+//        dataBuffer[i] = (int8_t)allRand[i];
+      arrayNCPY(dataBuffer,allRand,cmdLen);
       dataBuffer[cmdLen] = '\0';
       newCmdIdx = 6;
     }

@@ -32,18 +32,6 @@ def encode(in_str, encoding='utf-8'):
     else:
         return in_str.encode(encoding)
 
-def wrapper(task):  # task Structure is [token, var=[], time]
-    logger.debug(f"{task}")
-    if len(task) == 2:
-        serialWriteByte([task[0]])
-    elif isinstance(task[1][0], int):
-        serialWriteNumToByte(task[0], task[1])
-    else:
-        serialWriteByte(task[1])
-    token = task[0][0]
-    printSerialMessage(token)
-    time.sleep(task[-1])
-
 
 def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b I K L o within Python
     # print("Num Token "); print(token);print(" var ");print(var);print("\n\n");
@@ -81,7 +69,7 @@ def serialWriteNumToByte(token, var=None):  # Only to be used for c m u b I K L 
             var = list(map(int, var))
             in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
             
-        elif token == 'c' or token == 'm' or token == 'i' or token == 'u' or token == 'b':
+        elif token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
             in_str = token + " "
             for element in var:
                 in_str = in_str + str(element) + " "
@@ -96,7 +84,7 @@ def serialWriteByte(var=None):
         var = []
     token = var[0][0]
     # print var
-    if (token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u') and len(var) >= 2:
+    if (token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't') and len(var) >= 2:
         in_str = ""
         for element in var:
             in_str = in_str + element + " "
@@ -113,12 +101,53 @@ def serialWriteByte(var=None):
     ser.Send_data(encode(in_str))
 
 def printSerialMessage(token):
+#    print("token")
+#    print(token)
     while True:
+        time.sleep(0.005)
         response = ser.main_engine.readline().decode('ISO-8859-1')
         if response != '':
             print(response)
         if response.lower() == token.lower() +'\r\n':
             break
+
+def wrapper(task):  # task Structure is [token, var=[], time]
+    logger.debug(f"{task}")
+#    print(task)
+    if len(task) == 2:
+#        print('a')
+        print(task[0])
+        serialWriteByte([task[0]])
+    elif isinstance(task[1][0], int):
+#        print('b')
+        serialWriteNumToByte(task[0], task[1])
+        
+    else:
+#        print('c') #which case
+        serialWriteByte(task[1])
+    token = task[0][0]
+    printSerialMessage(token)
+    time.sleep(task[-1])
+            
+def keepReadingSerial():
+    while True:
+        time.sleep(0.005)
+#        response = ser.main_engine.readline().decode('ISO-8859-1')
+#        if response != '':
+#            print(response)
+#        time.sleep(0.005)  #won't print until gets new input. why??
+        x = input()
+        if x != "":
+            if x == "q" or x == "quit":
+                break
+            else:
+                task = x.split() #white space
+                if len(task) == 1:
+                    wrapper([task[0], 1])
+                else:
+                    wrapper([task[0], list(map(int, task[1:])), 1])
+#            wrapper(['j', 1])
+
 
 def closeSerialBehavior():
     try:
@@ -303,23 +332,10 @@ if __name__ == '__main__':
             printSerialMessage(token)
 
         print("You can type 'quit' or 'q' to exit.")
-
-        while True:
-            time.sleep(0.001)
-            x = input()
-            if x != "":
-                # print(x)
-                if x == "q" or x == "quit":
-                    break
-                else:
-                    task = x.split()
-                    if len(task) == 1:
-                        wrapper([task, 1])
-                    else:
-                        wrapper([task[0], task[0:], 1])
-                    token = task[0][0]
-                    printSerialMessage(token)
-
+        
+        keepReadingSerial()
+        
+        
         closeSerialBehavior()
         logger.info("finish!")
 

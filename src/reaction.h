@@ -71,7 +71,7 @@ void reaction() {
 #endif
     switch (token) {
 #ifdef MAIN_SKETCH
-#ifdef GYRO:
+#ifdef GYRO
       case T_GYRO:
 //      case T_PRINT_GYRO:
 //      case T_VERBOSELY_PRINT_GYRO:
@@ -142,9 +142,10 @@ void reaction() {
       case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
         {
           int targetFrame[DOF];
-          for (int i = 0; i < DOF; i += 1) {
-            targetFrame[i] = currentAng[i];
-          }
+//          for (int i = 0; i < DOF; i += 1) {
+//            targetFrame[i] = currentAng[i];
+//          }
+          arrayNCPY(targetFrame,currentAng,DOF);
           char *pch;
           char *input = (token == T_TILT) ? newCmd : (char*)dataBuffer;
           pch = strtok ((char*)input, " ,");
@@ -205,9 +206,10 @@ void reaction() {
       case T_MOVE_BIN:
       case T_INDEXED_SIMULTANEOUS_BIN: {//indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
           int targetFrame[DOF];
-          for (int i = 0; i < DOF; i++) {
-            targetFrame[i] = currentAng[i];
-          }
+//          for (int i = 0; i < DOF; i++) {
+//            targetFrame[i] = currentAng[i];
+//          }
+          arrayNCPY(targetFrame,currentAng,DOF);
           for (int i = 0; i < cmdLen; i += 2) {
             targetFrame[dataBuffer[i]] = dataBuffer[i + 1];
             if (token == T_MOVE_BIN) {

@@ -200,7 +200,7 @@ class Skill {
       //      dataBuffer[0] = pgm_read_byte(pgmAddress++);
       int bufferLen = dataLen(period);
       for (int i = 0; i < bufferLen; i++)
-        dataBuffer[i] = pgm_read_byte(pgmAddress ++);
+        dataBuffer[i] = pgm_read_byte(pgmAddress++);
       //      dataBuffer[bufferLen] = '\0';
     }
 
