@@ -145,7 +145,12 @@ def keepReadingSerial():
                 if len(task) == 1:
                     wrapper([task[0], 1])
                 else:
-                    wrapper([task[0], list(map(int, task[1:])), 1])
+                    token = task[0][0]
+                    if len(task[0])>1:
+                        task[0]=task[0][1:]
+                        wrapper([token, list(map(int, task[:])), 1])
+                    else:
+                        wrapper([token, list(map(int, task[1:])), 1])
 #            wrapper(['j', 1])
 
 
@@ -319,7 +324,7 @@ else:
 
 if __name__ == '__main__':
     try:
-#        flushSeialOutput(500)
+#        flushSerialOutput(500)
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
                 cmd = sys.argv[1]

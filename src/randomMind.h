@@ -19,7 +19,7 @@ const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12,
                                        };
 
 long idleTimer;
-int randomInterval = 1000;;
+int randomInterval = 1000;
 void allRandom() {
 
   char tokenSet[] = {T_INDEXED_SIMULTANEOUS_BIN, T_MOVE_BIN};
