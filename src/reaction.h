@@ -73,8 +73,8 @@ void reaction() {
 #ifdef MAIN_SKETCH
 #ifdef GYRO
       case T_GYRO:
-//      case T_PRINT_GYRO:
-//      case T_VERBOSELY_PRINT_GYRO:
+        //      case T_PRINT_GYRO:
+        //      case T_VERBOSELY_PRINT_GYRO:
 #endif
       case T_RANDOM_MIND:
         //      case T_RAMP:
@@ -84,19 +84,20 @@ void reaction() {
             checkGyro = !checkGyro;
             token = checkGyro ? 'G' : 'g';  //G for activated gyro
           }
-//          else if (token == T_PRINT_GYRO) {
-//            print6Axis();
-//          }
-//          else if (token == T_VERBOSELY_PRINT_GYRO) {
-//            printGyro = !printGyro;
-//            token = printGyro ? 'V' : 'v';  //V for verbosely print gyro data
-//          }
+          //          else if (token == T_PRINT_GYRO) {
+          //            print6Axis();
+          //          }
+          //          else if (token == T_VERBOSELY_PRINT_GYRO) {
+          //            printGyro = !printGyro;
+          //            token = printGyro ? 'V' : 'v';  //V for verbosely print gyro data
+          //          }
+          else
 #endif
 #ifdef RANDOM_MIND
-          else if (token == T_RANDOM_MIND) {
-            autoSwitch = !autoSwitch;
-            token = autoSwitch ? 'Z' : 'z';  //Z for active random mind
-          }
+            if (token == T_RANDOM_MIND) {
+              autoSwitch = !autoSwitch;
+              token = autoSwitch ? 'Z' : 'z';  //Z for active random mind
+            }
 #endif
           //          else if (token == T_RAMP) {//reverse the adjustment direction
           //            ramp = -ramp;
@@ -142,10 +143,10 @@ void reaction() {
       case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
         {
           int targetFrame[DOF];
-//          for (int i = 0; i < DOF; i += 1) {
-//            targetFrame[i] = currentAng[i];
-//          }
-          arrayNCPY(targetFrame,currentAng,DOF);
+          //          for (int i = 0; i < DOF; i += 1) {
+          //            targetFrame[i] = currentAng[i];
+          //          }
+          arrayNCPY(targetFrame, currentAng, DOF);
           char *pch;
           char *input = (token == T_TILT) ? newCmd : (char*)dataBuffer;
           pch = strtok ((char*)input, " ,");
@@ -206,10 +207,10 @@ void reaction() {
       case T_MOVE_BIN:
       case T_INDEXED_SIMULTANEOUS_BIN: {//indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
           int targetFrame[DOF];
-//          for (int i = 0; i < DOF; i++) {
-//            targetFrame[i] = currentAng[i];
-//          }
-          arrayNCPY(targetFrame,currentAng,DOF);
+          //          for (int i = 0; i < DOF; i++) {
+          //            targetFrame[i] = currentAng[i];
+          //          }
+          arrayNCPY(targetFrame, currentAng, DOF);
           for (int i = 0; i < cmdLen; i += 2) {
             targetFrame[dataBuffer[i]] = dataBuffer[i + 1];
             if (token == T_MOVE_BIN) {

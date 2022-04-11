@@ -243,8 +243,7 @@ char *lastCmd = new char[2];
 byte newCmdIdx = 0;
 int cmdLen;
 int8_t *dataBuffer = new int8_t[450];
-
-
+int8_t yprTilt[3];
 
 bool checkGyro = true;
 bool printGyro = false;

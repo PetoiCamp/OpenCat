@@ -137,7 +137,6 @@ VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measure
 VectorFloat gravity;    // [x, y, z]            gravity vector
 float euler[3];         // [psi, theta, phi]    Euler angle container
 float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-int8_t yprTilt[3];
 
 #define IMU_SKIP 2
 int16_t imuOffset[9] = {0, 0, 0,
