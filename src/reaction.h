@@ -278,7 +278,9 @@ void reaction() {
 #ifdef MAIN_SKETCH
   if (token == T_SKILL) {
     skill.perform();
+#if defined NyBoard_V0_1 || defined NyBoard_V0_2
     delayMicroseconds(850); //Slow the robot down to smooth out motion; adjust delay PRN
+#endif
   }
   if (skill.period < 0 ) {
     if (exceptions && skill.lookupAddressByName(lastCmd) > 0) { //lastToken == T_SKILL && lastSkill->period > 0) {
