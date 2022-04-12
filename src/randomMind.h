@@ -1,4 +1,4 @@
-#define EVERY_X_SECONDS 1
+#define EVERY_X_SECONDS 2
 
 const char mind0[] PROGMEM = "iRand";
 const char mind1[] PROGMEM = "ksit";
