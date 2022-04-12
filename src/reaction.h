@@ -71,7 +71,7 @@ void reaction() {
 #endif
     switch (token) {
 #ifdef MAIN_SKETCH
-#ifdef GYRO
+#ifdef GYRO_PIN
       case T_GYRO:
         //      case T_PRINT_GYRO:
         //      case T_VERBOSELY_PRINT_GYRO:
@@ -93,12 +93,10 @@ void reaction() {
           //          }
           else
 #endif
-#ifdef RANDOM_MIND
             if (token == T_RANDOM_MIND) {
               autoSwitch = !autoSwitch;
               token = autoSwitch ? 'Z' : 'z';  //Z for active random mind
             }
-#endif
           //          else if (token == T_RAMP) {//reverse the adjustment direction
           //            ramp = -ramp;
           //            token = ramp > 0 ? 'R' : 'r';
