@@ -280,6 +280,7 @@ void reaction() {
 #ifdef MAIN_SKETCH
   if (token == T_SKILL) {
     skill.perform();
+    delayMicroseconds(850); //Slow the robot down to smooth out motion; adjust delay time PRN
   }
   if (skill.period < 0 ) {
     if (exceptions && skill.lookupAddressByName(lastCmd) > 0) { //lastToken == T_SKILL && lastSkill->period > 0) {
