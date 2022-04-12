@@ -103,13 +103,17 @@ def serialWriteByte(var=None):
 def printSerialMessage(token):
 #    print("token")
 #    print(token)
+    lastMessage = ''
     while True:
         time.sleep(0.005)
         response = ser.main_engine.readline().decode('ISO-8859-1')
         if response != '':
-            print(response)
-        if response.lower() == token.lower() +'\r\n':
-            break
+            if response.lower() == token.lower() +'\r\n':
+                return lastMessage
+            else:
+                print(response)
+                lastMessage = response
+#            break
 
 def wrapper(task):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
@@ -126,8 +130,9 @@ def wrapper(task):  # task Structure is [token, var=[], time]
 #        print('c') #which case
         serialWriteByte(task[1])
     token = task[0][0]
-    printSerialMessage(token)
+    lastMessage = printSerialMessage(token)
     time.sleep(task[-1])
+    return lastMessage
             
 def keepReadingSerial():
     while True:
@@ -141,16 +146,12 @@ def keepReadingSerial():
             if x == "q" or x == "quit":
                 break
             else:
-                task = x.split() #white space
-                if len(task) == 1:
-                    wrapper([task[0], 1])
+                token = x[0]
+                task = x[1:].split() #white space
+                if len(task) <= 1:
+                    wrapper([x, 1])
                 else:
-                    token = task[0][0]
-                    if len(task[0])>1:
-                        task[0]=task[0][1:]
-                        wrapper([token, list(map(int, task[:])), 1])
-                    else:
-                        wrapper([token, list(map(int, task[1:])), 1])
+                    wrapper([token, list(map(int, task)), 1])
 #            wrapper(['j', 1])
 
 
@@ -292,8 +293,9 @@ if len(port) > 1:
         serialPort = '/dev/ttyS0'  # needed when plug in RaspberryPi
         ser = Communication(serialPort, 115200, 0.5)
         logger.info(f"Connect to usb serial port: {serialPort}.")
-        serialWriteByte(["d"])
-        time.sleep(0.2)
+#        serialWriteByte(["d"])
+#        time.sleep(0.2)
+        wrapper(['d',0])
         response = ser.main_engine.read_all()
         logger.info(f"Response is: {response}")
         if response == b'':
@@ -334,7 +336,6 @@ if __name__ == '__main__':
             else:
                 token = sys.argv[1][0]
                 wrapper([sys.argv[1][0], sys.argv[1:], 1])
-            printSerialMessage(token)
 
         print("You can type 'quit' or 'q' to exit.")
         
