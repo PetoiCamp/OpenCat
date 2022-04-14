@@ -257,6 +257,8 @@ class app:
         self.frameList[currentRow][1].destroy()
         del self.frameList[currentRow]
         self.updateButtonRow(currentRow, -1)
+        if self.activeFrame >= currentRow:
+            self.activeFrame -= 1
 
     def updateButtonRow(self, currentRow, shift):
         for f in range(currentRow, len(self.frameList)):
@@ -269,6 +271,7 @@ class app:
             widgets[cAdd].configure(command=lambda idx=frame[0]: self.addFrame(idx + 1)) #add
             frame[1].grid(row=frame[0] + 3)
         self.totalFrame += shift
+
 
         #    def delFrame(self):
 #        if self.ready == 1:
