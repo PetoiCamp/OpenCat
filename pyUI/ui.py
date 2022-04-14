@@ -136,8 +136,7 @@ class app:
             sliderBar.set(0)
             label.grid(row=ROW + 1, column=COL, columnspan=cSPAN, pady=10)
             sliderBar.grid(row=ROW+2, column=COL, rowspan=rSPAN, columnspan=cSPAN, ipadx=2, ipady = 2, padx = 10, pady=(0, PAD))
-#            print(str(i)+':\t'+str(ROW)+' '+str(COL))
-#            sliderBar.pack()
+            
             self.sliders.append(sliderBar)
             self.values.append(value)
 
@@ -205,7 +204,7 @@ class app:
         rowLabel = Label(singleFrame, text = str(currentRow), width = 1)
         rowLabel.grid(row=0, column=cLabel)
         
-        setButton = Button(singleFrame, text='* edit',  fg="blue", width=3, command=lambda idx=currentRow: self.setFrame(idx))
+        setButton = Button(singleFrame, text='* Edit',  fg="blue", width=3, command=lambda idx=currentRow: self.setFrame(idx))
         vSpeed = StringVar()
         vSpeed.set("speed")
         Entry(singleFrame, width=4, textvariable=vSpeed, bd=1).grid(row=0, column=cSpeed)
@@ -266,7 +265,7 @@ class app:
             frame[0] += shift
             widgets = frame[1].winfo_children()
             widgets[cLabel].configure(text = str(frame[0])) #set
-            widgets[cSet].configure(text= '< set',command=lambda idx=frame[0]: self.setFrame(idx)) #set
+            widgets[cSet].configure(text= '< Set',command=lambda idx=frame[0]: self.setFrame(idx)) #set
             widgets[cDel].configure(command=lambda idx=frame[0]: self.delFrame(idx)) #delete
             widgets[cAdd].configure(command=lambda idx=frame[0]: self.addFrame(idx + 1)) #add
             frame[1].grid(row=frame[0] + 3)
@@ -283,9 +282,9 @@ class app:
             
     def changeButtonState(self, currentRow):
         if self.totalFrame > 1:
-            self.getWidget(currentRow, cSet).configure(text = '* edit')
+            self.getWidget(currentRow, cSet).configure(text = '* Edit')
             if currentRow !=self.activeFrame:
-                self.getWidget(self.activeFrame, cSet).configure(text = '< set')
+                self.getWidget(self.activeFrame, cSet).configure(text = '< Set')
                 self.activeFrame = currentRow
             
     def setFrame(self, currentRow):
