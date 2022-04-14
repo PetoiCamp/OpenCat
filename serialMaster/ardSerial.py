@@ -249,6 +249,10 @@ def schedulerToSkill(testSchedule):
             skillRow = copy.deepcopy(currentRow)
             compactSkillData.append(skillRow + [8, int(task[2]*1000/500), 0, 0])
             newSkill = newSkill + skillRow + [8, int(task[2]*1000/500), 0, 0]
+        elif token =='L':
+            skillRow = copy.deepcopy(task[1][:16])
+            compactSkillData.append(skillRow + [8, int(task[2]*1000/500), 0, 0])
+            newSkill = newSkill + skillRow + [8, int(task[2]*1000/500), 0, 0]
 
         elif token == 'm':
             currentRow = copy.deepcopy(skillRow)
