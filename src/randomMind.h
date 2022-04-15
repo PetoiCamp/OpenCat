@@ -11,6 +11,9 @@ const char mind8[] PROGMEM = "kvt";
 const char mind11[] PROGMEM = "o ";
 const char mind12[] PROGMEM = "u ";
 const char mind13[] PROGMEM = "kstr";
+const char mind14[] PROGMEM = "kwkF";
+const char mind15[] PROGMEM = "kwkL";
+const char mind16[] PROGMEM = "kwkR";
 
 const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12,
 #ifdef BITTLE

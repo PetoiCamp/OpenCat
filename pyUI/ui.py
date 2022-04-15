@@ -24,9 +24,9 @@ height = 8
 NaJoints = {'Nybble': [3, 4, 5, 6, 7],
             'Bittle': [1, 2, 3, 4, 5, 6, 7]}
 
-model = 'Nybble'
-#model = 'Bittle'
-
+#model = 'Nybble'
+model = 'Bittle'
+postureTable = postureDict[model]
 
 def rgbtohex(r, g, b):
     return f'#{r:02x}{g:02x}{b:02x}'
@@ -190,9 +190,8 @@ class app:
         buttonRedo = Button(self.frameScheduler, text='Redo', width=10, fg="blue", state=DISABLED, command=self.restartScheduler)
         buttonRedo.grid(row=2, column=1)
 
-        self.addFrame(0)
-
         self.ready = 1
+        self.restartScheduler()
         self.window.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.window.mainloop()
 
@@ -204,7 +203,7 @@ class app:
         rowLabel = Label(singleFrame, text = str(currentRow), width = 1)
         rowLabel.grid(row=0, column=cLabel)
         
-        setButton = Button(singleFrame, text='* Edit',  fg="blue", width=3, command=lambda idx=currentRow: self.setFrame(idx))
+        setButton = Button(singleFrame, text='* Save',  fg="blue", width=3, command=lambda idx=currentRow: self.setFrame(idx))
         vSpeed = StringVar()
         vSpeed.set("speed")
         Entry(singleFrame, width=4, textvariable=vSpeed, bd=1).grid(row=0, column=cSpeed)
@@ -212,6 +211,10 @@ class app:
         vDelay.set("delay")
         Entry(singleFrame, width=4, textvariable=vDelay, bd=1).grid(row=0, column=cDelay)
         vNote = StringVar()
+        
+#        letters = string.ascii_lowercase + string.ascii_uppercase + string.digits
+#        vNote.set('note: '+ ''.join(random.choice(letters) for i in range(5)) )
+        
         while True:
             note = random.choice(WORDS)
             if len(note) == 5:
@@ -229,25 +232,32 @@ class app:
         addButton.grid(row=0, column=cAdd)
 
         self.updateButtonRow(currentRow, 1)
+        
         if currentRow ==0:
-            self.frameList.insert(currentRow, [currentRow, singleFrame, self.frameData])
+            newFrameData = copy.deepcopy(self.frameData)
         else:
-            self.frameList.insert(currentRow, [currentRow, singleFrame, self.frameList[currentRow-1][2]])
+            newFrameData = copy.deepcopy(self.frameList[currentRow-1][2])
+        self.frameList.insert(currentRow, [currentRow, singleFrame, newFrameData])
+            
         singleFrame.grid(row=currentRow + 3, column=0, columnspan=4, ipadx=2, pady=2)
         
         self.changeButtonState(currentRow)
         
     def run(self):
         if self.activeFrame+1 == self.totalFrame:
+            self.getWidget(self.activeFrame, cSet).configure(text = '< Set')
+            self.window.update()
             self.activeFrame = 0;
         for f in range(self.activeFrame, self.totalFrame):
 #            if self.pause:
 #                self.pause = False
 #                break
             frame = self.frameList[f]
-            if(f>0):
-                self.changeButtonState(f)
-            wrapper(['L',frame[2][4:20],0.5])
+            self.frameData = copy.deepcopy(frame[2])
+            self.changeButtonState(f)
+            self.updateSliders(self.frameData)
+            self.window.update()
+            wrapper(['L',self.frameData[4:20],0.5])
             
     def pause(self):
         self.pause = true
@@ -282,22 +292,32 @@ class app:
             
     def changeButtonState(self, currentRow):
         if self.totalFrame > 1:
-            self.getWidget(currentRow, cSet).configure(text = '* Edit')
+            self.getWidget(currentRow, cSet).configure(text = '* Set')
             if currentRow !=self.activeFrame:
                 self.getWidget(self.activeFrame, cSet).configure(text = '< Set')
                 self.activeFrame = currentRow
             
     def setFrame(self, currentRow):
         #        wrapper['L',pose,0.5]
-        frame = self.frameList[currentRow]
+        currentFrame = self.frameList[currentRow]
         if currentRow != self.activeFrame:
-            self.frameData = copy.deepcopy(frame[2])
+            self.frameData = copy.deepcopy(currentFrame[2])
             self.changeButtonState(currentRow)
             wrapper(['L',self.frameData[4:20],0.5])
             self.updateSliders(self.frameData)
         else:
-            frame[2] = copy.deepcopy(self.frameData)
-            self.getWidget(self.activeFrame, cSet).configure(text = '* set')
+            for i in range(16):
+                if currentFrame[2][4+i] != self.frameData[4+i]: # the joint that's changed
+                    for f in range(currentRow+1, self.totalFrame):
+                        frame1 = self.frameList[f-1]
+                        frame2 = self.frameList[f]
+                        if frame1[2][4+i] == frame2[2][4+i]: # carry over to the next frame
+                           frame2[2][4+i] = self.frameData[4+i]
+                        else:
+                            break
+#                currentFrame[2][4+i] = self.frameData[4+i] #doesn't work? copied as reference?
+            currentFrame[2] = copy.deepcopy(self.frameData)
+            self.getWidget(currentRow, cSet).configure(text = '* Set')
 
 #        widgets = frame[1].winfo_children()
 #        print(frame[1].winfo_children())
@@ -308,7 +328,9 @@ class app:
         scheduler = []
         for f in range(self.activeFrame, self.totalFrame):
             frame = self.frameList[f]
-            scheduler.append(['L',frame[2][4:20],0.1])
+            self.frameData = copy.deepcopy(frame[2])
+            scheduler.append(['L',self.frameData[4:20],0.1])
+            self.updateSliders(self.frameData)
         print(scheduler)
         schedulerToSkill(scheduler)
         
@@ -317,13 +339,24 @@ class app:
         for f in self.frameList:
             f[1].destroy()
         self.frameList.clear()
+        self.frameData = [0,0,0,0,
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            0,0,0,0,]
         self.totalFrame = 0
         self.activeFrame = 0
-        self.addFrame(self.totalFrame)
+        self.addFrame(0)
+        self.setPose('calib')
 
     def setAngle(self, i, value):
         if self.ready == 1:
-            self.frameData[4 + i] = value
+            self.frameData[4 + i] = int(value)
+            frame = self.frameList[self.activeFrame]
+#            print(frame[2])
+#            print(self.frameData)
+            if frame[2] != self.frameData:
+                self.getWidget(self.activeFrame, cSet).configure(text = '* Save')
+            else:
+                self.getWidget(self.activeFrame, cSet).configure(text = '* Set')
             if test:
                 print(str(i)+', ' + str(value))
             else:
@@ -340,11 +373,20 @@ class app:
         if self.ready == 1:
             self.getWidget(self.activeFrame, cNote).delete(0, END)
             self.getWidget(self.activeFrame, cNote).insert(0, pose + str(self.activeFrame))
+            self.updateSliders(postureTable[pose])
+            frame = self.frameList[self.activeFrame]
+#            print(frame[2])
+#            print(self.frameData)
+            if frame[2] != self.frameData:
+                self.getWidget(self.activeFrame, cSet).configure(text = '* Save')
+            else:
+                self.getWidget(self.activeFrame, cSet).configure(text = '* Set')
+            self.window.update()
             if not test:
                 wrapper(['k'+pose, 0])
                 if pose == 'rest':
                     wrapper(['d', 0])
-            self.updateSliders(postureTable[pose])
+                
             
     def updateSliders(self, angles):
         for i in range(3):
