@@ -1,36 +1,3 @@
-//short tools
-template <typename T> int8_t sign(T val) {
-  return (T(0) < val) - (val < T(0));
-}
-
-
-void printRange(int r0 = 0, int r1 = 0) {
-  if (r1 == 0)
-    for (byte i = 0; i < r0; i++) {
-      PT(i);
-      PT('\t');
-    }
-  else
-    for (byte i = r0; i < r1; i++) {
-      PT(i);
-      PT('\t');
-    }
-  PTL();
-}
-template <typename T> void printList(T * arr, byte len = DOF) {
-  String temp = "";
-  for (byte i = 0; i < len; i++) {
-    temp += String(int(arr[i]));
-    temp += ",\t";
-    //PT((T)(arr[i]));
-    //PT('\t');
-  }
-  PTL(temp);
-}
-template <typename T> void printTable(T * list) {
-  printRange(0, DOF);
-  printList(list, DOF);
-}
 
 char getUserInputChar() {//take only the first character, allow "no line ending", "newline", "carriage return", and "both NL & CR"
   while (!Serial.available());
@@ -50,11 +17,6 @@ int readSerialUntil(char * destination, char terminator) {
   } while ((char)destination[c - 1] != terminator);
   destination[c - 1] = '\0';
   return c - 1;
-}
-
-template <typename T> void arrayNCPY(T * destination, const T * source, int len) { //deep copy regardless of '\0'
-  for (int i = 0; i < len; i++)
-    destination[i] = source[i];
 }
 
 void read_serial() {

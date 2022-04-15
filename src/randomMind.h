@@ -14,7 +14,7 @@ const char mind13[] PROGMEM = "kstr";
 
 const char* const mindList[] PROGMEM = {mind0, mind0, mind0, mind1, mind12,
 #ifdef BITTLE
-                                        mind6, //mind8, 
+                                        mind6, //mind8,
 #endif
                                        };
 
