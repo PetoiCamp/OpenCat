@@ -103,7 +103,7 @@ void setup() {
 #endif
 
   playMelody(MELODY_NORMAL);
-  delay(2000);//change the delay if the app doesn't recognize the Petoi device.
+  delay(1500);//change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN
   read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs

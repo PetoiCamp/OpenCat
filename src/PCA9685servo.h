@@ -91,7 +91,7 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
       k_angle2pulse = new float[numServo];
       //servo parameters
       ServoModel servoG41   (180,    SERVO_FREQ,      500,      2500);
-      ServoModel servoP1S   (290,    SERVO_FREQ,      500,      2500);//1s/4 = 250ms 250ms/2500us=100Hz
+      ServoModel servoP1S   (280,    SERVO_FREQ,      500,      2500);//1s/4 = 250ms 250ms/2500us=100Hz
       for (int s = 0; s < numServo; s++) {
         ServoModel *model;
         switch (servoModelList[s]) {
