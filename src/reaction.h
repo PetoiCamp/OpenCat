@@ -12,8 +12,8 @@ void dealWithExceptions() {
 
 #ifdef VOLTAGE_DETECTION_PIN
 bool lowBattery() {
-  float voltage = analogRead(VOLTAGE_DETECTION_PIN);
-  if (voltage < LOW_VOLTAGE && abs(voltage - lastVoltage) < 5) { //if battery voltage < threshold, it needs to be recharged
+  int voltage = analogRead(VOLTAGE_DETECTION_PIN);
+  if (voltage < LOW_VOLTAGE && voltage == lastVoltage ) { //if battery voltage < threshold, it needs to be recharged
     //give the robot a break when voltage drops after sprint
     //adjust the thresholds according to your batteries' voltage
     //if set too high, the robot will stop working when the battery still has power.
