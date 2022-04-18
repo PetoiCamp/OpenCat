@@ -1,5 +1,9 @@
 # Change Log
 
+## Apr 19, 2022
+* pyUI/ui.py: Support importing existing skill array and editing them frame by frame. Speed and delay are included. The trigger axis of behaviors has not been implemented.
+* pyUI/ui.py: Export the skill to the robot and print the skill data array in the terminal. 
+
 ## Apr 6, 2022
 * Add ui.py in pyUI to allow changing the robot's postures and body tilts with sliders. 
 * Improve the structure of ardSerial.py to allow continuous inputs when it's used as a commandline tool. 
