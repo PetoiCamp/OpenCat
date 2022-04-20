@@ -1,5 +1,11 @@
 # Change Log
 
+## Apr 20, 2022
+* pyUI/ui.py: Support trigger axis and angles for behaviors
+* pyUI/ui.py: Allow stop when playing frames
+* Add a button to connect and disconnect the robot in the "State Dials" block
+* Change the texts of the state dials to indicate their states
+
 ## Apr 19, 2022
 * pyUI/ui.py: Support importing existing skill array and editing them frame by frame. Speed and delay are included. The trigger axis of behaviors has not been implemented.
 * pyUI/ui.py: Export the skill to the robot and print the skill data array in the terminal. 

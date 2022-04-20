@@ -101,19 +101,24 @@ def serialWriteByte(var=None):
     ser.Send_data(encode(in_str))
 
 def printSerialMessage(token):
-#    print("token")
-#    print(token)
-    lastMessage = ''
+    if token == 'k':
+        threshold = 5
+    else:
+        threshold = 2
+    startTime = time.time()
     while True:
+        if time.time()-startTime > threshold:
+            print('Connection might be lost!')
+            return 'err'
         time.sleep(0.005)
         response = ser.main_engine.readline().decode('ISO-8859-1')
         if response != '':
+            startTime = time.time()
             if response.lower() == token.lower() +'\r\n':
-                return lastMessage
+                return response[:-2]
             else:
                 print(response)
-                lastMessage = response
-#            break
+
 
 def wrapper(task):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
