@@ -266,7 +266,7 @@ void reaction() {
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
-      if ((lowerToken == T_GYRO || lowerToken == T_PRINT_GYRO || token == T_JOINTS || token == T_BEEP) && lastToken == T_SKILL || token == T_PAUSE || token == T_TILT)
+      if ((lowerToken == T_GYRO || lowerToken == T_PRINT_GYRO || lowerToken == T_BEEP || token == T_JOINTS ) && lastToken == T_SKILL || token == T_PAUSE || token == T_TILT)
         token = T_SKILL;
     }
 
