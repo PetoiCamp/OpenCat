@@ -14,19 +14,6 @@ import copy
 import threading
 
 
-class GetWidgetAttributes:
-    @staticmethod
-    def get_attributes(widget):
-        widg = widget
-        keys = widg.keys()
-        for key in keys:
-            print("Attribute: {:<20}".format(key), end=' ')
-            value = widg[key]
-            vtype = type(value)
-            print('Type: {:<30} Value: {}'.format(str(vtype), value))
- 
-
-
 headSliderGap = 0
 width = 8
 centerWidth = 2
@@ -165,7 +152,7 @@ class app:
             self.sliders.append(sliderBar)
             self.values.append(value)
 
-        image = Image.open("./jointIndex.jpg").resize((300, 300))
+        image = Image.open("./jointIndex.jpg").resize((300, 200))
         img = ImageTk.PhotoImage(image)
         panel = Label(self.frameController, image=img)
         panel.image = img
@@ -245,7 +232,7 @@ class app:
         
         
         canvas.grid(row = 1, column = 0, rowspan = 20,columnspan = len(labelSchedulerHeader))
-        scrollbar.grid(row = 1, column =len(labelSchedulerHeader)+1,rowspan = 20,sticky = "ns")
+        scrollbar.grid(row = 1, column =len(labelSchedulerHeader),rowspan = 20,sticky = "ns")
         
         if self.online == True:
             flushSerialOutput(300)
@@ -447,7 +434,7 @@ class app:
         entryFrame.grid(row = 1, column = 0, columnspan = 4,padx = 10,pady = 10)
                 
         self.skillText= Text(entryFrame, width= 120, spacing1= 2)
-        self.skillText.insert('1.0',"Enter the skill data in the following format:\n\n\
+        self.skillText.insert('1.0',"Import the skill data from instinct.h in the following format:\n\n\
 const int8_t hi[] PROGMEM ={\n\
     -3,  0, -30, 1,\n\
      1,  2,   3,\n\
@@ -566,7 +553,6 @@ const int8_t hi[] PROGMEM ={\n\
             frame[2][4] = 1
         else:
             frame[2][4] = 0
-        print(frame[2])
         
     def setAngle(self, i, value):
         if self.ready == 1:
@@ -592,7 +578,6 @@ const int8_t hi[] PROGMEM ={\n\
             self.getWidget(self.activeFrame, cNote).insert(0, pose + str(self.activeFrame))
             self.updateSliders(postureTable[pose])
             self.indicateEdit()
-            print('k'+pose)
             if self.online:
                 wrapper(['k'+pose, 0])
                 if pose == 'rest':
@@ -601,12 +586,12 @@ const int8_t hi[] PROGMEM ={\n\
     def setSpeed(self):
         self.frameData[20] = self.getWidget(self.activeFrame, cSpeed).get()
 #        print(self.frameData)
-        self.indicateEdit()
+#        self.indicateEdit()
         
     def setDelay(self):
         self.frameData[21] = int(self.getWidget(self.activeFrame, cDelay).get())
 #        print(self.frameData)
-        self.indicateEdit()
+#        self.indicateEdit()
                 
             
     def updateSliders(self, angles):
