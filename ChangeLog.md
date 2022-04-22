@@ -1,8 +1,11 @@
 # Change Log
 
 ## Apr 22, 2022
-* pyUI/ui.py: Support selecting different robot models
-* pyUI/ui.py: Support different lanuguages. However the 'play' and 'export' buttons will fail after window.destroy() and window.update(). 
+* pyUI/ui.py: Support selecting different robot models. Update the center image for the model. 
+* pyUI/ui.py: Support different lanuguages.
+* pyUI/ui.py: Support importing and exporting a multi-frame skill as a behavior or gait. A single frame will always be exported as a posture.
+* pyUI/ui.py: Update the skill frame's state for delete operations.
+* pyUI/ui.py: Check the format of skill data that's manually entered. Pop up a warning window.  
 
 ## Apr 20, 2022
 * pyUI/ui.py: Support trigger axis and angles for behaviors

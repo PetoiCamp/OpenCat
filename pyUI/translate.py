@@ -66,14 +66,18 @@ textEN = {
     'Random:OFF':'Random:OFF',
     'Random: ON':'Random: ON',
     'Quit':'Quit',
-    'Do you want to quit?':'Do you want to quit?'
+    'Do you want to quit?':'Do you want to quit?',
+    'Mirror':'Mirror',
+    'Gait':'Gait',
+    'Behavior':'Behavior',
+    'Clear':'Clear',
 }
 textCN = {
     'lan':'Chinese',
     'lanOption':'中文',
     'lanMenu':'语言',
     'title':'派拓艺 OpenCat 上位机',
-    'Model':'型号',
+    'Model':'产品',
     'Exit':'退出',
     'Help':'帮助',
     'About':'关于',
@@ -97,7 +101,7 @@ textCN = {
     'Head Pan':'头部平转',
     'Head Tilt':'头部俯仰',
     'Tail Pan':'尾巴平转',
-#    'N/A':'N/A',
+    'N/A':'未启用',
     'Shoulder Left Front':'肩\n左前',
     'Shoulder Right Front':'肩\n右前',
     'Shoulder Right Back':'肩\n右后',
@@ -136,7 +140,11 @@ textCN = {
     'Random:OFF':'随机行为:关',
     'Random: ON':'随机行为:开',
     'Quit':'退出',
-    'Do you want to quit?':'要退出吗?'
+    'Do you want to quit?':'要退出吗?',
+    'Mirror':'镜像',
+    'Gait':'步态',
+    'Behavior':'行为',
+    'Clear':'清空',
 }
 
 textFR={

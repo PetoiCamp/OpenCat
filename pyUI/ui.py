@@ -55,7 +55,6 @@ class app:
             family='Times New Roman', size=20, weight='bold')
         self.window.title(txt('title'))
         self.window.geometry('+100+10')
-        self.frameSize = 16
         self.totalFrame = 0
         self.activeFrame = 0
         self.frameList = list()
@@ -65,7 +64,8 @@ class app:
         self.pause = False
         self.online = True
         self.playStop = False
-        self.skill = 'Behavior'
+        self.mirror = False
+        self.gaitOrBehavior = StringVar()
         
         self.createMenu()
         self.createController()
@@ -238,6 +238,19 @@ class app:
         buttonRedo = Button(self.frameScheduler, text=txt('Redo'), width=10, fg='blue', state=DISABLED, command=self.restartScheduler)
         buttonRedo.grid(row=2, column=1)
         
+        self.MirrorBox = Checkbutton(self.frameScheduler, text = txt('Mirror'), width=10,fg='blue',variable = self.mirror, onvalue=True, offvalue=False,
+            command = self.setMirror).grid(row=2, column=2)
+        
+#        Spinbox(self.frameScheduler, values=[txt('Gait'),txt('Behavior')], width=10,fg='blue',textvariable =  self.gaitOrBehavior, wrap=True).grid(row=2, column=3)
+        self.GorB = OptionMenu(self.frameScheduler, self.gaitOrBehavior, txt('Gait'), txt('Behavior'))
+        self.GorB.config(width=9, fg = 'blue')
+        self.gaitOrBehavior.set(txt('Behavior'))
+        self.GorB.grid(row=2, column=3)
+        
+    def setMirror(self):
+        self.mirror = not self.mirror
+    
+        
     def createSkillSchedule(self):
         self.frameSkillSchedule = Frame(self.frameScheduler) #https://blog.teclado.com/tkinter-scrollable-frames/
         self.frameSkillSchedule.grid(row = 3, column = 0, rowspan = 20, columnspan = 8,ipadx=2, pady=2)
@@ -333,7 +346,7 @@ class app:
         rowLabel = Label(singleFrame, text = str(currentRow), width = frameItemWidth[cLabel])
         rowLabel.grid(row=0, column=cLabel)
         
-        setButton = Button(singleFrame, text = '* '+txt('Set'), font='sans 14 bold', fg='blue', width=frameItemWidth[cSet], command=lambda idx=currentRow: self.setFrame(idx))
+        setButton = Button(singleFrame, text = '< '+txt('Set'), font='sans 14 bold', fg='blue', width=frameItemWidth[cSet], command=lambda idx=currentRow: self.setFrame(idx))
         
         vSpeed = StringVar()
         Spinbox(singleFrame, width=frameItemWidth[cSpeed], values = ('1','2','4','8','12','16','32','max'), textvariable = vSpeed, wrap=True).grid(row=0, column=cSpeed)
@@ -392,8 +405,16 @@ class app:
         self.frameList[currentRow][1].destroy()
         del self.frameList[currentRow]
         self.updateButtonCommand(currentRow, -1)
-        if self.activeFrame >= currentRow:
+        if self.activeFrame == currentRow:
+            if currentRow > 0:
+                self.setFrame(self.activeFrame-1)
+            elif self.totalFrame>self.activeFrame:
+                self.activeFrame+=1
+                self.setFrame(self.activeFrame-1)
+        elif self.activeFrame > currentRow:
+#        if self.activeFrame >= currentRow:
             self.activeFrame -= 1
+
 
     def getWidget(self, row, idx):
         frame = self.frameList[row]
@@ -414,10 +435,11 @@ class app:
         self.totalFrame += shift
 
     def changeButtonState(self, currentRow):
-        if self.totalFrame > 1:
-            self.getWidget(currentRow, cSet).configure(text = '* '+txt('Set'), font='sans 14 bold')
+        if self.totalFrame > 0:
+            self.getWidget(currentRow, cSet).configure(text = '< '+txt('Set'), font='sans 14 bold')
             if currentRow !=self.activeFrame:
-                self.getWidget(self.activeFrame, cSet).configure(text = '< '+txt('Set'), font='sans 12')
+                if self.activeFrame>=0 and self.activeFrame<self.totalFrame:
+                    self.getWidget(self.activeFrame, cSet).configure(text = '< '+txt('Set'), font='sans 12')
                 self.activeFrame = currentRow
             
     def setFrame(self, currentRow):
@@ -440,36 +462,59 @@ class app:
                             break
 #                currentFrame[2][4+i] = self.frameData[4+i] #doesn't work? copied as reference?
             currentFrame[2] = copy.deepcopy(self.frameData)
-            self.getWidget(currentRow, cSet).configure(text = '* '+txt('Set'), font='sans 14 bold')
+            self.getWidget(currentRow, cSet).configure(text = '< '+txt('Set'), font='sans 14 bold')
+        if self.totalFrame ==1:
+            self.activeFrame=0
         
-    def close_pop(self,top):
+    def closePop(self,top):
         top.destroy()
         
     def insert_val(self,e):
         e.insert(0, 'Hello World!')
         
+    def clearSkillText(self):
+        self.skillText.delete("1.0","end")
+        
     def loadSkillDataText(self, top):
         skillDataString = self.skillText.get('1.0','end')
-        top.destroy()
+        if len(skillDataString) == 1:
+            messagebox.showwarning(title=Warning, message='Empty input!')
+            print('Empty input!')
+            return
         self.restartScheduler()
         skillData = list(map(int,''.join(skillDataString.split()).split('{')[1].split('}')[0].split(',')[:-1]))
+            
         if skillData[0] < 0:
             header = 7
+            frameSize = 20
             loopFrom, loopTo, repeat = skillData[4:7]
             self.vLoop.set(repeat)
             copyFrom = 4
+            self.gaitOrBehavior.set(txt('Behavior'))
         else:
             header = 4
-            if skillData[0] == 1:
+            if skillData[0] == 1: #posture
+                frameSize = 16
                 copyFrom = 4
-            else:
-                copyFrom = 12
-        self.frameSize = (len(skillData)-header)//abs(skillData[0])
+            else: #gait
+                if model == 'Nybble' or 'Bittle':
+                    frameSize = 8
+                    copyFrom = 12
+                else:
+                    frameSize = 12
+                    copyFrom = 8
+            self.gaitOrBehavior.set(txt('Gait'))
+        if (len(skillData)-header)% abs(skillData[0])!=0 or frameSize != (len(skillData)-header)//abs(skillData[0]):
+            messagebox.showwarning(title=Warning, message='Wrong format!')
+            print('Wrong format!')
+            return
+        top.destroy()
+        
         for f in range(abs(skillData[0])):
             if f != 0:
                 self.addFrame(f)
             frame = self.frameList[f]
-            frame[2][copyFrom:copyFrom+self.frameSize] = copy.deepcopy(skillData[header + self.frameSize*f:header+self.frameSize*(f+1)])
+            frame[2][copyFrom:copyFrom+frameSize] = copy.deepcopy(skillData[header + frameSize*f:header+frameSize*(f+1)])
             if skillData[0]< 0:
                 if f == loopFrom or f == loopTo:
                     self.getWidget(f, cLoop).select()
@@ -493,7 +538,11 @@ class app:
             else:
                 self.getWidget(f, cSpeed).delete(0, END)
                 self.getWidget(f, cSpeed).insert(0,'max')
-            self.activeFrame = f
+        self.activeFrame = f
+        if self.totalFrame ==1:
+            self.activeFrame=-1
+        self.setFrame(0)
+
         
         
     def popImport(self):
@@ -503,9 +552,10 @@ class app:
 
        #Create an Entry Widget in the Toplevel window
         Button(top,text= txt('Open File'), width = 10, state = DISABLED, command= lambda:insert_val(entry)).grid(row = 0, column = 0)
+        Button(top,text= txt('Clear'), width = 10, command= self.clearSkillText).grid(row = 0, column = 1)
        #Create a Button Widget in the Toplevel Window
-        button= Button(top, text=txt('Cancel'), width = 10, command=lambda:self.close_pop(top)).grid(row =0, column = 1 )
-        button= Button(top, text=txt('Ok'), width = 10, command= lambda:self.loadSkillDataText(top)).grid(row =0, column = 2 )
+        Button(top, text=txt('Cancel'), width = 10, command=lambda:self.closePop(top)).grid(row =0, column = 2 )
+        Button(top, text=txt('Ok'), width = 10, command= lambda:self.loadSkillDataText(top)).grid(row =0, column = 3 )
        
         entryFrame = Frame(top)
         entryFrame.grid(row = 1, column = 0, columnspan = 4,padx = 10,pady = 10)
@@ -536,7 +586,7 @@ class app:
     def playThread(self):
         self.playStop = False
         self.buttonRun.configure(text = txt('Stop'), fg = 'red',command = self.stop)
-        self.window.update() #any update() after rebuilding the window will cause some problem in the button's function
+#        self.window.update() #any update() after rebuilding the window will cause some problem in the button's function
         t=threading.Thread(target=self.play)#doesn't work
         t.start()
         
@@ -554,7 +604,7 @@ class app:
             self.changeButtonState(f)
             self.window.update()
             if self.online:
-                wrapper(['L',self.frameData[4:20],0.01])
+                wrapper(['L',self.frameData[4:20],0])
         self.buttonRun.configure(text = txt('Play'), fg = 'green',command = self.playThread)
         self.playStop = False
         
@@ -570,6 +620,21 @@ class app:
             self.activeFrame = 0;
         skillData = list()
         loopStructure = list()
+        period = self.totalFrame
+        if model =='Nybble' or model == 'Bittle':
+            copyFrom = 12
+            frameSize = 8
+        else:
+            copyFrom = 8
+            frameSize = 12
+        if self.gaitOrBehavior.get() == txt('Behavior'):
+            period = -period
+            copyFrom = 4
+            frameSize = 20
+        if self.totalFrame == 1:
+            period = 1
+            copyFrom = 4
+            frameSize = 16
         for f in range(self.activeFrame, self.totalFrame):
             frame = self.frameList[f]
             self.frameData = copy.deepcopy(frame[2])
@@ -582,23 +647,39 @@ class app:
             self.frameData[21] = int(self.getWidget(f, cDelay).get())//50
             self.frameData[22] = int(self.getWidget(f, cTrig).get())
             self.frameData[23] = int(self.getWidget(f, cAngle).get())
-            skillData.append(self.frameData[4:])
+            if self.mirror:
+                self.frameData[4]=-self.frameData[4]
+                self.frameData[4+2]=-self.frameData[4+2]
+                for i in range(4,16,2):
+                    self.frameData[4+i],self.frameData[4+i+1] = self.frameData[4+i+1],self.frameData[4+i]
+                if abs(self.frameData[22]) == 2:
+                    self.frameData[22]=-self.frameData[22]
+                    self.frameData[23]=-self.frameData[23]
+            skillData.append(self.frameData[copyFrom: copyFrom + frameSize])
+            print(self.frameData[copyFrom: copyFrom + frameSize])
             self.updateSliders(self.frameData)
             self.changeButtonState(f)
             self.window.update()
         if len(loopStructure)==0:
             loopStructure = [0]
         print('{')
-        print('{:>4},{:>4},{:>4},{:>4},'.format(*[-len(skillData), 0, 0, 1]))
-        print('{:>4},{:>4},{:>4},'.format(*[ loopStructure[0], loopStructure[-1], self.loopRepeat.get()]))
+        print('{:>4},{:>4},{:>4},{:>4},'.format(*[period, 0, 0, 1]))
+        if period <0 and self.gaitOrBehavior.get() == txt('Behavior'):
+            print('{:>4},{:>4},{:>4},'.format(*[ loopStructure[0], loopStructure[-1], self.loopRepeat.get()]))
         for row in skillData:
-            print('{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4},{:>4}, {:>4},{:>4},{:>4},{:>4},'.format(*row))
+            print(('{:>4},'*frameSize).format(*row))
         print('};')
+        if period == 1:
+            wrapper(['L',self.frameData[copyFrom: copyFrom + frameSize],0])
+            return
         
-        skillData.insert(0,[-len(skillData), 0, 0, 1, loopStructure[0], loopStructure[-1], self.loopRepeat.get()])
+        if self.gaitOrBehavior.get() == txt('Behavior'):
+            skillData.insert(0,[loopStructure[0], loopStructure[-1], int(self.loopRepeat.get())])
+        skillData.insert(0,[period, 0, 0, 1])
         flat_list = [item for sublist in skillData for item in sublist]
+        print(flat_list)
         if self.online:
-            wrapper(['K',flat_list,1])
+            wrapper(['K',flat_list,0])
 
 
     def restartScheduler(self):
@@ -608,7 +689,6 @@ class app:
         self.frameData = [0,0,0,0,
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                             8,0,0,0,]
-        self.frameSize = 16
         self.totalFrame = 0
         self.activeFrame = 0
         self.addFrame(0)
@@ -622,7 +702,7 @@ class app:
 #            print('frm',frame[2])
 #            print('dat',self.frameData)
         else:
-            self.getWidget(self.activeFrame, cSet).configure(text = '* '+txt('Set'), font='sans 12')
+            self.getWidget(self.activeFrame, cSet).configure(text = '< '+txt('Set'), font='sans 12')
             
     def setCheckBox(self,currentRow):
         frame = self.frameList[currentRow]
