@@ -59,11 +59,9 @@ class app:
         self.totalFrame = 0
         self.activeFrame = 0
         self.frameList = list()
-        self.reference = 0
         self.frameData = [0,0,0,0,
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                             8,0,0,0,]
-        self.loopFromTo = list()
         self.pause = False
         self.online = True
         self.playStop = False
@@ -71,9 +69,7 @@ class app:
         
         self.createMenu()
         self.createController()
-        
         self.createImage()
-
         self.createDial()
         self.createPosture()
         self.createScheduler()
@@ -83,7 +79,6 @@ class app:
         if self.online == True:
             flushSerialOutput(300)
         self.ready = 1
-        self.restartScheduler()
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
         self.window.mainloop()
@@ -205,7 +200,7 @@ class app:
                 dialState = NORMAL
             else:
                 dialState = DISABLED
-            button = Button(self.frameDial, text=txt(key), width=6, fg='blue', state = dialState, command=lambda k=key: self.dial(dialTable[k]))
+            button = Button(self.frameDial, text=txt(key), width=10, fg='blue', state = dialState, command=lambda k=key: self.dial(dialTable[k]))
             button.grid(row=i//4 + 1, column=i % 4)
             i += 1
     def createPosture(self):
@@ -244,18 +239,18 @@ class app:
         buttonRedo.grid(row=2, column=1)
         
     def createSkillSchedule(self):
-        self.container = Frame(self.frameScheduler) #https://blog.teclado.com/tkinter-scrollable-frames/
-        self.container.grid(row = 3, column = 0, rowspan = 20, columnspan = 8,ipadx=2, pady=2)
+        self.frameSkillSchedule = Frame(self.frameScheduler) #https://blog.teclado.com/tkinter-scrollable-frames/
+        self.frameSkillSchedule.grid(row = 3, column = 0, rowspan = 20, columnspan = 8,ipadx=2, pady=2)
         
         self.vLoop = IntVar()
-        self.loopRepeat = Entry(self.container, width=frameItemWidth[cLoop], textvariable=self.vLoop, bd=1)
+        self.loopRepeat = Entry(self.frameSkillSchedule, width=frameItemWidth[cLoop], textvariable=self.vLoop, bd=1)
         self.loopRepeat.grid(row=0, column=cLoop)
         
         for i in range(1, len(labelSchedulerHeader)):
-            Label(self.container,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+2, anchor='w').grid(row = 0, column = i)
+            Label(self.frameSkillSchedule,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+2, anchor='w').grid(row = 0, column = i)
         
-        canvas = Canvas(self.container, width = 515, height = 550)
-        scrollbar = Scrollbar(self.container, orient='vertical', command=canvas.yview)
+        canvas = Canvas(self.frameSkillSchedule, width = 515, height = 550)
+        scrollbar = Scrollbar(self.frameSkillSchedule, orient='vertical', command=canvas.yview)
         self.scrollable_frame = Frame(canvas)
         
         self.scrollable_frame.bind(
@@ -269,6 +264,7 @@ class app:
         
         canvas.grid(row = 1, column = 0, rowspan = 20,columnspan = len(labelSchedulerHeader))
         scrollbar.grid(row = 1, column =len(labelSchedulerHeader),rowspan = 20,sticky = 'ns')
+        self.restartScheduler()
 
     def createImage(self):
         image = Image.open(model+'.jpg')
@@ -290,10 +286,25 @@ class app:
         global language
         if self.ready and txt('lan') != l:
 #            self.window.destroy()
-            self.closeWindow()
+#            self.closeWindow()
             language = languageList[l]
-            app()
-            self.window.update()
+#            app()
+#            self.window.update()
+            self.window.title(txt('title'))
+            self.menubar.destroy()
+            self.frameController.destroy()
+            self.frameDial.destroy()
+            self.frameImage.destroy()
+            self.framePosture.destroy()
+            self.frameScheduler.destroy()
+            self.frameSkillSchedule.destroy()
+            self.createMenu()
+            self.createController()
+            self.createImage()
+            self.createDial()
+            self.createPosture()
+            self.createScheduler()
+            self.createSkillSchedule()
         
     def about(self):
         messagebox.showinfo('Petoi Controller UI', 'www.petoi.com')
@@ -410,7 +421,6 @@ class app:
                 self.activeFrame = currentRow
             
     def setFrame(self, currentRow):
-        #        wrapper['L',pose,0.5]
         currentFrame = self.frameList[currentRow]
         if currentRow != self.activeFrame:
             self.frameData = copy.deepcopy(currentFrame[2])
@@ -544,7 +554,7 @@ class app:
             self.changeButtonState(f)
             self.window.update()
             if self.online:
-                wrapper(['L',self.frameData[4:20],0.1])
+                wrapper(['L',self.frameData[4:20],0.01])
         self.buttonRun.configure(text = txt('Play'), fg = 'green',command = self.playThread)
         self.playStop = False
         

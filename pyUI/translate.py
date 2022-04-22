@@ -72,7 +72,7 @@ textCN = {
     'lan':'Chinese',
     'lanOption':'中文',
     'lanMenu':'语言',
-    'title':'Petoi OpenCat 上位机',
+    'title':'派拓艺 OpenCat 上位机',
     'Model':'型号',
     'Exit':'退出',
     'Help':'帮助',
