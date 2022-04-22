@@ -1,5 +1,9 @@
 # Change Log
 
+## Apr 22, 2022
+* pyUI/ui.py: Support selecting different robot models
+* pyUI/ui.py: Support different lanuguages. However the 'play' and 'export' buttons will fail after window.destroy() and window.update(). 
+
 ## Apr 20, 2022
 * pyUI/ui.py: Support trigger axis and angles for behaviors
 * pyUI/ui.py: Allow stop when playing frames

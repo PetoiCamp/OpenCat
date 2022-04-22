@@ -102,22 +102,26 @@ def serialWriteByte(var=None):
 
 def printSerialMessage(token):
     if token == 'k':
-        threshold = 5
+        threshold = 4
     else:
         threshold = 2
     startTime = time.time()
+    
     while True:
-        if time.time()-startTime > threshold:
-            print('Connection might be lost!')
-            return 'err'
         time.sleep(0.005)
+        now = time.time()
+        if (now - startTime) > threshold :
+            print('Elapsed time: ',end='')
+            print(threshold, end=' seconds\n', flush = True)
+            threshold += 2
+#            return 'err'
         response = ser.main_engine.readline().decode('ISO-8859-1')
         if response != '':
             startTime = time.time()
             if response.lower() == token.lower() +'\r\n':
                 return response[:-2]
             else:
-                print(response)
+                print(response, flush = True)
 
 
 def wrapper(task):  # task Structure is [token, var=[], time]
@@ -280,10 +284,22 @@ postureTableNybble = {
     "str":strNybble,
     "zero":zeroNybble
 }
+postureTableDoF16 = {
+    "balance": balance,
+    "buttUp": buttUp,
+    "calib": calib,
+    "dropped": dropped,
+    "lifted": lifted,
+    "rest": rest,
+    "sit": sit,
+    "str": stretch,
+    "zero": zero
+}
 
 postureDict = {
     'Nybble': postureTableNybble,
-    'Bittle': postureTableBittle
+    'Bittle': postureTableBittle,
+    'DoF16':postureTableDoF16
 }
 model = 'Bittle'
 postureTable = postureDict[model]
