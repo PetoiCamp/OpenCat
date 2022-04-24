@@ -344,7 +344,7 @@ def schedulerToSkill(testSchedule):
     print('{:>4},{:>4},{:>4},{:>4},'.format(*[-len(compactSkillData), 0, 0, 1]))
     print('{:>4},{:>4},{:>4},'.format(*[0, 0, 0]))
     for row in compactSkillData:
-        print(('{:>4},'*16).format(*row))
+        print(('{:>4},'*20).format(*row))
     print('};')
 
     newSkill = [-len(compactSkillData), 0, 0, 1, 0, 0, 0] + newSkill

@@ -17,9 +17,10 @@ const char voice10[] PROGMEM = "guan cha:kck";                //观察
 const char voice11[] PROGMEM = "he lou:khi";                  //hello
 const char voice12[] PROGMEM = "si dan de a pu:kbalance";      //stand up
 const char voice13[] PROGMEM = "yao tou:m0 -45 0 45 0 -45 0 45";      //stand up
+const char voice14[] PROGMEM = "chong fu:T ";
 const char* const voiceTable[] PROGMEM = {voice1, voice2, voice3, voice4,
                                           voice5, voice6, voice7, voice8,
-                                          voice9, voice10, voice11, voice12,voice13
+                                          voice9, voice10, voice11, voice12,voice13,voice14
                                          };
 
 void voiceSetup()
