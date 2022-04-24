@@ -1,5 +1,9 @@
 # Change Log
 
+## Apr 24, 2022
+* pyUI/ui.py: Support loading and sending large angles
+* Optimize panel sizes
+
 ## Apr 22, 2022
 * pyUI/ui.py: Support selecting different robot models. Update the center image for the model. 
 * pyUI/ui.py: Support different lanuguages.
