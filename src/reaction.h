@@ -27,7 +27,8 @@ bool lowBattery() {
 #ifdef NEOPIXEL_PIN
       pixel.setPixelColor(0, pixel.Color(brightness, 0, 0));
       pixel.show();
-#elif defined LED_PIN
+#endif
+#if defined LED_PIN
       analogWrite(LED_PIN, 255 - brightness);
 #endif
       if (brightness == 255)

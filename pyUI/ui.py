@@ -27,8 +27,18 @@ def rgbtohex(r, g, b):
 def printH(head, value):
     print(head,end = ' ')
     print(value)
-
+    
+yprNames = ['yaw', 'pitch', 'roll']
+scaleNames = [
+    'Head Pan', 'Head Tilt', 'Tail Pan', 'N/A',
+    'Shoulder Left Front', 'Shoulder Right Front', 'Shoulder Right Back', 'Shoulder Left Back',
+    'Arm Left Front', 'Arm Right Front', 'Arm Right Back', 'Arm Left Back',
+    'Knee Left Front', 'Knee Right Front', 'Knee Right Back', 'Knee Left Back']
 labelSchedulerHeader = ['Repeat','Loop','Frame', 'Speed', 'Delay/ms', 'Trig','Angle','Note', 'Del', 'Add']
+NaJoints = {'Nybble': [3, 4, 5, 6, 7],
+    'Bittle': [1, 2, 3, 4, 5, 6, 7],
+#    'DoF16' : []
+}
 cLoop,cLabel, cSet, cSpeed, cDelay,cTrig,cAngle, cNote, cDel, cAdd = range(len(labelSchedulerHeader))
 frameItemWidth =[2,1,3,3,5,2,3,5,1,1,]
 
@@ -49,6 +59,7 @@ class app:
         self.window = Tk()
         self.sliders = list()
         self.values = list()
+        self.controllerLabels = list()
         self.ready = 0
         # , slant='italic')
         self.myFont = tkFont.Font(
@@ -75,7 +86,6 @@ class app:
         self.createScheduler()
         self.createSkillSchedule()
         
-        
         if self.online == True:
             flushSerialOutput(300)
         self.ready = 1
@@ -86,9 +96,8 @@ class app:
     def createMenu(self):
         self.menubar = Menu(self.window, background='#ff8000', foreground='black', activebackground='white', activeforeground='black')
         file = Menu(self.menubar, tearoff=0, background='#ffcc99', foreground='black')
-        file.add_command(label='Nybble',command = lambda:self.changeModel('Nybble'))
-        file.add_command(label='Bittle',command = lambda:self.changeModel('Bittle'))
-        file.add_command(label='DoF16',command = lambda:self.changeModel('DoF16'))
+        for key in NaJoints:
+            file.add_command(label=key,command = lambda model = key: self.changeModel(model))
         file.add_separator()
         file.add_command(label=txt('Exit'), command=self.window.quit)
         self.menubar.add_cascade(label=txt('Model'), menu=file)
@@ -107,14 +116,15 @@ class app:
     def createController(self):
         self.frameController = Frame(self.window)
         self.frameController.grid(row=0, column=0, rowspan=9, ipadx=10)
-        labelController = Label(self.frameController,
+        label = Label(self.frameController,
                                 text=txt('Joint Controller'), font=self.myFont)
-        labelController.grid(row=0, column=0, columnspan=width)
+        label.grid(row=0, column=0, columnspan=width)
+        self.controllerLabels.append(label)
 
         self.frameImu = Frame(self.frameController)
         self.frameImu.grid(row=6, column=3, rowspan=1, columnspan=2, ipady=10)
 
-        yprNames = ['yaw', 'pitch', 'roll']
+        
         for i in range(3):
             label = Label(self.frameImu, text=txt(yprNames[i]), width = 4, bg='Light Blue1')
             value = DoubleVar()
@@ -124,16 +134,10 @@ class app:
             sliderBar.grid(row=0+i, column=4, columnspan=centerWidth)
             self.sliders.append(sliderBar)
             self.values.append(value)
+            self.controllerLabels.append(label)
 
-        scaleNames = [
-            'Head Pan', 'Head Tilt', 'Tail Pan', 'N/A',
-            'Shoulder Left Front', 'Shoulder Right Front', 'Shoulder Right Back', 'Shoulder Left Back',
-            'Arm Left Front', 'Arm Right Front', 'Arm Right Back', 'Arm Left Back',
-            'Knee Left Front', 'Knee Right Front', 'Knee Right Back', 'Knee Left Back']
-        NaJoints = {'Nybble': [3, 4, 5, 6, 7],
-            'Bittle': [1, 2, 3, 4, 5, 6, 7],
-            'DoF16' : []
-        }
+
+
         for i in range(16):
             PAD = 5
             cSPAN = 1
@@ -186,10 +190,11 @@ class app:
             
             self.sliders.append(sliderBar)
             self.values.append(value)
+            self.controllerLabels.append(label)
             
     def createDial(self):
         self.frameDial = Frame(self.window)
-        self.frameDial.grid(row=0, column=1, ipady=10)
+        self.frameDial.grid(row=0, column=1, ipady=5)
         labelDial = Label(self.frameDial, text=txt('State Dials'), font=self.myFont)
         labelDial.grid(row=0, column=0, columnspan=4)
         dialTable = {'Connect':'Connect', 'Pause': 'p', 'Gyro': 'g',  'Random': 'z'}
@@ -205,7 +210,7 @@ class app:
             i += 1
     def createPosture(self):
         self.framePosture = Frame(self.window)
-        self.framePosture.grid(row=1, column=1, ipady=10)
+        self.framePosture.grid(row=1, column=1, ipady=5)
         labelPosture = Label(self.framePosture, text=txt('Postures'), font=self.myFont)
         labelPosture.grid(row=0, column=0, columnspan=4)
         i = 0
@@ -216,7 +221,7 @@ class app:
             
     def createScheduler(self):
         self.frameScheduler = Frame(self.window)
-        self.frameScheduler.grid(row=2, column=1, ipady=10)
+        self.frameScheduler.grid(row=2, column=1, ipady=5)
         labelScheduler = Label(self.frameScheduler, text=txt('Scheduler'), font=self.myFont)
         labelScheduler.grid(row=0, column=0, columnspan=4)
         
@@ -252,8 +257,8 @@ class app:
     
         
     def createSkillSchedule(self):
-        self.frameSkillSchedule = Frame(self.frameScheduler) #https://blog.teclado.com/tkinter-scrollable-frames/
-        self.frameSkillSchedule.grid(row = 3, column = 0, columnspan = 8,ipadx=2, pady=2)
+        self.frameSkillSchedule = Frame(self.window) #https://blog.teclado.com/tkinter-scrollable-frames/
+        self.frameSkillSchedule.grid(row = 3, column = 1,ipadx=2, ipady=5)
         
         self.vLoop = IntVar()
         self.loopRepeat = Entry(self.frameSkillSchedule, width=frameItemWidth[cLoop], textvariable=self.vLoop, bd=1)
@@ -268,12 +273,12 @@ class app:
         
         self.scrollable_frame.bind(
             '<Configure>',
-            lambda e: canvas.configure(
+            lambda e: canvas.config(
                 scrollregion=canvas.bbox('all')
             )
         )
         canvas.create_window((0, 0), window=self.scrollable_frame, anchor='nw')
-        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.config(yscrollcommand=scrollbar.set)
         
         canvas.grid(row = 1, column = 0, rowspan = 20,columnspan = len(labelSchedulerHeader))
         scrollbar.grid(row = 1, column =len(labelSchedulerHeader),rowspan = 20,sticky = 'ns')
@@ -298,26 +303,33 @@ class app:
     def changLan(self,l):
         global language
         if self.ready and txt('lan') != l:
-#            self.window.destroy()
-#            self.closeWindow()
             language = languageList[l]
-#            app()
-#            self.window.update()
             self.window.title(txt('title'))
             self.menubar.destroy()
-            self.frameController.destroy()
+            self.controllerLabels[0].config(text = txt('Joint Controller'))
+            for i in range(3):
+                self.controllerLabels[1+i].config(text = txt(yprNames[i]))
+            for i in range(16):
+                self.controllerLabels[4+i].config(text='(' + str(i)+')\n'+txt(scaleNames[i]))
             self.frameDial.destroy()
             self.frameImage.destroy()
             self.framePosture.destroy()
             self.frameScheduler.destroy()
-            self.frameSkillSchedule.destroy()
             self.createMenu()
-            self.createController()
             self.createImage()
             self.createDial()
             self.createPosture()
             self.createScheduler()
-            self.createSkillSchedule()
+            for i in range(1,len(labelSchedulerHeader)):
+                self.frameSkillSchedule.winfo_children()[i].config(text = txt(labelSchedulerHeader[i]))
+            for r in range(len(self.frameList)):
+                tt = '< '+txt('Set')
+                ft = 'sans 12'
+                if self.activeFrame == r:
+                    ft = 'sans 14 bold'
+                    if self.frameList[r][2] != self.frameData:
+                        tt = '* '+ txt('Save')
+                self.getWidget(r,cSet).config(text = tt, font = ft)
         
     def about(self):
         messagebox.showinfo('Petoi Controller UI', 'www.petoi.com')
@@ -328,10 +340,17 @@ class app:
         if self.ready and modelName != model:
             model = modelName
             postureTable = postureDict[model]
-            self.frameController.destroy()
             self.framePosture.destroy()
             self.frameImage.destroy()
-            self.createController()
+
+            for i in range(16):
+                if i in NaJoints[model]:
+                    stt = DISABLED
+                    clr = 'gray'
+                else:
+                    stt = NORMAL
+                    clr = 'yellow'
+                self.sliders[3+i].config(state = stt, bg = clr)
             self.createPosture()
             self.createImage()
         
@@ -426,20 +445,20 @@ class app:
             frame = self.frameList[f]
             frame[0] += shift
             widgets = frame[1].winfo_children()
-            widgets[cLabel].configure(text = str(frame[0])) #set
-            widgets[cLoop].configure(command=lambda idx=frame[0]: self.setCheckBox(idx))
-            widgets[cSet].configure(command=lambda idx=frame[0]: self.setFrame(idx)) #set
-            widgets[cDel].configure(command=lambda idx=frame[0]: self.delFrame(idx)) #delete
-            widgets[cAdd].configure(command=lambda idx=frame[0]: self.addFrame(idx + 1)) #add
+            widgets[cLabel].config(text = str(frame[0])) #set
+            widgets[cLoop].config(command=lambda idx=frame[0]: self.setCheckBox(idx))
+            widgets[cSet].config(command=lambda idx=frame[0]: self.setFrame(idx)) #set
+            widgets[cDel].config(command=lambda idx=frame[0]: self.delFrame(idx)) #delete
+            widgets[cAdd].config(command=lambda idx=frame[0]: self.addFrame(idx + 1)) #add
             frame[1].grid(row=frame[0] + 1)
         self.totalFrame += shift
 
     def changeButtonState(self, currentRow):
         if self.totalFrame > 0:
-            self.getWidget(currentRow, cSet).configure(text = '< '+txt('Set'), font='sans 14 bold')
+            self.getWidget(currentRow, cSet).config(text = '< '+txt('Set'), font='sans 14 bold')
             if currentRow !=self.activeFrame:
                 if self.activeFrame>=0 and self.activeFrame<self.totalFrame:
-                    self.getWidget(self.activeFrame, cSet).configure(text = '< '+txt('Set'), font='sans 12')
+                    self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 12')
                 self.activeFrame = currentRow
             
     def setFrame(self, currentRow):
@@ -465,9 +484,10 @@ class app:
                            frame2[2][4+i] = self.frameData[4+i]
                         else:
                             break
-#                currentFrame[2][4+i] = self.frameData[4+i] #doesn't work? copied as reference?
-            currentFrame[2] = copy.deepcopy(self.frameData)
-            self.getWidget(currentRow, cSet).configure(text = '< '+txt('Set'), font='sans 14 bold')
+#                currentFrame[2][4+i] = self.frameData[4+i]
+            currentFrame[2][4:] = copy.deepcopy(self.frameData[4:])
+            
+            self.getWidget(currentRow, cSet).config(text = '< '+txt('Set'), font='sans 14 bold')
         if self.totalFrame ==1:
             self.activeFrame=0
         
@@ -593,14 +613,14 @@ class app:
         
     def playThread(self):
         self.playStop = False
-        self.buttonRun.configure(text = txt('Stop'), fg = 'red',command = self.stop)
+        self.buttonRun.config(text = txt('Stop'), fg = 'red',command = self.stop)
 #        self.window.update() #any update() after rebuilding the window will cause some problem in the button's function
         t=threading.Thread(target=self.play)#doesn't work
         t.start()
         
     def play(self):
         if self.activeFrame+1 == self.totalFrame:
-            self.getWidget(self.activeFrame, cSet).configure(text = '< '+txt('Set'), font='sans 12')
+            self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 12')
 #            self.window.update() #any update() after rebuilding the window will cause some problem in the button's function
             self.activeFrame = 0;
         for f in range(self.activeFrame, self.totalFrame):
@@ -618,17 +638,17 @@ class app:
                             wrapper(['m',[4*j+i,self.frameData[4+4*j+i]],0.01])
                 else:
                     wrapper(['L',self.frameData[4:20],0])
-        self.buttonRun.configure(text = txt('Play'), fg = 'green',command = self.playThread)
+        self.buttonRun.config(text = txt('Play'), fg = 'green',command = self.playThread)
         self.playStop = False
         
         
     def stop(self):
-        self.buttonRun.configure(text = txt('Play'), fg = 'green',command = self.playThread)
+        self.buttonRun.config(text = txt('Play'), fg = 'green',command = self.playThread)
         self.playStop = True
         
     def export(self):
         if self.activeFrame+1 == self.totalFrame:
-            self.getWidget(self.activeFrame, cSet).configure(text = '< '+txt('Set'), font='sans 12')
+            self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 12')
             self.window.update()
             self.activeFrame = 0;
         skillData = list()
@@ -721,17 +741,18 @@ class app:
         self.totalFrame = 0
         self.activeFrame = 0
         self.addFrame(0)
+        self.vLoop.set(0)
 #        self.window.update()
 #        self.setPose('calib')
         
     def indicateEdit(self):
         frame = self.frameList[self.activeFrame]
         if frame[2] != self.frameData:
-            self.getWidget(self.activeFrame, cSet).configure(text = '* '+ txt('Save'), font='sans 14 bold')
+            self.getWidget(self.activeFrame, cSet).config(text = '* '+ txt('Save'), font='sans 14 bold')
 #            print('frm',frame[2])
 #            print('dat',self.frameData)
         else:
-            self.getWidget(self.activeFrame, cSet).configure(text = '< '+txt('Set'), font='sans 14 bold')
+            self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 14 bold')
             
     def setCheckBox(self,currentRow):
         frame = self.frameList[currentRow]
@@ -800,27 +821,27 @@ class app:
                     self.online = False
                 buttons = self.frameDial.winfo_children()[2:]
                 if self.online:
-                    self.frameDial.winfo_children()[1].configure(text = txt('Disconnect'),fg='red')
+                    self.frameDial.winfo_children()[1].config(text = txt('Disconnect'),fg='red')
                     for b in buttons:
-                        b.configure(state = NORMAL)
+                        b.config(state = NORMAL)
                 else:
-                    self.frameDial.winfo_children()[1].configure(text = txt('Connect'),fg = 'blue')
+                    self.frameDial.winfo_children()[1].config(text = txt('Connect'),fg = 'blue')
                     for b in buttons:
-                        b.configure(state = DISABLED)
+                        b.config(state = DISABLED)
             elif self.online == True:
                 state = wrapper([value, 0])
                 if state == 'p':
-                    self.frameDial.winfo_children()[2].configure(text = txt('Pause'),fg = 'green')
+                    self.frameDial.winfo_children()[2].config(text = txt('Pause'),fg = 'green')
                 elif state == 'P':
-                    self.frameDial.winfo_children()[2].configure(text = txt('Paused'),fg = 'red')
+                    self.frameDial.winfo_children()[2].config(text = txt('Paused'),fg = 'red')
                 elif state == 'g':
-                    self.frameDial.winfo_children()[3].configure(text = txt('Gyro:OFF'),fg = 'red')
+                    self.frameDial.winfo_children()[3].config(text = txt('Gyro:OFF'),fg = 'red')
                 elif state == 'G':
-                    self.frameDial.winfo_children()[3].configure(text = txt('Gyro: ON'),fg = 'green')
+                    self.frameDial.winfo_children()[3].config(text = txt('Gyro: ON'),fg = 'green')
                 elif state == 'z':
-                    self.frameDial.winfo_children()[4].configure(text = txt('Random:OFF'),fg = 'green')
+                    self.frameDial.winfo_children()[4].config(text = txt('Random:OFF'),fg = 'green')
                 elif state == 'Z':
-                    self.frameDial.winfo_children()[4].configure(text = txt('Random: ON'),fg = 'orange')
+                    self.frameDial.winfo_children()[4].config(text = txt('Random: ON'),fg = 'orange')
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
