@@ -19,12 +19,12 @@ class Skill {
     int8_t* dutyAngles;         //the data array for skill angles and parameters
 
     Skill() {
-//      period = 0;
-//      transformSpeed = 2;
-//      expectedRollPitch[0] = yprTilt[2] = 0;
-//      expectedRollPitch[1] = yprTilt[1] = 0;
-//      dutyAngles = NULL;
-//      jointIndex = 0;
+      //      period = 0;
+      //      transformSpeed = 2;
+      //      expectedRollPitch[0] = yprTilt[2] = 0;
+      //      expectedRollPitch[1] = yprTilt[1] = 0;
+      //      dutyAngles = NULL;
+      //      jointIndex = 0;
     }
 
     void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t *dataBuffer) {
@@ -285,6 +285,10 @@ class Skill {
 #endif
         loadDataFromProgmem(dataArrayAddress);
       formatSkill();
+      if (strcmp(skillName, "calib") && period == 1)
+        protectiveShift = random() % 100 / 10.0 - 5;
+      else
+        protectiveShift = 0;
       if (period > 1 && offsetLR < 0
           || period <= 1 && random(100) % 2 && token != T_CALIBRATE)
         mirror();
@@ -400,7 +404,7 @@ class Skill {
           duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint];
 
         //          PT(duty); PT('\t');
-        calibratedPWM(jointIndex, duty
+        calibratedPWM(jointIndex, duty + protectiveShift
 #ifdef GYRO_PIN
                       + (checkGyro && !exceptions ?
                          (!(frame % IMU_SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)

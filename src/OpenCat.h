@@ -252,6 +252,7 @@ bool autoSwitch = false;
 bool walkingQ = false;
 byte exceptions = 0;
 byte transformSpeed = 2;
+float protectiveShift;//reduce the wearing of the potentiometer 
 
 #define PT(s) Serial.print(s)  //makes life easier
 #define PTL(s) Serial.println(s)
