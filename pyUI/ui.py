@@ -35,7 +35,8 @@ scaleNames = [
     'Arm Left Front', 'Arm Right Front', 'Arm Right Back', 'Arm Left Back',
     'Knee Left Front', 'Knee Right Front', 'Knee Right Back', 'Knee Left Back']
 labelSchedulerHeader = ['Repeat','Loop','Frame', 'Speed', 'Delay/ms', 'Trig','Angle','Note', 'Del', 'Add']
-NaJoints = {'Nybble': [3, 4, 5, 6, 7],
+NaJoints = {
+    'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
 #    'DoF16' : []
 }
@@ -44,8 +45,8 @@ frameItemWidth =[2,1,3,3,5,2,3,5,1,1,]
 
 #word_file = '/usr/share/dict/words'
 #WORDS = open(word_file).read().splitlines()
-animalNames=[
-'ant','bat','bear','bee','bird','buffalo','cat','chicken','cow','dog','dolphin','duck','elephant','fish','fox','frog','goose','goat','horse','kangaroo','lion','monkey','owl','ox','penguin','person','pig','rabbit','sheep','tiger','whale','wolf','zebra']
+animalNames=[# used for memorizing individual frames
+    'ant','bat','bear','bee','bird','buffalo','cat','chicken','cow','dog','dolphin','duck','elephant','fish','fox','frog','goose','goat','horse','kangaroo','lion','monkey','owl','ox','penguin','person','pig','rabbit','sheep','tiger','whale','wolf','zebra']
 WORDS = animalNames
 
 language = languageList['English']
@@ -86,8 +87,8 @@ class app:
         self.createScheduler()
         self.createSkillSchedule()
         
-        if self.online == True:
-            flushSerialOutput(300)
+#        if self.online == True:
+#            flushSerialOutput(300)
         self.ready = 1
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
@@ -312,11 +313,9 @@ class app:
             for i in range(16):
                 self.controllerLabels[4+i].config(text='(' + str(i)+')\n'+txt(scaleNames[i]))
             self.frameDial.destroy()
-            self.frameImage.destroy()
             self.framePosture.destroy()
             self.frameScheduler.destroy()
             self.createMenu()
-            self.createImage()
             self.createDial()
             self.createPosture()
             self.createScheduler()
@@ -471,9 +470,9 @@ class app:
                 if max(self.frameData[4:20]) > 125 or min(self.frameData[4:20]) < -125:
                     for i in range(4):
                         for j in range(4):
-                            wrapper(['m',[4*j+i,self.frameData[4+4*j+i]],0.01])
+                            sendTask(['m',[4*j+i,self.frameData[4+4*j+i]],0.01])
                 else:
-                    wrapper(['L',self.frameData[4:20],0])
+                    sendTask(['L',self.frameData[4:20],0])
         else:
             for i in range(20):
                 if currentFrame[2][4+i] != self.frameData[4+i]: # the joint that's changed
@@ -635,9 +634,9 @@ class app:
                 if max(self.frameData[4:20]) > 125 or min(self.frameData[4:20]) < -125:
                     for i in range(4):
                         for j in range(4):
-                            wrapper(['m',[4*j+i,self.frameData[4+4*j+i]],0.01])
+                            sendTask(['m',[4*j+i,self.frameData[4+4*j+i]],0.01])
                 else:
-                    wrapper(['L',self.frameData[4:20],0])
+                    sendTask(['L',self.frameData[4:20],0])
         self.buttonRun.config(text = txt('Play'), fg = 'green',command = self.playThread)
         self.playStop = False
         
@@ -696,13 +695,13 @@ class app:
             self.changeButtonState(f)
             self.window.update()
         if period == 1:
-#            wrapper(['L',self.frameData[copyFrom: copyFrom + frameSize],0])
+#            sendTask(['L',self.frameData[copyFrom: copyFrom + frameSize],0])
             if angleRatio ==2:
                 for i in range(4):
                     for j in range(4):
-                        wrapper(['m',[4*j+i,self.frameData[4+4*j+i]],0.01])
+                        sendTask(['m',[4*j+i,self.frameData[4+4*j+i]],0.01])
             else:
-                wrapper(['L',self.frameData[4:20],0])
+                sendTask(['L',self.frameData[4:20],0])
             return
             
         if angleRatio ==2:
@@ -728,7 +727,7 @@ class app:
         flat_list = [item for sublist in skillData for item in sublist]
         print(flat_list)
         if self.online:
-            wrapper(['K',flat_list,0])
+            sendTask(['K',flat_list,0])
 
 
     def restartScheduler(self):
@@ -768,14 +767,14 @@ class app:
 #            print(self.frameData)
             self.indicateEdit()
             if self.online:
-                wrapper(['m', [i, value], 0.0])
+                sendTask(['m', [i, value], 0.0])
             else:
                 print(str(i)+', ' + str(value))
 
     def setYPR(self, i, value):
         if self.ready == 1:
             if self.online:
-                wrapper(['t', [i, value], 0.0])
+                sendTask(['t', [i, value], 0.0])
             else:
                 print(str(i)+', ' + str(value))
 
@@ -786,9 +785,9 @@ class app:
             self.updateSliders(postureTable[pose])
             self.indicateEdit()
             if self.online:
-                wrapper(['k'+pose, 0])
+                sendTask(['k'+pose, 0])
                 if pose == 'rest':
-                    wrapper(['d', 0])
+                    sendTask(['d', 0])
     
     def setSpeed(self):
         self.frameData[20] = self.getWidget(self.activeFrame, cSpeed).get()
@@ -815,7 +814,7 @@ class app:
 #        global self.online
         if self.ready == 1:
             if value == 'Connect':
-                state = wrapper(['b', [10,90],0])
+                state = sendTask(['b', [10,90],0])
                 self.online = not self.online
                 if state == 'err':
                     self.online = False
@@ -829,7 +828,7 @@ class app:
                     for b in buttons:
                         b.config(state = DISABLED)
             elif self.online == True:
-                state = wrapper([value, 0])
+                state = sendTask([value, 0])
                 if state == 'p':
                     self.frameDial.winfo_children()[2].config(text = txt('Pause'),fg = 'green')
                 elif state == 'P':
@@ -851,7 +850,9 @@ class app:
 
 
 if __name__ == '__main__':
-    app()
+    serialObject = connectPort()
+    if serialObject != -1:
+        app()
 
 # unused text codes for references
 #        letters = WORDS#string.ascii_lowercase + string.ascii_uppercase + string.digits

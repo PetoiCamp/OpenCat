@@ -99,8 +99,9 @@ class Communication(object):
                 port_list_number.append(each_port[0])
                 port_list_name.append(each_port[1])
 
-        print(port_list_number)
-        print(port_list_name)
+#        print(port_list_number)
+#        print(port_list_name)
+        return port_list_number
 
     # Receive data of specified size
     # Read size bytes from the serial port.

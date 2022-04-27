@@ -10,7 +10,6 @@ from ardSerial import *
 
 if __name__ == '__main__':
     try:
-        flushSerialOutput(300)
         time.sleep(3)
 
         '''
@@ -39,14 +38,15 @@ if __name__ == '__main__':
             ['i', [0, -80, 1, 20], 2],
             ['d', 1],
         ]
+        serialObject = connectPort()
+        if serialObject!=-1:
+            for task in testSchedule:  # execute the tasks in the testSchedule
+                print(task)
+                sendTask(task)
 
-        for task in testSchedule:  # execute the tasks in the testSchedule
-            print(task)
-            wrapper(task)
-
-        schedulerToSkill(testSchedule)
-        closeSerialBehavior()
-        logger.info("finish!")
+            schedulerToSkill(testSchedule)
+            closeSerialBehavior()
+            logger.info("finish!")
 
     except Exception as e:
         logger.info("Exception")
