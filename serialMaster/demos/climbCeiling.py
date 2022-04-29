@@ -38,17 +38,17 @@ if __name__ == '__main__':
             ['i', [0, -80, 1, 20], 2],
             ['d', 1],
         ]
-        serialObject = connectPort()
-        if serialObject!=-1:
+        connectPort()
+        if len(goodPorts)>0:
             for task in testSchedule:  # execute the tasks in the testSchedule
                 print(task)
-                sendTask(task)
+                sendTaskParallel(task)
 
             schedulerToSkill(testSchedule)
-            closeSerialBehavior()
+            closeAllSerial()
             logger.info("finish!")
 
     except Exception as e:
         logger.info("Exception")
-        closeSerialBehavior()
+        closeAllSerial()
         raise e

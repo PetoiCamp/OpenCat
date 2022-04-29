@@ -1,8 +1,12 @@
 # Change Log
 
+## Apr 29, 2022
+* pyUI/ui.py: Add binders (both positive and negative) for joint sliders to control several joints together.
+* pyUI/ui.py: Can control multiple robots at once. 
+
 ## Apr 24, 2022
 * pyUI/ui.py: Support loading and sending large angles
-* Optimize panel sizes
+* pyUI/ui.py: Optimize panel sizes
 
 ## Apr 22, 2022
 * pyUI/ui.py: Support selecting different robot models. Update the center image for the model. 
