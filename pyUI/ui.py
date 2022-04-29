@@ -81,7 +81,7 @@ class app:
         self.controllerLabels = list()
         self.binderValue = list()
         self.binderButton = list()
-        self.previousBinderValue = [0,0,0,0, 0,0,0,0, 0,0,0,0,]
+        self.previousBinderValue = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,]
         self.ready = 0
         # , slant='italic')
         self.myFont = tkFont.Font(
@@ -180,7 +180,7 @@ class app:
 
             if i in NaJoints[model]:
                 stt = DISABLED
-                clr = 'gray'
+                clr = None
             else:
                 stt = NORMAL
                 clr = 'yellow'
@@ -191,26 +191,28 @@ class app:
             label = Label(self.frameController,
                           text=sideLabel+'(' + str(i)+')\n'+txt(scaleNames[i]))
  
-            
             value = DoubleVar()
             sliderBar = Scale(self.frameController, state=stt, bg=clr, variable=value, orient=ORI, borderwidth=2, from_=-180*tickDirection, to=180*tickDirection, length=LEN, tickinterval=60, resolution=1,
                               command=lambda value, idx=i:  self.setAngle(idx, value))
             sliderBar.set(0)
             label.grid(row=ROW+1, column=COL, columnspan=cSPAN, pady=2)
-            sliderBar.grid(row=ROW+2, column=COL, rowspan=rSPAN, columnspan=cSPAN, ipady = 2, padx = 2, pady=(0, PAD))
+            sliderBar.grid(row=ROW+2, column=COL, rowspan=rSPAN, columnspan=cSPAN, ipady = 2, padx = 2)
             
             self.sliders.append(sliderBar)
             self.values.append(value)
             self.controllerLabels.append(label)
             
-            if i in range(4,16):
+            if i in range(16):
                 binderValue = IntVar()
                 values = {"+" : 1,
 #                        "." : 0,
                         "-" : -1,}
                 for d in range(2):
                     button = Radiobutton(self.frameController, text = list(values)[d], variable = binderValue,value = list(values.values())[d], indicator = 0, state = stt, background = "light blue",width =1,command=lambda joint = i,idx = d :self.updateRadio(joint,idx))
-                    button.grid(row=ROW+2+d*(rSPAN-1), column=COL)
+                    if i<4:
+                        button.grid(row=ROW+1, column=COL+(1-d)*(cSPAN-1),sticky = 's')
+                    else:
+                        button.grid(row=ROW+2+d*(rSPAN-1), column=COL,sticky = 'ns'[d])
                     binderValue.set(0)
                     self.binderButton.append(button)
                 self.binderValue.append(binderValue)
@@ -223,7 +225,7 @@ class app:
             to2 = 60
             if i in axisDisable[model]:
                 stt = DISABLED
-                clr = 'gray'
+                clr = None
             else:
                 stt = NORMAL
                 clr = 'yellow'
@@ -405,11 +407,13 @@ class app:
             for i in range(16):
                 if i in NaJoints[model]:
                     stt = DISABLED
-                    clr = 'gray'
+                    clr = None
                 else:
                     stt = NORMAL
                     clr = 'yellow'
                 self.sliders[i].config(state = stt, bg = clr)
+                self.binderButton[i*2].config(state = stt)
+                self.binderButton[i*2+1].config(state = stt)
             self.createPosture()
             self.createImage()
         
@@ -852,7 +856,6 @@ class app:
         self.binderButton[joint*2+1].update()
     
     def updateRadio(self,joint,idx):
-        joint -= 4
         if(self.previousBinderValue[joint]==self.binderValue[joint].get()):
             self.binderValue[joint].set(0)
         self.changeRadioColor(joint,self.binderValue[joint].get())
@@ -861,19 +864,19 @@ class app:
     def setAngle(self, idx, value):
         if self.ready == 1:
             value = int(value)
-            diff = value - self.frameData[4 + idx]
-            if idx > 3:
-                directionFactor = 1
-                currentBindingState = self.binderValue[idx-4].get()
-                if currentBindingState ==0:
-                    self.binderValue[idx-4].set(1)
-                    self.changeRadioColor(idx-4,1)  # too fast to show the color change
-                elif currentBindingState == -1:
-                    directionFactor = -1
+            if self.binderValue[idx].get() ==0:
+                self.frameData[4 + idx] = value
+                if self.online:
+                    if value>-126 and value<126:
+                        send(['I', [idx, value], 0])
+                    else:
+                        send(['m', [idx, value], 0])
+            else:
+                diff = value - self.frameData[4 + idx]
                 indexedList = list()
-                for i in range(4,16):
-                    if self.binderValue[i-4].get():
-                        self.frameData[4+i] +=diff*self.binderValue[i-4].get()*directionFactor
+                for i in range(16):
+                    if self.binderValue[i].get():
+                        self.frameData[4+i] +=diff*self.binderValue[i].get()*self.binderValue[idx].get()
                         angle = self.frameData[4+i]
                         if angle>-126 and angle<126:
                             indexedList += [i,angle]
@@ -882,9 +885,6 @@ class app:
                                 send(['m', [i, angle], 0])
                 if self.online and len(indexedList):
                     send(['I',indexedList, 0])
-                if currentBindingState ==0:
-                    self.binderValue[idx-4].set(0)
-                    self.changeRadioColor(idx-4,0) # too fast to show the color change
                 
 #            print(frame[2])
 #            print(self.frameData)
