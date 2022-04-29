@@ -67,9 +67,9 @@ online = True
 
 def send(task):
     if parallel:
-        sendTaskParallel(task)
+        return sendTaskParallel(task)
     else:
-        sendTask(goodPorts[0],task)
+        return sendTask(goodPorts[0],task)
     
 
 class app:
@@ -326,7 +326,7 @@ class app:
         for i in range(1, len(labelSchedulerHeader)):
             Label(self.frameSkillSchedule,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+2, anchor='w').grid(row = 0, column = i)
         
-        canvas = Canvas(self.frameSkillSchedule, width = 480, height = 450)
+        canvas = Canvas(self.frameSkillSchedule, width = 480, height = 470)
         scrollbar = Scrollbar(self.frameSkillSchedule, orient='vertical', command=canvas.yview)
         self.scrollable_frame = Frame(canvas)
         
@@ -339,8 +339,8 @@ class app:
         canvas.create_window((0, 0), window=self.scrollable_frame, anchor='nw')
         canvas.config(yscrollcommand=scrollbar.set)
         
-        canvas.grid(row = 1, column = 0, rowspan = 20,columnspan = len(labelSchedulerHeader))
-        scrollbar.grid(row = 1, column =len(labelSchedulerHeader),rowspan = 20,sticky = 'ns')
+        canvas.grid(row = 1, column = 0, columnspan = len(labelSchedulerHeader))
+        scrollbar.grid(row = 1, column =len(labelSchedulerHeader),sticky = 'ns')
         self.restartScheduler()
 
     def createImage(self):

@@ -132,6 +132,7 @@ def printSerialMessage(port,token,timeout=0):
 
 def sendTask(port, task, timeout = 0):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
+    global returnValue
 #    global sync
 #    print(task)
     if len(task) == 2:
@@ -152,10 +153,12 @@ def sendTask(port, task, timeout = 0):  # task Structure is [token, var=[], time
 #        printH('sync',sync)
 #    if initialized:
 #        printH('thread',portDictionary[port])
+    returnValue = lastMessage
     return lastMessage
             
 def sendTaskParallel(task,timeout = 0):
     global goodPorts
+    global returnValue
 #    global sync
 #    sync = 0
     threads = list()
@@ -167,6 +170,7 @@ def sendTaskParallel(task,timeout = 0):
     for t in threads:
         if t.is_alive():
             t.join()
+    return returnValue
         
 def keepReadingSerial():
     while True:
@@ -410,6 +414,7 @@ initialized = False
 portCount = 0
 sync = 0
 lock = threading.Lock()
+returnValue = ''
 
 if __name__ == '__main__':
     try:
