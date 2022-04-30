@@ -304,6 +304,10 @@ class app:
         
         self.MirrorBox = Checkbutton(self.frameScheduler, text = txt('Mirror'), width=10,fg='blue',variable = self.mirror, onvalue=True, offvalue=False,
             command = self.setMirror).grid(row=2, column=2)
+            
+        buttonMirror = Button(self.frameScheduler, text = txt('Mirror'), width=6,fg='blue',
+            command = self.generateMirrorFrame)
+        buttonMirror.grid(row=2, column=2, sticky = 'e')
         
 #        Spinbox(self.frameScheduler, values=[txt('Gait'),txt('Behavior')], width=10,fg='blue',textvariable =  self.gaitOrBehavior, wrap=True).grid(row=2, column=3)
         self.GorB = OptionMenu(self.frameScheduler, self.gaitOrBehavior, txt('Gait'), txt('Behavior'))
@@ -724,6 +728,37 @@ class app:
         self.buttonRun.config(text = txt('Play'), fg = 'green',command = self.playThread)
         self.playStop = True
         
+    def mirrorAngles(self):
+        self.frameData[1]=-self.frameData[1]
+        self.frameData[4]=-self.frameData[4]
+        self.frameData[4+2]=-self.frameData[4+2]
+        for i in range(4,16,2):
+            self.frameData[4+i],self.frameData[4+i+1] = self.frameData[4+i+1],self.frameData[4+i]
+        if abs(self.frameData[22]) == 2:
+            self.frameData[22]=-self.frameData[22]
+            self.frameData[23]=-self.frameData[23]
+            
+    def generateMirrorFrame(self):
+#        self.sliderBar[2] = -self.sliderBar[2]
+#        self.sliderBar[5] = -self.sliderBar[5]
+        self.mirrorAngles()
+        self.updateSliders(self.frameData)
+        self.indicateEdit()
+        if self.online:
+            if max(self.frameData[4:20]) > 125 or min(self.frameData[4:20]) < -125:
+                indexedList = list()
+                for i in range(4):
+                    for j in range(4):
+                        angle = self.frameData[4+4*j+i]
+                        if angle>-126 and angle<126:
+                            indexedList += [4*j+i,angle]
+                        else:
+                            send(['m', [4*j+i, angle], 0])
+                if len(indexedList):
+                    send(['I',indexedList, 0])
+            else:
+                send(['L',self.frameData[4:20],0])
+                    
     def export(self):
         if self.activeFrame+1 == self.totalFrame:
             self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 12')
@@ -731,7 +766,7 @@ class app:
             self.activeFrame = 0;
         skillData = list()
         loopStructure = list()
-        period = self.totalFrame
+        period = self.totalFrame - self.activeFrame
         if model =='Nybble' or model == 'Bittle':
             copyFrom = 12
             frameSize = 8
@@ -747,13 +782,15 @@ class app:
             copyFrom = 4
             frameSize = 16
         angleRatio = 1
-        for f in range(self.activeFrame, self.totalFrame):
+        print('deb1')
+        startFrame = self.activeFrame
+        for f in range(startFrame, self.totalFrame):
             frame = self.frameList[f]
             self.frameData = copy.deepcopy(frame[2])
             if max(self.frameData[4:20]) > 125 or min(self.frameData[4:20]) < -125:
                 angleRatio = 2
             if(self.frameData[3]==1):
-                loopStructure.append(f)
+                loopStructure.append(f - startFrame)
             if self.getWidget(f, cSpeed).get() == 'max':
                 self.frameData[20] = 0
             else:
@@ -762,17 +799,12 @@ class app:
             self.frameData[22] = int(self.getWidget(f, cTrig).get())
             self.frameData[23] = int(self.getWidget(f, cAngle).get())
             if self.mirror:
-                self.frameData[4]=-self.frameData[4]
-                self.frameData[4+2]=-self.frameData[4+2]
-                for i in range(4,16,2):
-                    self.frameData[4+i],self.frameData[4+i+1] = self.frameData[4+i+1],self.frameData[4+i]
-                if abs(self.frameData[22]) == 2:
-                    self.frameData[22]=-self.frameData[22]
-                    self.frameData[23]=-self.frameData[23]
-            skillData.append(self.frameData[copyFrom: copyFrom + frameSize])
+                self.mirrorAngles()
             self.updateSliders(self.frameData)
             self.changeButtonState(f)
             self.window.update()
+            skillData.append(self.frameData[copyFrom: copyFrom + frameSize])
+        print('deb2')
         if period == 1:
             if angleRatio ==2:
                 for i in range(4):
@@ -811,6 +843,7 @@ class app:
         skillData.insert(0,[period, 0, 0, angleRatio])
         flat_list = [item for sublist in skillData for item in sublist]
         print(flat_list)
+        print('deb3')
         if self.online:
             send(['K',flat_list,0])
 
@@ -952,9 +985,11 @@ class app:
                             factor //= 4
                     if i == 2:
                         if upperQ:
-                            factor //=2
+                            factor //=3
+                        else:
+                            factor =3
                         if (value > 0 and not leftQ) or (value < 0 and leftQ):
-                            factor //=2
+                            factor //=1.5
 
                 if j in positiveGroup:
                     self.frameData[4+j] = self.originalAngle[4+j] + value*factor

@@ -1,5 +1,9 @@
 # Change Log
 
+## Apr 30, 2022
+* pyUI/ui.py: Mirror single frame during editing
+* pyUI/ui.py: Fix bug in the loop structure when exporting 
+
 ## Apr 29, 2022
 * pyUI/ui.py: Add binders (both positive and negative) for joint sliders to control several joints together.
 * pyUI/ui.py: Can control multiple robots at once. 
