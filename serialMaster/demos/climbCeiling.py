@@ -42,13 +42,13 @@ if __name__ == '__main__':
         if len(goodPorts)>0:
             for task in testSchedule:  # execute the tasks in the testSchedule
                 print(task)
-                sendTaskParallel(task)
+                send(goodPorts,task)
 
-            schedulerToSkill(testSchedule)
-            closeAllSerial()
+            schedulerToSkill(goodPorts,testSchedule)
+            closeAllSerial(goodPorts)
             logger.info("finish!")
 
     except Exception as e:
         logger.info("Exception")
-        closeAllSerial()
+        closeAllSerial(goodPorts)
         raise e

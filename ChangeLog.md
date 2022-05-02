@@ -1,5 +1,13 @@
 # Change Log
 
+## May 2, 2022
+* pyUI/ui.py: Improve performance with large angles
+* pyUI/ui.py: Show connected ports
+* pyUI/ui.py: Improve logic and workflow for connecting multiple robots
+* pyUI/ui.py: Support connect to one or all robots dynamically
+* pyUI/ui.py: Improve global orientation and translation sliders
+* pyUI/ui.py: Change dial buttons from regular buttons to press-down buttons
+
 ## Apr 30, 2022
 * pyUI/ui.py: Mirror single frame during editing
 * pyUI/ui.py: Fix bug in the loop structure when exporting 

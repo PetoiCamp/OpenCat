@@ -6,6 +6,8 @@ import random
 import sys
 sys.path.append('../serialMaster/')
 from ardSerial import *
+import ardSerial
+
 from tkinter import *
 from tkinter import messagebox
 import tkinter.font as tkFont
@@ -31,6 +33,7 @@ scaleNames = [
     'Arm', 'Arm', 'Arm', 'Arm',
     'Knee', 'Knee', 'Knee', 'Knee']
 sideNames = ['Left Front','Right Front', 'Right Back', 'Left Back']
+dialTable = {'Connect':'Connected', 'Servo': 'p', 'Gyro': 'g',  'Random': 'z'}
 labelSchedulerHeader = ['Repeat','Loop','Frame', 'Speed', 'Delay/ms', 'Trig','Angle','Note', 'Del', 'Add']
 axisDisable = {
     'Nybble': [0,5],
@@ -62,15 +65,6 @@ language = languageList['English']
 def txt(key):
     return language.get(key, textEN[key])
     
-parallel = True
-online = True
-
-def send(task):
-    if parallel:
-        return sendTaskParallel(task)
-    else:
-        return sendTask(goodPorts[0],task)
-    
 
 class app:
 
@@ -78,6 +72,7 @@ class app:
         self.window = Tk()
         self.sliders = list()
         self.values = list()
+        self.dialValue = list()
         self.controllerLabels = list()
         self.binderValue = list()
         self.binderButton = list()
@@ -95,12 +90,11 @@ class app:
                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                             8,0,0,0,]
         self.originalAngle = [0,0,0,0,
-                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                            8,0,0,0,]
         self.pause = False
         self.playStop = False
         self.mirror = False
-        self.gaitOrBehavior = StringVar()
-        self.online = online
         self.createMenu()
         self.createController()
         self.createImage()
@@ -109,8 +103,6 @@ class app:
         self.createScheduler()
         self.createSkillSchedule()
         
-#        if self.online == True:
-#            flushSerialOutput(300)
         self.ready = 1
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
@@ -142,7 +134,9 @@ class app:
         label = Label(self.frameController, text=txt('Joint Controller'), font=self.myFont)
         label.grid(row=0, column=0, columnspan=width)
         self.controllerLabels.append(label)
-
+        unbindButton = Button(self.frameController,text = txt('Unbind All'),fg = 'blue',command = self.unbindAll)
+        unbindButton.grid(row=5, column=3, columnspan=2)
+        self.controllerLabels.append(unbindButton)
         for i in range(16):
             PAD = 5
             cSPAN = 1
@@ -152,7 +146,7 @@ class app:
                 if i < 2:
                     ROW = 0
                 else:
-                    ROW = 10
+                    ROW = 11
                 if i > 0 and i < 3:
                     COL = 4
                 else:
@@ -168,7 +162,7 @@ class app:
                 upperQ = i / 4 < 3
 
                 rSPAN = 3
-                ROW = 2 + (1-frontQ) * (rSPAN+1)
+                ROW = 2 + (1-frontQ) * (rSPAN+2)
                 if leftQ:
                     COL = (1-leftQ) * (1+centerWidth) + 3 - i // 4
                 else:
@@ -180,7 +174,7 @@ class app:
 
             if i in NaJoints[model]:
                 stt = DISABLED
-                clr = None
+                clr = 'light yellow'
             else:
                 stt = NORMAL
                 clr = 'yellow'
@@ -219,19 +213,19 @@ class app:
                 
                 
         self.frameImu = Frame(self.frameController)
-        self.frameImu.grid(row=5, column=3, rowspan=6, columnspan=2, ipady=5)
+        self.frameImu.grid(row=6, column=3, rowspan=6, columnspan=2, ipady=5)
         for i in range(6):
             frm = -60
             to2 = 60
             if i in axisDisable[model]:
                 stt = DISABLED
-                clr = None
+                clr = 'light yellow'
             else:
                 stt = NORMAL
                 clr = 'yellow'
             if i == 2:
-                frm = -50
-                to2 = 50
+                frm = -35
+                to2 = 35
             elif i == 3:
                 frm = -16
                 to2 = 10
@@ -244,8 +238,8 @@ class app:
             value = DoubleVar()
             sliderBar = Scale(self.frameImu, state=stt, bg=clr, variable=value, orient=HORIZONTAL, borderwidth=2, from_=frm, to=to2, length=120, tickinterval=(to2-frm)//4, resolution=1, command=lambda value, idx=i: self.set6Axis(idx, value))
             sliderBar.set(0)
-            label.grid(row=0+i, column=3, columnspan=1)
-            sliderBar.grid(row=0+i, column=4, columnspan=centerWidth)
+            label.grid(row=1+i, column=3, columnspan=1)
+            sliderBar.grid(row=1+i, column=4, columnspan=centerWidth)
             self.sliders.append(sliderBar)
             self.values.append(value)
             self.controllerLabels.append(label)
@@ -256,17 +250,57 @@ class app:
         self.frameDial.grid(row=0, column=1, ipady=5)
         labelDial = Label(self.frameDial, text=txt('State Dials'), font=self.myFont)
         labelDial.grid(row=0, column=0, columnspan=4)
-        dialTable = {'Connect':'Connect', 'Pause': 'p', 'Gyro': 'g',  'Random': 'z'}
-        i = 0
-
-        for key in dialTable:
-            if self.online or key == 'Connect':
+        defaultValue = [1,1,1,0]
+        for i in range(len(dialTable)):
+            key = list(dialTable)[i]
+            if len(goodPorts)>0 or i == 0:
                 dialState = NORMAL
             else:
                 dialState = DISABLED
-            button = Button(self.frameDial, text=txt(key), width=10, fg='blue', state = dialState, command=lambda k=key: self.dial(dialTable[k]))
-            button.grid(row=i//4 + 1, column=i % 4)
-            i += 1
+            if i == 0:
+                if len(goodPorts)>0:
+                    defaultValue[0] = 1
+                    key = 'Connected'
+                else:
+                    defaultValue[0] = 0
+                    key = 'Connect'
+            value = BooleanVar()
+            button = Checkbutton(self.frameDial, text=txt(key), indicator = 0, width=8, fg='green', state = dialState,var = value,command=lambda idx=i: self.dial(idx))
+            value.set(defaultValue[i])
+            self.dialValue.append(value)
+            if i>0:
+                button.grid(row= 1, column= i+1, padx = 3)
+            else:
+                button.grid(row= 1, column= i, padx = 3)
+
+        self.createPortMenu()
+        
+    def createPortMenu(self):
+        self.port = StringVar()
+        options = list(goodPorts.values())
+        if len(options)>1:
+            options.insert(0,txt('All'))
+        elif len(options)==0:
+            options.insert(0,txt('None'))
+        self.portMenu = OptionMenu(self.frameDial, self.port, *options)
+        self.portMenu.config(width=12, fg = 'blue')
+        self.port.trace('w', lambda *args : self.changePort(''))
+        self.port.set(options[0])
+        self.portMenu.grid(row= 1, column= 1, padx = 3)
+
+        
+    def changePort(self,magicArg):
+        global ports
+        inv_dict = {v: k for k, v in goodPorts.items()}
+        if self.port.get() == txt('All'):
+            ports = goodPorts
+        elif self.port.get() == txt('None'):
+            ports = []
+        else:
+            singlePort = inv_dict[self.port.get()]
+            ports = [singlePort]
+            
+            
     def createPosture(self):
         self.framePosture = Frame(self.window)
         self.framePosture.grid(row=1, column=1, ipady=5)
@@ -302,18 +336,20 @@ class app:
         buttonRedo = Button(self.frameScheduler, text=txt('Redo'), width=10, fg='blue', state=DISABLED, command=self.restartScheduler)
         buttonRedo.grid(row=2, column=1)
         
-        self.MirrorBox = Checkbutton(self.frameScheduler, text = txt('Mirror'), width=10,fg='blue',variable = self.mirror, onvalue=True, offvalue=False,
-            command = self.setMirror).grid(row=2, column=2)
+        self.MirrorBox = Checkbutton(self.frameScheduler, text = txt('mirror'),indicator = 0, width=9,fg='blue',variable = self.mirror, onvalue=True, offvalue=False,
+            command = self.setMirror).grid(row=2, column=2, sticky = 'e')
             
-        buttonMirror = Button(self.frameScheduler, text = txt('Mirror'), width=6,fg='blue',
+        buttonMirror = Button(self.frameScheduler, text = txt('>|<'), width=1,fg='blue',
             command = self.generateMirrorFrame)
-        buttonMirror.grid(row=2, column=2, sticky = 'e')
+        buttonMirror.grid(row=2, column=2, sticky = 'w')
         
 #        Spinbox(self.frameScheduler, values=[txt('Gait'),txt('Behavior')], width=10,fg='blue',textvariable =  self.gaitOrBehavior, wrap=True).grid(row=2, column=3)
+        self.gaitOrBehavior = StringVar()
         self.GorB = OptionMenu(self.frameScheduler, self.gaitOrBehavior, txt('Gait'), txt('Behavior'))
         self.GorB.config(width=9, fg = 'blue')
         self.gaitOrBehavior.set(txt('Behavior'))
         self.GorB.grid(row=2, column=3)
+
         
     def setMirror(self):
         self.mirror = not self.mirror
@@ -370,14 +406,15 @@ class app:
             self.window.title(txt('title'))
             self.menubar.destroy()
             self.controllerLabels[0].config(text = txt('Joint Controller'))
+            self.controllerLabels[1].config(text = txt('Unbind All'))
             for i in range(6):
-                self.controllerLabels[1 + 16 + i].config(text = txt(sixAxisNames[i]))
+                self.controllerLabels[2 + 16 + i].config(text = txt(sixAxisNames[i]))
             for i in range(16):
                 if i in range(8,12):
                     sideLabel = txt(sideNames[i%8])+'\n'
                 else:
                     sideLabel = '\n'
-                self.controllerLabels[1 + i].config(text=sideLabel+'(' + str(i)+')\n'+txt(scaleNames[i]))
+                self.controllerLabels[2 + i].config(text=sideLabel+'(' + str(i)+')\n'+txt(scaleNames[i]))
             self.frameDial.destroy()
             self.framePosture.destroy()
             self.frameScheduler.destroy()
@@ -395,6 +432,10 @@ class app:
                     if self.frameList[r][2] != self.frameData:
                         tt = '* '+ txt('Save')
                 self.getWidget(r,cSet).config(text = tt, font = ft)
+                
+                if not self.getWidget(r, cSpeed).get().isnumeric():
+                    self.getWidget(r, cSpeed).delete(0, END)
+                    self.getWidget(r, cSpeed).insert(0,txt('max'))
         
     def about(self):
         messagebox.showinfo('Petoi Controller UI', 'www.petoi.com')
@@ -411,7 +452,7 @@ class app:
             for i in range(16):
                 if i in NaJoints[model]:
                     stt = DISABLED
-                    clr = None
+                    clr = 'light yellow'
                 else:
                     stt = NORMAL
                     clr = 'yellow'
@@ -435,7 +476,7 @@ class app:
         setButton = Button(singleFrame, text = '< '+txt('Set'), font='sans 14 bold', fg='blue', width=frameItemWidth[cSet], command=lambda idx=currentRow: self.setFrame(idx))
         
         vSpeed = StringVar()
-        Spinbox(singleFrame, width=frameItemWidth[cSpeed], values = ('1','2','4','8','12','16','32','48','max'), textvariable = vSpeed, wrap=True).grid(row=0, column=cSpeed)
+        Spinbox(singleFrame, width=frameItemWidth[cSpeed], values = ('1','2','4','8','12','16','32','48',txt('max')), textvariable = vSpeed, wrap=True).grid(row=0, column=cSpeed)
         
         vDelay = IntVar()
         delayStep = 50
@@ -531,23 +572,19 @@ class app:
     def setFrame(self, currentRow):
         currentFrame = self.frameList[currentRow]
         if currentRow != self.activeFrame:
+            indexedList = list()
+            for i in range(16):
+                if self.frameData[4+i] != currentFrame[2][4+i]:
+                    indexedList += [i,currentFrame[2][4+i]]
             self.frameData = copy.deepcopy(currentFrame[2])
-            self.changeButtonState(currentRow)
             self.updateSliders(self.frameData)
-            if self.online:
-                if max(self.frameData[4:20]) > 125 or min(self.frameData[4:20]) < -125:
-                    indexedList = list()
-                    for i in range(4):
-                        for j in range(4):
-                            angle = self.frameData[4+4*j+i]
-                            if angle>-126 and angle<126:
-                                indexedList += [4*j+i,angle]
-                            else:
-                                send(['m', [4*j+i, angle], 0])
-                    if len(indexedList):
-                        send(['I',indexedList, 0])
-                else:
-                    send(['L',self.frameData[4:20],0])
+            self.changeButtonState(currentRow)
+            self.frameController.update()
+            print(indexedList)
+            if len(indexedList)>16:
+                send(ports, ['L',self.frameData[4:20],0])
+            elif len(indexedList):
+                send(ports, ['I',indexedList,0])
         else:
             for i in range(20):
                 if currentFrame[2][4+i] != self.frameData[4+i]: # the joint that's changed
@@ -626,7 +663,7 @@ class app:
 #                    print(self.getWidget(f, cLoop).get())
                 self.getWidget(f, cSpeed).delete(0, END)
                 if frame[2][20] == 0:
-                    self.getWidget(f, cSpeed).insert(0,'max')
+                    self.getWidget(f, cSpeed).insert(0,txt('max'))
                 else:
                     self.getWidget(f, cSpeed).insert(0,frame[2][20])
                 self.getWidget(f, cDelay).delete(0, END)
@@ -639,7 +676,7 @@ class app:
                 
             else:
                 self.getWidget(f, cSpeed).delete(0, END)
-                self.getWidget(f, cSpeed).insert(0,'max')
+                self.getWidget(f, cSpeed).insert(0,txt('max'))
         self.activeFrame = f
         if self.totalFrame ==1:
             self.activeFrame=-1
@@ -689,37 +726,30 @@ class app:
     def playThread(self):
         self.playStop = False
         self.buttonRun.config(text = txt('Stop'), fg = 'red',command = self.stop)
-#        self.window.update() #any update() after rebuilding the window will cause some problem in the button's function
-        t=threading.Thread(target=self.play)#doesn't work
+        t=threading.Thread(target=self.play)
         t.start()
         
     def play(self):
         if self.activeFrame+1 == self.totalFrame:
             self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 12')
-#            self.window.update() #any update() after rebuilding the window will cause some problem in the button's function
             self.activeFrame = 0;
         for f in range(self.activeFrame, self.totalFrame):
             if self.playStop:
                 break
             frame = self.frameList[f]
+            
+            indexedList = list()
+            for i in range(16):
+                if self.frameData[4+i] != frame[2][4+i]:
+                    indexedList += [i,frame[2][4+i]]
             self.frameData = copy.deepcopy(frame[2])
             self.updateSliders(self.frameData)
             self.changeButtonState(f)
-            self.window.update()
-            if self.online:
-                if max(self.frameData[4:20]) > 125 or min(self.frameData[4:20]) < -125:
-                    indexedList = list()
-                    for i in range(4):
-                        for j in range(4):
-                            angle = self.frameData[4+4*j+i]
-                            if angle>-126 and angle<126:
-                                indexedList += [4*j+i,angle]
-                            else:
-                                send(['m', [4*j+i, angle], 0])
-                    if len(indexedList):
-                        send(['I',indexedList, 0])
-                else:
-                    send(['L',self.frameData[4:20],0])
+            if len(indexedList)>16:
+                send(ports, ['L',self.frameData[4:20],0])
+            elif len(indexedList):
+                send(ports, ['I',indexedList,0])
+
         self.buttonRun.config(text = txt('Play'), fg = 'green',command = self.playThread)
         self.playStop = False
         
@@ -728,36 +758,25 @@ class app:
         self.buttonRun.config(text = txt('Play'), fg = 'green',command = self.playThread)
         self.playStop = True
         
-    def mirrorAngles(self):
-        self.frameData[1]=-self.frameData[1]
-        self.frameData[4]=-self.frameData[4]
-        self.frameData[4+2]=-self.frameData[4+2]
+    def mirrorAngles(self,singleFrame):
+        singleFrame[1]=-singleFrame[1]
+        singleFrame[4]=-singleFrame[4]
+        singleFrame[4+2]=-singleFrame[4+2]
         for i in range(4,16,2):
-            self.frameData[4+i],self.frameData[4+i+1] = self.frameData[4+i+1],self.frameData[4+i]
-        if abs(self.frameData[22]) == 2:
-            self.frameData[22]=-self.frameData[22]
-            self.frameData[23]=-self.frameData[23]
+            singleFrame[4+i],singleFrame[4+i+1] = singleFrame[4+i+1],singleFrame[4+i]
+        if abs(singleFrame[22]) == 2:
+            singleFrame[22]=-singleFrame[22]
+            singleFrame[23]=-singleFrame[23]
             
     def generateMirrorFrame(self):
-#        self.sliderBar[2] = -self.sliderBar[2]
-#        self.sliderBar[5] = -self.sliderBar[5]
-        self.mirrorAngles()
+        self.values[16+2].set(-1*self.values[16+2].get())
+        self.values[16+5].set(-1*self.values[16+5].get())
+        self.mirrorAngles(self.originalAngle)
+        self.mirrorAngles(self.frameData)
         self.updateSliders(self.frameData)
         self.indicateEdit()
-        if self.online:
-            if max(self.frameData[4:20]) > 125 or min(self.frameData[4:20]) < -125:
-                indexedList = list()
-                for i in range(4):
-                    for j in range(4):
-                        angle = self.frameData[4+4*j+i]
-                        if angle>-126 and angle<126:
-                            indexedList += [4*j+i,angle]
-                        else:
-                            send(['m', [4*j+i, angle], 0])
-                if len(indexedList):
-                    send(['I',indexedList, 0])
-            else:
-                send(['L',self.frameData[4:20],0])
+        self.frameController.update()
+        send(ports, ['L',self.frameData[4:20],0])
                     
     def export(self):
         if self.activeFrame+1 == self.totalFrame:
@@ -782,7 +801,6 @@ class app:
             copyFrom = 4
             frameSize = 16
         angleRatio = 1
-        print('deb1')
         startFrame = self.activeFrame
         for f in range(startFrame, self.totalFrame):
             frame = self.frameList[f]
@@ -791,7 +809,7 @@ class app:
                 angleRatio = 2
             if(self.frameData[3]==1):
                 loopStructure.append(f - startFrame)
-            if self.getWidget(f, cSpeed).get() == 'max':
+            if self.getWidget(f, cSpeed).get() == txt('max'):
                 self.frameData[20] = 0
             else:
                 self.frameData[20] = int(self.getWidget(f, cSpeed).get())
@@ -799,26 +817,14 @@ class app:
             self.frameData[22] = int(self.getWidget(f, cTrig).get())
             self.frameData[23] = int(self.getWidget(f, cAngle).get())
             if self.mirror:
-                self.mirrorAngles()
+                self.mirrorAngles(self.frameData)
             self.updateSliders(self.frameData)
             self.changeButtonState(f)
-            self.window.update()
+            self.frameController.update()
             skillData.append(self.frameData[copyFrom: copyFrom + frameSize])
-        print('deb2')
         if period == 1:
-            if angleRatio ==2:
-                for i in range(4):
-                    for j in range(4):
-                        indexedList = list()
-                        angle = self.frameData[4+4*j+i]
-                        if angle>-126 and angle<126:
-                            indexedList += [4*j+i,angle]
-                        else:
-                            send(['m', [4*j+i, angle], 0])
-                    if len(indexedList):
-                        send(['I',indexedList, 0])
-            else:
-                send(['L',self.frameData[4:20],0])
+            print(self.frameData[4:20])
+            send(ports, ['L',self.frameData[4:20],0])
             return
             
         if angleRatio ==2:
@@ -843,9 +849,7 @@ class app:
         skillData.insert(0,[period, 0, 0, angleRatio])
         flat_list = [item for sublist in skillData for item in sublist]
         print(flat_list)
-        print('deb3')
-        if self.online:
-            send(['K',flat_list,0])
+        send(ports, ['K',flat_list,0])
 
 
     def restartScheduler(self):
@@ -878,6 +882,14 @@ class app:
         else:
             frame[2][3] = 0
     
+    
+    def unbindAll(self):
+        for i in range(16):
+            self.binderValue[i].set(0)
+            self.previousBinderValue[i]=0
+            self.changeRadioColor(i,0)
+        self.controllerLabels[1].config(fg = 'blue')
+            
     def changeRadioColor(self,joint,value): # -1, 0, 1
         if value:
             self.binderButton[joint*2 + (1-value)//2].configure(background ='red')
@@ -887,40 +899,35 @@ class app:
             self.binderButton[joint*2+1].configure(background ='light blue')
         self.binderButton[joint*2].update()
         self.binderButton[joint*2+1].update()
+        if 1 in self.previousBinderValue or -1 in self.previousBinderValue:
+            self.controllerLabels[1].config(fg = 'red')
+        else:
+            self.controllerLabels[1].config(fg = 'blue')
     
     def updateRadio(self,joint,idx):
         if(self.previousBinderValue[joint]==self.binderValue[joint].get()):
             self.binderValue[joint].set(0)
-        self.changeRadioColor(joint,self.binderValue[joint].get())
         self.previousBinderValue[joint]=self.binderValue[joint].get()
+        self.changeRadioColor(joint,self.binderValue[joint].get())
         
     def setAngle(self, idx, value):
         if self.ready == 1:
             value = int(value)
             if self.binderValue[idx].get() ==0:
                 self.frameData[4 + idx] = value
-                if self.online:
-                    if value>-126 and value<126:
-                        send(['I', [idx, value], 0])
-                    else:
-                        send(['m', [idx, value], 0])
+                if value>-126 and value<126:
+                    send(ports, ['I', [idx, value], 0])
+                else:
+                    send(ports, ['i', [idx, value], 0])
             else:
                 diff = value - self.frameData[4 + idx]
                 indexedList = list()
                 for i in range(16):
                     if self.binderValue[i].get():
                         self.frameData[4+i] +=diff*self.binderValue[i].get()*self.binderValue[idx].get()
-                        angle = self.frameData[4+i]
-                        if angle>-126 and angle<126:
-                            indexedList += [i,angle]
-                        else:
-                            if self.online:
-                                send(['m', [i, angle], 0])
-                if self.online and len(indexedList):
-                    send(['I',indexedList, 0])
+                        indexedList+=[i,self.frameData[4+i]]
+                send(ports, ['I',indexedList, 0])
                 
-#            print(frame[2])
-#            print(self.frameData)
             self.indicateEdit()
             self.updateSliders(self.frameData)
             
@@ -928,8 +935,7 @@ class app:
     def set6Axis(self, i, value): # a more precise function should be based on inverse kinematics
         value = int(value)
         if self.ready == 1:
-#            if self.online:
-#                send(['t', [i, value], 0.0])
+#            send(ports, ['t', [i, value], 0.0])
             if self.originalAngle[0]==0:
                 self.originalAngle[4:20] = copy.deepcopy(self.frameData[4:20])
                 self.originalAngle[0]=1
@@ -975,33 +981,26 @@ class app:
                 frontQ = j % 4 < 2
                 upperQ = j / 4 < 3
                 factor = 1
-                if i > 3:
+                if j > 3:
                     if not upperQ:
-                        factor = 1.5
+                        factor = 2
                     else:
                         factor = 1
                     if i == 1:
-                        if (value > 0 and frontQ) or (value < 0 and not frontQ):
-                            factor //= 4
+                        if (value > 0 and frontQ and upperQ) or (value < 0 and not frontQ and upperQ):
+                            factor /= 4
                     if i == 2:
-                        if upperQ:
-                            factor //=3
-                        else:
-                            factor =3
+
                         if (value > 0 and not leftQ) or (value < 0 and leftQ):
-                            factor //=1.5
+                            factor /=2
 
                 if j in positiveGroup:
-                    self.frameData[4+j] = self.originalAngle[4+j] + value*factor
+                    self.frameData[4+j] = self.originalAngle[4+j] + int(value*factor)
                 if j in negativeGroup:
-                    self.frameData[4+j] = self.originalAngle[4+j] - value*factor
+                    self.frameData[4+j] = self.originalAngle[4+j] - int(value*factor)
 
 
-            if self.online:
-#
-                send(['L',self.frameData[4:20],0])
-            else:
-                print(self.frameData[4:20])
+            send(ports, ['L',self.frameData[4:20],0])
             self.updateSliders(self.frameData)
             self.indicateEdit()
 
@@ -1012,80 +1011,92 @@ class app:
             self.updateSliders(postureTable[pose])
             self.indicateEdit()
             for i in range(6):
-#                    self.values[i].set(postureTable[pose][i+1])
                 self.values[16+i].set(0)
-            if self.online:
-                send(['k'+pose, 0])
-                if pose == 'rest':
-                    send(['d', 0])
+            send(ports, ['k'+pose, 0])
+            if pose == 'rest':
+                send(ports, ['d', 0])
     
     def setSpeed(self):
         self.frameData[20] = self.getWidget(self.activeFrame, cSpeed).get()
-#        print(self.frameData)
-#        self.indicateEdit()
         
     def setDelay(self):
         self.frameData[21] = int(self.getWidget(self.activeFrame, cDelay).get())
-#        print(self.frameData)
-#        self.indicateEdit()
-                
             
     def updateSliders(self, angles ):
         for i in range(16):
             self.values[i].set(angles[4+i])
             self.frameData[4+i] = angles[4+i]
-                
 
-    def dial(self, value):
-#        global self.online
+    def dial(self, i):
         if self.ready == 1:
-            if value == 'Connect':
-                state = send(['b', [10,90],0])
-                self.online = not self.online
-                global online
-                online = self.online
-                if state == 'err':
-                    self.online = False
-                buttons = self.frameDial.winfo_children()[2:]
-                if self.online:
-                    self.frameDial.winfo_children()[1].config(text = txt('Disconnect'),fg='red')
-                    for b in buttons:
-                        b.config(state = NORMAL)
-                else:
-                    self.frameDial.winfo_children()[1].config(text = txt('Connect'),fg = 'blue')
+            global ports
+            global goodPorts
+            buttons = self.frameDial.winfo_children()[2:5]
+            key = list(dialTable)[i]
+            if key == 'Connect':
+                if len(goodPorts)>0:
+                    state = send(ports, ['b', [10,90],0],1)
+                    closeAllSerial(goodPorts)
+                    self.portMenu['menu'].delete(0,'end')
+                    self.port.set(txt('None'))
+                    self.frameDial.winfo_children()[1].config(text = txt('Connect'),fg = 'red')
+                    self.dialValue[0].set(False)
                     for b in buttons:
                         b.config(state = DISABLED)
-            elif self.online == True:
-                state = send([value, 0])
+                else:
+                    self.dialValue[0].set(True)
+                    self.frameDial.winfo_children()[0].update()
+                    connectPort()
+                    self.portMenu.destroy()
+                    self.createPortMenu()
+                    state = send(ports, ['b', [10,90],0])
+                    if len(goodPorts)>0:
+                        self.frameDial.winfo_children()[1].config(text = txt('Connected'),fg='green')
+                        for b in buttons:
+                            b.configure(state = NORMAL)
+                    else:
+                        self.dialValue[0].set(False)
+                        self.frameDial.winfo_children()[0].update()
+                    
+            elif len(goodPorts)>0:
+                state = send(ports, [dialTable[key], 0])
                 if state == 'p':
-                    self.frameDial.winfo_children()[2].config(text = txt('Pause'),fg = 'green')
+                    self.dialValue[i].set(True)
+                    self.frameDial.winfo_children()[2].config(fg = 'green')
                 elif state == 'P':
-                    self.frameDial.winfo_children()[2].config(text = txt('Paused'),fg = 'red')
+                    self.dialValue[i].set(False)
+                    self.frameDial.winfo_children()[2].config(fg = 'red')
                 elif state == 'g':
-                    self.frameDial.winfo_children()[3].config(text = txt('Gyro:OFF'),fg = 'red')
+                    self.dialValue[i].set(False)
+                    self.frameDial.winfo_children()[3].config(fg = 'red')
                 elif state == 'G':
-                    self.frameDial.winfo_children()[3].config(text = txt('Gyro: ON'),fg = 'green')
+                    self.dialValue[i].set(True)
+                    self.frameDial.winfo_children()[3].config(fg = 'green')
                 elif state == 'z':
-                    self.frameDial.winfo_children()[4].config(text = txt('Random:OFF'),fg = 'green')
+                    self.dialValue[i].set(False)
+                    self.frameDial.winfo_children()[4].config(fg = 'red')
                 elif state == 'Z':
-                    self.frameDial.winfo_children()[4].config(text = txt('Random: ON'),fg = 'orange')
+                    self.dialValue[i].set(True)
+                    self.frameDial.winfo_children()[4].config(fg = 'green')
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.window.destroy()
-
+    
 
 if __name__ == '__main__':
     try:
         connectPort()
-        time.sleep(2)
-        if len(goodPorts)>0:
-            app()
-        if online:
-            closeAllSerial()
+        ports = goodPorts
+#        time.sleep(2)
+#        if len(goodPorts)>0:
+#            t=threading.Thread(target=keepReadingSerial,args=(goodPorts,))
+#            t.start()
+        app()
+        closeAllSerial(goodPorts)
     except Exception as e:
         logger.info("Exception")
-        closeAllSerial()
+        closeAllSerial(goodPorts)
         raise e
 
 # unused text codes for references

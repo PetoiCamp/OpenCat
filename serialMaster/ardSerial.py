@@ -118,7 +118,7 @@ def printSerialMessage(port,token,timeout=0):
             print('Elapsed time: ',end='')
             print(threshold, end=' seconds\n', flush = True)
             threshold += 2
-        if timeout and now - startTime >timeout:
+        if timeout>0 and now - startTime >timeout:
             return -1
 #            return 'err'
         response = port.main_engine.readline().decode('ISO-8859-1')
@@ -156,14 +156,12 @@ def sendTask(port, task, timeout = 0):  # task Structure is [token, var=[], time
     returnValue = lastMessage
     return lastMessage
             
-def sendTaskParallel(task,timeout = 0):
-    global goodPorts
+def sendTaskParallel(ports, task,timeout = 0):
     global returnValue
 #    global sync
 #    sync = 0
     threads = list()
-
-    for p in goodPorts:
+    for p in ports:
         t=threading.Thread(target=sendTask,args=(p,task,timeout))
         threads.append(t)
         t.start()
@@ -171,8 +169,49 @@ def sendTaskParallel(task,timeout = 0):
         if t.is_alive():
             t.join()
     return returnValue
+
+def splitTaskForLargeAngles(task):
+    token = task[0]
+    queue = list()
+    if token == 'L' or token =='I':
+        var = task[1]
+        indexedList = list()
+        if token == 'L':
+            for i in range(4):
+                for j in range(4):
+                    angle = var[4*j+i]
+                    if angle<-125 or angle>125:
+                        indexedList += [4*j+i,angle]
+                        var[4*j+i] = max(min(angle,125),-125)
+            if len(var):
+                queue.append(['L',var,0])
+            if len(indexedList):
+                queue.append(['i',indexedList, task[-1]])
+#                print(queue)
+        elif token == 'I':
+            if min(var) < -125 or max(var) > 125:
+                task[0] = 'i'
+            queue.append(task)
+    else:
+        queue.append(task)
+    return queue
         
-def keepReadingSerial():
+def send(port, task, timeout = 0):
+    if isinstance(port, dict):
+        p = list(port.keys())
+    elif isinstance(port, list):
+        p = port
+    queue = splitTaskForLargeAngles(task)
+    for task in queue:
+        if len(port) > 1:
+            return sendTaskParallel(p, task, timeout)
+        elif len(port) == 1:
+            return sendTask(p[0],task,timeout)
+        else:
+#            print('no ports')
+            return -1
+        
+def keepReadingSerial(ports):
     while True:
         time.sleep(0.005)
         x = input()
@@ -183,12 +222,9 @@ def keepReadingSerial():
                 token = x[0]
                 task = x[1:].split() #white space
                 if len(task) <= 1:
-#                    sendTask([x, 1])
-                    sendTaskParallel([x, 1])
+                    send(ports, [x, 1])
                 else:
-#                    sendTask([token, list(map(int, task)), 1])
-                    sendTaskParallel([token, list(map(int, task)), 1])
-
+                    send(ports, [token, list(map(int, task)), 1])
 
 def closeSerialBehavior(port):
     try:
@@ -198,12 +234,13 @@ def closeSerialBehavior(port):
         raise e
     logger.info("close the serial port.")
         
-def closeAllSerial():
-    sendTaskParallel(['d', 0])
-#    time.sleep(2)
-    for p in goodPorts:
+def closeAllSerial(ports):
+    send(ports, ['d', 0],1)
+    for p in ports:
         t=threading.Thread(target=closeSerialBehavior,args=(p,))
         t.start()
+        t.join()
+    ports.clear()
 
 balance = [
     1, 0, 0, 1,
@@ -315,15 +352,15 @@ model = 'Bittle'
 postureTable = postureDict[model]
 
 
-def schedulerToSkill(testSchedule):
+def schedulerToSkill(ports, testSchedule):
     compactSkillData = []
     newSkill = []
     outputStr = ""
 
     for task in testSchedule:  # execute the tasks in the testSchedule
-        #            print(task)
+        print(task)
         token = task[0][0]
-        if token == 'k':
+        if token == 'k' and task[0][1:] in postureTable:
             currentRow = postureTable[task[0][1:]][-16:]
             skillRow = copy.deepcopy(currentRow)
             compactSkillData.append(skillRow + [8, int(task[1]*1000/500), 0, 0])
@@ -349,26 +386,31 @@ def schedulerToSkill(testSchedule):
                 skillRow = copy.deepcopy(currentRow)
                 compactSkillData.append(skillRow + [8, int(task[2]*1000/500), 0, 0])
                 newSkill = newSkill + skillRow + [8, int(task[2]*1000/500), 0, 0]
-
-    print('{')
-    print('{:>4},{:>4},{:>4},{:>4},'.format(*[-len(compactSkillData), 0, 0, 1]))
-    print('{:>4},{:>4},{:>4},'.format(*[0, 0, 0]))
+    if len(compactSkillData)>0:
+        print('{')
+        print('{:>4},{:>4},{:>4},{:>4},'.format(*[-len(compactSkillData), 0, 0, 1]))
+        print('{:>4},{:>4},{:>4},'.format(*[0, 0, 0]))
+    else:
+        return
+    angleRatio = 1
     for row in compactSkillData:
+        if min(row)<-125 or max(row)>125:
+            angleRatio = 2
         print(('{:>4},'*20).format(*row))
     print('};')
-
-    newSkill = [-len(compactSkillData), 0, 0, 1, 0, 0, 0] + newSkill
+    newSkill = list(map(lambda x: x//angleRatio, newSkill))
+    newSkill = [-len(compactSkillData), 0, 0, angleRatio, 0, 0, 0] + newSkill
     print(newSkill)
-    sendTaskParallel(['K', newSkill, 1])
+#    sendTaskParallel(['K', newSkill, 1])
+    send(ports, ['K', newSkill, 1])
 
-def testPort(serialObject):
+def testPort(serialObject,p):
     global goodPorts
     global portCount
 #    global sync
     result = sendTask(serialObject,['b',0],2)
     if result!=-1:
-        goodPorts.append(serialObject)
-        portDictionary.update({serialObject:portCount})
+        goodPorts.update({serialObject:p})
         portCount += 1
     else:
         serialObject.Close_Engine()
@@ -391,9 +433,8 @@ def connectPort():
         for p in reversed(port): #assuming the last one is the most possible port
             if p == '/dev/ttyAMA0':
                 continue
-            print(p)
             serialObject = Communication(p, 115200, 0.5)
-            t=threading.Thread(target=testPort,args=(serialObject,))
+            t=threading.Thread(target=testPort,args=(serialObject,p.split('/')[-1]))
             threads.append(t)
             t.start()
         for t in threads:
@@ -404,12 +445,11 @@ def connectPort():
     if len(port)==0 or len(goodPorts) ==0:
         print('No port found!')
     else:
-        logger.info(f"Connect to usb serial port:\n{goodPorts}.")
+        logger.info(f"Connect to usb serial port:")
         for p in goodPorts:
-            logger.info(f"{p}")
+            logger.info(f"{goodPorts[p]}")
 
-goodPorts = list()
-portDictionary = {}
+goodPorts = {}
 initialized = False
 portCount = 0
 sync = 0
@@ -419,23 +459,23 @@ returnValue = ''
 if __name__ == '__main__':
     try:
         connectPort()
-        if len(goodPorts)>0:
-            if len(sys.argv) >= 2:
-                if len(sys.argv) == 2:
-                    cmd = sys.argv[1]
-                    token = cmd[0][0]
-                else:
-                    token = sys.argv[1][0]
-                sendTaskParallel([sys.argv[1][0], sys.argv[1:], 1])
+        if len(sys.argv) >= 2:
+            if len(sys.argv) == 2:
+                cmd = sys.argv[1]
+                token = cmd[0][0]
+            else:
+                token = sys.argv[1][0]
+#                sendTaskParallel([sys.argv[1][0], sys.argv[1:], 1])
+            send(goodPorts, [sys.argv[1][0], sys.argv[1:], 1])
 
-            print("You can type 'quit' or 'q' to exit.")
-            
-            keepReadingSerial()
-            
-            closeAllSerial()
-            logger.info("finish!")
+        print("You can type 'quit' or 'q' to exit.")
+        
+        keepReadingSerial(goodPorts)
+        
+        closeAllSerial(goodPorts)
+        logger.info("finish!")
 
     except Exception as e:
         logger.info("Exception")
-        closeAllSerial()
+        closeAllSerial(goodPorts)
         raise e
