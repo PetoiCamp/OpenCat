@@ -61,12 +61,13 @@ textEN = {
     'exampleFormat':'Import the skill data from instinct.h in the following format:',
     'Quit':'Quit',
     'Do you want to quit?':'Do you want to quit?',
-    'mirror':'MirrorXport',
+    'mirror':'      MirrorAll',
     '>|<':'>|<',
-    'Gait':'Gait',
-    'Behavior':'Behavior',
+    'Gait':'   Gait',
+    'Behavior':'   Behavior',
     'Clear':'Clear',
-    'max':'max'
+    'max':'max',
+    '':''
 }
 textCN = {
     'lan':'Chinese',
@@ -132,10 +133,10 @@ textCN = {
     'exampleFormat':'以下列格式从 instinct.h 复制粘贴技能数组',
     'Quit':'退出',
     'Do you want to quit?':'要退出吗?',
-    'mirror':'镜像导出',
+    'mirror':'      镜像导出',
     '>|<':'>|<',
-    'Gait':'步态',
-    'Behavior':'行为',
+    'Gait':'   步态',
+    'Behavior':'   行为',
     'Clear':'清空',
     'max':'最快'
 }

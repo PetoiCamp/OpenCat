@@ -34,7 +34,9 @@ scaleNames = [
     'Knee', 'Knee', 'Knee', 'Knee']
 sideNames = ['Left Front','Right Front', 'Right Back', 'Left Back']
 dialTable = {'Connect':'Connected', 'Servo': 'p', 'Gyro': 'g',  'Random': 'z'}
-labelSchedulerHeader = ['Repeat','Loop','Frame', 'Speed', 'Delay/ms', 'Trig','Angle','Note', 'Del', 'Add']
+labelSchedulerHeader = ['Repeat','Loop','Set', 'Speed', 'Delay/ms', 'Trig','Angle','Note', 'Del', 'Add','']
+cLoop,cLabel, cSet, cSpeed, cDelay,cTrig,cAngle, cNote, cDel, cAdd,cScroller = range(len(labelSchedulerHeader))
+frameItemWidth =[1,2,1,3,4,2,3,5,1,1,1]
 axisDisable = {
     'Nybble': [0,5],
     'Bittle': [0,5],
@@ -51,8 +53,7 @@ jointConfig = {
     'Bittle':'>>',
     'DoF16' :'>>'
 }
-cLoop,cLabel, cSet, cSpeed, cDelay,cTrig,cAngle, cNote, cDel, cAdd = range(len(labelSchedulerHeader))
-frameItemWidth =[2,1,3,3,5,2,3,5,1,1,]
+
 
 #word_file = '/usr/share/dict/words'
 #WORDS = open(word_file).read().splitlines()
@@ -64,7 +65,6 @@ language = languageList['English']
 
 def txt(key):
     return language.get(key, textEN[key])
-    
 
 class app:
 
@@ -77,6 +77,7 @@ class app:
         self.binderValue = list()
         self.binderButton = list()
         self.previousBinderValue = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,]
+        self.keepChecking = True
         self.ready = 0
         # , slant='italic')
         self.myFont = tkFont.Font(
@@ -106,6 +107,8 @@ class app:
         self.ready = 1
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
+        t=threading.Thread(target = self.keepCheckingPort, args = (goodPorts,))
+        t.start()
         self.window.mainloop()
         
     def createMenu(self):
@@ -130,7 +133,7 @@ class app:
         
     def createController(self):
         self.frameController = Frame(self.window)
-        self.frameController.grid(row=0, column=0, rowspan=9, ipadx=10)
+        self.frameController.grid(row=0, column=0, rowspan=9, padx=5,pady = 5)
         label = Label(self.frameController, text=txt('Joint Controller'), font=self.myFont)
         label.grid(row=0, column=0, columnspan=width)
         self.controllerLabels.append(label)
@@ -138,7 +141,7 @@ class app:
         unbindButton.grid(row=5, column=3, columnspan=2)
         self.controllerLabels.append(unbindButton)
         for i in range(16):
-            PAD = 5
+            PAD = 2
             cSPAN = 1
             if i < 4:
                 tickDirection = 1
@@ -153,7 +156,7 @@ class app:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                LEN = 360
+                LEN = 350
 
             else:
                 tickDirection = -1
@@ -168,9 +171,9 @@ class app:
                 else:
                     COL = (1-leftQ) * (1+centerWidth) + 1 + i // 4
                 ORI = VERTICAL
-                LEN = 200
+                LEN = 160
                 if ROW == 2:
-                    PAD = 10
+                    PAD = 5
 
             if i in NaJoints[model]:
                 stt = DISABLED
@@ -181,16 +184,15 @@ class app:
             if i in range(8,12):
                 sideLabel = txt(sideNames[i%8])+'\n'
             else:
-                sideLabel = '\n'
+                sideLabel = ''
             label = Label(self.frameController,
                           text=sideLabel+'(' + str(i)+')\n'+txt(scaleNames[i]))
  
             value = DoubleVar()
-            sliderBar = Scale(self.frameController, state=stt, bg=clr, variable=value, orient=ORI, borderwidth=2, from_=-180*tickDirection, to=180*tickDirection, length=LEN, tickinterval=60, resolution=1,
-                              command=lambda value, idx=i:  self.setAngle(idx, value))
+            sliderBar = Scale(self.frameController, state=stt, bg=clr, variable=value,  orient=ORI, borderwidth=2, relief = 'flat', width = 8, from_=-150*tickDirection, to=150*tickDirection, length=LEN, tickinterval=60, resolution=1,repeatdelay = 100,repeatinterval = 1000, command=lambda value, idx=i:  self.setAngle(idx, value))
             sliderBar.set(0)
-            label.grid(row=ROW+1, column=COL, columnspan=cSPAN, pady=2)
-            sliderBar.grid(row=ROW+2, column=COL, rowspan=rSPAN, columnspan=cSPAN, ipady = 2, padx = 2)
+            label.grid(row=ROW+1, column=COL, columnspan=cSPAN, pady=2,sticky = 's')
+            sliderBar.grid(row=ROW+2, column=COL, rowspan=rSPAN, columnspan=cSPAN)
             
             self.sliders.append(sliderBar)
             self.values.append(value)
@@ -213,7 +215,7 @@ class app:
                 
                 
         self.frameImu = Frame(self.frameController)
-        self.frameImu.grid(row=6, column=3, rowspan=6, columnspan=2, ipady=5)
+        self.frameImu.grid(row=6, column=3, rowspan=7, columnspan=2)
         for i in range(6):
             frm = -60
             to2 = 60
@@ -234,12 +236,12 @@ class app:
                 to2 = 40
                 
             
-            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width = 6, bg='Light Blue1')
+            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width = 5, height = 2, bg='Light Blue1')
             value = DoubleVar()
-            sliderBar = Scale(self.frameImu, state=stt, bg=clr, variable=value, orient=HORIZONTAL, borderwidth=2, from_=frm, to=to2, length=120, tickinterval=(to2-frm)//4, resolution=1, command=lambda value, idx=i: self.set6Axis(idx, value))
+            sliderBar = Scale(self.frameImu, state=stt, bg=clr, variable=value, orient=HORIZONTAL, borderwidth=2, relief = 'flat',width = 10, from_=frm, to=to2, length=125, resolution=1, command=lambda value, idx=i: self.set6Axis(idx, value)) # tickinterval=(to2-frm)//4,
             sliderBar.set(0)
-            label.grid(row=1+i, column=3, columnspan=1)
-            sliderBar.grid(row=1+i, column=4, columnspan=centerWidth)
+            label.grid(row=i, column=0)
+            sliderBar.grid(row=i, column=1, columnspan=centerWidth)
             self.sliders.append(sliderBar)
             self.values.append(value)
             self.controllerLabels.append(label)
@@ -247,9 +249,9 @@ class app:
             
     def createDial(self):
         self.frameDial = Frame(self.window)
-        self.frameDial.grid(row=0, column=1, ipady=5)
+        self.frameDial.grid(row=0, column=1)
         labelDial = Label(self.frameDial, text=txt('State Dials'), font=self.myFont)
-        labelDial.grid(row=0, column=0, columnspan=4)
+        labelDial.grid(row=0, column=0, columnspan=5,pady = 5)
         defaultValue = [1,1,1,0]
         for i in range(len(dialTable)):
             key = list(dialTable)[i]
@@ -257,37 +259,60 @@ class app:
                 dialState = NORMAL
             else:
                 dialState = DISABLED
+                wth = 6
             if i == 0:
+                wth = 8
                 if len(goodPorts)>0:
                     defaultValue[0] = 1
                     key = 'Connected'
                 else:
                     defaultValue[0] = 0
                     key = 'Connect'
+            else:
+                wth = 6
             value = BooleanVar()
-            button = Checkbutton(self.frameDial, text=txt(key), indicator = 0, width=8, fg='green', state = dialState,var = value,command=lambda idx=i: self.dial(idx))
+            button = Checkbutton(self.frameDial, text=txt(key), indicator = 0, width=wth, fg='green', state = dialState,var = value,command=lambda idx=i: self.dial(idx))
             value.set(defaultValue[i])
             self.dialValue.append(value)
-            if i>0:
-                button.grid(row= 1, column= i+1, padx = 3)
-            else:
-                button.grid(row= 1, column= i, padx = 3)
+            button.grid(row= 1, column= i + (i>0), padx = 1)
 
         self.createPortMenu()
         
     def createPortMenu(self):
         self.port = StringVar()
-        options = list(goodPorts.values())
-        if len(options)>1:
-            options.insert(0,txt('All'))
-        elif len(options)==0:
-            options.insert(0,txt('None'))
-        self.portMenu = OptionMenu(self.frameDial, self.port, *options)
+        self.options = list(goodPorts.values())
+        if len(self.options)>1:
+            self.options.insert(0,txt('All'))
+        elif len(self.options)==0:
+            self.options.insert(0,txt('None'))
+        self.portMenu = OptionMenu(self.frameDial, self.port, *self.options)
         self.portMenu.config(width=12, fg = 'blue')
         self.port.trace('w', lambda *args : self.changePort(''))
-        self.port.set(options[0])
-        self.portMenu.grid(row= 1, column= 1, padx = 3)
-
+        self.port.set(self.options[0])
+        self.portMenu.grid(row= 1, column= 1, padx = 1)
+        
+    def keepCheckingPort(self,goodPorts):
+        allPorts = Communication.Print_Used_Com()
+        while True and self.keepChecking:
+            time.sleep(0.2)
+            currentPorts = Communication.Print_Used_Com()
+            if set(currentPorts) - set(allPorts):
+                newPort = list(set(currentPorts) - set(allPorts))[0]
+                serialObject = Communication(newPort, 115200, 0.5)
+                t=threading.Thread(target=testPort,args=(goodPorts,serialObject,newPort.split('/')[-1]))
+                t.start()
+                t.join(5)
+                printH('Adding',newPort)
+                self.portMenu.destroy()
+                self.createPortMenu()
+            elif set(allPorts) - set(currentPorts):
+                closedPort = list(set(allPorts) - set(currentPorts))[0]
+                printH('Removing',closedPort)
+                inv_dict = {v: k for k, v in goodPorts.items()}
+                goodPorts.pop(inv_dict[closedPort.split('/')[-1]])
+                self.portMenu.destroy()
+                self.createPortMenu()
+            allPorts = copy.deepcopy(currentPorts)
         
     def changePort(self,magicArg):
         global ports
@@ -303,37 +328,37 @@ class app:
             
     def createPosture(self):
         self.framePosture = Frame(self.window)
-        self.framePosture.grid(row=1, column=1, ipady=5)
+        self.framePosture.grid(row=1, column=1)
         labelPosture = Label(self.framePosture, text=txt('Postures'), font=self.myFont)
         labelPosture.grid(row=0, column=0, columnspan=4)
         i = 0
         for pose in postureTable:
-            button = Button(self.framePosture, text=pose, fg='blue', width=10, command=lambda p=pose:  self.setPose(p))
+            button = Button(self.framePosture, text=pose, fg='blue', width = 8, command=lambda p=pose:  self.setPose(p))
             button.grid(row=i//4 + 1, column=i % 4)
             i += 1
             
     def createScheduler(self):
         self.frameScheduler = Frame(self.window)
-        self.frameScheduler.grid(row=2, column=1, ipady=5)
+        self.frameScheduler.grid(row=2, column=1)
         labelScheduler = Label(self.frameScheduler, text=txt('Scheduler'), font=self.myFont)
         labelScheduler.grid(row=0, column=0, columnspan=4)
         
-        self.buttonRun = Button(self.frameScheduler, text=txt('Play'), width=10, fg='green', command=self.playThread)
+        self.buttonRun = Button(self.frameScheduler, text=txt('Play'), width = 8, fg='green', command=self.playThread)
         self.buttonRun.grid(row=1, column=0)
 
-        buttonExp = Button(self.frameScheduler, text=txt('Import'), width=10, fg='blue', command=self.popImport)
+        buttonExp = Button(self.frameScheduler, text=txt('Import'), width = 8, fg='blue', command=self.popImport)
         buttonExp.grid(row=1, column=1)
         
-        buttonRestart = Button(self.frameScheduler, text=txt('Restart'), width=10, fg='red', command=self.restartScheduler)
+        buttonRestart = Button(self.frameScheduler, text=txt('Restart'), width = 8, fg='red', command=self.restartScheduler)
         buttonRestart.grid(row=1, column=2)
 
-        buttonExp = Button(self.frameScheduler, text=txt('Export'), width=10, fg='blue', command=self.export)
+        buttonExp = Button(self.frameScheduler, text=txt('Export'), width = 8, fg='blue', command=self.export)
         buttonExp.grid(row=1, column=3)
         
-        buttonUndo = Button(self.frameScheduler, text=txt('Undo'), width=10, fg='blue', state=DISABLED, command=self.restartScheduler)
+        buttonUndo = Button(self.frameScheduler, text=txt('Undo'), width = 8, fg='blue', state=DISABLED, command=self.restartScheduler)
         buttonUndo.grid(row=2, column=0)
 
-        buttonRedo = Button(self.frameScheduler, text=txt('Redo'), width=10, fg='blue', state=DISABLED, command=self.restartScheduler)
+        buttonRedo = Button(self.frameScheduler, text=txt('Redo'), width = 8, fg='blue', state=DISABLED, command=self.restartScheduler)
         buttonRedo.grid(row=2, column=1)
         
         self.MirrorBox = Checkbutton(self.frameScheduler, text = txt('mirror'),indicator = 0, width=9,fg='blue',variable = self.mirror, onvalue=True, offvalue=False,
@@ -343,10 +368,10 @@ class app:
             command = self.generateMirrorFrame)
         buttonMirror.grid(row=2, column=2, sticky = 'w')
         
-#        Spinbox(self.frameScheduler, values=[txt('Gait'),txt('Behavior')], width=10,fg='blue',textvariable =  self.gaitOrBehavior, wrap=True).grid(row=2, column=3)
+#        Spinbox(self.frameScheduler, values=[txt('Gait'),txt('Behavior')], width = 8,fg='blue',textvariable =  self.gaitOrBehavior, wrap=True).grid(row=2, column=3)
         self.gaitOrBehavior = StringVar()
         self.GorB = OptionMenu(self.frameScheduler, self.gaitOrBehavior, txt('Gait'), txt('Behavior'))
-        self.GorB.config(width=9, fg = 'blue')
+        self.GorB.config(width=7, fg = 'blue')
         self.gaitOrBehavior.set(txt('Behavior'))
         self.GorB.grid(row=2, column=3)
 
@@ -357,17 +382,17 @@ class app:
         
     def createSkillSchedule(self):
         self.frameSkillSchedule = Frame(self.window) #https://blog.teclado.com/tkinter-scrollable-frames/
-        self.frameSkillSchedule.grid(row = 3, column = 1,ipadx=2, ipady=5)
+        self.frameSkillSchedule.grid(row = 3, column = 1)
         
         self.vLoop = IntVar()
-        self.loopRepeat = Entry(self.frameSkillSchedule, width=frameItemWidth[cLoop], textvariable=self.vLoop, bd=1)
+        self.loopRepeat = Entry(self.frameSkillSchedule, width=frameItemWidth[cLoop], textvariable=self.vLoop)
         self.loopRepeat.grid(row=0, column=cLoop)
         
         for i in range(1, len(labelSchedulerHeader)):
-            Label(self.frameSkillSchedule,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+2, anchor='w').grid(row = 0, column = i)
+            Label(self.frameSkillSchedule,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+2).grid(row = 0, column = i,sticky='w')
         
-        canvas = Canvas(self.frameSkillSchedule, width = 480, height = 470)
-        scrollbar = Scrollbar(self.frameSkillSchedule, orient='vertical', command=canvas.yview)
+        canvas = Canvas(self.frameSkillSchedule, width = 445, height = 355,bd = 0)
+        scrollbar = Scrollbar(self.frameSkillSchedule, orient='vertical',width = 12, command=canvas.yview)
         self.scrollable_frame = Frame(canvas)
         
         self.scrollable_frame.bind(
@@ -378,9 +403,9 @@ class app:
         )
         canvas.create_window((0, 0), window=self.scrollable_frame, anchor='nw')
         canvas.config(yscrollcommand=scrollbar.set)
+        canvas.grid(row = 1, column = 0, columnspan = len(labelSchedulerHeader)-1)
         
-        canvas.grid(row = 1, column = 0, columnspan = len(labelSchedulerHeader))
-        scrollbar.grid(row = 1, column =len(labelSchedulerHeader),sticky = 'ns')
+        scrollbar.grid(row = 1, column =len(labelSchedulerHeader)-1,sticky = 'wns')
         self.restartScheduler()
 
     def createImage(self):
@@ -425,12 +450,13 @@ class app:
             for i in range(1,len(labelSchedulerHeader)):
                 self.frameSkillSchedule.winfo_children()[i].config(text = txt(labelSchedulerHeader[i]))
             for r in range(len(self.frameList)):
-                tt = '< '+txt('Set')
+                tt = '='#+txt('Set')
                 ft = 'sans 12'
                 if self.activeFrame == r:
                     ft = 'sans 14 bold'
                     if self.frameList[r][2] != self.frameData:
-                        tt = '* '+ txt('Save')
+                        tt = '!'#+ txt('Save')
+                        self.getWidget(r,cSet).config(fg = 'red')
                 self.getWidget(r,cSet).config(text = tt, font = ft)
                 
                 if not self.getWidget(r, cSpeed).get().isnumeric():
@@ -473,7 +499,8 @@ class app:
         rowLabel = Label(singleFrame, text = str(currentRow), width = frameItemWidth[cLabel])
         rowLabel.grid(row=0, column=cLabel)
         
-        setButton = Button(singleFrame, text = '< '+txt('Set'), font='sans 14 bold', fg='blue', width=frameItemWidth[cSet], command=lambda idx=currentRow: self.setFrame(idx))
+        setButton = Button(singleFrame, text = '='#+txt('Set')
+        , font='sans 14 bold', fg='blue', width=frameItemWidth[cSet], command=lambda idx=currentRow: self.setFrame(idx))
         
         vSpeed = StringVar()
         Spinbox(singleFrame, width=frameItemWidth[cSpeed], values = ('1','2','4','8','12','16','32','48',txt('max')), textvariable = vSpeed, wrap=True).grid(row=0, column=cSpeed)
@@ -522,7 +549,7 @@ class app:
         vDelay.set(0)
         self.frameList.insert(currentRow, [currentRow, singleFrame, newFrameData])
         self.changeButtonState(currentRow)
-        singleFrame.grid(row=currentRow + 1, column=0, columnspan=7, ipadx=1, pady=1)
+        singleFrame.grid(row=currentRow + 1, column=0, columnspan=len(labelSchedulerHeader))
 #        singleFrame.update() #any update() after rebuilding the window will cause some problem in the button's function
             
     def pause(self):
@@ -562,10 +589,12 @@ class app:
 
     def changeButtonState(self, currentRow):
         if self.totalFrame > 0:
-            self.getWidget(currentRow, cSet).config(text = '< '+txt('Set'), font='sans 14 bold')
+            self.getWidget(currentRow, cSet).config(text = '='#+txt('Set')
+            , font='sans 14 bold',fg = 'blue')
             if currentRow !=self.activeFrame:
                 if self.activeFrame>=0 and self.activeFrame<self.totalFrame:
-                    self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 12')
+                    self.getWidget(self.activeFrame, cSet).config(text = '='#+txt('Set')
+                    , font='sans 12',fg = 'blue')
                 self.activeFrame = currentRow
             self.originalAngle[0] = 0
         
@@ -580,7 +609,6 @@ class app:
             self.updateSliders(self.frameData)
             self.changeButtonState(currentRow)
             self.frameController.update()
-            print(indexedList)
             if len(indexedList)>16:
                 send(ports, ['L',self.frameData[4:20],0])
             elif len(indexedList):
@@ -598,7 +626,8 @@ class app:
 #                currentFrame[2][4+i] = self.frameData[4+i]
             currentFrame[2][4:] = copy.deepcopy(self.frameData[4:])
             
-            self.getWidget(currentRow, cSet).config(text = '< '+txt('Set'), font='sans 14 bold')
+            self.getWidget(currentRow, cSet).config(text = '='#+txt('Set')
+            , font='sans 14 bold',fg = 'blue')
         if self.totalFrame ==1:
             self.activeFrame=0
         
@@ -731,7 +760,8 @@ class app:
         
     def play(self):
         if self.activeFrame+1 == self.totalFrame:
-            self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 12')
+            self.getWidget(self.activeFrame, cSet).config(text = '='#+txt('Set')
+            , font='sans 12')
             self.activeFrame = 0;
         for f in range(self.activeFrame, self.totalFrame):
             if self.playStop:
@@ -780,7 +810,8 @@ class app:
                     
     def export(self):
         if self.activeFrame+1 == self.totalFrame:
-            self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 12')
+            self.getWidget(self.activeFrame, cSet).config(text = '='#+txt('Set')
+            , font='sans 12')
             self.window.update()
             self.activeFrame = 0;
         skillData = list()
@@ -869,11 +900,13 @@ class app:
     def indicateEdit(self):
         frame = self.frameList[self.activeFrame]
         if frame[2] != self.frameData:
-            self.getWidget(self.activeFrame, cSet).config(text = '* '+ txt('Save'), font='sans 14 bold')
+            self.getWidget(self.activeFrame, cSet).config(text = '!'#+ txt('Save')
+            , font='sans 14 bold',fg = 'red')
 #            print('frm',frame[2])
 #            print('dat',self.frameData)
         else:
-            self.getWidget(self.activeFrame, cSet).config(text = '< '+txt('Set'), font='sans 14 bold')
+            self.getWidget(self.activeFrame, cSet).config(text = '='#+txt('Set')
+            , font='sans 14 bold',fg = 'blue')
             
     def setCheckBox(self,currentRow):
         frame = self.frameList[currentRow]
@@ -1039,6 +1072,7 @@ class app:
                     closeAllSerial(goodPorts)
                     self.portMenu['menu'].delete(0,'end')
                     self.port.set(txt('None'))
+                    self.keepChecking = False
                     self.frameDial.winfo_children()[1].config(text = txt('Connect'),fg = 'red')
                     self.dialValue[0].set(False)
                     for b in buttons:
@@ -1046,9 +1080,13 @@ class app:
                 else:
                     self.dialValue[0].set(True)
                     self.frameDial.winfo_children()[0].update()
-                    connectPort()
+                    goodPorts= {}
+                    connectPort(goodPorts)
                     self.portMenu.destroy()
                     self.createPortMenu()
+                    self.keepChecking = True
+                    t=threading.Thread(target = self.keepCheckingPort, args = (goodPorts,))
+                    t.start()
                     state = send(ports, ['b', [10,90],0])
                     if len(goodPorts)>0:
                         self.frameDial.winfo_children()[1].config(text = txt('Connected'),fg='green')
@@ -1086,7 +1124,8 @@ class app:
 
 if __name__ == '__main__':
     try:
-        connectPort()
+        goodPorts = {}
+        connectPort(goodPorts)
         ports = goodPorts
 #        time.sleep(2)
 #        if len(goodPorts)>0:

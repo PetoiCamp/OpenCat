@@ -116,12 +116,11 @@ wkF = [
   16,  48,  69,  42,  12,  17,  11,  14,
   12,  49,  63,  44,  17,  18,   1,  15]
 
-
+model = 'Bittle'
+postureTable = postureDict[model]
 
 if __name__ == '__main__':
     try:
-        flushSerialOutput(300)
-
         '''
         testSchedule is used to test various serial port commands
         '''
@@ -131,6 +130,9 @@ if __name__ == '__main__':
             # - 1 indicates the postponed time after finishing the command, in seconds
             # - the skill data is stored locally on the robot
             ['kbalance', 1],
+            
+            # turn of the gyroscope
+            ['g',0],
 
             # - m indicates the command to control the rotation of the joint servo
             # - 0 indicates the index number of joint servo
@@ -188,18 +190,18 @@ if __name__ == '__main__':
             # - 5 indicates the postponed time after finishing the command, in seconds
             ['L', [20, 0, 0, 0, 0, 0, 0, 0, 25, 0, 45, 45, 80, 80, 36, 36], 1],
 
+            # - u calls a 'meow' sound
+            ['u',0],
+
+            # - o calls a built-in melody
+            ['o',0],
+
             # - b indicates the command to control the buzzer to beep, encrypted in ASCII
             # - 15 indicates the music tone
             # - 90 indicates the lengths of duration, the value range is 0~255
             # - 2 indicates the postponed time after completing the pronunciation, in seconds
-            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 15, 90, 12, 90, 8, 180, 10, 90, 13, 90, 12, 90, 10, 90, 15, 180,],1],
 
-            # Using this format, multiple tone commands can be encrypted in binary
-            # the music melody is played.
-            # - '20', '22', '24', '15', '20' indicate the music tones
-            # - '4', '4', '4', '4', '4' indicates 3 second/lengths of duration
-            # - 2 indicates the postponed time after the music melody is played, in seconds
-            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1], 1],
+            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 15, 90, 12, 90, 8, 180, 10, 90, 13, 90, 12, 90, 10, 90, 15, 180,],1],
 
             # - 'K' indicates the skill data to send to Bittle in realtime
             # they are sent to the robot on the go and executed locally on the robot
@@ -207,27 +209,46 @@ if __name__ == '__main__':
             ['kvt', 2],
             ['K',sit, 1],
             ['kck', 1],
-            # 'T' calls the last temp skill data of 'K' received from the serial port
+#            # 'T' calls the last temp skill data of 'K' received from the serial port
             ['T', 2],
             ['K', vt, 2],
             ['ksit', 1],
             ['T', 2],
             ['K', ck, 1],  # compare it with the previous 'kck' command
+
+            # large angles out of -125~125 are also supported
+            ['I', [8, -140, 0, 40, 9, -140, 10, 50, 11, -20], 1],
+            ['L', [20, 0, 0, 0, 0, 0, 0, 0,-55,-55, 45, 45, 130, 130, 36, 36], 1],
+            
+            # Using this format, multiple tone commands can be encrypted in binary
+            # the music melody is played.
+            # - '20', '22', '24', '15', '20' indicate the music tones
+            # - '4', '4', '4', '4', '4' indicates 3 second/lengths of duration
+            # - 2 indicates the postponed time after the music melody is played, in seconds
+
+            # may be cut off by multithreading. haven't fixed it.
+            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1], 1],
+
             ['d', 0]
         ]
-        
+        goodPorts = {}
+        connectPort(goodPorts)
+        t=threading.Thread(target = keepCheckingPort, args = (goodPorts,))
+        t.start()
+        parallel = False
+#        if len(goodPorts)>0:
         time.sleep(2);
         for task in testSchedule:  # execute the tasks in the testSchedule
             print(task)
-            wrapper(task)
+            send(goodPorts, task)
         
-        schedulerToSkill(testSchedule[:11]) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots. 
-
-        closeSerialBehavior()
+        schedulerToSkill(goodPorts, testSchedule) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots.
+        closeAllSerial(goodPorts)
         logger.info("finish!")
 
     except Exception as e:
-        wrapper(['d',1])
+        sendTaskParallel(['d',1])
+#        time.sleep(2)
         logger.info("Exception")
-        closeSerialBehavior()
+        closeAllSerial(goodPorts)
         raise e
