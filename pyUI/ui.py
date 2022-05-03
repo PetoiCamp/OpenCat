@@ -14,6 +14,7 @@ import tkinter.font as tkFont
 from PIL import ImageTk, Image
 import copy
 import threading
+from tkinter.filedialog import asksaveasfile
 from translate import *
 
 
@@ -34,9 +35,9 @@ scaleNames = [
     'Knee', 'Knee', 'Knee', 'Knee']
 sideNames = ['Left Front','Right Front', 'Right Back', 'Left Back']
 dialTable = {'Connect':'Connected', 'Servo': 'p', 'Gyro': 'g',  'Random': 'z'}
-labelSchedulerHeader = ['Repeat','Loop','Set', 'Speed', 'Delay/ms', 'Trig','Angle','Note', 'Del', 'Add','']
-cLoop,cLabel, cSet, cSpeed, cDelay,cTrig,cAngle, cNote, cDel, cAdd,cScroller = range(len(labelSchedulerHeader))
-frameItemWidth =[1,2,1,3,4,2,3,5,1,1,1]
+labelSchedulerHeader = ['Repeat','Loop', 'Speed', 'Delay/ms', 'Trig','Angle','Note', 'Del', 'Add','']
+cLoop, cSet, cSpeed, cDelay,cTrig,cAngle, cNote, cDel, cAdd,cScroller = range(len(labelSchedulerHeader))
+frameItemWidth =[2,1,3,4,2,3,5,1,1,1]
 axisDisable = {
     'Nybble': [0,5],
     'Bittle': [0,5],
@@ -117,7 +118,7 @@ class app:
         for key in NaJoints:
             file.add_command(label=key,command = lambda model = key: self.changeModel(model))
         file.add_separator()
-        file.add_command(label=txt('Exit'), command=self.window.quit)
+        file.add_command(label=txt('Exit'), command=self.on_closing)
         self.menubar.add_cascade(label=txt('Model'), menu=file)
         
         lan = Menu(self.menubar, tearoff=0)
@@ -391,7 +392,7 @@ class app:
         for i in range(1, len(labelSchedulerHeader)):
             Label(self.frameSkillSchedule,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+2).grid(row = 0, column = i,sticky='w')
         
-        canvas = Canvas(self.frameSkillSchedule, width = 445, height = 355,bd = 0)
+        canvas = Canvas(self.frameSkillSchedule, width = 420, height = 355,bd = 0)
         scrollbar = Scrollbar(self.frameSkillSchedule, orient='vertical',width = 12, command=canvas.yview)
         self.scrollable_frame = Frame(canvas)
         
@@ -417,12 +418,6 @@ class app:
         self.frameImage = Label(self.frameController, image=img)
         self.frameImage.image = img
         self.frameImage.grid(row=3, column=3, rowspan=2, columnspan=2)
-        
-    def closeWindow(self):
-        print(self.window.winfo_children())
-        for w in self.window.winfo_children():
-            w.destroy()
-        self.window.destroy()
         
     def changLan(self,l):
         global language
@@ -492,15 +487,16 @@ class app:
         singleFrame = Frame(self.scrollable_frame, borderwidth=1, relief=RAISED)
         
         vChecked = BooleanVar()
-        loopCheck = Checkbutton(singleFrame, variable = vChecked, onvalue=True, offvalue=False,
+        loopCheck = Checkbutton(singleFrame, variable = vChecked, text = str(currentRow), onvalue=True, offvalue=False, indicator = 0,  width=frameItemWidth[cLoop],
             command=lambda idx=currentRow: self.setCheckBox(idx))
         loopCheck.grid(row = 0,column = cLoop)
         
-        rowLabel = Label(singleFrame, text = str(currentRow), width = frameItemWidth[cLabel])
-        rowLabel.grid(row=0, column=cLabel)
+#        rowLabel = Label(singleFrame, text = str(currentRow), width = frameItemWidth[cLabel])
+#        rowLabel.grid(row=0, column=cLabel)
         
         setButton = Button(singleFrame, text = '='#+txt('Set')
-        , font='sans 14 bold', fg='blue', width=frameItemWidth[cSet], command=lambda idx=currentRow: self.setFrame(idx))
+        , font='sans 14 bold', fg='blue', #width=frameItemWidth[cSet],
+        command=lambda idx=currentRow: self.setFrame(idx))
         
         vSpeed = StringVar()
         Spinbox(singleFrame, width=frameItemWidth[cSpeed], values = ('1','2','4','8','12','16','32','48',txt('max')), textvariable = vSpeed, wrap=True).grid(row=0, column=cSpeed)
@@ -579,8 +575,8 @@ class app:
             frame = self.frameList[f]
             frame[0] += shift
             widgets = frame[1].winfo_children()
-            widgets[cLabel].config(text = str(frame[0])) #set
-            widgets[cLoop].config(command=lambda idx=frame[0]: self.setCheckBox(idx))
+#            widgets[cLabel].config(text = str(frame[0])) #set
+            widgets[cLoop].config(text = str(frame[0]), command=lambda idx=frame[0]: self.setCheckBox(idx))
             widgets[cSet].config(command=lambda idx=frame[0]: self.setFrame(idx)) #set
             widgets[cDel].config(command=lambda idx=frame[0]: self.delFrame(idx)) #delete
             widgets[cAdd].config(command=lambda idx=frame[0]: self.addFrame(idx + 1)) #add
@@ -808,7 +804,20 @@ class app:
         self.frameController.update()
         send(ports, ['L',self.frameData[4:20],0])
                     
+
+
+        
+
+                    
     def export(self):
+        files = [('Text Document', '*.txt'),
+                ('Python Files', '*.py'),
+                ('All Files', '*.*'),
+        ]
+        file = asksaveasfile(filetypes = files, defaultextension = files).name
+        print(file)
+        
+        
         if self.activeFrame+1 == self.totalFrame:
             self.getWidget(self.activeFrame, cSet).config(text = '='#+txt('Set')
             , font='sans 12')
@@ -867,6 +876,14 @@ class app:
                     r[:16] = list(map(lambda x: x//angleRatio,r[:16]))
         if len(loopStructure)==0:
             loopStructure = [0]
+        if len(loopStructure)>2:
+            for l in range(1,len(loopStructure)-1):
+                f = loopStructure[l]+startFrame
+                frame = self.frameList[f]
+                frame[2][3]=0
+                self.getWidget(f, cLoop).deselect()
+            self.frameSkillSchedule.update()
+                
         print('{')
         print('{:>4},{:>4},{:>4},{:>4},'.format(*[period, 0, 0, angleRatio]))
         if period <0 and self.gaitOrBehavior.get() == txt('Behavior'):
@@ -880,7 +897,10 @@ class app:
         skillData.insert(0,[period, 0, 0, angleRatio])
         flat_list = [item for sublist in skillData for item in sublist]
         print(flat_list)
+        with open(file, 'w') as f:
+            f.write(str(flat_list))
         send(ports, ['K',flat_list,0])
+        
 
 
     def restartScheduler(self):
@@ -1119,6 +1139,7 @@ class app:
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
+            self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
     
 
