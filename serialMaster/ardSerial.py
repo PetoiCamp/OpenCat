@@ -121,13 +121,14 @@ def printSerialMessage(port,token,timeout=0):
         if timeout>0 and now - startTime >timeout:
             return -1
 #            return 'err'
-        response = port.main_engine.readline().decode('ISO-8859-1')
-        if response != '':
-            startTime = time.time()
-            if response.lower() == token.lower() +'\r\n' or timeout !=0:
-                return response[:-2]
-            else:
-                print(response[:-2], flush = True)
+        if port:
+            response = port.main_engine.readline().decode('ISO-8859-1')
+            if response != '':
+                startTime = time.time()
+                if response.lower() == token.lower() +'\r\n' or timeout !=0:
+                    return response[:-2]
+                else:
+                    print(response[:-2], flush = True)
 
 
 def sendTask(goodPorts,port, task, timeout = 0):  # task Structure is [token, var=[], time]
@@ -135,28 +136,31 @@ def sendTask(goodPorts,port, task, timeout = 0):  # task Structure is [token, va
     global returnValue
 #    global sync
 #    print(task)
-    try:
-        if len(task) == 2:
-    #        print('a')
-    #        print(task[0])
-            serialWriteByte(port,[task[0]])
-        elif isinstance(task[1][0], int):
-    #        print('b')
-            serialWriteNumToByte(port,task[0], task[1])
-        else:
-    #        print('c') #which case
-            serialWriteByte(port,task[1])
-        token = task[0][0]
-        lastMessage = printSerialMessage(port,token,timeout)
-        time.sleep(task[-1])
-    #    with lock:
-    #        sync += 1
-    #        printH('sync',sync)
-    #    if initialized:
-    #        printH('thread',portDictionary[port])
-    except Exception as e:
-#        printH('Fail to send to port',goodPorts[port])
-        goodPorts.pop(port)
+    if port:
+        try:
+            if len(task) == 2:
+        #        print('a')
+        #        print(task[0])
+                serialWriteByte(port,[task[0]])
+            elif isinstance(task[1][0], int):
+        #        print('b')
+                serialWriteNumToByte(port,task[0], task[1])
+            else:
+        #        print('c') #which case
+                serialWriteByte(port,task[1])
+            token = task[0][0]
+            lastMessage = printSerialMessage(port,token,timeout)
+            time.sleep(task[-1])
+        #    with lock:
+        #        sync += 1
+        #        printH('sync',sync)
+        #    if initialized:
+        #        printH('thread',portDictionary[port])
+        except Exception as e:
+    #        printH('Fail to send to port',goodPorts[port])
+            goodPorts.pop(port)
+            lastMessage = -1
+    else:
         lastMessage = -1
     returnValue = lastMessage
     return lastMessage
@@ -218,7 +222,6 @@ def send(port, task, timeout = 0):
         
 def keepReadingInput(ports):
     while True and len(ports):
-        print(len(ports),flush = True)
         time.sleep(0.005)
         x = input() # blocked waiting for the user's input
         if x != "":
@@ -416,11 +419,25 @@ def testPort(goodPorts,serialObject,p):
 #    global sync
     result = sendTask(goodPorts,serialObject,['b',0],2)
     if result!=-1:
+        printH('Adding',p)
         goodPorts.update({serialObject:p})
         goodPortCount += 1
     else:
         serialObject.Close_Engine()
 #    sync +=1
+
+def checkPortList(goodPorts,allPorts):
+    threads = list()
+    for p in reversed(allPorts): #assuming the last one is the most possible port
+        if p == '/dev/ttyAMA0':
+            continue
+        serialObject = Communication(p, 115200, 0.5)
+        t=threading.Thread(target=testPort,args=(goodPorts,serialObject,p.split('/')[-1]))
+        threads.append(t)
+        t.start()
+    for t in threads:
+        if t.is_alive():
+            t.join(5)
 
 def keepCheckingPort(goodPorts):
     allPorts = Communication.Print_Used_Com()
@@ -428,18 +445,16 @@ def keepCheckingPort(goodPorts):
         time.sleep(0.2)
         currentPorts = Communication.Print_Used_Com()
         if set(currentPorts) - set(allPorts):
-            newPort = list(set(currentPorts) - set(allPorts))[0]
-            serialObject = Communication(newPort, 115200, 0.5)
-            t=threading.Thread(target=testPort,args=(goodPorts,serialObject,newPort.split('/')[-1]))
-            t.start()
-            t.join(5)
-            print(goodPorts)
-#        elif set(allPorts) - set(currentPorts):
-#            closedPort = list(set(allPorts) - set(currentPorts))[0]
-#            print(closedPort)
-#            inv_dict = {v: k for k, v in goodPorts.items()}
-#            goodPorts.pop(inv_dict[closedPort.split('/')[-1]])
+            newPort = list(set(currentPorts) - set(allPorts))
+            checkPortList(goodPorts,newPort)
             
+        elif set(allPorts) - set(currentPorts):
+            closedPort = list(set(allPorts) - set(currentPorts))
+            inv_dict = {v: k for k, v in goodPorts.items()}
+            for p in closedPort:
+                printH('Removing',p)
+                goodPorts.pop(inv_dict[p.split('/')[-1]])
+                
         allPorts = copy.deepcopy(currentPorts)
         
 
@@ -454,18 +469,7 @@ def connectPort(goodPorts):
     
     if len(allPorts)>0:
         goodPortCount = 0
-        threads = list()
-        for p in reversed(allPorts): #assuming the last one is the most possible port
-            if p == '/dev/ttyAMA0':
-                continue
-            serialObject = Communication(p, 115200, 0.5)
-            t=threading.Thread(target=testPort,args=(goodPorts,serialObject,p.split('/')[-1]))
-            threads.append(t)
-            t.start()
-        for t in threads:
-            if t.is_alive():
-                t.join(5)
-            
+        checkPortList(goodPorts,allPorts)
     initialized = True
     if len(goodPorts) ==0:
         print('No port found!')

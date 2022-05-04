@@ -14,7 +14,7 @@ import tkinter.font as tkFont
 from PIL import ImageTk, Image
 import copy
 import threading
-from tkinter.filedialog import asksaveasfile
+from tkinter.filedialog import asksaveasfile, askopenfilename
 from translate import *
 
 
@@ -138,7 +138,7 @@ class app:
         label = Label(self.frameController, text=txt('Joint Controller'), font=self.myFont)
         label.grid(row=0, column=0, columnspan=width)
         self.controllerLabels.append(label)
-        unbindButton = Button(self.frameController,text = txt('Unbind All'),fg = 'blue',command = self.unbindAll)
+        unbindButton = Button(self.frameController,text = txt('Unbind All'),fg = 'blue', command = self.unbindAll)
         unbindButton.grid(row=5, column=3, columnspan=2)
         self.controllerLabels.append(unbindButton)
         for i in range(16):
@@ -281,16 +281,36 @@ class app:
         
     def createPortMenu(self):
         self.port = StringVar()
-        self.options = list(goodPorts.values())
-        if len(self.options)>1:
-            self.options.insert(0,txt('All'))
-        elif len(self.options)==0:
-            self.options.insert(0,txt('None'))
+        self.options = [txt('None')]#goodPorts.values())
         self.portMenu = OptionMenu(self.frameDial, self.port, *self.options)
         self.portMenu.config(width=12, fg = 'blue')
         self.port.trace('w', lambda *args : self.changePort(''))
-        self.port.set(self.options[0])
         self.portMenu.grid(row= 1, column= 1, padx = 1)
+        self.updatePortMenu()
+        
+    def updatePortMenu(self):
+        self.options = list(goodPorts.values())
+        menu = self.portMenu['menu']
+        menu.delete(0,'end')
+        stt = NORMAL
+#        self.dialValue[0].set(self.keepChecking)
+        if len(self.options)==0:
+            self.options.insert(0,txt('None'))
+            stt = DISABLED
+            if self.keepChecking:
+                self.dialValue[0].set(True)
+                self.frameDial.winfo_children()[1].config(text = txt('Listening'),fg='orange')
+            else:
+                self.frameDial.winfo_children()[1].config(text = txt('Connect'),fg='red')
+        else:
+            if len(self.options)>1:
+                self.options.insert(0,txt('All'))
+            if self.keepChecking:
+                self.frameDial.winfo_children()[1].config(text = txt('Connected'),fg='green')
+        for string in self.options:
+            menu.add_command(label=string,command = lambda p = string: self.port.set(p))
+        self.portMenu.config(state = stt)
+        self.port.set(self.options[0])
         
     def keepCheckingPort(self,goodPorts):
         allPorts = Communication.Print_Used_Com()
@@ -298,21 +318,16 @@ class app:
             time.sleep(0.2)
             currentPorts = Communication.Print_Used_Com()
             if set(currentPorts) - set(allPorts):
-                newPort = list(set(currentPorts) - set(allPorts))[0]
-                serialObject = Communication(newPort, 115200, 0.5)
-                t=threading.Thread(target=testPort,args=(goodPorts,serialObject,newPort.split('/')[-1]))
-                t.start()
-                t.join(5)
-                printH('Adding',newPort)
-                self.portMenu.destroy()
-                self.createPortMenu()
+                newPort = list(set(currentPorts) - set(allPorts))
+                checkPortList(goodPorts,newPort)
+                self.updatePortMenu()
             elif set(allPorts) - set(currentPorts):
-                closedPort = list(set(allPorts) - set(currentPorts))[0]
-                printH('Removing',closedPort)
+                closedPort = list(set(allPorts) - set(currentPorts))
                 inv_dict = {v: k for k, v in goodPorts.items()}
-                goodPorts.pop(inv_dict[closedPort.split('/')[-1]])
-                self.portMenu.destroy()
-                self.createPortMenu()
+                for p in closedPort:
+                    printH('Removing',p)
+                    goodPorts.pop(inv_dict[p.split('/')[-1]])
+                self.updatePortMenu()
             allPorts = copy.deepcopy(currentPorts)
         
     def changePort(self,magicArg):
@@ -459,7 +474,7 @@ class app:
                     self.getWidget(r, cSpeed).insert(0,txt('max'))
         
     def about(self):
-        messagebox.showinfo('Petoi Controller UI', 'www.petoi.com')
+        messagebox.showinfo('Petoi Controller UI', 'Petoi Controller for OpenCat 2.0\nCopyright 2022 Petoi LLC\nwww.petoi.com')
     
     def changeModel(self,modelName):
         global model
@@ -634,7 +649,16 @@ class app:
         e.insert(0, 'Hello World!')
         
     def clearSkillText(self):
-        self.skillText.delete("1.0","end")
+        self.skillText.delete('1.0','end')
+        
+    def openFile(self):
+        print('open')
+        file = askopenfilename()
+        print(file)
+        if file:
+            with open(file, 'r') as f:
+                self.clearSkillText()
+                self.skillText.insert('1.0',f.read())
         
     def loadSkillDataText(self, top):
         skillDataString = self.skillText.get('1.0','end')
@@ -643,7 +667,11 @@ class app:
             print('Empty input!')
             return
         self.restartScheduler()
-        skillData = list(map(int,''.join(skillDataString.split()).split('{')[1].split('}')[0].split(',')[:-1]))
+        skillDataString=''.join(skillDataString.split()).split('{')[1].split('}')[0].split(',')
+        if skillDataString[-1]=='':
+            skillDataString = skillDataString[:-1]
+        skillData = list(map(int,skillDataString))
+        print(skillData)
             
         if skillData[0] < 0:
             header = 7
@@ -665,7 +693,7 @@ class app:
                     frameSize = 12
                     copyFrom = 8
             self.gaitOrBehavior.set(txt('Gait'))
-        if (len(skillData)-header)% abs(skillData[0])!=0 or frameSize != (len(skillData)-header)//abs(skillData[0]):
+        if (len(skillData)-header) % abs(skillData[0])!=0 or frameSize != (len(skillData)-header)//abs(skillData[0]):
             messagebox.showwarning(title=Warning, message='Wrong format!')
             print('Wrong format!')
             return
@@ -715,7 +743,7 @@ class app:
         top.geometry('900x500')
 
        #Create an Entry Widget in the Toplevel window
-        Button(top,text= txt('Open File'), width = 10, state = DISABLED, command= lambda:insert_val(entry)).grid(row = 0, column = 0)
+        Button(top,text= txt('Open File'), width = 10, command= self.openFile).grid(row = 0, column = 0)
         Button(top,text= txt('Clear'), width = 10, command= self.clearSkillText).grid(row = 0, column = 1)
        #Create a Button Widget in the Toplevel Window
         Button(top, text=txt('Cancel'), width = 10, command=lambda:self.closePop(top)).grid(row =0, column = 2 )
@@ -806,15 +834,13 @@ class app:
                     
 
 
-        
-
                     
     def export(self):
         files = [('Text Document', '*.txt'),
                 ('Python Files', '*.py'),
                 ('All Files', '*.*'),
         ]
-        file = asksaveasfile(filetypes = files, defaultextension = files).name
+        file = asksaveasfile(filetypes = files, defaultextension = files)
         print(file)
         
         
@@ -892,13 +918,22 @@ class app:
             print(('{:>4},'*frameSize).format(*row))
         print('};')
         
+        fileData = '{\n' + '{:>4},{:>4},{:>4},{:>4},\n'.format(*[period, 0, 0, angleRatio])
+        if period <0 and self.gaitOrBehavior.get() == txt('Behavior'):
+            fileData += '{:>4},{:>4},{:>4},\n'.format(*[ loopStructure[0], loopStructure[-1], self.loopRepeat.get()])
+        for row in skillData:
+            fileData += ('{:>4},'*frameSize).format(*row)
+            fileData += '\n'
+        fileData += '};'
+        
         if self.gaitOrBehavior.get() == txt('Behavior'):
             skillData.insert(0,[loopStructure[0], loopStructure[-1], int(self.loopRepeat.get())])
         skillData.insert(0,[period, 0, 0, angleRatio])
         flat_list = [item for sublist in skillData for item in sublist]
         print(flat_list)
-        with open(file, 'w') as f:
-            f.write(str(flat_list))
+        if file:
+            with open(file.name, 'w') as f:
+                f.write(fileData)
         send(ports, ['K',flat_list,0])
         
 
@@ -1087,11 +1122,12 @@ class app:
             buttons = self.frameDial.winfo_children()[2:5]
             key = list(dialTable)[i]
             if key == 'Connect':
-                if len(goodPorts)>0:
+                if self.keepChecking:
                     state = send(ports, ['b', [10,90],0],1)
                     closeAllSerial(goodPorts)
-                    self.portMenu['menu'].delete(0,'end')
-                    self.port.set(txt('None'))
+#                    self.portMenu['menu'].delete(0,'end')
+#                    self.port.set(txt('None'))
+                    self.portMenu.config(state = DISABLED)
                     self.keepChecking = False
                     self.frameDial.winfo_children()[1].config(text = txt('Connect'),fg = 'red')
                     self.dialValue[0].set(False)
@@ -1102,8 +1138,9 @@ class app:
                     self.frameDial.winfo_children()[0].update()
                     goodPorts= {}
                     connectPort(goodPorts)
-                    self.portMenu.destroy()
-                    self.createPortMenu()
+#                    self.portMenu.destroy()
+#                    self.createPortMenu()
+                    self.updatePortMenu()
                     self.keepChecking = True
                     t=threading.Thread(target = self.keepCheckingPort, args = (goodPorts,))
                     t.start()
@@ -1113,7 +1150,7 @@ class app:
                         for b in buttons:
                             b.configure(state = NORMAL)
                     else:
-                        self.dialValue[0].set(False)
+                        self.frameDial.winfo_children()[1].config(text = txt('Listening'),fg='orange')
                         self.frameDial.winfo_children()[0].update()
                     
             elif len(goodPorts)>0:
