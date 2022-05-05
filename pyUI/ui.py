@@ -6,7 +6,7 @@ import random
 import sys
 sys.path.append('../serialMaster/')
 from ardSerial import *
-import ardSerial
+#import ardSerial
 
 from tkinter import *
 from tkinter import messagebox
@@ -35,9 +35,9 @@ scaleNames = [
     'Knee', 'Knee', 'Knee', 'Knee']
 sideNames = ['Left Front','Right Front', 'Right Back', 'Left Back']
 dialTable = {'Connect':'Connected', 'Servo': 'p', 'Gyro': 'g',  'Random': 'z'}
-labelSchedulerHeader = ['Repeat','Loop', 'Speed', 'Delay/ms', 'Trig','Angle','Note', 'Del', 'Add','']
-cLoop, cSet, cSpeed, cDelay,cTrig,cAngle, cNote, cDel, cAdd,cScroller = range(len(labelSchedulerHeader))
-frameItemWidth =[2,1,3,4,2,3,5,1,1,1]
+labelSchedulerHeader = ['Repeat','Loop', 'Speed', 'Delay', 'Trig','Angle','Note', 'Del', 'Add']
+cLoop, cSet, cSpeed, cDelay,cTrig,cAngle, cNote, cDel, cAdd = range(len(labelSchedulerHeader))
+frameItemWidth =[2,2,3,4,2,3,6,1,1]
 axisDisable = {
     'Nybble': [0,5],
     'Bittle': [0,5],
@@ -117,8 +117,6 @@ class app:
         file = Menu(self.menubar, tearoff=0, background='#ffcc99', foreground='black')
         for key in NaJoints:
             file.add_command(label=key,command = lambda model = key: self.changeModel(model))
-        file.add_separator()
-        file.add_command(label=txt('Exit'), command=self.on_closing)
         self.menubar.add_cascade(label=txt('Model'), menu=file)
         
         lan = Menu(self.menubar, tearoff=0)
@@ -134,7 +132,7 @@ class app:
         
     def createController(self):
         self.frameController = Frame(self.window)
-        self.frameController.grid(row=0, column=0, rowspan=9, padx=5,pady = 5)
+        self.frameController.grid(row=0, column=0, rowspan=9, padx=(5,10),pady = 5)
         label = Label(self.frameController, text=txt('Joint Controller'), font=self.myFont)
         label.grid(row=0, column=0, columnspan=width)
         self.controllerLabels.append(label)
@@ -190,7 +188,7 @@ class app:
                           text=sideLabel+'(' + str(i)+')\n'+txt(scaleNames[i]))
  
             value = DoubleVar()
-            sliderBar = Scale(self.frameController, state=stt, bg=clr, variable=value,  orient=ORI, borderwidth=2, relief = 'flat', width = 8, from_=-150*tickDirection, to=150*tickDirection, length=LEN, tickinterval=60, resolution=1,repeatdelay = 100,repeatinterval = 1000, command=lambda value, idx=i:  self.setAngle(idx, value))
+            sliderBar = Scale(self.frameController, state=stt, bg=clr, variable=value,  orient=ORI, borderwidth=2, relief = 'flat', width = 8, from_=-150*tickDirection, to=150*tickDirection, length=LEN, tickinterval=60, resolution=1,repeatdelay = 100,repeatinterval = 100, command=lambda value, idx=i:  self.setAngle(idx, value))
             sliderBar.set(0)
             label.grid(row=ROW+1, column=COL, columnspan=cSPAN, pady=2,sticky = 's')
             sliderBar.grid(row=ROW+2, column=COL, rowspan=rSPAN, columnspan=cSPAN)
@@ -275,7 +273,7 @@ class app:
             button = Checkbutton(self.frameDial, text=txt(key), indicator = 0, width=wth, fg='green', state = dialState,var = value,command=lambda idx=i: self.dial(idx))
             value.set(defaultValue[i])
             self.dialValue.append(value)
-            button.grid(row= 1, column= i + (i>0), padx = 1)
+            button.grid(row= 1, column= i + (i>0), padx = 3)
 
         self.createPortMenu()
         
@@ -285,7 +283,7 @@ class app:
         self.portMenu = OptionMenu(self.frameDial, self.port, *self.options)
         self.portMenu.config(width=12, fg = 'blue')
         self.port.trace('w', lambda *args : self.changePort(''))
-        self.portMenu.grid(row= 1, column= 1, padx = 1)
+        self.portMenu.grid(row= 1, column= 1, padx = 2)
         self.updatePortMenu()
         
     def updatePortMenu(self):
@@ -350,7 +348,7 @@ class app:
         i = 0
         for pose in postureTable:
             button = Button(self.framePosture, text=pose, fg='blue', width = 8, command=lambda p=pose:  self.setPose(p))
-            button.grid(row=i//4 + 1, column=i % 4)
+            button.grid(row=i//4 + 1, column=i % 4,padx = 3)
             i += 1
             
     def createScheduler(self):
@@ -358,38 +356,38 @@ class app:
         self.frameScheduler.grid(row=2, column=1)
         labelScheduler = Label(self.frameScheduler, text=txt('Scheduler'), font=self.myFont)
         labelScheduler.grid(row=0, column=0, columnspan=4)
-        
+        pd = 3
         self.buttonRun = Button(self.frameScheduler, text=txt('Play'), width = 8, fg='green', command=self.playThread)
-        self.buttonRun.grid(row=1, column=0)
+        self.buttonRun.grid(row=1, column=0,padx = pd)
 
         buttonExp = Button(self.frameScheduler, text=txt('Import'), width = 8, fg='blue', command=self.popImport)
-        buttonExp.grid(row=1, column=1)
+        buttonExp.grid(row=1, column=1,padx = pd)
         
         buttonRestart = Button(self.frameScheduler, text=txt('Restart'), width = 8, fg='red', command=self.restartScheduler)
-        buttonRestart.grid(row=1, column=2)
+        buttonRestart.grid(row=1, column=2,padx = pd)
 
         buttonExp = Button(self.frameScheduler, text=txt('Export'), width = 8, fg='blue', command=self.export)
-        buttonExp.grid(row=1, column=3)
+        buttonExp.grid(row=1, column=3,padx = pd)
         
         buttonUndo = Button(self.frameScheduler, text=txt('Undo'), width = 8, fg='blue', state=DISABLED, command=self.restartScheduler)
-        buttonUndo.grid(row=2, column=0)
+        buttonUndo.grid(row=2, column=0,padx = pd)
 
         buttonRedo = Button(self.frameScheduler, text=txt('Redo'), width = 8, fg='blue', state=DISABLED, command=self.restartScheduler)
-        buttonRedo.grid(row=2, column=1)
+        buttonRedo.grid(row=2, column=1,padx = pd)
         
         self.MirrorBox = Checkbutton(self.frameScheduler, text = txt('mirror'),indicator = 0, width=9,fg='blue',variable = self.mirror, onvalue=True, offvalue=False,
-            command = self.setMirror).grid(row=2, column=2, sticky = 'e')
+            command = self.setMirror).grid(row=2, column=2, sticky = 'e',padx = pd)
             
         buttonMirror = Button(self.frameScheduler, text = txt('>|<'), width=1,fg='blue',
             command = self.generateMirrorFrame)
-        buttonMirror.grid(row=2, column=2, sticky = 'w')
+        buttonMirror.grid(row=2, column=2, sticky = 'w',padx = pd)
         
 #        Spinbox(self.frameScheduler, values=[txt('Gait'),txt('Behavior')], width = 8,fg='blue',textvariable =  self.gaitOrBehavior, wrap=True).grid(row=2, column=3)
         self.gaitOrBehavior = StringVar()
         self.GorB = OptionMenu(self.frameScheduler, self.gaitOrBehavior, txt('Gait'), txt('Behavior'))
         self.GorB.config(width=7, fg = 'blue')
         self.gaitOrBehavior.set(txt('Behavior'))
-        self.GorB.grid(row=2, column=3)
+        self.GorB.grid(row=2, column=3,padx = pd)
 
         
     def setMirror(self):
@@ -407,7 +405,7 @@ class app:
         for i in range(1, len(labelSchedulerHeader)):
             Label(self.frameSkillSchedule,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+2).grid(row = 0, column = i,sticky='w')
         
-        canvas = Canvas(self.frameSkillSchedule, width = 420, height = 355,bd = 0)
+        canvas = Canvas(self.frameSkillSchedule, width = 427, height = 355,bd = 0)
         scrollbar = Scrollbar(self.frameSkillSchedule, orient='vertical',width = 12, command=canvas.yview)
         self.scrollable_frame = Frame(canvas)
         
@@ -419,9 +417,9 @@ class app:
         )
         canvas.create_window((0, 0), window=self.scrollable_frame, anchor='nw')
         canvas.config(yscrollcommand=scrollbar.set)
-        canvas.grid(row = 1, column = 0, columnspan = len(labelSchedulerHeader)-1)
+        canvas.grid(row = 1, column = 0, columnspan = len(labelSchedulerHeader))
         
-        scrollbar.grid(row = 1, column =len(labelSchedulerHeader)-1,sticky = 'wns')
+        scrollbar.grid(row = 1, column =len(labelSchedulerHeader)+1,sticky = 'wns')
         self.restartScheduler()
 
     def createImage(self):
@@ -474,7 +472,7 @@ class app:
                     self.getWidget(r, cSpeed).insert(0,txt('max'))
         
     def about(self):
-        messagebox.showinfo('Petoi Controller UI', 'Petoi Controller for OpenCat 2.0\nCopyright 2022 Petoi LLC\nwww.petoi.com')
+        messagebox.showinfo('Petoi Controller UI', u'Petoi Controller for OpenCat\nCopyright © Petoi LLC\nwww.petoi.com')
     
     def changeModel(self,modelName):
         global model
@@ -654,8 +652,8 @@ class app:
     def openFile(self):
         print('open')
         file = askopenfilename()
-        print(file)
         if file:
+            print(file)
             with open(file, 'r') as f:
                 self.clearSkillText()
                 self.skillText.insert('1.0',f.read())
@@ -831,18 +829,13 @@ class app:
         self.indicateEdit()
         self.frameController.update()
         send(ports, ['L',self.frameData[4:20],0])
-                    
-
-
-                    
+                             
     def export(self):
         files = [('Text Document', '*.txt'),
                 ('Python Files', '*.py'),
                 ('All Files', '*.*'),
         ]
         file = asksaveasfile(filetypes = files, defaultextension = files)
-        print(file)
-        
         
         if self.activeFrame+1 == self.totalFrame:
             self.getWidget(self.activeFrame, cSet).config(text = '='#+txt('Set')
@@ -932,6 +925,7 @@ class app:
         flat_list = [item for sublist in skillData for item in sublist]
         print(flat_list)
         if file:
+            print(file)
             with open(file.name, 'w') as f:
                 f.write(fileData)
         send(ports, ['K',flat_list,0])
