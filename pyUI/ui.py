@@ -14,6 +14,7 @@ import tkinter.font as tkFont
 from PIL import ImageTk, Image
 import copy
 import threading
+from subprocess import call
 from tkinter.filedialog import asksaveasfile, askopenfilename
 from translate import *
 
@@ -27,7 +28,7 @@ postureTable = postureDict[model]
 def rgbtohex(r, g, b):
     return f'#{r:02x}{g:02x}{b:02x}'
     
-sixAxisNames = ['yaw', 'pitch', 'roll','Spinal','Height','Sideway']
+sixAxisNames = ['Yaw', 'Pitch', 'Roll','Spinal','Height','Sideway']
 scaleNames = [
     'Head Pan', 'Head Tilt', 'Tail Pan', 'N/A',
     'Shoulder', 'Shoulder', 'Shoulder', 'Shoulder',
@@ -35,9 +36,9 @@ scaleNames = [
     'Knee', 'Knee', 'Knee', 'Knee']
 sideNames = ['Left Front','Right Front', 'Right Back', 'Left Back']
 dialTable = {'Connect':'Connected', 'Servo': 'p', 'Gyro': 'g',  'Random': 'z'}
-labelSchedulerHeader = ['Repeat','Loop', 'Speed', 'Delay', 'Trig','Angle','Note', 'Del', 'Add']
-cLoop, cSet, cSpeed, cDelay,cTrig,cAngle, cNote, cDel, cAdd = range(len(labelSchedulerHeader))
-frameItemWidth =[2,2,3,4,2,3,6,1,1]
+labelSchedulerHeader = ['Repeat','Loop', 'Step', 'Delay', 'Trig','Angle','Note', 'Del', 'Add']
+cLoop, cSet, cStep, cDelay,cTrig,cAngle, cNote, cDel, cAdd = range(len(labelSchedulerHeader))
+frameItemWidth =[2,2,3,3,4,3,4,1,1]
 axisDisable = {
     'Nybble': [0,5],
     'Bittle': [0,5],
@@ -54,7 +55,14 @@ jointConfig = {
     'Bittle':'>>',
     'DoF16' :'>>'
 }
-
+triggerAxis = {
+    0:'None',
+    1:'Pitch',
+    -1:'-Pitch',
+    2:'Roll',
+    -2:'-Roll',
+#            [txt('None'),txt('-Pitch'),txt('Pitch'),txt('-Roll'),(txt('Roll')]
+}
 
 #word_file = '/usr/share/dict/words'
 #WORDS = open(word_file).read().splitlines()
@@ -80,11 +88,43 @@ class app:
         self.previousBinderValue = [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,0,0,]
         self.keepChecking = True
         self.ready = 0
+        self.OSname = self.window.call('tk', 'windowingsystem')
+        print(self.OSname)
+        self.window.geometry('+100+10')
+        if self.OSname == 'aqua':
+            self.backgroundColor ='gray'
+        else:
+            self.backgroundColor = None
+
+        if self.OSname == 'win32':
+            global frameItemWidth
+            frameItemWidth =[2,4,3,4,4,4,7,3,3]
+            self.buttonW = 10
+            self.canvasW = 330
+            self.mirrorW = 2
+            self.MirrorW = 10
+            self.headerOffset = 0
+            self.connectW = 8
+            self.dialW = 7
+            self.portW = 5
+            self.dialPad = 2
+        else:
+            self.buttonW = 8
+            self.canvasW = 420
+            self.mirrorW = 1
+            self.MirrorW = 9
+            self.headerOffset = 2
+            self.connectW = 8
+            self.dialW = 6
+            self.portW = 12
+            self.dialPad = 3
+            
+        
         # , slant='italic')
         self.myFont = tkFont.Font(
             family='Times New Roman', size=20, weight='bold')
         self.window.title(txt('title'))
-        self.window.geometry('+100+10')
+#        self.window.geometry('+100+10')
         self.totalFrame = 0
         self.activeFrame = 0
         self.frameList = list()
@@ -121,7 +161,7 @@ class app:
         
         lan = Menu(self.menubar, tearoff=0)
         for l in languageList:
-            lan.add_command(label=languageList[l]['lanOption'],command = lambda lanChoice = l: self.changLan(lanChoice))
+            lan.add_command(label=languageList[l]['lanOption'],command = lambda lanChoice = l: self.changeLan(lanChoice))
         self.menubar.add_cascade(label=txt('lanMenu'), menu=lan)
         
         help = Menu(self.menubar, tearoff=0)
@@ -188,7 +228,7 @@ class app:
                           text=sideLabel+'(' + str(i)+')\n'+txt(scaleNames[i]))
  
             value = DoubleVar()
-            sliderBar = Scale(self.frameController, state=stt, bg=clr, variable=value,  orient=ORI, borderwidth=2, relief = 'flat', width = 8, from_=-150*tickDirection, to=150*tickDirection, length=LEN, tickinterval=60, resolution=1,repeatdelay = 100,repeatinterval = 100, command=lambda value, idx=i:  self.setAngle(idx, value))
+            sliderBar = Scale(self.frameController, state=stt, fg = 'blue', bg=clr, variable=value,  orient=ORI, borderwidth=2, relief = 'flat', width = 8, from_=-150*tickDirection, to=150*tickDirection, length=LEN, tickinterval=60, resolution=1,repeatdelay = 100,repeatinterval = 100, command=lambda value, idx=i:  self.setAngle(idx, value))
             sliderBar.set(0)
             label.grid(row=ROW+1, column=COL, columnspan=cSPAN, pady=2,sticky = 's')
             sliderBar.grid(row=ROW+2, column=COL, rowspan=rSPAN, columnspan=cSPAN)
@@ -203,7 +243,7 @@ class app:
 #                        "." : 0,
                         "-" : -1,}
                 for d in range(2):
-                    button = Radiobutton(self.frameController, text = list(values)[d], variable = binderValue,value = list(values.values())[d], indicator = 0, state = stt, background = "light blue",width =1,command=lambda joint = i,idx = d :self.updateRadio(joint,idx))
+                    button = Radiobutton(self.frameController, text = list(values)[d], fg = 'blue', variable = binderValue,value = list(values.values())[d], indicator = 0, state = stt, background = "light blue",width =1,command=lambda joint = i,idx = d :self.updateRadio(joint,idx))
                     if i<4:
                         button.grid(row=ROW+1, column=COL+(1-d)*(cSPAN-1),sticky = 's')
                     else:
@@ -235,9 +275,9 @@ class app:
                 to2 = 40
                 
             
-            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width = 5, height = 2, bg='Light Blue1')
+            label = Label(self.frameImu, text=txt(sixAxisNames[i]), fg = 'blue', width = 5, height = 2, bg='Light Blue')
             value = DoubleVar()
-            sliderBar = Scale(self.frameImu, state=stt, bg=clr, variable=value, orient=HORIZONTAL, borderwidth=2, relief = 'flat',width = 10, from_=frm, to=to2, length=125, resolution=1, command=lambda value, idx=i: self.set6Axis(idx, value)) # tickinterval=(to2-frm)//4,
+            sliderBar = Scale(self.frameImu, state=stt, fg = 'blue', bg=clr, variable=value, orient=HORIZONTAL, borderwidth=2, relief = 'flat',width = 10, from_=frm, to=to2, length=125, resolution=1, command=lambda value, idx=i: self.set6Axis(idx, value)) # tickinterval=(to2-frm)//4,
             sliderBar.set(0)
             label.grid(row=i, column=0)
             sliderBar.grid(row=i, column=1, columnspan=centerWidth)
@@ -258,9 +298,9 @@ class app:
                 dialState = NORMAL
             else:
                 dialState = DISABLED
-                wth = 6
+
             if i == 0:
-                wth = 8
+                wth = self.connectW
                 if len(goodPorts)>0:
                     defaultValue[0] = 1
                     key = 'Connected'
@@ -268,12 +308,12 @@ class app:
                     defaultValue[0] = 0
                     key = 'Connect'
             else:
-                wth = 6
+                wth = self.dialW
             value = BooleanVar()
             button = Checkbutton(self.frameDial, text=txt(key), indicator = 0, width=wth, fg='green', state = dialState,var = value,command=lambda idx=i: self.dial(idx))
             value.set(defaultValue[i])
             self.dialValue.append(value)
-            button.grid(row= 1, column= i + (i>0), padx = 3)
+            button.grid(row= 1, column= i + (i>0), padx = self.dialPad)
 
         self.createPortMenu()
         
@@ -281,7 +321,8 @@ class app:
         self.port = StringVar()
         self.options = [txt('None')]#goodPorts.values())
         self.portMenu = OptionMenu(self.frameDial, self.port, *self.options)
-        self.portMenu.config(width=12, fg = 'blue')
+        
+        self.portMenu.config(width=self.portW, fg = 'blue')
         self.port.trace('w', lambda *args : self.changePort(''))
         self.portMenu.grid(row= 1, column= 1, padx = 2)
         self.updatePortMenu()
@@ -312,19 +353,21 @@ class app:
         
     def keepCheckingPort(self,goodPorts):
         allPorts = Communication.Print_Used_Com()
-        while True and self.keepChecking:
-            time.sleep(0.2)
+        while self.keepChecking:
+            time.sleep(0.01)
             currentPorts = Communication.Print_Used_Com()
             if set(currentPorts) - set(allPorts):
                 newPort = list(set(currentPorts) - set(allPorts))
+                time.sleep(0.5)
                 checkPortList(goodPorts,newPort)
                 self.updatePortMenu()
             elif set(allPorts) - set(currentPorts):
                 closedPort = list(set(allPorts) - set(currentPorts))
                 inv_dict = {v: k for k, v in goodPorts.items()}
                 for p in closedPort:
-                    printH('Removing',p)
-                    goodPorts.pop(inv_dict[p.split('/')[-1]])
+                    if inv_dict.get(p.split('/')[-1],-1)!=-1:
+                        printH('Removing', p)
+                        goodPorts.pop(inv_dict[p.split('/')[-1]])
                 self.updatePortMenu()
             allPorts = copy.deepcopy(currentPorts)
         
@@ -347,45 +390,46 @@ class app:
         labelPosture.grid(row=0, column=0, columnspan=4)
         i = 0
         for pose in postureTable:
-            button = Button(self.framePosture, text=pose, fg='blue', width = 8, command=lambda p=pose:  self.setPose(p))
+            button = Button(self.framePosture, text=pose, fg='blue', width = self.buttonW, command=lambda p=pose:  self.setPose(p))
             button.grid(row=i//4 + 1, column=i % 4,padx = 3)
             i += 1
             
     def createScheduler(self):
         self.frameScheduler = Frame(self.window)
         self.frameScheduler.grid(row=2, column=1)
+
         labelScheduler = Label(self.frameScheduler, text=txt('Scheduler'), font=self.myFont)
         labelScheduler.grid(row=0, column=0, columnspan=4)
         pd = 3
-        self.buttonRun = Button(self.frameScheduler, text=txt('Play'), width = 8, fg='green', command=self.playThread)
+        self.buttonRun = Button(self.frameScheduler, text=txt('Play'), width = self.buttonW, fg='green', command=self.playThread)
         self.buttonRun.grid(row=1, column=0,padx = pd)
 
-        buttonExp = Button(self.frameScheduler, text=txt('Import'), width = 8, fg='blue', command=self.popImport)
+        buttonExp = Button(self.frameScheduler, text=txt('Import'), width = self.buttonW, fg='blue', command=self.popImport)
         buttonExp.grid(row=1, column=1,padx = pd)
         
-        buttonRestart = Button(self.frameScheduler, text=txt('Restart'), width = 8, fg='red', command=self.restartScheduler)
+        buttonRestart = Button(self.frameScheduler, text=txt('Restart'), width = self.buttonW, fg='red', command=self.restartScheduler)
         buttonRestart.grid(row=1, column=2,padx = pd)
 
-        buttonExp = Button(self.frameScheduler, text=txt('Export'), width = 8, fg='blue', command=self.export)
+        buttonExp = Button(self.frameScheduler, text=txt('Export'), width = self.buttonW, fg='blue', command=self.export)
         buttonExp.grid(row=1, column=3,padx = pd)
         
-        buttonUndo = Button(self.frameScheduler, text=txt('Undo'), width = 8, fg='blue', state=DISABLED, command=self.restartScheduler)
+        buttonUndo = Button(self.frameScheduler, text=txt('Undo'), width = self.buttonW, fg='blue', state=DISABLED, command=self.restartScheduler)
         buttonUndo.grid(row=2, column=0,padx = pd)
 
-        buttonRedo = Button(self.frameScheduler, text=txt('Redo'), width = 8, fg='blue', state=DISABLED, command=self.restartScheduler)
+        buttonRedo = Button(self.frameScheduler, text=txt('Redo'), width = self.buttonW, fg='blue', state=DISABLED, command=self.restartScheduler)
         buttonRedo.grid(row=2, column=1,padx = pd)
         
-        self.MirrorBox = Checkbutton(self.frameScheduler, text = txt('mirror'),indicator = 0, width=9,fg='blue',variable = self.mirror, onvalue=True, offvalue=False,
+        self.MirrorBox = Checkbutton(self.frameScheduler, text = txt('mirror'),indicator = 0, width=self.MirrorW,fg='blue',variable = self.mirror, onvalue=True, offvalue=False,
             command = self.setMirror).grid(row=2, column=2, sticky = 'e',padx = pd)
-            
-        buttonMirror = Button(self.frameScheduler, text = txt('>|<'), width=1,fg='blue',
+        
+        buttonMirror = Button(self.frameScheduler, text = txt('>|<'), width=self.mirrorW,fg='blue',
             command = self.generateMirrorFrame)
         buttonMirror.grid(row=2, column=2, sticky = 'w',padx = pd)
         
-#        Spinbox(self.frameScheduler, values=[txt('Gait'),txt('Behavior')], width = 8,fg='blue',textvariable =  self.gaitOrBehavior, wrap=True).grid(row=2, column=3)
+#        Spinbox(self.frameScheduler, values=[txt('Gait'),txt('Behavior')], width = self.buttonW,fg='blue',textvariable =  self.gaitOrBehavior, wrap=True).grid(row=2, column=3)
         self.gaitOrBehavior = StringVar()
         self.GorB = OptionMenu(self.frameScheduler, self.gaitOrBehavior, txt('Gait'), txt('Behavior'))
-        self.GorB.config(width=7, fg = 'blue')
+        self.GorB.config(width=6, fg = 'blue')
         self.gaitOrBehavior.set(txt('Behavior'))
         self.GorB.grid(row=2, column=3,padx = pd)
 
@@ -395,18 +439,19 @@ class app:
     
         
     def createSkillSchedule(self):
+        printH('head',frameItemWidth)
         self.frameSkillSchedule = Frame(self.window) #https://blog.teclado.com/tkinter-scrollable-frames/
-        self.frameSkillSchedule.grid(row = 3, column = 1)
+        self.frameSkillSchedule.grid(row = 3, column = 1,sticky = 'we')
         
         self.vLoop = IntVar()
         self.loopRepeat = Entry(self.frameSkillSchedule, width=frameItemWidth[cLoop], textvariable=self.vLoop)
         self.loopRepeat.grid(row=0, column=cLoop)
-        
+    
         for i in range(1, len(labelSchedulerHeader)):
-            Label(self.frameSkillSchedule,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+2).grid(row = 0, column = i,sticky='w')
+            Label(self.frameSkillSchedule,text = txt(labelSchedulerHeader[i]),width = frameItemWidth[i]+self.headerOffset).grid(row = 0, column = i,sticky='w')
         
-        canvas = Canvas(self.frameSkillSchedule, width = 427, height = 355,bd = 0)
-        scrollbar = Scrollbar(self.frameSkillSchedule, orient='vertical',width = 12, command=canvas.yview)
+        canvas = Canvas(self.frameSkillSchedule, width = self.canvasW, height = 370,bd = 0)
+        scrollbar = Scrollbar(self.frameSkillSchedule, orient='vertical',width = 10, command=canvas.yview)
         self.scrollable_frame = Frame(canvas)
         
         self.scrollable_frame.bind(
@@ -419,7 +464,7 @@ class app:
         canvas.config(yscrollcommand=scrollbar.set)
         canvas.grid(row = 1, column = 0, columnspan = len(labelSchedulerHeader))
         
-        scrollbar.grid(row = 1, column =len(labelSchedulerHeader)+1,sticky = 'wns')
+        scrollbar.grid(row = 1, column =len(labelSchedulerHeader),sticky = 'ens')
         self.restartScheduler()
 
     def createImage(self):
@@ -432,9 +477,11 @@ class app:
         self.frameImage.image = img
         self.frameImage.grid(row=3, column=3, rowspan=2, columnspan=2)
         
-    def changLan(self,l):
+    def changeLan(self,l):
         global language
         if self.ready and txt('lan') != l:
+            global triggerAxis
+            inv_triggerAxis = {v: k for k, v in triggerAxis.items()}
             language = languageList[l]
             self.window.title(txt('title'))
             self.menubar.destroy()
@@ -457,6 +504,13 @@ class app:
             self.createScheduler()
             for i in range(1,len(labelSchedulerHeader)):
                 self.frameSkillSchedule.winfo_children()[i].config(text = txt(labelSchedulerHeader[i]))
+            triggerAxis = {
+                0:txt('None'),
+                1:txt('Pitch'),
+                -1:txt('-Pitch'),
+                2:txt('Roll'),
+                -2:txt('-Roll'),
+                }
             for r in range(len(self.frameList)):
                 tt = '='#+txt('Set')
                 ft = 'sans 12'
@@ -467,9 +521,15 @@ class app:
                         self.getWidget(r,cSet).config(fg = 'red')
                 self.getWidget(r,cSet).config(text = tt, font = ft)
                 
-                if not self.getWidget(r, cSpeed).get().isnumeric():
-                    self.getWidget(r, cSpeed).delete(0, END)
-                    self.getWidget(r, cSpeed).insert(0,txt('max'))
+                if not self.getWidget(r, cStep).get().isnumeric():
+                    self.getWidget(r, cStep).delete(0, END)
+                    self.getWidget(r, cStep).insert(0,txt('max'))
+                vTrig = self.getWidget(r,cTrig).get()
+                self.getWidget(r,cTrig).config(values = list(triggerAxis.values()))
+                self.getWidget(r, cTrig).delete(0, END)
+                self.getWidget(r, cTrig).insert(0,triggerAxis[inv_triggerAxis[vTrig]])
+                
+                    
         
     def about(self):
         messagebox.showinfo('Petoi Controller UI', u'Petoi Controller for OpenCat\nCopyright © Petoi LLC\nwww.petoi.com')
@@ -498,7 +558,7 @@ class app:
         
     def addFrame(self, currentRow):
         singleFrame = Frame(self.scrollable_frame, borderwidth=1, relief=RAISED)
-        
+
         vChecked = BooleanVar()
         loopCheck = Checkbutton(singleFrame, variable = vChecked, text = str(currentRow), onvalue=True, offvalue=False, indicator = 0,  width=frameItemWidth[cLoop],
             command=lambda idx=currentRow: self.setCheckBox(idx))
@@ -511,8 +571,8 @@ class app:
         , font='sans 14 bold', fg='blue', #width=frameItemWidth[cSet],
         command=lambda idx=currentRow: self.setFrame(idx))
         
-        vSpeed = StringVar()
-        Spinbox(singleFrame, width=frameItemWidth[cSpeed], values = ('1','2','4','8','12','16','32','48',txt('max')), textvariable = vSpeed, wrap=True).grid(row=0, column=cSpeed)
+        vStep = StringVar()
+        Spinbox(singleFrame, width=frameItemWidth[cStep], values = ('1','2','4','8','12','16','32','48',txt('max')), textvariable = vStep, wrap=True).grid(row=0, column=cStep)
         
         vDelay = IntVar()
         delayStep = 50
@@ -520,7 +580,7 @@ class app:
         Spinbox(singleFrame, width=frameItemWidth[cDelay], values=delayOption, textvariable = vDelay, wrap=True).grid(row=0, column=cDelay)
         
         vTrig = StringVar()
-        Spinbox(singleFrame, width=frameItemWidth[cTrig], values=[0,-1,1,-2,2], textvariable = vTrig, wrap=True).grid(row=0, column=cTrig)
+        Spinbox(singleFrame, width=frameItemWidth[cTrig], values=list(triggerAxis.values()), textvariable = vTrig, wrap=True).grid(row=0, column=cTrig)
         
         vAngle = IntVar()
         Spinbox(singleFrame, width=frameItemWidth[cAngle], from_ = -256, to = 255, textvariable = vAngle, wrap=True).grid(row=0, column=cAngle)
@@ -554,12 +614,11 @@ class app:
             if self.activeFrame>=currentRow:
                 self.activeFrame+=1
         newFrameData[3] = 0# don't add the loop tag
-        vSpeed.set('8')
+        vStep.set('8')
         vDelay.set(0)
         self.frameList.insert(currentRow, [currentRow, singleFrame, newFrameData])
         self.changeButtonState(currentRow)
-        singleFrame.grid(row=currentRow + 1, column=0, columnspan=len(labelSchedulerHeader))
-#        singleFrame.update() #any update() after rebuilding the window will cause some problem in the button's function
+        singleFrame.grid(row=currentRow + 1, column=0)
             
     def pause(self):
         self.pause = true
@@ -712,22 +771,22 @@ class app:
                 else:
                     frame[2][3]=0
 #                    print(self.getWidget(f, cLoop).get())
-                self.getWidget(f, cSpeed).delete(0, END)
+                self.getWidget(f, cStep).delete(0, END)
                 if frame[2][20] == 0:
-                    self.getWidget(f, cSpeed).insert(0,txt('max'))
+                    self.getWidget(f, cStep).insert(0,txt('max'))
                 else:
-                    self.getWidget(f, cSpeed).insert(0,frame[2][20])
+                    self.getWidget(f, cStep).insert(0,frame[2][20])
                 self.getWidget(f, cDelay).delete(0, END)
                 self.getWidget(f, cDelay).insert(0,frame[2][21]*50)
                 
                 self.getWidget(f, cTrig).delete(0, END)
                 self.getWidget(f, cAngle).delete(0, END)
-                self.getWidget(f, cTrig).insert(0,frame[2][22])
+                self.getWidget(f, cTrig).insert(0,triggerAxis[frame[2][22]])
                 self.getWidget(f, cAngle).insert(0,frame[2][23])
                 
             else:
-                self.getWidget(f, cSpeed).delete(0, END)
-                self.getWidget(f, cSpeed).insert(0,txt('max'))
+                self.getWidget(f, cStep).delete(0, END)
+                self.getWidget(f, cStep).insert(0,txt('max'))
         self.activeFrame = f
         if self.totalFrame ==1:
             self.activeFrame=-1
@@ -861,6 +920,7 @@ class app:
             frameSize = 16
         angleRatio = 1
         startFrame = self.activeFrame
+        inv_triggerAxis = {v: k for k, v in triggerAxis.items()}
         for f in range(startFrame, self.totalFrame):
             frame = self.frameList[f]
             self.frameData = copy.deepcopy(frame[2])
@@ -868,12 +928,12 @@ class app:
                 angleRatio = 2
             if(self.frameData[3]==1):
                 loopStructure.append(f - startFrame)
-            if self.getWidget(f, cSpeed).get() == txt('max'):
+            if self.getWidget(f, cStep).get() == txt('max'):
                 self.frameData[20] = 0
             else:
-                self.frameData[20] = int(self.getWidget(f, cSpeed).get())
+                self.frameData[20] = int(self.getWidget(f, cStep).get())
             self.frameData[21] = int(self.getWidget(f, cDelay).get())//50
-            self.frameData[22] = int(self.getWidget(f, cTrig).get())
+            self.frameData[22] = int(inv_triggerAxis[self.getWidget(f, cTrig).get()])
             self.frameData[23] = int(self.getWidget(f, cAngle).get())
             if self.mirror:
                 self.mirrorAngles(self.frameData)
@@ -888,7 +948,6 @@ class app:
             
         if angleRatio ==2:
             for r in skillData:
-                print(r)
                 if frameSize == 8 or frameSize == 12:
                     r = list(map(lambda x: x//angleRatio,r))
                 elif frameSize == 20:
@@ -928,10 +987,8 @@ class app:
             print(file)
             with open(file.name, 'w') as f:
                 f.write(fileData)
-        send(ports, ['K',flat_list,0])
+        send(ports, ['K',flat_list,0],1)
         
-
-
     def restartScheduler(self):
         for f in self.frameList:
             f[1].destroy()
@@ -1098,8 +1155,8 @@ class app:
             if pose == 'rest':
                 send(ports, ['d', 0])
     
-    def setSpeed(self):
-        self.frameData[20] = self.getWidget(self.activeFrame, cSpeed).get()
+    def setStep(self):
+        self.frameData[20] = self.getWidget(self.activeFrame, cStep).get()
         
     def setDelay(self):
         self.frameData[21] = int(self.getWidget(self.activeFrame, cDelay).get())
@@ -1172,6 +1229,7 @@ class app:
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
+            os._exit(0)
     
 
 if __name__ == '__main__':
@@ -1185,9 +1243,11 @@ if __name__ == '__main__':
 #            t.start()
         app()
         closeAllSerial(goodPorts)
+        os._exit(0)
     except Exception as e:
         logger.info("Exception")
         closeAllSerial(goodPorts)
+        os._exit(0)
         raise e
 
 # unused text codes for references

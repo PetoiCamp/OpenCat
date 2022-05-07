@@ -9,6 +9,7 @@ from SerialCommunication import *    # module SerialCommunication.py
 import platform
 import copy
 import threading
+import os
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
@@ -109,10 +110,22 @@ def printSerialMessage(port,token,timeout=0):
         threshold = 4
     else:
         threshold = 2
+    if token == 'K':
+        timeout = 1
     startTime = time.time()
     
     while True:
         time.sleep(0.005)
+#            return 'err'
+        if port:
+            response = port.main_engine.readline().decode('ISO-8859-1')
+            if response != '':
+#                startTime = time.time()
+                response = response[:-2]  # delete '\r\n'
+                if response.lower() == token.lower() or timeout !=0:
+                    return response
+                else:
+                    print(response, flush = True)
         now = time.time()
         if (now - startTime) > threshold :
             print('Elapsed time: ',end='')
@@ -120,15 +133,6 @@ def printSerialMessage(port,token,timeout=0):
             threshold += 2
         if timeout>0 and now - startTime >timeout:
             return -1
-#            return 'err'
-        if port:
-            response = port.main_engine.readline().decode('ISO-8859-1')
-            if response != '':
-                startTime = time.time()
-                if response.lower() == token.lower() +'\r\n' or timeout !=0:
-                    return response[:-2]
-                else:
-                    print(response[:-2], flush = True)
 
 
 def sendTask(goodPorts,port, task, timeout = 0):  # task Structure is [token, var=[], time]
@@ -158,7 +162,8 @@ def sendTask(goodPorts,port, task, timeout = 0):  # task Structure is [token, va
         #        printH('thread',portDictionary[port])
         except Exception as e:
     #        printH('Fail to send to port',goodPorts[port])
-            goodPorts.pop(port)
+            if port in goodPorts:
+                goodPorts.pop(port)
             lastMessage = -1
     else:
         lastMessage = -1
@@ -417,20 +422,24 @@ def schedulerToSkill(ports, testSchedule):
 def testPort(goodPorts,serialObject,p):
     global goodPortCount
 #    global sync
-    result = sendTask(goodPorts,serialObject,['b',0],2)
-    if result!=-1:
-        printH('Adding',p)
-        goodPorts.update({serialObject:p})
-        goodPortCount += 1
-    else:
-        serialObject.Close_Engine()
-#    sync +=1
+    try:
+        result = sendTask(goodPorts,serialObject,['b',0],3)
+        if result!=-1:
+            printH('Adding',p)
+            goodPorts.update({serialObject:p})
+            goodPortCount += 1
+        else:
+            serialObject.Close_Engine()
+            print('* Port ' + p + ' is not connected to a Petoi device!')
+    #    sync +=1
+    except Exception:
+        print('* Port '+ p + ' cannot be opened!')
 
 def checkPortList(goodPorts,allPorts):
     threads = list()
     for p in reversed(allPorts): #assuming the last one is the most possible port
-        if p == '/dev/ttyAMA0':
-            continue
+        # if p == '/dev/ttyAMA0':
+        #     continue
         serialObject = Communication(p, 115200, 0.5)
         t=threading.Thread(target=testPort,args=(goodPorts,serialObject,p.split('/')[-1]))
         threads.append(t)
@@ -442,18 +451,20 @@ def checkPortList(goodPorts,allPorts):
 def keepCheckingPort(goodPorts):
     allPorts = Communication.Print_Used_Com()
     while len(goodPorts)>0:
-        time.sleep(0.2)
         currentPorts = Communication.Print_Used_Com()
+        time.sleep(0.01)
         if set(currentPorts) - set(allPorts):
             newPort = list(set(currentPorts) - set(allPorts))
+            time.sleep(0.5)
             checkPortList(goodPorts,newPort)
             
         elif set(allPorts) - set(currentPorts):
             closedPort = list(set(allPorts) - set(currentPorts))
             inv_dict = {v: k for k, v in goodPorts.items()}
             for p in closedPort:
-                printH('Removing',p)
-                goodPorts.pop(inv_dict[p.split('/')[-1]])
+                if inv_dict.get(p.split('/')[-1], -1) != -1:
+                    printH('Removing',p)
+                    goodPorts.pop(inv_dict[p.split('/')[-1]])
                 
         allPorts = copy.deepcopy(currentPorts)
         
