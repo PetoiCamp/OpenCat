@@ -1,5 +1,10 @@
 # Change Log
 
+## May 8, 2022
+* pyUI/ui.py: Add names to trigger axis
+* pyUI/ui.py: Optimize the layout for Windows machines
+* pyUI/ui.py: Add add hover tips to some buttons
+
 ## May 4, 2022
 * pyUI/ui.py: Import and export files
 

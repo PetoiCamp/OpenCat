@@ -5,10 +5,11 @@ import struct
 import sys
 import time
 import logging
-from SerialCommunication import *    # module SerialCommunication.py
+from SerialCommunication import *  # module SerialCommunication.py
 import platform
 import copy
 import threading
+import os
 import os
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
@@ -27,10 +28,12 @@ which means that the logging module will automatically filter out any DEBUG mess
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
+
 def printH(head, value):
-    print(head,end = ' ')
+    print(head, end=' ')
     print(value)
-    
+
+
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):
         return in_str
@@ -45,27 +48,28 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
     in_str = ""
     if var is None:
         var = []
-    if token =='K':
+    if token == 'K':
         var = list(map(int, var))
         period = var[0]
-#        print(encode(in_str))
-        if period >0:
+        #        print(encode(in_str))
+        if period > 0:
             skillHeader = 4
         else:
             skillHeader = 7
-            
-        in_str = token.encode() + struct.pack('b' * skillHeader, *var[0:skillHeader])#+'~'.encode()
+
+        in_str = token.encode() + struct.pack('b' * skillHeader, *var[0:skillHeader])  # +'~'.encode()
         port.Send_data(in_str)
         time.sleep(0.005)
-        if period >1:
-            frameSize = 8   #gait
-        elif period ==1:
-            frameSize = 16  #posture
+        if period > 1:
+            frameSize = 8  # gait
+        elif period == 1:
+            frameSize = 16  # posture
         else:
-            frameSize = 20     #behavior
+            frameSize = 20  # behavior
         for f in range(abs(period)):
-            in_str = struct.pack('b' * (frameSize), *var[skillHeader + f * frameSize:skillHeader + (f + 1) * frameSize])# + '~'.encode()
-            if f == abs(period)-1:
+            in_str = struct.pack('b' * (frameSize),
+                                 *var[skillHeader + f * frameSize:skillHeader + (f + 1) * frameSize])  # + '~'.encode()
+            if f == abs(period) - 1:
                 in_str = in_str + '~'.encode()
             port.Send_data(in_str)
             time.sleep(0.005)
@@ -73,13 +77,13 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
         if token == 'L' or token == 'I' or token == 'B':
             var = list(map(int, var))
             in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
-            
+
         elif token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
             in_str = token + " "
             for element in var:
                 in_str = in_str + str(element) + " "
         logger.debug(f"!!!! {in_str}")
-#        print(encode(in_str))
+        #        print(encode(in_str))
         port.Send_data(encode(in_str))
 
 
@@ -105,55 +109,59 @@ def serialWriteByte(port, var=None):
     logger.debug(f"!!!!!!! {in_str}")
     port.Send_data(encode(in_str))
 
-def printSerialMessage(port,token,timeout=0):
+
+def printSerialMessage(port, token, timeout=0):
     if token == 'k':
         threshold = 4
     else:
         threshold = 2
-    if token == 'K':
-        timeout = 1
+#    if token == 'K':
+#        timeout = 1
     startTime = time.time()
-    
+
     while True:
         time.sleep(0.005)
-#            return 'err'
+        #            return 'err'
         if port:
             response = port.main_engine.readline().decode('ISO-8859-1')
             if response != '':
-#                startTime = time.time()
+                #                startTime = time.time()
                 response = response[:-2]  # delete '\r\n'
-                if response.lower() == token.lower() or timeout !=0:
+                if response.lower() == token.lower() or timeout != 0:
                     return response
                 else:
-                    print(response, flush = True)
+                    print(response, flush=True)
         now = time.time()
-        if (now - startTime) > threshold :
-            print('Elapsed time: ',end='')
-            print(threshold, end=' seconds\n', flush = True)
+        if (now - startTime) > threshold:
+            print('Elapsed time: ', end='')
+            print(threshold, end=' seconds\n', flush=True)
             threshold += 2
-        if timeout>0 and now - startTime >timeout:
+        if 0 < timeout < now - startTime:
             return -1
 
 
-def sendTask(goodPorts,port, task, timeout = 0):  # task Structure is [token, var=[], time]
+def sendTask(goodPorts, port, task, timeout=0):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
     global returnValue
-#    global sync
-#    print(task)
+    #    global sync
+    #    print(task)
     if port:
         try:
+            previousBuffer = port.main_engine.read_all()
+            if previousBuffer:
+                printH('Previous buffer:', previousBuffer)
             if len(task) == 2:
-        #        print('a')
-        #        print(task[0])
-                serialWriteByte(port,[task[0]])
+                #        print('a')
+                #        print(task[0])
+                serialWriteByte(port, [task[0]])
             elif isinstance(task[1][0], int):
-        #        print('b')
-                serialWriteNumToByte(port,task[0], task[1])
+                #        print('b')
+                serialWriteNumToByte(port, task[0], task[1])
             else:
-        #        print('c') #which case
-                serialWriteByte(port,task[1])
+                #        print('c') #which case
+                serialWriteByte(port, task[1])
             token = task[0][0]
-            lastMessage = printSerialMessage(port,token,timeout)
+            lastMessage = printSerialMessage(port, token, timeout)
             time.sleep(task[-1])
         #    with lock:
         #        sync += 1
@@ -161,7 +169,7 @@ def sendTask(goodPorts,port, task, timeout = 0):  # task Structure is [token, va
         #    if initialized:
         #        printH('thread',portDictionary[port])
         except Exception as e:
-    #        printH('Fail to send to port',goodPorts[port])
+            #        printH('Fail to send to port',goodPorts[port])
             if port in goodPorts:
                 goodPorts.pop(port)
             lastMessage = -1
@@ -169,14 +177,15 @@ def sendTask(goodPorts,port, task, timeout = 0):  # task Structure is [token, va
         lastMessage = -1
     returnValue = lastMessage
     return lastMessage
-            
-def sendTaskParallel(ports, task,timeout = 0):
+
+
+def sendTaskParallel(ports, task, timeout=0):
     global returnValue
-#    global sync
-#    sync = 0
+    #    global sync
+    #    sync = 0
     threads = list()
     for p in ports:
-        t=threading.Thread(target=sendTask,args=(goodPorts,p,task,timeout))
+        t = threading.Thread(target=sendTask, args=(goodPorts, p, task, timeout))
         threads.append(t)
         t.start()
     for t in threads:
@@ -184,24 +193,25 @@ def sendTaskParallel(ports, task,timeout = 0):
             t.join()
     return returnValue
 
+
 def splitTaskForLargeAngles(task):
     token = task[0]
     queue = list()
-    if token == 'L' or token =='I':
+    if token == 'L' or token == 'I':
         var = task[1]
         indexedList = list()
         if token == 'L':
             for i in range(4):
                 for j in range(4):
-                    angle = var[4*j+i]
-                    if angle<-125 or angle>125:
-                        indexedList += [4*j+i,angle]
-                        var[4*j+i] = max(min(angle,125),-125)
+                    angle = var[4 * j + i]
+                    if angle < -125 or angle > 125:
+                        indexedList += [4 * j + i, angle]
+                        var[4 * j + i] = max(min(angle, 125), -125)
             if len(var):
-                queue.append(['L',var,0])
+                queue.append(['L', var, 0])
             if len(indexedList):
-                queue.append(['i',indexedList, task[-1]])
-#                print(queue)
+                queue.append(['i', indexedList, task[-1]])
+        #                print(queue)
         elif token == 'I':
             if min(var) < -125 or max(var) > 125:
                 task[0] = 'i'
@@ -209,8 +219,9 @@ def splitTaskForLargeAngles(task):
     else:
         queue.append(task)
     return queue
-        
-def send(port, task, timeout = 0):
+
+
+def send(port, task, timeout=0):
     if isinstance(port, dict):
         p = list(port.keys())
     elif isinstance(port, list):
@@ -220,26 +231,27 @@ def send(port, task, timeout = 0):
         if len(port) > 1:
             return sendTaskParallel(p, task, timeout)
         elif len(port) == 1:
-            return sendTask(goodPorts,p[0],task,timeout)
+            return sendTask(goodPorts, p[0], task, timeout)
         else:
-#            print('no ports')
+            #            print('no ports')
             return -1
-        
+
+
 def keepReadingInput(ports):
     while True and len(ports):
         time.sleep(0.005)
-        x = input() # blocked waiting for the user's input
+        x = input()  # blocked waiting for the user's input
         if x != "":
             if x == "q" or x == "quit":
                 break
             else:
                 token = x[0]
-                task = x[1:].split() #white space
+                task = x[1:].split()  # white space
                 if len(task) <= 1:
                     send(ports, [x, 1])
                 else:
                     send(ports, [token, list(map(int, task)), 1])
-    
+
 
 def closeSerialBehavior(port):
     try:
@@ -248,78 +260,78 @@ def closeSerialBehavior(port):
         port.Close_Engine()
         raise e
     logger.info("close the serial port.")
-        
+
+
 def closeAllSerial(ports):
-    send(ports, ['d', 0],1)
+    send(ports, ['d', 0], 1)
     for p in ports:
-        t=threading.Thread(target=closeSerialBehavior,args=(p,))
+        t = threading.Thread(target=closeSerialBehavior, args=(p,))
         t.start()
         t.join()
     ports.clear()
 
+
 balance = [
     1, 0, 0, 1,
-    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30]
+    0, 0, 0, 0, 0, 0, 0, 0, 30, 30, 30, 30, 30, 30, 30, 30]
 buttUp = [
     1, 0, 15, 1,
-    20,  40,   0,   0,   5,   5,   3,   3,  90,  90,  45,  45, -60, -60,   5,   5]
+    20, 40, 0, 0, 5, 5, 3, 3, 90, 90, 45, 45, -60, -60, 5, 5]
 calib = [
     1, 0, 0, 1,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0]
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 dropped = [
     1, 0, -75, 1,
-    0,  30,   0,   0,  -5,  -5,  15,  15, -75, -75,  45,  45,  60,  60, -30, -30]
+    0, 30, 0, 0, -5, -5, 15, 15, -75, -75, 45, 45, 60, 60, -30, -30]
 lifted = [
     1, 0, 75, 1,
-    0, -20,   0,   0,   0,   0,   0,   0,  60,  60,  75,  75,  45,  45,  75,  75]
+    0, -20, 0, 0, 0, 0, 0, 0, 60, 60, 75, 75, 45, 45, 75, 75]
 rest = [
     1, 0, 0, 1,
-    -30, -80, -45,   0,  -3,  -3,   3,   3,  70,  70,  70,  70, -55, -55, -55, -55]
+    -30, -80, -45, 0, -3, -3, 3, 3, 70, 70, 70, 70, -55, -55, -55, -55]
 sit = [
     1, 0, -30, 1,
-    0,   0, -45,   0,  -5,  -5,  20,  20,  45,  45, 105, 105,  45,  45, -45, -45]
+    0, 0, -45, 0, -5, -5, 20, 20, 45, 45, 105, 105, 45, 45, -45, -45]
 stretch = [
     1, 0, 20, 1,
-    0,  30,   0,   0,  -5,  -5,   0,   0, -75, -75,  30,  30,  60,  60,   0,   0]
+    0, 30, 0, 0, -5, -5, 0, 0, -75, -75, 30, 30, 60, 60, 0, 0]
 zero = [
     1, 0, 0, 1,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0]
-    
-    
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 balanceNybble = [
     1, 0, 0, 1,
-    0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,]
+    0, 0, 0, 0, 0, 0, 0, 0, 30, 30, -30, -30, 30, 30, -30, -30, ]
 buttUpNybble = [
     1, 0, 15, 1,
-   20,  40,   0,   0,   5,   5,   3,   3,  90,  90, -45, -45, -60, -60,  -5,  -5,]
+    20, 40, 0, 0, 5, 5, 3, 3, 90, 90, -45, -45, -60, -60, -5, -5, ]
 calibNybble = [
     1, 0, 0, 1,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,]
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
 droppedNybble = [
     1, 0, 75, 1,
-    0,  30,   0,   0,  -5,  -5,  15,  15, -75, -75, -60, -60,  60,  60,  30,  30,]
+    0, 30, 0, 0, -5, -5, 15, 15, -75, -75, -60, -60, 60, 60, 30, 30, ]
 liftedNybble = [
     1, 0, -75, 1,
-    0, -70,   0,   0,   0,   0,   0,   0,  55,  55,  20,  20,  45,  45,   0,   0,]
+    0, -70, 0, 0, 0, 0, 0, 0, 55, 55, 20, 20, 45, 45, 0, 0, ]
 luNybble = [
     1, -30, 15, 1,
-  -45,  60, -60,   0,   5,   5,   3,   3, -60,  70, -45, -35,  15, -60,  10, -65,]
+    -45, 60, -60, 0, 5, 5, 3, 3, -60, 70, -45, -35, 15, -60, 10, -65, ]
 restNybble = [
     1, 0, 0, 1,
-  -30, -80, -45,   0,  -3,  -3,   3,   3,  60,  60, -60, -60, -45, -45,  45,  45,]
+    -30, -80, -45, 0, -3, -3, 3, 3, 60, 60, -60, -60, -45, -45, 45, 45, ]
 sitNybble = [
     1, 0, -20, 1,
-    10, -20, -60,   0,  -5,  -5,  20,  20,  30,  30, -90, -90,  60,  60,  45,  45,]
+    10, -20, -60, 0, -5, -5, 20, 20, 30, 30, -90, -90, 60, 60, 45, 45, ]
 sleepNybble = [
     1, 0, 0, 1,
-  -10,-100,   0,   0,  -5,  -5,   3,   3,  80,  80, -80, -80, -55, -55,  55,  55,]
+    -10, -100, 0, 0, -5, -5, 3, 3, 80, 80, -80, -80, -55, -55, 55, 55, ]
 strNybble = [
     1, 0, 15, 1,
-    10,  70,   -30,   0,  -5,  -5,   0,   0, -75, -75, -45, -45,  60,  60, -45, -45,]
+    10, 70, -30, 0, -5, -5, 0, 0, -75, -75, -45, -45, 60, 60, -45, -45, ]
 zeroNybble = [
     1, 0, 0, 1,
-    0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,]
-
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
 
 postureTableBittle = {
     "balance": balance,
@@ -334,17 +346,17 @@ postureTableBittle = {
 }
 
 postureTableNybble = {
-    "balance":balanceNybble,
-    "buttUp":buttUpNybble,
-    "calib":calibNybble,
-    "dropped":droppedNybble,
-    "lifted":liftedNybble,
-    "lu":luNybble,
-    "rest":restNybble,
-    "sit":sitNybble,
-    "sleep":sleepNybble,
-    "str":strNybble,
-    "zero":zeroNybble
+    "balance": balanceNybble,
+    "buttUp": buttUpNybble,
+    "calib": calibNybble,
+    "dropped": droppedNybble,
+    "lifted": liftedNybble,
+    "lu": luNybble,
+    "rest": restNybble,
+    "sit": sitNybble,
+    "sleep": sleepNybble,
+    "str": strNybble,
+    "zero": zeroNybble
 }
 postureTableDoF16 = {
     "balance": balance,
@@ -361,7 +373,7 @@ postureTableDoF16 = {
 postureDict = {
     'Nybble': postureTableNybble,
     'Bittle': postureTableBittle,
-    'DoF16':postureTableDoF16
+    'DoF16': postureTableDoF16
 }
 model = 'Bittle'
 postureTable = postureDict[model]
@@ -378,30 +390,30 @@ def schedulerToSkill(ports, testSchedule):
         if token == 'k' and task[0][1:] in postureTable:
             currentRow = postureTable[task[0][1:]][-16:]
             skillRow = copy.deepcopy(currentRow)
-            compactSkillData.append(skillRow + [8, int(task[1]*1000/500), 0, 0])
-            newSkill = newSkill + skillRow + [8, int(task[1]*1000/500), 0, 0]
+            compactSkillData.append(skillRow + [8, int(task[1] * 1000 / 500), 0, 0])
+            newSkill = newSkill + skillRow + [8, int(task[1] * 1000 / 500), 0, 0]
 
         elif token == 'i' or token == 'I':
             currentRow = copy.deepcopy(skillRow)
             for e in range(0, len(task[1]), 2):
                 #                    print(task[1][e],task[1][e+1])
-                currentRow[task[1][e]] = task[1][e+1]
+                currentRow[task[1][e]] = task[1][e + 1]
             skillRow = copy.deepcopy(currentRow)
-            compactSkillData.append(skillRow + [8, int(task[2]*1000/500), 0, 0])
-            newSkill = newSkill + skillRow + [8, int(task[2]*1000/500), 0, 0]
-        elif token =='L':
+            compactSkillData.append(skillRow + [8, int(task[2] * 1000 / 500), 0, 0])
+            newSkill = newSkill + skillRow + [8, int(task[2] * 1000 / 500), 0, 0]
+        elif token == 'L':
             skillRow = copy.deepcopy(task[1][:16])
-            compactSkillData.append(skillRow + [8, int(task[2]*1000/500), 0, 0])
-            newSkill = newSkill + skillRow + [8, int(task[2]*1000/500), 0, 0]
+            compactSkillData.append(skillRow + [8, int(task[2] * 1000 / 500), 0, 0])
+            newSkill = newSkill + skillRow + [8, int(task[2] * 1000 / 500), 0, 0]
 
         elif token == 'm':
             currentRow = copy.deepcopy(skillRow)
             for e in range(0, len(task[1]), 2):
-                currentRow[task[1][e]] = task[1][e+1]
+                currentRow[task[1][e]] = task[1][e + 1]
                 skillRow = copy.deepcopy(currentRow)
-                compactSkillData.append(skillRow + [8, int(task[2]*1000/500), 0, 0])
-                newSkill = newSkill + skillRow + [8, int(task[2]*1000/500), 0, 0]
-    if len(compactSkillData)>0:
+                compactSkillData.append(skillRow + [8, int(task[2] * 1000 / 500), 0, 0])
+                newSkill = newSkill + skillRow + [8, int(task[2] * 1000 / 500), 0, 0]
+    if len(compactSkillData) > 0:
         print('{')
         print('{:>4},{:>4},{:>4},{:>4},'.format(*[-len(compactSkillData), 0, 0, 1]))
         print('{:>4},{:>4},{:>4},'.format(*[0, 0, 0]))
@@ -409,65 +421,68 @@ def schedulerToSkill(ports, testSchedule):
         return
     angleRatio = 1
     for row in compactSkillData:
-        if min(row)<-125 or max(row)>125:
+        if min(row) < -125 or max(row) > 125:
             angleRatio = 2
-        print(('{:>4},'*20).format(*row))
+        print(('{:>4},' * 20).format(*row))
     print('};')
-    newSkill = list(map(lambda x: x//angleRatio, newSkill))
+    newSkill = list(map(lambda x: x // angleRatio, newSkill))
     newSkill = [-len(compactSkillData), 0, 0, angleRatio, 0, 0, 0] + newSkill
     print(newSkill)
-#    sendTaskParallel(['K', newSkill, 1])
+    #    sendTaskParallel(['K', newSkill, 1])
     send(ports, ['K', newSkill, 1])
 
-def testPort(goodPorts,serialObject,p):
+
+def testPort(goodPorts, serialObject, p):
     global goodPortCount
-#    global sync
+    #    global sync
     try:
-        result = sendTask(goodPorts,serialObject,['b',0],3)
-        if result!=-1:
-            printH('Adding',p)
-            goodPorts.update({serialObject:p})
+        result = sendTask(goodPorts, serialObject, ['b', 0], 3)
+        if result != -1:
+            printH('Adding', p)
+            goodPorts.update({serialObject: p})
             goodPortCount += 1
         else:
             serialObject.Close_Engine()
             print('* Port ' + p + ' is not connected to a Petoi device!')
     #    sync +=1
     except Exception:
-        print('* Port '+ p + ' cannot be opened!')
+        print('* Port ' + p + ' cannot be opened!')
 
-def checkPortList(goodPorts,allPorts):
+
+def checkPortList(goodPorts, allPorts):
     threads = list()
-    for p in reversed(allPorts): #assuming the last one is the most possible port
+    for p in reversed(allPorts):  # assuming the last one is the most possible port
         # if p == '/dev/ttyAMA0':
         #     continue
         serialObject = Communication(p, 115200, 0.5)
-        t=threading.Thread(target=testPort,args=(goodPorts,serialObject,p.split('/')[-1]))
+        t = threading.Thread(target=testPort, args=(goodPorts, serialObject, p.split('/')[-1]))
         threads.append(t)
         t.start()
     for t in threads:
         if t.is_alive():
             t.join(5)
 
+
 def keepCheckingPort(goodPorts):
     allPorts = Communication.Print_Used_Com()
-    while len(goodPorts)>0:
+    while len(goodPorts) > 0:
         currentPorts = Communication.Print_Used_Com()
         time.sleep(0.01)
         if set(currentPorts) - set(allPorts):
             newPort = list(set(currentPorts) - set(allPorts))
             time.sleep(0.5)
-            checkPortList(goodPorts,newPort)
-            
+            checkPortList(goodPorts, newPort)
+
         elif set(allPorts) - set(currentPorts):
             closedPort = list(set(allPorts) - set(currentPorts))
             inv_dict = {v: k for k, v in goodPorts.items()}
             for p in closedPort:
                 if inv_dict.get(p.split('/')[-1], -1) != -1:
-                    printH('Removing',p)
+                    printH('Removing', p)
                     goodPorts.pop(inv_dict[p.split('/')[-1]])
-                
+
         allPorts = copy.deepcopy(currentPorts)
-        
+
 
 def connectPort(goodPorts):
     global initialized
@@ -477,17 +492,18 @@ def connectPort(goodPorts):
 
     for index in range(len(allPorts)):
         logger.info(f"port[{index}] is {allPorts[index]} ")
-    
-    if len(allPorts)>0:
+
+    if len(allPorts) > 0:
         goodPortCount = 0
-        checkPortList(goodPorts,allPorts)
+        checkPortList(goodPorts, allPorts)
     initialized = True
-    if len(goodPorts) ==0:
+    if len(goodPorts) == 0:
         print('No port found!')
     else:
         logger.info(f"Connect to usb serial port:")
         for p in goodPorts:
             logger.info(f"{goodPorts[p]}")
+
 
 goodPorts = {}
 initialized = False
@@ -499,7 +515,7 @@ returnValue = ''
 if __name__ == '__main__':
     try:
         connectPort(goodPorts)
-        t=threading.Thread(target = keepCheckingPort, args = (goodPorts,))
+        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,))
         t.start()
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
@@ -507,15 +523,16 @@ if __name__ == '__main__':
                 token = cmd[0][0]
             else:
                 token = sys.argv[1][0]
-#                sendTaskParallel([sys.argv[1][0], sys.argv[1:], 1])
+            #                sendTaskParallel([sys.argv[1][0], sys.argv[1:], 1])
             send(goodPorts, [sys.argv[1][0], sys.argv[1:], 1])
 
         print("You can type 'quit' or 'q' to exit.")
-        
+
         keepReadingInput(goodPorts)
-        
+
         closeAllSerial(goodPorts)
         logger.info("finish!")
+        os._exit(0)
 
     except Exception as e:
         logger.info("Exception")
