@@ -1298,7 +1298,6 @@ class App:
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
-            os._exit(0)
 
 
 if __name__ == '__main__':
@@ -1316,7 +1315,6 @@ if __name__ == '__main__':
     except Exception as e:
         logger.info("Exception")
         closeAllSerial(goodPorts)
-#        os._exit(0)
         raise e
 
 # unused text codes for references

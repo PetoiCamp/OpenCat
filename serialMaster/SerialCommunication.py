@@ -92,9 +92,7 @@ class Communication(object):
 
         port_list = list(serial.tools.list_ports.comports())
 
-        if len(port_list) <= 0:
-            print("The Serial port can't find!")
-        else:
+        if port_list:
             for each_port in port_list:
                 port_list_number.append(each_port[0])
                 port_list_name.append(each_port[1])
