@@ -151,7 +151,7 @@ textCN = {
     'Random':'随机行为',
     'Postures':'预设姿态',
     'Scheduler':'时序器',
-    'Play':'运行',
+    'Play':'播放',
     'Import':'导入',
     'Restart':'重置',
     'Export':'导出',
