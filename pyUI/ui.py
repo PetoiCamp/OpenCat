@@ -420,13 +420,17 @@ class App:
         labelScheduler = Label(self.frameScheduler, text=txt('Scheduler'), font=self.myFont)
         labelScheduler.grid(row=0, column=0, columnspan=4)
         pd = 3
-        self.buttonRun = Button(self.frameScheduler, text=txt('Play'), width=self.buttonW, fg='green',
+        self.buttonPlay = Button(self.frameScheduler, text=txt('Play'), width=self.buttonW, fg='green',
                                 command=self.playThread)
-        self.buttonRun.grid(row=1, column=0, padx=pd)
+        self.buttonPlay.grid(row=1, column=0, padx=pd)
+        
+        Hovertip(self.buttonPlay,txt('tipPlay'))
 
-        buttonExp = Button(self.frameScheduler, text=txt('Import'), width=self.buttonW, fg='blue',
+        buttonImp = Button(self.frameScheduler, text=txt('Import'), width=self.buttonW, fg='blue',
                            command=self.popImport)
-        buttonExp.grid(row=1, column=1, padx=pd)
+        buttonImp.grid(row=1, column=1, padx=pd)
+        
+        Hovertip(buttonImp,txt('tipImport'))
 
         buttonRestart = Button(self.frameScheduler, text=txt('Restart'), width=self.buttonW, fg='red',
                                command=self.restartScheduler)
@@ -902,7 +906,7 @@ class App:
 
     def playThread(self):
         self.playStop = False
-        self.buttonRun.config(text=txt('Stop'), fg='red', command=self.stop)
+        self.buttonPlay.config(text=txt('Stop'), fg='red', command=self.stop)
         t = threading.Thread(target=self.play)
         t.start()
 
@@ -917,11 +921,11 @@ class App:
 
             self.transformToFrame(f)
 
-        self.buttonRun.config(text=txt('Play'), fg='green', command=self.playThread)
+        self.buttonPlay.config(text=txt('Play'), fg='green', command=self.playThread)
         self.playStop = False
 
     def stop(self):
-        self.buttonRun.config(text=txt('Play'), fg='green', command=self.playThread)
+        self.buttonPlay.config(text=txt('Play'), fg='green', command=self.playThread)
         self.playStop = True
 
     def mirrorAngles(self, singleFrame):
