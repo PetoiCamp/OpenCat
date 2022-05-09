@@ -691,6 +691,8 @@ class App:
             #        if self.activeFrame >= currentRow:
             self.activeFrame -= 1
         if self.frameList == []:
+            self.scrollable_frame.update()
+            time.sleep(0.5)
             self.restartScheduler()
 
     def getWidget(self, row, idx):
