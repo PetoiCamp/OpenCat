@@ -99,6 +99,7 @@ class App:
         self.OSname = self.window.call('tk', 'windowingsystem')
         print(self.OSname)
         self.window.geometry('+100+10')
+        self.window.resizable(0, 0)
         if self.OSname == 'aqua':
             self.backgroundColor = 'gray'
         else:
@@ -689,6 +690,8 @@ class App:
         elif self.activeFrame > currentRow:
             #        if self.activeFrame >= currentRow:
             self.activeFrame -= 1
+        if self.frameList == []:
+            self.restartScheduler()
 
     def getWidget(self, row, idx):
         frame = self.frameList[row]
