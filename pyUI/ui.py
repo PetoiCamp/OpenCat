@@ -121,7 +121,7 @@ class App:
             self.dialPad = 2
         else:
             self.sixW = 5
-            self.sliderW = 350
+            self.sliderW = 338
             self.buttonW = 8
             self.canvasW = 420
             self.mirrorW = 1
