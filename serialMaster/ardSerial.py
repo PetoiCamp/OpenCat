@@ -147,7 +147,7 @@ def sendTask(goodPorts, port, task, timeout=0):  # task Structure is [token, var
     #    print(task)
     if port:
         try:
-            previousBuffer = port.main_engine.read_all()
+            previousBuffer = port.main_engine.read_all().decode('ISO-8859-1')
             if previousBuffer:
                 printH('Previous buffer:', previousBuffer)
             if len(task) == 2:
