@@ -150,7 +150,8 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define B_OFFSET            274
 #define NUM_SKILLS          275
 #define SERIAL_BUFF         276
-#define SKILLS              278       // 1 byte for skill name length, followed by the char array for skill name
+#define SERIAL_BUFF_RAND    278
+#define SKILLS              280       // 1 byte for skill name length, followed by the char array for skill name
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
 //the actual data is stored on the I2C EEPROM.

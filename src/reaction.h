@@ -233,7 +233,7 @@ void reaction() {
           break;
         }
       case T_TEMP: {//call the last skill data received from the serial port
-          skill.loadDataFromI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF));
+          skill.loadDataFromI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF_RAND));
           skill.loadFrameByDataBuffer();
           PTL(token);
           token = T_SKILL;
@@ -241,7 +241,9 @@ void reaction() {
         }
 #ifdef  T_SKILL_DATA
       case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
-          skill.copyDataFromBufferToI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF), dataBuffer);
+          unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + rand() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF) - 500);
+          EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);//randomize the address of K data to protect the EEPROM
+          skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, dataBuffer);
           skill.loadFrameByDataBuffer();
           token = T_SKILL;
           break;
