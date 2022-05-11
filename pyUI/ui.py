@@ -42,7 +42,7 @@ tipDial = ['tipConnect','tipServo','tipGyro','tipRandom']
 labelSchedulerHeader = ['Repeat', 'Set', 'Step', 'Delay', 'Trig', 'Angle', 'Note', 'Del', 'Add']
 tipScheduler =         ['tipRepeat', 'tipSet',  'tipStep','tipDelay','tipTrig','tipTrigAngle','tipNote','tipDel','tipAdd',]
 cLoop, cSet, cStep, cDelay, cTrig, cAngle, cNote, cDel, cAdd = range(len(labelSchedulerHeader))
-frameItemWidth = [2, 2, 3, 3, 4, 3, 4, 1, 1]
+
 
 axisDisable = {
     'Nybble': [0, 5],
@@ -100,43 +100,51 @@ class App:
         print(self.OSname)
         self.window.geometry('+100+10')
         self.window.resizable(0, 0)
+
         if self.OSname == 'aqua':
             self.backgroundColor = 'gray'
         else:
             self.backgroundColor = None
 
         if self.OSname == 'win32':
-            global frameItemWidth
-            frameItemWidth = [2, 4, 3, 4, 5, 4, 7, 3, 3]
+            self.window.iconbitmap(r'./Petoi.ico')
+            # global frameItemWidth
+            self.frameItemWidth = [2, 4, 3, 4, 5, 4, 7, 3, 3]
+            self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+            
             self.sixW = 6
             self.sliderW = 320
             self.buttonW = 10
             self.canvasW = 330
             self.mirrorW = 2
             self.MirrorW = 10
-            self.headerOffset = 0
             self.connectW = 8
             self.dialW = 7
             self.portW = 5
             self.dialPad = 2
         else:
+            if self.OSname == 'aqua':
+                self.frameItemWidth = [2, 2, 3, 3, 4, 3, 4, 1, 1]
+                self.headerOffset = [2, 2, 2, 2, 2, 2, 2, 2, 2]
+
+            else:
+                self.frameItemWidth = [3, 3, 4, 4, 4, 4, 5, 2, 2]
+                self.headerOffset = [0, 0, 0, 1, 1, 1, 1, 1, 1]
+
             self.sixW = 5
             self.sliderW = 338
             self.buttonW = 8
             self.canvasW = 420
             self.mirrorW = 1
             self.MirrorW = 9
-            self.headerOffset = 2
             self.connectW = 8
             self.dialW = 6
             self.portW = 12
             self.dialPad = 3
 
-        # , slant='italic')
         self.myFont = tkFont.Font(
             family='Times New Roman', size=20, weight='bold')
         self.window.title(txt('title'))
-        #        self.window.geometry('+100+10')
         self.totalFrame = 0
         self.activeFrame = 0
         self.frameList = list()
@@ -441,7 +449,7 @@ class App:
         buttonExp = Button(self.frameScheduler, text=txt('Export'), width=self.buttonW, fg='blue', command=self.export)
         buttonExp.grid(row=1, column=3, padx=pd)
         
-        Hovertip(buttonExp,txt('tipExport'))    
+        Hovertip(buttonExp,txt('tipExport'))
 
         buttonUndo = Button(self.frameScheduler, text=txt('Undo'), width=self.buttonW, fg='blue', state=DISABLED,
                             command=self.restartScheduler)
@@ -480,14 +488,14 @@ class App:
         self.frameSkillSchedule.grid(row=3, column=1, sticky='we')
 
         self.vRepeat = IntVar()
-        self.loopRepeat = Entry(self.frameSkillSchedule, width=frameItemWidth[cLoop], textvariable=self.vRepeat)
+        self.loopRepeat = Entry(self.frameSkillSchedule, width=self.frameItemWidth[cLoop], textvariable=self.vRepeat)
         self.loopRepeat.grid(row=0, column=cLoop)
         
         Hovertip(self.loopRepeat,txt('tipRepeat'))
 
         for i in range(1, len(labelSchedulerHeader)):
             label = Label(self.frameSkillSchedule, text=txt(labelSchedulerHeader[i]),
-                  width=frameItemWidth[i] + self.headerOffset)
+                  width=self.frameItemWidth[i] + self.headerOffset[i])
             label.grid(row=0, column=i, sticky='w')
             if tipScheduler[i]:
                 Hovertip(label,txt(tipScheduler[i]))
@@ -620,33 +628,34 @@ class App:
 
         vChecked = BooleanVar()
         loopCheck = Checkbutton(singleFrame, variable=vChecked, text=str(currentRow), onvalue=True, offvalue=False,
-                                indicator=0, width=frameItemWidth[cLoop],
+                                indicator=0, width=self.frameItemWidth[cLoop],
                                 command=lambda idx=currentRow: self.setCheckBox(idx))
         loopCheck.grid(row=0, column=cLoop)
         Hovertip(loopCheck,txt('tipLoop'))
-        #        rowLabel = Label(singleFrame, text = str(currentRow), width = frameItemWidth[cLabel])
+        #        rowLabel = Label(singleFrame, text = str(currentRow), width = self.frameItemWidth[cLabel])
         #        rowLabel.grid(row=0, column=cLabel)
 
         setButton = Button(singleFrame, text='=',  # +txt('Set')
-                           font='sans 14 bold', fg='blue',  # width=frameItemWidth[cSet],
+                           font='sans 14 bold', fg='blue',#width=self.frameItemWidth[cSet],
                            command=lambda idx=currentRow: self.setFrame(idx))
 
         vStep = StringVar()
-        Spinbox(singleFrame, width=frameItemWidth[cStep],
+        Spinbox(singleFrame, width=self.frameItemWidth[cStep],
                 values=('1', '2', '4', '8', '12', '16', '32', '48', txt('max')), textvariable=vStep, wrap=True).grid(
             row=0, column=cStep)
 
         vDelay = IntVar()
         delayOption = list(range(0, 100, 50)) + list(range(100, 1000, 100)) + list(range(1000, 6001, 1000))
-        Spinbox(singleFrame, width=frameItemWidth[cDelay], values=delayOption, textvariable=vDelay, wrap=True).grid(
+
+        Spinbox(singleFrame, width=self.frameItemWidth[cDelay], values=delayOption, textvariable=vDelay, wrap=True).grid(
             row=0, column=cDelay)
 
         vTrig = StringVar()
-        spTrig = Spinbox(singleFrame, width=frameItemWidth[cTrig], values=list(triggerAxis.values()), textvariable=vTrig, wrap=True)
+        spTrig = Spinbox(singleFrame, width=self.frameItemWidth[cTrig], values=list(triggerAxis.values()), textvariable=vTrig, wrap=True)
         spTrig.grid(row=0, column=cTrig)
 
         vAngle = IntVar()
-        Spinbox(singleFrame, width=frameItemWidth[cAngle], from_=-256, to=255, textvariable=vAngle, wrap=True).grid(
+        Spinbox(singleFrame, width=self.frameItemWidth[cAngle], from_=-256, to=255, textvariable=vAngle, wrap=True).grid(
             row=0, column=cAngle)
 
         vNote = StringVar()
@@ -659,12 +668,12 @@ class App:
                 break
         vNote.set(note + str(currentRow))  # 'note')
         color = rgbtohex(random.choice(range(64, 192)), random.choice(range(64, 192)), random.choice(range(64, 192)))
-        Entry(singleFrame, width=frameItemWidth[cNote], fg=color, textvariable=vNote, bd=1).grid(row=0, column=cNote)
-
-        delButton = Button(singleFrame, text='<', fg='red', width=frameItemWidth[cDel],
+        Entry(singleFrame, width=self.frameItemWidth[cNote], fg=color, textvariable=vNote, bd=1).grid(row=0, column=cNote)
+        
+        delButton = Button(singleFrame, text='<', fg='red', width=self.frameItemWidth[cDel],
                            command=lambda idx=currentRow: self.delFrame(idx))
-
-        addButton = Button(singleFrame, text='v', fg='green', width=frameItemWidth[cAdd],
+        
+        addButton = Button(singleFrame, text='v', fg='green', width=self.frameItemWidth[cAdd],
                            command=lambda idx=currentRow: self.addFrame(idx + 1))
 
         setButton.grid(row=0, column=cSet)
