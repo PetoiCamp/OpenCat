@@ -576,9 +576,14 @@ class App:
                         self.getWidget(r, cSet).config(fg='red')
                 self.getWidget(r, cSet).config(text=tt, font=ft)
 
-                if not self.getWidget(r, cStep).get().isnumeric():
-                    self.getWidget(r, cStep).delete(0, END)
+                step = self.getWidget(r, cStep).get()
+                self.getWidget(r, cStep).config(values=('1', '2', '4', '8', '12', '16', '32', '48', txt('max')))
+                self.getWidget(r, cStep).delete(0, END)
+                if step.isnumeric():
+                    self.getWidget(r, cStep).insert(0, step)
+                else:
                     self.getWidget(r, cStep).insert(0, txt('max'))
+                    
                 vTrig = self.getWidget(r, cTrig).get()
                 self.getWidget(r, cTrig).config(values=list(triggerAxis.values()))
                 self.getWidget(r, cTrig).delete(0, END)
