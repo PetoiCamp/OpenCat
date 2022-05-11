@@ -128,8 +128,8 @@ class App:
                 self.headerOffset = [2, 2, 2, 2, 2, 2, 2, 2, 2]
 
             else:
-                self.frameItemWidth = [3, 3, 4, 4, 4, 4, 5, 2, 2]
-                self.headerOffset = [0, 0, 0, 1, 1, 1, 1, 1, 1]
+                self.frameItemWidth = [2, 2, 3, 4, 4, 4, 5, 2, 2]
+                self.headerOffset = [0, 0, 1, 0, 1, 0, 0, 0, 1]
 
             self.sixW = 5
             self.sliderW = 338
