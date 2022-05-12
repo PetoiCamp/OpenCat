@@ -30,8 +30,10 @@ void printEEPROM() {
   for (int i = 0; i < 1024; i++) {
     PT(eeprom(i));
     PT('\t');
-    if ((i % 16) == 15)
+    if ((i % 16) == 15){
       PTL();
+      delay(10);
+    }
   }
 }
 

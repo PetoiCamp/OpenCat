@@ -85,8 +85,8 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define LOW_VOLTAGE 650
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
-//#define NEOPIXEL_PIN 10 //the code for NeoPixels have to be shrinked to fit in the board
-//#define NUMPIXELS 7
+#define NEOPIXEL_PIN 10 //the code for NeoPixels have to be shrinked to fit in the board
+#define NUMPIXELS 7
 
 #elif defined NyBoard_V1_1
 byte pwm_pin[] = {12, 11, 4, 3,

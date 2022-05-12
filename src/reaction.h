@@ -22,19 +22,20 @@ bool lowBattery() {
     PT(voltage / 99);
     PTL('V');
     playMelody(MELODY_LOW_BATTERY);
-    int8_t bStep = 1;
-    for (byte brightness = 1; brightness > 0; brightness += bStep) {
-#ifdef NEOPIXEL_PIN
-      pixel.setPixelColor(0, pixel.Color(brightness, 0, 0));
-      pixel.show();
-#endif
-#if defined LED_PIN
-      analogWrite(LED_PIN, 255 - brightness);
-#endif
-      if (brightness == 255)
-        bStep = -1;
-      delay(5);
-    }
+//    int8_t bStep = 1;
+//    for (byte brightness = 1; brightness > 0; brightness += bStep) {
+//#ifdef NEOPIXEL_PIN
+//      pixel.setPixelColor(0, pixel.Color(brightness, 0, 0));
+//      pixel.show();
+//#endif
+//#if defined LED_PIN
+//      analogWrite(LED_PIN, 255 - brightness);
+//#endif
+//      if (brightness == 255)
+//        bStep = -1;
+//      delay(5);
+//    }
+    delay(2000);
     lastVoltage = voltage;
     return true;
   }
