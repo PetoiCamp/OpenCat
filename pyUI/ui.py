@@ -599,7 +599,7 @@ class App:
 
     def showAbout(self):
         messagebox.showinfo('Petoi Controller UI',
-                            u'Petoi Controller for OpenCat\nCopyright © Petoi LLC\nwww.petoi.com')
+                            u'Petoi Controller for OpenCat\nOpen Source on GitHub\nCopyright © Petoi LLC\nwww.petoi.com')
 
     def changeModel(self, modelName):
         global model
