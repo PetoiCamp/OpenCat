@@ -32,11 +32,11 @@ void allRandom() {
   byte rangeSet[] = {90, 90, 180, 5, 5, 10, 10, 5, 5};
 
   token = tokenSet[random() % 2];
-  cmdLen = rand() % 4 + 4;
+  cmdLen = random() % 4 + 4;
   for (byte r = 0; r < cmdLen; r++) {
-    byte j = rand() % sizeof(jointSet);
+    byte j = random() % sizeof(jointSet);
     dataBuffer[r * 2] = jointSet[j];
-    dataBuffer[r * 2 + 1] = (int8_t)min(max(currentAng[jointSet[j]] + rand() % rangeSet[j] - rangeSet[j] / 2, -128), 127);
+    dataBuffer[r * 2 + 1] = (int8_t)min(max(currentAng[jointSet[j]] + random() % rangeSet[j] - rangeSet[j] / 2, -128), 127);
     //    PT(jointSet[j]); PT('\t'); PTL(int(dataBuffer[r * 2 + 1]));
   }
   cmdLen *= 2;

@@ -192,7 +192,7 @@ void reaction() {
               yprTilt[target[0]] = target[1];
             }
             else if (token == T_MEOW) {
-              meow(rand() % 2 + 1, (rand() % 4 + 2) * 5);
+              meow(random() % 2 + 1, (random() % 4 + 2) * 5);
             }
             else if (token == T_BEEP) {
               beep(target[0], target[1], 50);
@@ -236,15 +236,17 @@ void reaction() {
       case T_TEMP: {//call the last skill data received from the serial port
           skill.loadDataFromI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF_RAND));
           skill.loadFrameByDataBuffer();
+          PTL(skill.period);
           PTL(token);
           token = T_SKILL;
           break;
         }
 #ifdef  T_SKILL_DATA
       case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
-          unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + rand() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF) - 500);
+          unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + random() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF) - 500);
           EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);//randomize the address of K data to protect the EEPROM
           skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, dataBuffer);
+
           skill.loadFrameByDataBuffer();
           token = T_SKILL;
           break;

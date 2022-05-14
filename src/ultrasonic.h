@@ -41,9 +41,9 @@ void read_ultrasonic() {
     }
     else if (distance < 4) {
       mRUS04.SetRgbEffect(E_RGB_ALL, RGB_RED, E_EFFECT_FLASH);
-      meow(rand() % 3 + 1, distance * 2);
+      meow(random() % 3 + 1, distance * 2);
       token = T_INDEXED_SIMULTANEOUS_BIN;
-      int8_t allRand[] = {0, int8_t(currentAng[0] + rand() % 20 - 10), 1, int8_t(currentAng[1] + rand() % 20 - 10), 2, int8_t(currentAng[2] + rand() % 80 - 40)
+      int8_t allRand[] = {0, int8_t(currentAng[0] + random() % 20 - 10), 1, int8_t(currentAng[1] + random() % 20 - 10), 2, int8_t(currentAng[2] + random() % 80 - 40)
                          };
       cmdLen = 6;
       //      for (byte i = 0; i < cmdLen; i++)
@@ -64,7 +64,7 @@ void read_ultrasonic() {
       mRUS04.SetRgbColor(E_RGB_ALL, colors[max(min(distance / 7, 5), 0)]);
       token = T_LISTED_BIN;
       int mid[] = {0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,};
-      int allParameter[] = { currentAng[0] * 2 / 3 - distance / 2, -10 + currentAng[1] * 2 / 3 + distance / 2, (distance * 3  - 50)*(rand() % 50 < 1 ? rand() % 2 - 1 : 1), 0,
+      int allParameter[] = { currentAng[0] * 2 / 3 - distance / 2, -10 + currentAng[1] * 2 / 3 + distance / 2, (distance * 3  - 50)*(random() % 50 < 1 ? random() % 2 - 1 : 1), 0,
                              0, 0, 0, 0,
                              mid[8] - 15 + distance / 2 , mid[9] - 15 + distance / 2, mid[10] - 30 + distance, mid[11] - 30 + distance,
                              mid[12] + 35 - distance, mid[13] + 35 - distance, mid[14] + 40 - distance, mid[15] + 40 - distance

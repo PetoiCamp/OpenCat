@@ -91,8 +91,7 @@ void setup() {
 #endif
 
   servoSetup();
-  randomSeed(analogRead(0));//use the fluctuation of voltage caused by servos as entropy pool
-
+  randomSeed(analogRead(A2));//use the fluctuation of voltage caused by servos as entropy pool
   skill.assignSkillAddressToOnboardEeprom();
 
 #ifdef VOICE

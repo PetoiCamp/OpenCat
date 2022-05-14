@@ -211,7 +211,7 @@ class Skill {
       Wire.endTransmission();
       Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)1);
       dataBuffer[0] = Wire.read();
-      int bufferLen = dataLen(period);
+      int bufferLen = dataLen(dataBuffer[0]);
       //      int tail = bufferLen;
       int readFromEE = 0;
       int readToWire = 0;
@@ -241,6 +241,7 @@ class Skill {
         for (byte i = 0; i < 3; i++)
           loopCycle[i] = dataBuffer[skillHeader++];
       }
+
 #ifdef POSTURE_WALKING_FACTOR
       postureOrWalkingFactor = (period == 1 ? 1 : POSTURE_WALKING_FACTOR);
 #endif
@@ -268,6 +269,7 @@ class Skill {
       frame = 0;
       transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
     }
+
     void loadFrame(const char* skillName) {//get lookup information from on-board EEPROM and read the data array from storage
       char lr = skillName[strlen(skillName) - 1];
       offsetLR = (lr == 'L' ? 25 : (lr == 'R' ? -25 : 0));
@@ -329,6 +331,7 @@ class Skill {
         for (byte c = 0; c < abs(period); c++) { //the last two in the row are transition speed and delay
           //          PT("step "); PTL(c);
           //          printList(dutyAngles + c * frameSize);
+
           transform(dutyAngles + c * frameSize, angleDataRatio, dutyAngles[DOF + c * frameSize] / 4.0);
 
 #ifdef GYRO_PIN //if opt out the gyro, the calculation can be really fast
@@ -347,7 +350,7 @@ class Skill {
               //              PT('\t');
               //              PTL(triggerAngle);
               if ((180 - fabs(currentYpr) > 2)  //IMU_SKIP the angle when the reading jumps from 180 to -180
-                  && (triggerAxis * currentYpr < triggerAxis * triggerAngle && triggerAxis * previousYpr > triggerAxis * triggerAngle )
+                  && (triggerAxis * currentYpr > triggerAxis * triggerAngle && triggerAxis * previousYpr < triggerAxis * triggerAngle )
                  ) //the sign of triggerAxis will deterine whether the current angle should be larger or smaller than the trigger angle
                 break;
               previousYpr = currentYpr;

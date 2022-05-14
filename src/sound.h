@@ -44,7 +44,7 @@ void playTone(uint16_t tone1, uint16_t duration) {
   }
 }
 
-void meow(byte repeat = 2, byte duration = 10, byte startF = 210 + rand() % 10,  byte endF = 220 + rand() % 10) { // Bird chirp
+void meow(byte repeat = 2, byte duration = 10, byte startF = 210 + random() % 10,  byte endF = 220 + random() % 10) { // Bird chirp
   for (byte r = 0; r < repeat; r++)
     for (byte i = startF; i < endF; i++) {
       playTone(i, duration);
