@@ -210,8 +210,8 @@ class Skill {
       Wire.write((int)((eeAddress) & 0xFF)); // LSB
       Wire.endTransmission();
       Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)1);
-      dataBuffer[0] = Wire.read();
-      int bufferLen = dataLen(dataBuffer[0]);
+      period = dataBuffer[0] = Wire.read();
+      int bufferLen = dataLen(period);
       //      int tail = bufferLen;
       int readFromEE = 0;
       int readToWire = 0;
@@ -263,8 +263,8 @@ class Skill {
     }
 
     void loadFrameByDataBuffer() {
-      period = dataBuffer[0];
-      dataLen(period);
+//      period = dataBuffer[0];
+//      dataLen(period);
       formatSkill();
       frame = 0;
       transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
