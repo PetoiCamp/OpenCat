@@ -25,6 +25,12 @@
 */
 #include "Adafruit-PWM-Servo-Driver-Library/Adafruit_PWMServoDriver.h"
 
+#define P_BASE 3000
+#define P_STEP 16
+#define P_HARD (P_BASE + P_STEP * 7)
+#define P_SOFT (P_BASE + P_STEP * 3)
+
+
 // Depending on your servo make, the pulse width min and max may vary, you
 // want these to be as small/large as possible without hitting the hard stop
 // for max range. You'll have to tweak them as necessary to match the servos you
@@ -91,7 +97,7 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
       k_angle2pulse = new float[numServo];
       //servo parameters
       ServoModel servoG41   (180,    SERVO_FREQ,      500,      2500);
-      ServoModel servoP1S   (280,    SERVO_FREQ,      500,      2500);//1s/4 = 250ms 250ms/2500us=100Hz
+      ServoModel servoP1S   (270,    SERVO_FREQ,      500,      2500);//1s/4 = 250ms 250ms/2500us=100Hz
       for (int s = 0; s < numServo; s++) {
         ServoModel *model;
         switch (servoModelList[s]) {
@@ -157,6 +163,11 @@ Petoi_PWMServoDriver pwm = Petoi_PWMServoDriver();
 //Petoi_PWMServoDriver pwm = Petoi_PWMServoDriver(0x41);
 // you can also call it with a different address and I2C interface
 //Petoi_PWMServoDriver pwm = Petoi_PWMServoDriver(0x40, Wire);
+
+void setServoP(unsigned int p) {
+  for (byte i = 0; i < 16; i++)
+    pwm.writeMicroseconds(i, p);
+}
 
 void servoSetup() {
   Serial.println("Init servos");

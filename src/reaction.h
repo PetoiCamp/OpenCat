@@ -22,19 +22,19 @@ bool lowBattery() {
     PT(voltage / 99);
     PTL('V');
     playMelody(MELODY_LOW_BATTERY);
-//    int8_t bStep = 1;
-//    for (byte brightness = 1; brightness > 0; brightness += bStep) {
-//#ifdef NEOPIXEL_PIN
-//      pixel.setPixelColor(0, pixel.Color(brightness, 0, 0));
-//      pixel.show();
-//#endif
-//#if defined LED_PIN
-//      analogWrite(LED_PIN, 255 - brightness);
-//#endif
-//      if (brightness == 255)
-//        bStep = -1;
-//      delay(5);
-//    }
+    //    int8_t bStep = 1;
+    //    for (byte brightness = 1; brightness > 0; brightness += bStep) {
+    //#ifdef NEOPIXEL_PIN
+    //      pixel.setPixelColor(0, pixel.Color(brightness, 0, 0));
+    //      pixel.show();
+    //#endif
+    //#if defined LED_PIN
+    //      analogWrite(LED_PIN, 255 - brightness);
+    //#endif
+    //      if (brightness == 255)
+    //        bStep = -1;
+    //      delay(5);
+    //    }
     delay(2000);
     lastVoltage = voltage;
     return true;
@@ -65,6 +65,7 @@ void reaction() {
     if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_TILT)
       beep(10 + newCmdIdx * 2); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
+      setServoP(P_SOFT);
       checkGyro = true;
       PTL('G');
     }
@@ -140,6 +141,7 @@ void reaction() {
       case T_CALIBRATE: //calibration
       case T_MOVE_ASC: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
+      case T_SERVO_MICROSECOND: //send pulse with unit of microsecond to a servo
       case T_TILT:  //tilt the robot, format: t axis angle. 0:yaw, 1:pitch, 2:roll
       case T_MEOW: //meow
       case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
@@ -165,6 +167,7 @@ void reaction() {
             targetFrame[target[0]] = target[1];
             int angleStep = 0;
             if (token == T_CALIBRATE) {
+              setServoP(P_HARD);
               checkGyro = false;
               autoSwitch = false;
               if (lastToken != T_CALIBRATE) {
@@ -187,6 +190,9 @@ void reaction() {
             }
             else if (token == T_MOVE_ASC) {
               transform(targetFrame, 1, 2);
+            }
+            else if (token == T_SERVO_MICROSECOND) {
+              pwm.writeMicroseconds(eeprom(PWM_PIN, target[0]), target[1]);
             }
             else if (token == T_TILT) {
               yprTilt[target[0]] = target[1];
@@ -258,6 +264,14 @@ void reaction() {
           break;
         }
 #endif
+      case ';': {
+          setServoP(P_SOFT);
+          break;
+        }
+      case ':': {
+          setServoP(P_HARD);
+          break;
+        }
       case T_REST: {
           strcpy(newCmd, "rest");
           skill.loadFrame(newCmd);

@@ -179,6 +179,7 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define T_PAUSE       'p'
 #define T_RAMP        'r'
 #define T_SAVE        's'
+#define T_SERVO_MICROSECOND 'S'
 #define T_TILT        't'
 #define T_TEMP        'T'           //call the last skill data received from the serial port
 #define T_MEOW        'u'
@@ -189,6 +190,8 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define T_ACCELERATE  '.'
 #define T_DECELERATE  ','
 #define T_RANDOM_MIND 'z'
+
+#define SERVO_FREQ 240
 
 float degPerRad = 180.0 / M_PI;
 float radPerDeg = M_PI / 180.0;
@@ -203,8 +206,6 @@ enum ServoModel_t {
   G41 = 0,
   P1S
 };
-
-#define SERVO_FREQ 320
 
 ServoModel_t servoModelList[] = {
   REGULAR, REGULAR, REGULAR, REGULAR,
@@ -246,10 +247,11 @@ int cmdLen;
 int8_t *dataBuffer = new int8_t[450];
 int8_t yprTilt[3];
 int lastVoltage;
+bool servoOff = true;
 
 bool checkGyro = true;
 bool printGyro = false;
-bool autoSwitch = false;
+bool autoSwitch = true;
 bool walkingQ = false;
 byte exceptions = 0;
 byte transformSpeed = 2;

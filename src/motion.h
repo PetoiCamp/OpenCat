@@ -89,8 +89,13 @@ template <typename T> void allCalibratedPWM(T * dutyAng, byte offset = 0) {
 }
 
 template <typename T> void transform( T * target, byte angleDataRatio = 1, float speedRatio = 2, byte offset = 0) {
-  if (speedRatio == 0)
+  if (speedRatio == 0 || servoOff) {
     allCalibratedPWM(target, offset);
+    if (servoOff) { //slow boot up for servos
+      delay(1000);
+      servoOff = false;
+    }
+  }
   else {
     int *diff = new int [DOF - offset], maxDiff = 0;
     for (byte i = offset; i < DOF; i++) {
