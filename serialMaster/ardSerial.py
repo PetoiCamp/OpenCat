@@ -118,7 +118,7 @@ def printSerialMessage(port, token, timeout=0):
 #    if token == 'K':
 #        timeout = 1
     startTime = time.time()
-
+    allPrints = ''
     while True:
         time.sleep(0.005)
         #            return 'err'
@@ -127,10 +127,11 @@ def printSerialMessage(port, token, timeout=0):
             if response != '':
                 #                startTime = time.time()
                 response = response[:-2]  # delete '\r\n'
-                if response.lower() == token.lower() or timeout != 0:
-                    return response
+                if response.lower() == token.lower():
+                    return [response, allPrints]
                 else:
-                    print(response, flush=True)
+#                    print(response, flush=True)
+                    allPrints += response + '\n'
         now = time.time()
         if (now - startTime) > threshold:
             print('Elapsed time: ', end='')
@@ -436,7 +437,16 @@ def testPort(goodPorts, serialObject, p):
     global goodPortCount
     #    global sync
     try:
-        result = sendTask(goodPorts, serialObject, ['b', 0], 3)
+        time.sleep(1.5)
+        result =serialObject.main_engine.read_all().decode('ISO-8859-1')
+        if result !='':
+            print('Waiting for the robot to booting up')
+            time.sleep(1.5)
+            waitTime = 5
+        else:
+            waitTime = 1
+        result = sendTask(goodPorts, serialObject, ['b',[20,50],0], waitTime)
+        print(result)
         if result != -1:
             printH('Adding', p)
             goodPorts.update({serialObject: p})
@@ -460,7 +470,7 @@ def checkPortList(goodPorts, allPorts):
         t.start()
     for t in threads:
         if t.is_alive():
-            t.join(5)
+            t.join(8)
 
 
 def keepCheckingPort(goodPorts):
