@@ -1,6 +1,9 @@
 #!/opt/anaconda3/envs/petoi/bin/python3
 # -*- coding: UTF-8 -*-
 
+# Rongzhong Li
+# Petoi LLC
+# May.22nd, 2022
 
 import random
 import sys
@@ -19,12 +22,11 @@ import threading
 from tkinter.filedialog import asksaveasfile, askopenfilename
 from idlelib.tooltip import Hovertip
 from translate import *
+#from Flash_Uploader import *
 
-width = 8
-centerWidth = 2
 
 model = 'Bittle'
-#model = copy.deepcopy(currentModel)
+# model = copy.deepcopy(currentModel)
 postureTable = postureDict[model]
 
 
@@ -40,11 +42,10 @@ scaleNames = [
     'Knee', 'Knee', 'Knee', 'Knee']
 sideNames = ['Left Front', 'Right Front', 'Right Back', 'Left Back']
 dialTable = {'Connect': 'Connected', 'Servo': 'p', 'Gyro': 'g', 'Random': 'z'}
-tipDial = ['tipConnect','tipServo','tipGyro','tipRandom']
+tipDial = ['tipConnect', 'tipServo', 'tipGyro', 'tipRandom']
 labelSkillEditorHeader = ['Repeat', 'Set', 'Step', 'Delay', 'Trig', 'Angle', 'Note', 'Del', 'Add']
-tipSkillEditor =         ['tipRepeat', 'tipSet',  'tipStep','tipDelay','tipTrig','tipTrigAngle','tipNote','tipDel','tipAdd',]
+tipSkillEditor = ['tipRepeat', 'tipSet', 'tipStep', 'tipDelay', 'tipTrig', 'tipTrigAngle', 'tipNote', 'tipDel', 'tipAdd', ]
 cLoop, cSet, cStep, cDelay, cTrig, cAngle, cNote, cDel, cAdd = range(len(labelSkillEditorHeader))
-
 
 axisDisable = {
     'Nybble': [0, 5],
@@ -85,7 +86,7 @@ def txt(key):
     return language.get(key, textEN[key])
 
 
-class App:
+class SkillEditor:
 
     def __init__(self):
         self.window = Tk()
@@ -102,7 +103,7 @@ class App:
         self.OSname = self.window.call('tk', 'windowingsystem')
         print(self.OSname)
         self.window.geometry('+100+10')
-        self.window.resizable(0, 0)
+        self.window.resizable(False, False)
 
         if self.OSname == 'aqua':
             self.backgroundColor = 'gray'
@@ -110,14 +111,15 @@ class App:
             self.backgroundColor = None
 
         if self.OSname == 'win32':
-            self.window.iconbitmap(r'./Petoi.ico')
+            self.window.iconbitmap(resourcePath + 'Petoi.ico')
             # global frameItemWidth
             self.frameItemWidth = [2, 4, 3, 4, 5, 4, 7, 3, 3]
             self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-            
+
             self.sixW = 6
             self.sliderW = 320
             self.buttonW = 10
+            self.calibButtonW = 8
             self.canvasW = 330
             self.mirrorW = 2
             self.MirrorW = 10
@@ -137,6 +139,7 @@ class App:
             self.sixW = 5
             self.sliderW = 338
             self.buttonW = 8
+            self.calibButtonW = 6
             self.canvasW = 420
             self.mirrorW = 1
             self.MirrorW = 9
@@ -182,12 +185,12 @@ class App:
         for key in NaJoints:
             file.add_command(label=key, command=lambda model=key: self.changeModel(model))
         self.menubar.add_cascade(label=txt('Model'), menu=file)
-        
+
         utility = Menu(self.menubar, tearoff=0)
         utility.add_command(label=txt('Joint Calibrator'), command=self.calibrateJoint)
-        utility.add_command(label=txt('Scheduler'), state = DISABLED, command=self.scheduler)
-            
-        utility.add_command(label=txt('Firmware Uploader'), state = DISABLED, command=self.uploadFirmware)
+        utility.add_command(label=txt('Scheduler'), state=DISABLED, command=self.scheduler)
+
+        utility.add_command(label=txt('Firmware Uploader'), state=DISABLED,command=self.uploadFirmware)
         self.menubar.add_cascade(label=txt('Utility'), menu=utility)
 
         lan = Menu(self.menubar, tearoff=0)
@@ -200,37 +203,36 @@ class App:
         self.menubar.add_cascade(label=txt('Help'), menu=helpMenu)
 
         self.window.config(menu=self.menubar)
-        
 
     def calibrateJoint(self):
         # Create a Toplevel window
         self.calibratorReady = False
-        
+
         self.winCalib = Toplevel(self.window)
         self.winCalib.geometry('+200+100')
-#            self.winCalib.grid(row = 0, column = 0, rowspan=9, padx=(5, 10), pady=5)
-        
+        self.winCalib.resizable(False, False)
+        #            self.winCalib.grid(row = 0, column = 0, rowspan=9, padx=(5, 10), pady=5)
+
         self.frameCalibButtons = Button(self.winCalib)
-        self.frameCalibButtons.grid(row = 0, column = 3, rowspan = 13)
-        calibButton = Button(self.frameCalibButtons,text = txt('Calibration'),width = 5,command = lambda cmd = 'c':self.calibFun(cmd))
-        standButton = Button(self.frameCalibButtons,text = txt('Stand Up'),width = 5,command = lambda cmd = 'balance':self.calibFun(cmd))
-        restButton = Button(self.frameCalibButtons,text = txt('Rest'),width = 5,command = lambda cmd = 'd':self.calibFun(cmd))
-        saveButton = Button(self.frameCalibButtons,text = txt('Save'),width = 5,command = lambda :send(ports, ['s', 0]))
-        abortButton = Button(self.frameCalibButtons,text = txt('Abort'),width = 5,command = lambda :send(ports, ['a', 0]))
-        quitButton = Button(self.frameCalibButtons,text = txt('Quit'),width = 5,command = self.closeCalib)
-        calibButton.grid(row = 6, column = 0)
-        standButton.grid(row = 6, column = 1)
-        restButton.grid(row = 6, column = 2)
-        saveButton.grid(row = 11, column = 0)
-        abortButton.grid(row = 11, column = 1)
-        quitButton.grid(row = 11, column = 2)
-        
+        self.frameCalibButtons.grid(row=0, column=3, rowspan=13)
+        calibButton = Button(self.frameCalibButtons, text=txt('Calibration'), width=self.calibButtonW,command=lambda cmd='c': self.calibFun(cmd))
+        standButton = Button(self.frameCalibButtons, text=txt('Stand Up'), width=self.calibButtonW, command=lambda cmd='balance': self.calibFun(cmd))
+        restButton = Button(self.frameCalibButtons, text=txt('Rest'), width=self.calibButtonW, command=lambda cmd='d': self.calibFun(cmd))
+        saveButton = Button(self.frameCalibButtons, text=txt('Save'), width=self.calibButtonW, command=lambda: send(ports, ['s', 0]))
+        abortButton = Button(self.frameCalibButtons, text=txt('Abort'), width=self.calibButtonW, command=lambda: send(ports, ['a', 0]))
+        quitButton = Button(self.frameCalibButtons, text=txt('Quit'), width=self.calibButtonW, command=self.closeCalib)
+        calibButton.grid(row=6, column=0)
+        standButton.grid(row=6, column=1)
+        restButton.grid(row=6, column=2)
+        saveButton.grid(row=11, column=0)
+        abortButton.grid(row=11, column=1)
+        quitButton.grid(row=11, column=2)
+
         imageW = 300
-        self.imgWiring = self.createImage(self.frameCalibButtons,'resources/' + model + 'Wire.jpeg',imageW)
+        self.imgWiring = self.createImage(self.frameCalibButtons, 'resources/' + model + 'Wire.jpeg', imageW)
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
-        self.imgPosture = self.createImage(self.frameCalibButtons,'resources/' + model + 'Ruler.jpeg',imageW)
+        self.imgPosture = self.createImage(self.frameCalibButtons, 'resources/' + model + 'Ruler.jpeg', imageW)
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
-        
 
         for i in range(16):
             if i < 4:
@@ -246,7 +248,7 @@ class App:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                LEN = 210
+                LEN = 200
                 ALIGN = 'we'
 
             else:
@@ -277,7 +279,7 @@ class App:
                 sideLabel = ''
             label = Label(self.winCalib,
                           text=sideLabel + '(' + str(i) + ')\n' + txt(scaleNames[i]))
-                          
+
             value = DoubleVar()
             sliderBar = Scale(self.winCalib, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
                               borderwidth=2, relief='flat', width=8, from_=-10 * tickDirection, to=10 * tickDirection,
@@ -285,50 +287,53 @@ class App:
                               command=lambda value, idx=i: self.setCalib(idx, value))
             self.calibSliders.append(sliderBar)
             label.grid(row=ROW, column=COL, columnspan=cSPAN, pady=2, sticky=ALIGN)
-            sliderBar.grid(row=ROW + 1, column=COL, rowspan=rSPAN, columnspan=cSPAN, sticky= ALIGN)
-            
+            sliderBar.grid(row=ROW + 1, column=COL, rowspan=rSPAN, columnspan=cSPAN, sticky=ALIGN)
+        print(self.calibSliders)
+        print(len(self.calibSliders))
         self.calibFun('c')
         self.winCalib.update()
         self.calibratorReady = True
 
         self.winCalib.protocol('WM_DELETE_WINDOW', self.closeCalib)
-        
-    def calibFun(self,cmd):
+        self.winCalib.mainloop()
+
+    def calibFun(self, cmd):
         imageW = 300
-        self.imgPosture.destroy()
+        #        self.imgPosture.destroy()
         if cmd == 'c':
-            self.imgPosture = self.createImage(self.frameCalibButtons,'resources/' + model + 'Ruler.jpeg',imageW)
-            result = send(ports,['c',0])
+            self.imgPosture = self.createImage(self.frameCalibButtons, 'resources/' + model + 'Ruler.jpeg', imageW)
+            result = send(ports, ['c', 0])
             if result != -1:
                 offsets = result[1]
-#                print(offsets)
+                #                print(offsets)
                 idx = offsets.find(',')
                 l1 = offsets[:idx].split()[-1]
-                offsets = ''.join(offsets[idx+1:].split()).split(',')[:15]
-                offsets.insert(0,l1)
-#                print(offsets)
-#                print(len(offsets))
+                offsets = ''.join(offsets[idx + 1:].split()).split(',')[:15]
+                offsets.insert(0, l1)
+            #                print(offsets)
+            #                print(len(offsets))
             else:
-                offsets = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]
+                offsets = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
             for i in range(16):
                 self.calibSliders[i].set(offsets[i])
-            
+
         elif cmd == 'd':
-            self.imgPosture = self.createImage(self.frameCalibButtons,resourcePath + model + 'Rest.jpeg',imageW)
+            self.imgPosture = self.createImage(self.frameCalibButtons, resourcePath + model + 'Rest.jpeg', imageW)
             send(ports, ['d', 0])
         elif cmd == 'balance':
-            self.imgPosture = self.createImage(self.frameCalibButtons,resourcePath + model + 'Stand.jpeg',imageW)
+            self.imgPosture = self.createImage(self.frameCalibButtons, resourcePath + model + 'Stand.jpeg', imageW)
             send(ports, ['kbalance', 0])
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
-    
+        self.winCalib.update()
+
     def setCalib(self, idx, value):
         if self.calibratorReady:
             value = int(value)
             send(ports, ['c', [idx, value], 0])
-    
-    
+
     def closeCalib(self):
-        confirm = messagebox.askyesnocancel(title=None, message=txt('Do you want to save the offsets?'), default=messagebox.YES)
+        confirm = messagebox.askyesnocancel(title=None, message=txt('Do you want to save the offsets?'),
+                                            default=messagebox.YES)
         if confirm is not None:
             if confirm:
                 send(ports, ['s', 0])
@@ -338,22 +343,25 @@ class App:
             self.calibratorReady = False
             self.calibSliders.clear()
             self.winCalib.destroy()
-        
-    def scheduler():
+
+    def scheduler(self):
         print('Scheduler')
-        
+
     def uploadFirmware(self):
         print('Uploader')
+#        Uploader()
 
     def createController(self):
         self.frameController = Frame(self.window)
         self.frameController.grid(row=0, column=0, rowspan=9, padx=(5, 10), pady=5)
         label = Label(self.frameController, text=txt('Joint Controller'), font=self.myFont)
-        label.grid(row=0, column=0, columnspan=width)
+        label.grid(row=0, column=0, columnspan=8)
         self.controllerLabels.append(label)
         unbindButton = Button(self.frameController, text=txt('Unbind All'), fg='blue', command=self.unbindAll)
         unbindButton.grid(row=5, column=3, columnspan=2)
         self.controllerLabels.append(unbindButton)
+        
+        centerWidth = 2
         for i in range(16):
             cSPAN = 1
             if i < 4:
@@ -401,7 +409,7 @@ class App:
 
             value = DoubleVar()
             sliderBar = Scale(self.frameController, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
-                              borderwidth=2, relief='flat', width=8, from_=-150 * tickDirection, to=150 * tickDirection,
+                              borderwidth=2, relief='flat', width=8, from_=-180 * tickDirection, to=180 * tickDirection,
                               length=LEN, tickinterval=60, resolution=1, repeatdelay=100, repeatinterval=100,
                               command=lambda value, idx=i: self.setAngle(idx, value))
             sliderBar.set(0)
@@ -428,9 +436,9 @@ class App:
                         button.grid(row=ROW + 2 + d * (rSPAN - 1), column=COL, sticky='ns'[d])
                     binderValue.set(0)
                     if d == 0:
-                        Hovertip(button,txt('tipBinder'))
+                        Hovertip(button, txt('tipBinder'))
                     else:
-                        Hovertip(button,txt('tipRevBinder'))
+                        Hovertip(button, txt('tipRevBinder'))
                     self.binderButton.append(button)
                 self.binderValue.append(binderValue)
 
@@ -461,7 +469,7 @@ class App:
             value = DoubleVar()
             sliderBar = Scale(self.frameImu, state=stt, fg='blue', bg=clr, variable=value, orient=HORIZONTAL,
                               borderwidth=2, relief='flat', width=10, from_=frm, to=to2, length=125, resolution=1,
-                              command=lambda value, idx=i: self.set6Axis(idx, value))  # tickinterval=(to2-frm)//4,
+                              command=lambda ang, idx=i: self.set6Axis(idx, ang))  # tickinterval=(to2-frm)//4,
             sliderBar.set(0)
             label.grid(row=i, column=0)
             sliderBar.grid(row=i, column=1, columnspan=centerWidth)
@@ -498,7 +506,7 @@ class App:
             value.set(defaultValue[i])
             self.dialValue.append(value)
             button.grid(row=1, column=i + (i > 0), padx=self.dialPad)
-            Hovertip(button,txt(tipDial[i]))
+            Hovertip(button, txt(tipDial[i]))
 
         self.createPortMenu()
 
@@ -511,8 +519,8 @@ class App:
         self.port.trace('w', lambda *args: self.changePort(''))
         self.portMenu.grid(row=1, column=1, padx=2)
         self.updatePortMenu()
-        
-        Hovertip(self.portMenu,txt('tipPortMenu'))
+
+        Hovertip(self.portMenu, txt('tipPortMenu'))
 
     def updatePortMenu(self):
         self.options = list(goodPorts.values())
@@ -529,9 +537,9 @@ class App:
             else:
                 self.frameDial.winfo_children()[1].config(text=txt('Connect'), fg='red')
         else:
-#            global currentModel
-#            if currentModel != model:
-#                self.changeModel(currentModel)# doesn't work yet
+            #            global currentModel
+            #            if currentModel != model:
+            #                self.changeModel(currentModel)# doesn't work yet
             if len(self.options) > 1:
                 self.options.insert(0, txt('All'))
             if self.keepChecking:
@@ -583,27 +591,28 @@ class App:
         labelSkillEditor.grid(row=0, column=0, columnspan=4)
         pd = 3
         self.buttonPlay = Button(self.frameSkillEditor, text=txt('Play'), width=self.buttonW, fg='green',
-                                command=self.playThread)
+                                 command=self.playThread)
         self.buttonPlay.grid(row=1, column=0, padx=pd)
-        
-        Hovertip(self.buttonPlay,txt('tipPlay'))
+
+        Hovertip(self.buttonPlay, txt('tipPlay'))
 
         buttonImp = Button(self.frameSkillEditor, text=txt('Import'), width=self.buttonW, fg='blue',
                            command=self.popImport)
         buttonImp.grid(row=1, column=1, padx=pd)
-        
-        Hovertip(buttonImp,txt('tipImport'))
+
+        Hovertip(buttonImp, txt('tipImport'))
 
         buttonRestart = Button(self.frameSkillEditor, text=txt('Restart'), width=self.buttonW, fg='red',
                                command=self.restartSkillEditor)
         buttonRestart.grid(row=1, column=2, padx=pd)
-        
-        Hovertip(buttonRestart,txt('tipRestart'))
 
-        buttonExp = Button(self.frameSkillEditor, text=txt('Export'), width=self.buttonW, fg='blue', command=self.export)
+        Hovertip(buttonRestart, txt('tipRestart'))
+
+        buttonExp = Button(self.frameSkillEditor, text=txt('Export'), width=self.buttonW, fg='blue',
+                           command=self.export)
         buttonExp.grid(row=1, column=3, padx=pd)
-        
-        Hovertip(buttonExp,txt('tipExport'))
+
+        Hovertip(buttonExp, txt('tipExport'))
 
         buttonUndo = Button(self.frameSkillEditor, text=txt('Undo'), width=self.buttonW, fg='blue', state=DISABLED,
                             command=self.restartSkillEditor)
@@ -614,24 +623,24 @@ class App:
         buttonRedo.grid(row=2, column=1, padx=pd)
 
         cbMiroX = Checkbutton(self.frameSkillEditor, text=txt('mirror'), indicator=0, width=self.MirrorW,
-                    fg='blue', variable=self.mirror, onvalue=True, offvalue=False,
-                    command=self.setMirror)
+                              fg='blue', variable=self.mirror, onvalue=True, offvalue=False,
+                              command=self.setMirror)
         cbMiroX.grid(row=2, column=2, sticky='e', padx=pd)
-                    
-        Hovertip(cbMiroX,txt('tipMirrorXport'))
+
+        Hovertip(cbMiroX, txt('tipMirrorXport'))
 
         buttonMirror = Button(self.frameSkillEditor, text=txt('>|<'), width=self.mirrorW, fg='blue',
                               command=self.generateMirrorFrame)
         buttonMirror.grid(row=2, column=2, sticky='w', padx=pd)
-        
-        Hovertip(buttonMirror,txt('tipMirror'))
+
+        Hovertip(buttonMirror, txt('tipMirror'))
 
         self.gaitOrBehavior = StringVar()
         self.GorB = OptionMenu(self.frameSkillEditor, self.gaitOrBehavior, txt('Gait'), txt('Behavior'))
         self.GorB.config(width=6, fg='blue')
         self.gaitOrBehavior.set(txt('Behavior'))
         self.GorB.grid(row=2, column=3, padx=pd)
-        
+
         Hovertip(self.GorB, txt('tipGorB'))
 
     def setMirror(self):
@@ -644,15 +653,15 @@ class App:
         self.vRepeat = IntVar()
         self.loopRepeat = Entry(self.frameRowScheduler, width=self.frameItemWidth[cLoop], textvariable=self.vRepeat)
         self.loopRepeat.grid(row=0, column=cLoop)
-        
-        Hovertip(self.loopRepeat,txt('tipRepeat'))
+
+        Hovertip(self.loopRepeat, txt('tipRepeat'))
 
         for i in range(1, len(labelSkillEditorHeader)):
             label = Label(self.frameRowScheduler, text=txt(labelSkillEditorHeader[i]),
-                  width=self.frameItemWidth[i] + self.headerOffset[i])
+                          width=self.frameItemWidth[i] + self.headerOffset[i])
             label.grid(row=0, column=i, sticky='w')
             if tipSkillEditor[i]:
-                Hovertip(label,txt(tipSkillEditor[i]))
+                Hovertip(label, txt(tipSkillEditor[i]))
 
         canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=370, bd=0)
         scrollbar = Scrollbar(self.frameRowScheduler, orient='vertical', cursor='double_arrow', troughcolor='yellow',
@@ -672,19 +681,18 @@ class App:
         scrollbar.grid(row=1, column=len(labelSkillEditorHeader), sticky='ens')
         self.restartSkillEditor()
 
-    def createImage(self, frame, imgFile, width):
+    def createImage(self, frame, imgFile, imgW):
         img = Image.open(imgFile)
-        ratio = img.size[0] / width
-        img = img.resize((width, round(img.size[1] / ratio)))
+        ratio = img.size[0] / imgW
+        img = img.resize((imgW, round(img.size[1] / ratio)))
         image = ImageTk.PhotoImage(img)
         imageFrame = Label(frame, image=image)
         imageFrame.image = image
         return imageFrame
-        
+
     def placeProductImage(self):
-        self.frameImage = self.createImage(self.frameController,resourcePath + model + '.jpeg',180)
+        self.frameImage = self.createImage(self.frameController, resourcePath + model + '.jpeg', 180)
         self.frameImage.grid(row=3, column=3, rowspan=2, columnspan=2)
-        
 
     def changeLan(self, l):
         global language
@@ -704,13 +712,13 @@ class App:
                 else:
                     sideLabel = '\n'
                 self.controllerLabels[2 + i].config(text=sideLabel + '(' + str(i) + ')\n' + txt(scaleNames[i]))
-                
+
                 for d in range(2):
                     if d == 0:
-                        Hovertip(self.binderButton[i*2],txt('tipBinder'))
+                        Hovertip(self.binderButton[i * 2], txt('tipBinder'))
                     else:
-                        Hovertip(self.binderButton[i*2+1],txt('tipRevBinder'))
-                
+                        Hovertip(self.binderButton[i * 2 + 1], txt('tipRevBinder'))
+
             self.frameDial.destroy()
             self.framePosture.destroy()
             self.frameSkillEditor.destroy()
@@ -719,11 +727,11 @@ class App:
             self.createPosture()
             self.createSkillEditor()
             for i in range(len(labelSkillEditorHeader)):
-                if i >0:
+                if i > 0:
                     self.frameRowScheduler.winfo_children()[i].config(text=txt(labelSkillEditorHeader[i]))
                 if tipSkillEditor[i]:
-                    Hovertip(self.frameRowScheduler.winfo_children()[i],txt(tipSkillEditor[i]))
-                
+                    Hovertip(self.frameRowScheduler.winfo_children()[i], txt(tipSkillEditor[i]))
+
             triggerAxis = {
                 0: txt('None'),
                 1: txt('Pitch'),
@@ -732,7 +740,7 @@ class App:
                 -2: txt('-Roll'),
             }
             for r in range(len(self.frameList)):
-                Hovertip(self.getWidget(r, cLoop),txt('tipLoop'))
+                Hovertip(self.getWidget(r, cLoop), txt('tipLoop'))
                 tt = '='  # +txt('Set')
                 ft = 'sans 12'
                 if self.activeFrame == r:
@@ -749,7 +757,7 @@ class App:
                     self.getWidget(r, cStep).insert(0, step)
                 else:
                     self.getWidget(r, cStep).insert(0, txt('max'))
-                    
+
                 vTrig = self.getWidget(r, cTrig).get()
                 self.getWidget(r, cTrig).config(values=list(triggerAxis.values()))
                 self.getWidget(r, cTrig).delete(0, END)
@@ -789,12 +797,12 @@ class App:
                                 indicator=0, width=self.frameItemWidth[cLoop],
                                 command=lambda idx=currentRow: self.setCheckBox(idx))
         loopCheck.grid(row=0, column=cLoop)
-        Hovertip(loopCheck,txt('tipLoop'))
+        Hovertip(loopCheck, txt('tipLoop'))
         #        rowLabel = Label(singleFrame, text = str(currentRow), width = self.frameItemWidth[cLabel])
         #        rowLabel.grid(row=0, column=cLabel)
 
         setButton = Button(singleFrame, text='=',  # +txt('Set')
-                           font='sans 14 bold', fg='blue',#width=self.frameItemWidth[cSet],
+                           font='sans 14 bold', fg='blue',  # width=self.frameItemWidth[cSet],
                            command=lambda idx=currentRow: self.setFrame(idx))
 
         vStep = StringVar()
@@ -805,15 +813,18 @@ class App:
         vDelay = IntVar()
         delayOption = list(range(0, 100, 50)) + list(range(100, 1000, 100)) + list(range(1000, 6001, 1000))
 
-        Spinbox(singleFrame, width=self.frameItemWidth[cDelay], values=delayOption, textvariable=vDelay, wrap=True).grid(
+        Spinbox(singleFrame, width=self.frameItemWidth[cDelay], values=delayOption, textvariable=vDelay,
+                wrap=True).grid(
             row=0, column=cDelay)
 
         vTrig = StringVar()
-        spTrig = Spinbox(singleFrame, width=self.frameItemWidth[cTrig], values=list(triggerAxis.values()), textvariable=vTrig, wrap=True)
+        spTrig = Spinbox(singleFrame, width=self.frameItemWidth[cTrig], values=list(triggerAxis.values()),
+                         textvariable=vTrig, wrap=True)
         spTrig.grid(row=0, column=cTrig)
 
         vAngle = IntVar()
-        Spinbox(singleFrame, width=self.frameItemWidth[cAngle], from_=-256, to=255, textvariable=vAngle, wrap=True).grid(
+        Spinbox(singleFrame, width=self.frameItemWidth[cAngle], from_=-256, to=255, textvariable=vAngle,
+                wrap=True).grid(
             row=0, column=cAngle)
 
         vNote = StringVar()
@@ -826,11 +837,12 @@ class App:
                 break
         vNote.set(note + str(currentRow))  # 'note')
         color = rgbtohex(random.choice(range(64, 192)), random.choice(range(64, 192)), random.choice(range(64, 192)))
-        Entry(singleFrame, width=self.frameItemWidth[cNote], fg=color, textvariable=vNote, bd=1).grid(row=0, column=cNote)
-        
+        Entry(singleFrame, width=self.frameItemWidth[cNote], fg=color, textvariable=vNote, bd=1).grid(row=0,
+                                                                                                      column=cNote)
+
         delButton = Button(singleFrame, text='<', fg='red', width=self.frameItemWidth[cDel],
                            command=lambda idx=currentRow: self.delFrame(idx))
-        
+
         addButton = Button(singleFrame, text='v', fg='green', width=self.frameItemWidth[cAdd],
                            command=lambda idx=currentRow: self.addFrame(idx + 1))
 
@@ -842,14 +854,14 @@ class App:
         if currentRow == 0:
             newFrameData = copy.deepcopy(self.frameData)
         else:
-#            newFrameData = copy.deepcopy(self.frameList[currentRow - 1][2])
+            #            newFrameData = copy.deepcopy(self.frameList[currentRow - 1][2])
             newFrameData = copy.deepcopy(self.frameList[self.activeFrame][2])
             if self.activeFrame >= currentRow:
                 self.activeFrame += 1
         newFrameData[3] = 0  # don't add the loop tag
         vStep.set('8')
         vDelay.set(0)
-        
+
         self.frameList.insert(currentRow, [currentRow, singleFrame, newFrameData])
         self.changeButtonState(currentRow)
         singleFrame.grid(row=currentRow + 1, column=0)
@@ -1494,7 +1506,7 @@ if __name__ == '__main__':
         #        if len(goodPorts)>0:
         #            t=threading.Thread(target=keepReadingSerial,args=(goodPorts,))
         #            t.start()
-        App()
+        SkillEditor()
         closeAllSerial(goodPorts)
         os._exit(0)
     except Exception as e:
