@@ -143,8 +143,8 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
 #endif
     void writeAngle(uint8_t servoNum, float angle) {
       setPWM(eeprom(PWM_PIN, servoNum), 0, EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2) / 1000.0 * angle + (byte)eeprom(B_OFFSET) * 10); //b_offset);
-      //      Serial.print(PWM_pin[servoNum]); Serial.print('\t');
-      //      Serial.println(k_angle2pulse[servoNum]*angle + b_offset);
+      //      Serial.print(eeprom(PWM_PIN, servoNum)); Serial.print('\t');
+      //      Serial.println(EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2) / 1000.0 * angle + (byte)eeprom(B_OFFSET) * 10);
     }
     void shutServos(byte s0 = 0, byte s1 = DOF) {
       //todo:
