@@ -223,7 +223,7 @@ class SkillComposer:
                 else:
                     COL = centerWidth + 2 + i // 4
                 ORI = VERTICAL
-                LEN = 160
+                LEN = 130
 
             if i in NaJoints[self.model]:
                 stt = DISABLED
@@ -241,7 +241,7 @@ class SkillComposer:
             value = DoubleVar()
             sliderBar = Scale(self.frameController, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
                               borderwidth=2, relief='flat', width=8, from_=-180 * tickDirection, to=180 * tickDirection,
-                              length=LEN, tickinterval=60, resolution=1, repeatdelay=100, repeatinterval=100,
+                              length=LEN, tickinterval=90, resolution=1, repeatdelay=100, repeatinterval=100,
                               command=lambda value, idx=i: self.setAngle(idx, value))
             sliderBar.set(0)
             label.grid(row=ROW + 1, column=COL, columnspan=cSPAN, pady=2, sticky='s')
@@ -274,7 +274,7 @@ class SkillComposer:
                 self.binderValue.append(binderValue)
 
         self.frameImu = Frame(self.frameController)
-        self.frameImu.grid(row=6, column=3, rowspan=7, columnspan=2)
+        self.frameImu.grid(row=6, column=3, rowspan=6, columnspan=2)
         for i in range(6):
             frm = -60
             to2 = 60
@@ -494,7 +494,7 @@ class SkillComposer:
             if tipSkillEditor[i]:
                 Hovertip(label, txt(tipSkillEditor[i]))
 
-        canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=370, bd=0)
+        canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=310, bd=0)
         scrollbar = Scrollbar(self.frameRowScheduler, orient='vertical', cursor='double_arrow', troughcolor='yellow',
                               width=15, command=canvas.yview)
         self.scrollable_frame = Frame(canvas)

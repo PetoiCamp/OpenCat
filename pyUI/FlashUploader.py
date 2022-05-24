@@ -43,7 +43,7 @@ class Uploader:
             self.win.geometry('530x356+260+200')
             self.backgroundColor ='gray'
         else:
-            self.win.geometry('530x400+260+100')
+            self.win.geometry('530x410+260+100')
             self.backgroundColor = None
 
         if self.OSname == 'win32':
