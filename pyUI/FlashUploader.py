@@ -328,7 +328,7 @@ class Uploader:
 
 
     def about(self):
-        self.msgbox = messagebox.showinfo(txt('titleVersion'), txt('msgVersion') + today)
+        self.msgbox = messagebox.showinfo(txt('titleVersion'), txt('msgVersion'))
         self.force_focus()  # 强制主界面获取focus
 
     def setActiveMode(self):

@@ -2,7 +2,7 @@ textEN = {
     'lan':'English',
     'lanOption':'English',
     'lanMenu':'Language',
-    'uiTitle':'Petoi GUI for OpenCat',
+    'uiTitle':'Petoi Desktop App',
     'calibTitle':'Joint Calibrator',
     'skillComposerTitle':'Petoi Skill Composer for OpenCat',
     'Model':'Model',
@@ -113,8 +113,10 @@ textEN = {
     'msgPort': 'Please choose the correct serial port!',
     'titleVersion': 'Version information',
     'msgVersion': '''Version: 1.0.0
-    Flash upload tool for robot.
-    (C) Copyright 2018-2022 Petoi LLC. All rights reserved.
+    Flash upload tool for OpenCat
+    Copyright © 2018-2022
+    All rights reserved
+    Petoi LLC
     https://www.petoi.com\n
     ''',
     'reset joints?': 'Reset joint offsets? (Y/N)',
@@ -176,7 +178,7 @@ textCN = {
     'lan':'Chinese',
     'lanOption':'中文',
     'lanMenu':'语言',
-    'uiTitle':'派拓艺OpenCat用户界面',
+    'uiTitle':'派拓艺桌面应用',
     'skillComposerTitle':'派拓艺技能创作坊',
     'calibTitle':'关节校准器',
     'Skill Composer':'技能创作坊',
@@ -287,8 +289,9 @@ textCN = {
     'labStatus3': '烧录成功！',
     'titleVersion': '版本信息',
     'msgVersion': '''版本：1.0.0
-    机器人固件烧录工具
-    (C) 版权所有 2018-2022 派拓艺（深圳）科技有限责任公司
+    OpenCat固件烧录工具
+    版权所有 © 2018-2022
+    派拓艺（深圳）科技有限责任公司
     https://www.petoi.com\n
     ''',
     'reset joints?': '舵机校准参数清零? (Y/N)',

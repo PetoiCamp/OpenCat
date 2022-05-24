@@ -107,8 +107,8 @@ class UI:
             print('schedule')
                 
     def showAbout(self):
-        messagebox.showinfo('Petoi Controller UI',
-                            u'Petoi Controller for OpenCat\nOpen Source on GitHub\nCopyright © Petoi LLC\nwww.petoi.com')
+        messagebox.showinfo('Petoi Desktop App',
+                            u'Petoi Desktop App\nOpen Source on GitHub\nCopyright © Petoi LLC\nwww.petoi.com')
         
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
