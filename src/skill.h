@@ -263,8 +263,8 @@ class Skill {
     }
 
     void loadFrameByDataBuffer() {
-//      period = dataBuffer[0];
-//      dataLen(period);
+      //      period = dataBuffer[0];
+      //      dataLen(period);
       formatSkill();
       frame = 0;
       transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
@@ -291,6 +291,8 @@ class Skill {
         protectiveShift = random() % 100 / 10.0 - 5;
       else
         protectiveShift = 0;
+      for (byte i = 0; i < DOF; i++)
+        dutyAngles[i] += protectiveShift;
       if (period > 1 && offsetLR < 0
           || period <= 1 && random(100) % 2 && token != T_CALIBRATE)
         mirror();
@@ -407,7 +409,7 @@ class Skill {
           duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint];
 
         //          PT(duty); PT('\t');
-        calibratedPWM(jointIndex, duty + protectiveShift
+        calibratedPWM(jointIndex, duty
 #ifdef GYRO_PIN
                       + (checkGyro && !exceptions ?
                          (!(frame % IMU_SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
