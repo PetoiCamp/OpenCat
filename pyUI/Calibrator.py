@@ -1,7 +1,10 @@
+#!/opt/anaconda3/envs/petoi/bin/python3
+# -*- coding: UTF-8 -*-
 from commonVar import *
+
 language = languageList['English']
+
 def txt(key):
-    global language
     return language.get(key, textEN[key])
     
 class Calibrator:

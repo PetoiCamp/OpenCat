@@ -10,12 +10,8 @@ import tkinter.font as tkFont
 import copy
 import threading
 from tkinter.filedialog import asksaveasfile, askopenfilename
-
 from commonVar import *
-#import commonVar
 
-# model = copy.deepcopy(currentModel)
-postureTable = postureDict[model]
 
 language = languageList['English']
 def txt(key):
@@ -24,8 +20,8 @@ def txt(key):
 def rgbtohex(r, g, b):
     return f'#{r:02x}{g:02x}{b:02x}'
 
+postureTable = postureDict[model]
 sixAxisNames = ['Yaw', 'Pitch', 'Roll', 'Spinal', 'Height', 'Sideway']
-
 dialTable = {'Connect': 'Connected', 'Servo': 'p', 'Gyro': 'g', 'Random': 'z'}
 tipDial = ['tipConnect', 'tipServo', 'tipGyro', 'tipRandom']
 labelSkillEditorHeader = ['Repeat', 'Set', 'Step', 'Delay', 'Trig', 'Angle', 'Note', 'Del', 'Add']
