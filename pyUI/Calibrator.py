@@ -26,7 +26,7 @@ class Calibrator:
             self.calibButtonW = 8
         else:
             self.calibButtonW = 6
-        self.frameCalibButtons = Button(self.winCalib)
+        self.frameCalibButtons = Frame(self.winCalib)
         self.frameCalibButtons.grid(row=0, column=3, rowspan=13)
         calibButton = Button(self.frameCalibButtons, text=txt('Calibration'), width=self.calibButtonW,command=lambda cmd='c': self.calibFun(cmd))
         standButton = Button(self.frameCalibButtons, text=txt('Stand Up'), width=self.calibButtonW, command=lambda cmd='balance': self.calibFun(cmd))
@@ -41,7 +41,7 @@ class Calibrator:
         abortButton.grid(row=11, column=1)
         quitButton.grid(row=11, column=2)
 
-        imageW = 300
+        imageW = 250
         self.imgWiring = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Wire.jpeg', imageW)
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         self.imgPosture = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Ruler.jpeg', imageW)
@@ -77,7 +77,7 @@ class Calibrator:
                 else:
                     COL = 3 + i // 4
                 ORI = VERTICAL
-                LEN = 200
+                LEN = 150
                 ALIGN = 'sw'
 
             if i in NaJoints[self.model]:
@@ -109,8 +109,8 @@ class Calibrator:
 
     def calibFun(self, cmd):
         global ports
-        imageW = 300
-        #        self.imgPosture.destroy()
+        imageW = 250
+        self.imgPosture.destroy()
         if cmd == 'c':
             self.imgPosture = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Ruler.jpeg', imageW)
             result = send(ports, ['c', 0])

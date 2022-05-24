@@ -12,7 +12,7 @@ from Calibrator import *
 from commonVar import *
 
 language = languageList['English']
-apps = ['Firmware Uploader','Joint Calibrator','Skill Composer','Task Scheduler']
+apps = ['Firmware Uploader','Joint Calibrator','Skill Composer']#,'Task Scheduler']
 def txt(key):
     return language.get(key, textEN[key])
 class UI:
