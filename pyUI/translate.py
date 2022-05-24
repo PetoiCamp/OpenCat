@@ -2,10 +2,14 @@ textEN = {
     'lan':'English',
     'lanOption':'English',
     'lanMenu':'Language',
-    'title':'Petoi Controller for OpenCat',
+    'uiTitle':'Petoi GUI for OpenCat',
+    'calibTitle':'Joint Calibrator',
+    'skillComposerTitle':'Petoi Skill Composer for OpenCat',
     'Model':'Model',
     'Utility':'Utility',
     'Joint Calibrator':'Joint Calibrator',
+    'Skill Composer':'Skill Composer',
+    'Task Scheduler':'Task Scheduler',
     'Scheduler':'Scheduler',
     'Firmware Uploader':'Firmware Uploader',
     'Exit':'Exit',
@@ -80,7 +84,64 @@ textEN = {
     'Rest':'Rest',
     'Abort':'Abort',
     'Do you want to save the offsets?':'Do you want to save the offsets?',
+    'uploaderTitle': 'Flash uploader',
+    'labTrans': 'Change Language',
+    'labChi': 'Chinese',
+    'labEng': 'English',
+    'labHelp': 'Help',
+    'labAbout': 'About',
+    'labExit': 'Exit',
+    'labFileDir': 'The directory of release folder:',
+    'btnFileDir': 'Choose folder...',
+    'titleFileDir': 'Please choose the release folder',
+    'labPort': 'Select serial port:',
+    'labSoftwareVersion': 'Select software version:',
+    'labBoardVersion': 'Select board version:',
+    'labProduct': 'Select product:',
+    'labMode': 'Select mode:',
+    'rbnWalk': 'Walk',
+    'rbnUltrasonic': 'Ultrasonic',
+    'rbnCamera': 'Camera',
+    'cbnFileWI': 'Parameters',
+    'cbnFileMF': 'Main function',
+    'btnUpload': 'Upload',
+    'titleWarning': 'Warning',
+    'labStatus1': 'Uploading ',
+    'labStatus2': 'firmware uploaded failed.',
+    'labStatus3': 'firmware uploaded successfully.',
+    'msgFileDir': 'Please choose the release folder!',
+    'msgPort': 'Please choose the correct serial port!',
+    'titleVersion': 'Version information',
+    'msgVersion': '''Version: 1.0.0
+    Flash upload tool for robot.
+    (C) Copyright 2018-2022 Petoi LLC. All rights reserved.
+    https://www.petoi.com\n
+    ''',
+    'reset joints?': 'Reset joint offsets? (Y/N)',
+    'reseting joints': 'Reset joint offsets...',
+    'joints reset': 'Reset joint offsets complete!',
     
+    'update instincts?':'Update Instinct? (Y/n)',
+    'updating instincts':'Updating Instincts......',
+    'instincts updated': 'instincts updated',
+    
+    'calibrate IMU?':'''Calibrate IMU? (Y/N)
+    Note: Lay the robot FLAT on a table!''',
+    'calibrating IMU': 'Calibrating IMU...',
+    'IMU calibrated': 'Calibrate IMU complete!',
+    
+    
+    'parameterFinish': 'Parameters initialized!',
+    'msgFinish': 'Firmware upload complete!',
+    'msgMode': 'Invalide, please select another mode!',
+
+
+    'Standard':'Standard',
+    'Random_Mind':'Random_Mind',
+    'Ultrasonic':'Ultrasonic',
+    'Voice':'Voice',
+    'Camera':'Camera',
+
     '':'',
     'tipConnect':'Keep updating the active serial\nports until it\'s disabled',
     'tipPortMenu':'Control single or all of the devices',
@@ -106,12 +167,20 @@ textEN = {
     'tipNote':'Give the frame an easy to remember name',
     'tipAdd':'Copy the active frame and\ninsert it to the next row',
     'tipDel':'Delete the current frame',
+    
+
+    
+
 }
 textCN = {
     'lan':'Chinese',
     'lanOption':'中文',
     'lanMenu':'语言',
-    'title':'派拓艺 OpenCat 上位机',
+    'uiTitle':'派拓艺OpenCat用户界面',
+    'skillComposerTitle':'派拓艺技能创作坊',
+    'calibTitle':'关节校准器',
+    'Skill Composer':'技能创作坊',
+    'Task Scheduler':'任务时序器',
     'Model':'产品',
     'Utility':'应用工具',
     'Joint Calibrator':'关节校准',
@@ -189,6 +258,64 @@ textCN = {
     'Rest':'休息',
     'Abort':'放弃',
     'Do you want to save the offsets?':'要保存校准值吗？',
+
+    'uploaderTitle': '烧录工具',
+    'labTrans': '切换语言',
+    'title': '烧录工具',
+    'labTrans': '切换语言',
+    'labChi': '中文',
+    'labEng': '英文',
+    'labHelp': '帮助',
+    'labAbout': '关于',
+    'labExit': '退出',
+    'labFileDir': 'release文件夹位置:',
+    'btnFileDir': '选择文件夹...',
+    'titleFileDir': '请选择release文件夹',
+    'labPort': '选择串口:',
+    'labSoftwareVersion': '选择软件版本:',
+    'labBoardVersion': '选择主板型号:',
+    'labProduct': '选择产品:',
+    'labMode': '选择模式:',
+    'cbnFileWI': '写入常数固件',
+    'cbnFileMF': '主功能固件',
+    'btnUpload': '烧录',
+    'titleWarning': "警告",
+    'msgFileDir': '请选择release文件夹!',
+    'msgPort': '请选择正确的串口!',
+    'labStatus1': '烧录 ',
+    'labStatus2': '烧录失败！',
+    'labStatus3': '烧录成功！',
+    'titleVersion': '版本信息',
+    'msgVersion': '''版本：1.0.0
+    机器人固件烧录工具
+    (C) 版权所有 2018-2022 派拓艺（深圳）科技有限责任公司
+    https://www.petoi.com\n
+    ''',
+    'reset joints?': '舵机校准参数清零? (Y/N)',
+    'reseting joints': '校准参数清零中...',
+    'joints reset': '校准参数清零完成！',
+    
+    'update instincts?':'更新技能? (Y/N)',
+    'updating instincts':'刷新EEPROM数据......',
+    'instincts updated': '更新技能完成!',
+    
+    'calibrate IMU?':'''校准 IMU? (Y/N)
+            注意: 请务必将 Bittle / Nybble 保持水平放置!''' ,
+    'calibrating IMU': 'IMU校准中...',
+    'IMU calibrated': 'IMU校准完成！',
+            
+            
+    'parameterFinish': '参数初始化完成！',
+    'msgFinish': '固件烧录完成!',
+    'msgMode': '无效模式，请选择其他模式!',
+
+    'Standard':'标准',
+    'Random_Mind':'随机',
+    'Ultrasonic':'超声波',
+    'Voice':'语音',
+    'Camera':'摄像头',
+    
+    
     'tipConnect':'持续更新活跃串口列表直到被挂起',
     'tipPortMenu':'控制单个或所有设备',
     'tipServo':'启用或禁用舵机',
@@ -238,7 +365,7 @@ textIT = {
     'lan':'Italiano Italian',
     'lanOption':'Italian',
     'lanMenu':'Lingua',
-    'title':'Petoi Controllo per OpenCat',
+    'skillComposerTitle':'Petoi compositore per OpenCat',
     'Model':'Modello',
     'Scheduler':'Sequenza',
     'Exit':'Uscita',

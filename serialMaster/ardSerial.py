@@ -437,12 +437,12 @@ def testPort(goodPorts, serialObject, p):
     global goodPortCount
     #    global sync
     try:
-        time.sleep(1.5)
+        time.sleep(2)
         result =serialObject.main_engine.read_all().decode('ISO-8859-1')
         if result !='':
             print('Waiting for the robot to booting up')
-            time.sleep(1.5)
-            waitTime = 5
+            time.sleep(2)
+            waitTime = 3
         else:
             waitTime = 1
         result = sendTask(goodPorts, serialObject, ['b',[20,50],0], waitTime)
