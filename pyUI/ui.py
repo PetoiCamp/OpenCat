@@ -22,24 +22,32 @@ class UI:
         try:
             with open("./defaultConfig.txt", "r") as f:
                 lines = f.readlines()
-                self.defaultPath = lines[0][:-1]
+                self.defaultLan = lines[0][:-1]
                 model = lines[1][:-1]
-                self.defaultLan = lines[2][:-1]
+                self.defaultPath = lines[2][:-1]
+                self.defaultSwVer = lines[3][:-1]
+                self.defaultBdVer = lines[4][:-1]
+                self.defaultMode = lines[5][:-1]
                 f.close()
                 
         except Exception as e:
             print ('Create configuration file')
-            self.defaultPath = './release'
-            model = 'Bittle'
             self.defaultLan = 'English'
+            model = 'Bittle'
+            self.defaultPath = './release'
+            self.defaultSwVer = '2.0'
+            self.defaultBdVer = 'NyBoard_V1_0'
+            self.defaultMode = 'Standard'
 #            raise e
         
         language = languageList[self.defaultLan]
                 
         self.window = Tk()
         self.ready = False
-        self.window.geometry('+100+10')
-        self.window.resizable(False, False)
+
+        self.OSname = self.window.call('tk', 'windowingsystem')
+        if self.OSname == 'win32':
+            self.window.iconbitmap(r'./resources/Petoi.ico')
         self.myFont = tkFont.Font(
         family='Times New Roman', size=20, weight='bold')
         self.window.title(txt('uiTitle'))
@@ -53,6 +61,8 @@ class UI:
         self.ready = True
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
+        self.window.geometry('320x270+100+10')
+        self.window.resizable(False, False)
         self.window.mainloop()
         
         
@@ -90,12 +100,21 @@ class UI:
             self.menubar.destroy()
             self.createMenu()
             self.window.title(txt('uiTitle'))
-            for i in range(4):
+            for i in range(len(apps)):
                 self.window.winfo_children()[1+i].config(text = txt(apps[i]))
            
     def utility(self,app):
-        with open("./defaultConfig.txt", "w") as f:
-            f.write(self.defaultPath+'\n'+model+'\n' + self.defaultLan+'\n')
+        lines = []
+        lines.append(self.defaultLan + '\n')    # save language in configuration file
+        lines.append(model + '\n')              # save model in configuration file
+        lines.append(self.defaultPath + '\n')   # save the route of release folder in configuration file
+        lines.append(self.defaultSwVer + '\n')  # save the software version in configuration file
+        lines.append(self.defaultBdVer + '\n')  # save the board version folder in configuration file
+        lines.append(self.defaultMode + '\n')   # save the mode in configuration file
+        f = open('./defaultConfig.txt', 'w+')
+        f.writelines(lines)
+        f.close()
+        
         self.window.destroy()
         if app == 'Firmware Uploader':
             Uploader(model, language)
@@ -112,8 +131,17 @@ class UI:
         
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
-            with open("./defaultConfig.txt", "w") as f:
-                f.write(self.defaultPath+'\n'+model+'\n' + self.defaultLan+'\n')
+            lines = []
+            lines.append(self.defaultLan + '\n')    # save language in configuration file
+            lines.append(model + '\n')              # save model in configuration file
+            lines.append(self.defaultPath + '\n')   # save the route of release folder in configuration file
+            lines.append(self.defaultSwVer + '\n')  # save the software version in configuration file
+            lines.append(self.defaultBdVer + '\n')  # save the board version folder in configuration file
+            lines.append(self.defaultMode + '\n')   # save the mode in configuration file
+            f = open('./defaultConfig.txt', 'w+')
+            f.writelines(lines)
+            f.close()
+            
             self.window.destroy()
         
 if __name__ == '__main__':
