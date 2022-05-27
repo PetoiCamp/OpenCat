@@ -315,6 +315,8 @@ class Uploader:
             print(self.strFileName.get())
         else:
             stt = NORMAL
+            self.strMode.set(self.lastSetting[4])
+            self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
         self.cbMode.config(state = stt)
 #        for i in range(1,4):
         
@@ -353,8 +355,8 @@ class Uploader:
         switcher = ["Standard","Random_Mind","Voice",specialMode]
 #        self.strMode.set(switcher.get(self.intMode.get(), "Invalid num of selection"))
         self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
+        print(self.strFileName.get())
         
-
 
     def formalize(self, strdir=' '):
         sep = "/"
@@ -517,8 +519,13 @@ class Uploader:
 #            status = txt('Uploading') + txt(uploadStage[s]) + '.'
 #            t = threading.Thread(target=self.progressiveDots, args=(status,))
 #            t.start()
-        
-            ret = call('./avrdude -C./avrdude.conf -v -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+
+            if self.OSname == 'win32':
+                avrdudePath = './resources/avrdudeWin/'
+            else:
+                avrdudePath = './resources/avrdudeMac/'
+            print()
+            ret = call(avrdudePath+'avrdude -C'+avrdudePath+'avrdude.conf -v -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
                             (port, filename[s]), shell=self.shellOption)
             self.inProgress = False
             if ret == 0:
