@@ -22,12 +22,13 @@ class UI:
         try:
             with open("./defaultConfig.txt", "r") as f:
                 lines = f.readlines()
-                self.defaultLan = lines[0][:-1]
-                model = lines[1][:-1]
-                self.defaultPath = lines[2][:-1]
-                self.defaultSwVer = lines[3][:-1]
-                self.defaultBdVer = lines[4][:-1]
-                self.defaultMode = lines[5][:-1]
+                lines = [line[:-1] for line in lines] # remove the '\n' at the end of each line
+                self.defaultLan = lines[0]
+                model = lines[1]
+                self.defaultPath = lines[2]
+                self.defaultSwVer = lines[3]
+                self.defaultBdVer = lines[4]
+                self.defaultMode = lines[5]
                 f.close()
                 
         except Exception as e:
@@ -48,6 +49,11 @@ class UI:
         self.OSname = self.window.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
             self.window.iconbitmap(r'./resources/Petoi.ico')
+            self.window.geometry('320x270+100+10')
+        else:
+            self.window.geometry('+100+10')
+            self.backgroundColor ='gray'
+        
         self.myFont = tkFont.Font(
         family='Times New Roman', size=20, weight='bold')
         self.window.title(txt('uiTitle'))
@@ -56,12 +62,12 @@ class UI:
         self.modelLabel = Label(self.window,text = model,font=self.myFont)
         self.modelLabel.grid(row = 0, column = 0,pady = 10)
         for i in range(len(apps)):
-            Button(self.window,text = txt(apps[i]),font=self.myFont,width = bw,relief = 'raised',command = lambda app = apps[i]:self.utility(app)).grid(row = 1+i, column = 0,padx=10, pady=(0,10))
+            Button(self.window,text = txt(apps[i]),font=self.myFont,width = bw,relief = 'raised',command = lambda app = apps[i]:self.utility(app)).grid(row = 1+i, column = 0, padx=10, pady=(0,10))
         
         self.ready = True
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
-        self.window.geometry('320x270+100+10')
+        
         self.window.resizable(False, False)
         self.window.mainloop()
         
@@ -103,19 +109,18 @@ class UI:
             for i in range(len(apps)):
                 self.window.winfo_children()[1+i].config(text = txt(apps[i]))
            
-    def utility(self,app):
-        lines = []
-        lines.append(self.defaultLan + '\n')    # save language in configuration file
-        lines.append(model + '\n')              # save model in configuration file
-        lines.append(self.defaultPath + '\n')   # save the route of release folder in configuration file
-        lines.append(self.defaultSwVer + '\n')  # save the software version in configuration file
-        lines.append(self.defaultBdVer + '\n')  # save the board version folder in configuration file
-        lines.append(self.defaultMode + '\n')   # save the mode in configuration file
-        f = open('./defaultConfig.txt', 'w+')
+    def saveConfigToFile(self,filename,config):
+        print(config)
+        f = open(filename, 'w+')
+        lines = '\n'.join(config)+'\n'
         f.writelines(lines)
         f.close()
         
+    def utility(self,app):
+        configuration = [self.defaultLan,model,self.defaultPath,self.defaultSwVer,self.defaultBdVer,self.defaultMode]
+        self.saveConfigToFile('./defaultConfig.txt',configuration)
         self.window.destroy()
+        
         if app == 'Firmware Uploader':
             Uploader(model, language)
         elif app == 'Joint Calibrator':
@@ -131,18 +136,11 @@ class UI:
         
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
-            lines = []
-            lines.append(self.defaultLan + '\n')    # save language in configuration file
-            lines.append(model + '\n')              # save model in configuration file
-            lines.append(self.defaultPath + '\n')   # save the route of release folder in configuration file
-            lines.append(self.defaultSwVer + '\n')  # save the software version in configuration file
-            lines.append(self.defaultBdVer + '\n')  # save the board version folder in configuration file
-            lines.append(self.defaultMode + '\n')   # save the mode in configuration file
-            f = open('./defaultConfig.txt', 'w+')
-            f.writelines(lines)
-            f.close()
-            
+            configuration = [self.defaultLan,model,self.defaultPath,self.defaultSwVer,self.defaultBdVer,self.defaultMode]
+            self.saveConfigToFile('./defaultConfig.txt',configuration)
             self.window.destroy()
+   
+
         
 if __name__ == '__main__':
 

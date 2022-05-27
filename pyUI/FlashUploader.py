@@ -30,6 +30,7 @@ which means that the logging module will automatically filter out any DEBUG mess
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
+regularW = 10
 language = languageList['English']
 def txt(key):
     return language.get(key, textEN[key])
@@ -40,19 +41,21 @@ class Uploader:
         self.OSname = self.win.call('tk', 'windowingsystem')
         self.shellOption = True
         if self.OSname == 'aqua':
-            self.win.geometry('530x356+260+200')
+            self.win.geometry('+260+200')
+#            self.win.geometry('530x356+260+200')
             self.backgroundColor ='gray'
         else:
+#            self.win.geometry('+260+100')
             self.win.geometry('530x410+260+100')
             self.backgroundColor = None
 
         if self.OSname == 'win32':
             self.shellOption = False
+        self.win.resizable(False, False)
         self.bParaUploaded = False
         Grid.rowconfigure(self.win, 0, weight=1)
         Grid.columnconfigure(self.win, 0, weight=1)
         self.strProduct = StringVar()
-        self.strProduct.set(model)
         global language
         language = lan
         self.initWidgets()
@@ -80,12 +83,8 @@ class Uploader:
         self.strFileDir = StringVar()
         self.strPort = StringVar()
         self.strStatus = StringVar()
-        self.strStatus.set(' ')
         self.strSoftwareVersion = StringVar()
-        self.strSoftwareVersion.set('2.0')
         self.strBoardVersion = StringVar()
-        self.strBoardVersion.set('NyBoard_V1_0')
-        #self.strProduct = StringVar()
         
         self.intMode = IntVar()
         self.strMode = StringVar()
@@ -95,12 +94,13 @@ class Uploader:
         try:
             with open("./defaultConfig.txt", "r") as f:
                 lines = f.readlines()
-                self.defaultLan = lines[0][:-1]
-                model = lines[1][:-1]
-                strDefaultPath = lines[2][:-1]    # 将txt文件的第三行读入到字符串strDefaultPath中
-                strSwVersion = lines[3][:-1]
-                strBdVersion = lines[4][:-1]
-                mode = lines[5][:-1]
+                lines = [line[:-1] for line in lines] # remove the '\n' at the end of each line
+                self.defaultLan = lines[0]
+                model = lines[1]
+                strDefaultPath = lines[2]
+                strSwVersion = lines[3]
+                strBdVersion = lines[4]
+                mode = lines[5]
                 f.close()
                 
         except Exception as e:
@@ -114,11 +114,8 @@ class Uploader:
             
         num = len(lines)
         logger.debug(f"len(lines): {num}")
-        self.lastSetting = []
-        self.lastSetting.append(model)           # get Model from configuration file
-        self.lastSetting.append(strSwVersion)    # get Software Version from configuration file
-        self.lastSetting.append(strBdVersion)    # get Board Version from configuration file
-        self.lastSetting.append(mode)            # get Mode from configuration file
+        self.lastSetting = [model,strDefaultPath,strSwVersion,strBdVersion,mode]
+        
 
         self.currentSetting = []
         
@@ -137,7 +134,7 @@ class Uploader:
         # fmFileDir = ttk.Frame(self.win)
         fmFileDir = Frame(self.win)
         # fmFileDir.pack(side=TOP, fill=BOTH, expand=YES)
-        fmFileDir.grid(row=0, ipadx=2, padx=2, sticky=W + E + N + S)
+        fmFileDir.grid(row=0, columnspan = 2, ipadx=2, padx=2, sticky=W + E + N + S)
 
         self.labFileDir = Label(fmFileDir, text=txt('labFileDir'), font=('Arial', 16))
         self.labFileDir.grid(row=0, column=0, ipadx=2, padx=2, sticky=W)
@@ -155,134 +152,153 @@ class Uploader:
         fmFileDir.columnconfigure(1, weight=1)  # 尺寸适配
         fmFileDir.rowconfigure(1, weight=1)  # 尺寸适配
 
+        fmSoftwareVersion = ttk.Frame(self.win)
+        fmSoftwareVersion.grid(row=1,column = 0, ipadx=2, padx=2, sticky=W)
+        self.labSoftwareVersion = ttk.Label(fmSoftwareVersion, text=txt('labSoftwareVersion'), font=('Arial', 16))
+        self.labSoftwareVersion.grid(row=0, ipadx=5, padx=5, sticky=W)
+        cbSoftwareVersion = ttk.Combobox(fmSoftwareVersion, textvariable=self.strSoftwareVersion, foreground='blue', width=regularW, font=12)
+        cbSoftwareVersion.bind("<<ComboboxSelected>>",self.chooseSoftwareVersion)
+
+        # list of software_version
+        software_version_list = ['1.0', '2.0']
+        # 为 Combobox 设置默认项
+        cbSoftwareVersion.set(self.lastSetting[2])
+        
+        # 为 Combobox 设置列表项
+        cbSoftwareVersion['values'] = software_version_list
+        cbSoftwareVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
+#        fmSoftwareVersion.rowconfigure(0, weight=1)  # 尺寸适配
+#        fmSoftwareVersion.rowconfigure(1, weight=1)  # 尺寸适配
+
+        fmBoardVersion = ttk.Frame(self.win)
+        fmBoardVersion.grid(row=1,column = 1, ipadx=2, padx=2, sticky=W)
+        self.labBoardVersion = ttk.Label(fmBoardVersion, text=txt('labBoardVersion'), font=('Arial', 16))
+        self.labBoardVersion.grid(row=0, ipadx=5, padx=5, sticky=W)
+        
+        cbBoardVersion = ttk.Combobox(fmBoardVersion, textvariable=self.strBoardVersion, foreground='blue', width=regularW, font=12)
+        # list of board_version
+        board_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1']
+        # 为 Combobox 设置默认项
+        cbBoardVersion.set(self.lastSetting[3])
+        # 为 Combobox 设置列表项
+        cbBoardVersion['values'] = board_version_list
+        cbBoardVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
+        
+#        fmBoardVersion.rowconfigure(0, weight=1)  # 尺寸适配
+#        fmBoardVersion.rowconfigure(1, weight=1)  # 尺寸适配
+
+        fmProduct = ttk.Frame(self.win)
+        fmProduct.grid(row=2,columnspan = 2, ipadx=2, padx=2, sticky=W + E + N + S)
+        self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
+        self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
+        # rbProduct 默认选项为外部传入参数 model
+#        c = 1
+#        for p in product:
+#            rbProduct = ttk.Radiobutton(fmProduct, text=p, value=p, style='my.TRadiobutton',
+#                                     variable=self.strProduct, command=self.chooseProduct)
+#            rbProduct.grid(row=0, column=c, ipadx=5, padx=5, sticky=W) # pack(side=LEFT, padx=5)
+#            c += 1
+#        fmProduct.rowconfigure(0, weight=1)  # 尺寸适配
+#        self.strProduct.set(self.lastSetting[0])
+        
+        cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', width=regularW, font=12)
+        # list of board_version
+        cbProductList = ['Nybble', 'Bittle']
+        # 为 Combobox 设置默认项
+        cbProduct.set(self.lastSetting[0])
+        # 为 Combobox 设置列表项
+        cbProduct['values'] = cbProductList
+        cbProduct.grid(row=1, ipadx=5, padx=5, sticky=W)
+        cbProduct.bind("<<ComboboxSelected>>",self.chooseProduct)
+        
+        
+        
+        
+        
+        
+        
+        
+
+        fmMode = ttk.Frame(self.win)
+        fmMode.grid(row=2,column = 1, ipadx=2, padx=2, sticky=W + E + N + S)
+        self.labMode = ttk.Label(fmMode, text=txt('labMode'), font=('Arial', 16))
+        self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
+
+        if self.strProduct.get() == 'Bittle':
+            cbModeList = ['Standard', 'Random_Mind', 'Voice', 'Camera']
+        elif self.strProduct.get() == 'Nybble':
+            cbModeList = ['Standard', 'Random_Mind', 'Voice', 'Ultrasonic']
+            
+            
+        self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', width=regularW, font=12)
+        # list of board_version
+#        cbModeList = ['Nybble', 'Bittle']
+        # 为 Combobox 设置默认项
+        self.cbMode.set(self.lastSetting[4])
+        # 为 Combobox 设置列表项
+        self.cbMode['values'] = cbModeList
+        self.cbMode.grid(row=1, ipadx=5, padx=5, sticky=W)
+        self.cbMode.bind("<<ComboboxSelected>>",self.chooseMode)
+        
+
+        # 为 rbMode 设置默认项
+#        if self.strProduct.get() == 'Bittle':
+#            specialMode = "Camera"
+#        elif self.strProduct.get() == 'Nybble':
+#            specialMode = "Ultrasonic"
+#        switcher = {
+#            "Standard",
+#            "Random_Mind",
+#            "Voice",
+#            specialMode
+#        }
+#        self.intMode.set(switcher.get(self.lastSetting[4], "Invalid mode of selection"))
+#        self.strMode.set(self.lastSetting[4])
+#        self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
+#        c = 0
+#        self.rbnModes = []
+#        for i in range(len(modeTuple)):
+#            rbMode = ttk.Radiobutton(fmMode, text=txt(modeTuple[i]), value=i, style='my.TRadiobutton',
+#                                     variable=self.intMode, state=NORMAL, command=self.chooseMode)
+#            rbMode.grid(row=1, column=c, ipadx=5, padx=5, sticky=W)
+#            self.rbnModes.append(rbMode)
+#            c += 1
+#        fmMode.rowconfigure(0, weight=1)  # 尺寸适配
+        
+        self.setActiveMode()
+
         fmSerial = ttk.Frame(self.win)
-        fmSerial.grid(row=1, ipadx=2, padx=2, sticky=W + E + N + S)
+        fmSerial.grid(row=3, columnspan=2, ipadx=2, padx=2, sticky=W + E)
         self.labPort = ttk.Label(fmSerial, text=txt('labPort'), font=('Arial', 16))
-        self.labPort.grid(row=0, ipadx=5, padx=5, sticky=W)
-        cb = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=20, font=12)
+        self.labPort.grid(row=0,column = 0,  ipadx=5, padx=5, sticky=W)
+        cb = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=15, font=12)
 
         # list of serial port number
         port_list_number = []
         port_list = list(serial.tools.list_ports.comports())
         if len(port_list) == 0:
             port_list_number = [' ']
-            print("The Serial port can't find!")
+            print("Cannot find the serial port!")
         else:
             cb.set(port_list[-1][0])
             for each_port in reversed(port_list):
                 port_list_number.append(each_port[0])
         # 为 Combobox 设置列表项
         cb['values'] = port_list_number
-        cb.grid(row=1, ipadx=5, padx=5, sticky=W)
-        fmSerial.rowconfigure(0, weight=1)  # 尺寸适配
-        fmSerial.rowconfigure(1, weight=1)  # 尺寸适配
+        cb.grid(row=1, column = 0, ipadx=5, padx=5, sticky=W)
+#        fmSerial.rowconfigure(0, weight=1)  # 尺寸适配
+#        fmSerial.rowconfigure(1, weight=1)  # 尺寸适配
 
-        fmSoftwareVersion = ttk.Frame(self.win)
-        fmSoftwareVersion.grid(row=2, ipadx=2, padx=2, sticky=W + E + N + S)
-        self.labSoftwareVersion = ttk.Label(fmSoftwareVersion, text=txt('labSoftwareVersion'), font=('Arial', 16))
-        self.labSoftwareVersion.grid(row=0, ipadx=5, padx=5, sticky=W)
-        cbSoftwareVersion = ttk.Combobox(fmSoftwareVersion, textvariable=self.strSoftwareVersion, foreground='blue', width=20, font=12)
-        cbSoftwareVersion.bind("<<ComboboxSelected>>",self.chooseSoftwareVersion)
-
-        # list of software_version
-        software_version_list = ['1.0', '2.0']
-        # 为 Combobox 设置默认项
-        cbSoftwareVersion.set(self.lastSetting[1])
-        
-        # 为 Combobox 设置列表项
-        cbSoftwareVersion['values'] = software_version_list
-        cbSoftwareVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
-        fmSoftwareVersion.rowconfigure(0, weight=1)  # 尺寸适配
-        fmSoftwareVersion.rowconfigure(1, weight=1)  # 尺寸适配
-
-        fmBoardVersion = ttk.Frame(self.win)
-        fmBoardVersion.grid(row=3, ipadx=2, padx=2, sticky=W + E + N + S)
-        self.labBoardVersion = ttk.Label(fmBoardVersion, text=txt('labBoardVersion'), font=('Arial', 16))
-        self.labBoardVersion.grid(row=0, ipadx=5, padx=5, sticky=W)
-        cbBoardVersion = ttk.Combobox(fmBoardVersion, textvariable=self.strBoardVersion, foreground='blue', width=20, font=12)
-
-        # list of board_version
-        board_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1']
-        # 为 Combobox 设置默认项
-        cbBoardVersion.set(self.lastSetting[2])
-        
-        # 为 Combobox 设置列表项
-        cbBoardVersion['values'] = board_version_list
-        cbBoardVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
-        fmBoardVersion.rowconfigure(0, weight=1)  # 尺寸适配
-        fmBoardVersion.rowconfigure(1, weight=1)  # 尺寸适配
-
-        fmProduct = ttk.Frame(self.win)
-        fmProduct.grid(row=4, ipadx=2, padx=2, sticky=W + E + N + S)
-        self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
-        self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
-        # rbProduct 默认选项为外部传入参数 model
-        c = 1
-        for p in product:
-            rbProduct = ttk.Radiobutton(fmProduct, text=p, value=p, style='my.TRadiobutton',
-                                     variable=self.strProduct, command=self.chooseProduct)
-            rbProduct.grid(row=0, column=c, ipadx=5, padx=5, sticky=W) # pack(side=LEFT, padx=5)
-            c += 1
-        fmProduct.rowconfigure(0, weight=1)  # 尺寸适配
-
-        fmMode = ttk.Frame(self.win)
-        fmMode.grid(row=5, ipadx=2, padx=2, sticky=W + E + N + S)
-        self.labMode = ttk.Label(fmMode, text=txt('labMode'), font=('Arial', 16))
-        self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
-
-        if self.strProduct.get() == 'Bittle':
-            modeTuple = ('Standard', 'Random_Mind', 'Voice', 'Camera')
-        elif self.strProduct.get() == 'Nybble':
-            modeTuple = ('Standard', 'Random_Mind', 'Voice', 'Ultrasonic')
-
-        # 为 rbMode 设置默认项
-        if self.strProduct.get() == 'Bittle':
-            specialMode = "Camera"
-        elif self.strProduct.get() == 'Nybble':
-            specialMode = "Ultrasonic"
-        switcher = {
-            "Standard": 0,
-            "Random_Mind": 1,
-            "Voice": 2,
-            specialMode: 3
-        }
-        self.intMode.set(switcher.get(self.lastSetting[3], "Invalid mode of selection"))
-        self.strMode.set(self.lastSetting[3])
-        self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
-        c = 0
-        self.rbnModes = []
-        for i in range(len(modeTuple)):
-            rbMode = ttk.Radiobutton(fmMode, text=txt(modeTuple[i]), value=i, style='my.TRadiobutton',
-                                     variable=self.intMode, state=NORMAL, command=self.chooseMode)
-            rbMode.grid(row=1, column=c, ipadx=5, padx=5, sticky=W)
-            self.rbnModes.append(rbMode)
-            c += 1
-        fmMode.rowconfigure(0, weight=1)  # 尺寸适配
-        
-        self.setActiveMode()
-
-        self.intVarWI = IntVar()
-        self.intVarWI.set(1)
-
-        self.intVarOC = IntVar()
-        self.intVarOC.set(1)
-
-        fmUpload = Frame(self.win)
-        fmUpload.grid(row=6, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
- 
-
-        self.btnUpload = Button(fmUpload, text=txt('btnUpload'), font=('Arial', 14), foreground='blue',
+        self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial', 14), foreground='blue',
                                        background=self.backgroundColor, command=self.autoupload)    # 绑定 autoupload 方法
-        self.btnUpload.grid(row=0, ipadx=5, padx=5, sticky=W + E + N + S)
-        fmUpload.columnconfigure(0, weight=1)  # 尺寸适配
-        fmUpload.rowconfigure(0, weight=1)  # 尺寸适配
+        self.btnUpload.grid(row=1, column = 1, ipadx=5, padx=5, sticky=E)
 
         fmStatus = ttk.Frame(self.win)
-        fmStatus.grid(row=7, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
+        fmStatus.grid(row=4,columnspan = 2, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
         self.statusBar = ttk.Label(fmStatus, textvariable=self.strStatus, font=('Arial', 16), relief=SUNKEN)
         self.statusBar.grid(row=0, ipadx=5, padx=5, sticky=W + E + N + S)
         fmStatus.columnconfigure(0, weight=1)    # 尺寸适配
-        fmStatus.rowconfigure(0, weight=1)  # 尺寸适配
+#        fmStatus.rowconfigure(0, weight=1)  # 尺寸适配
 
 
     def about(self):
@@ -292,53 +308,50 @@ class Uploader:
     def setActiveMode(self):
         if self.strSoftwareVersion.get() == '1.0':
             stt = DISABLED
-            self.intMode.set(0)
+#            self.intMode.set(0)
             self.strMode.set('Standard')
             print(self.strMode.get())
-            self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
+            self.strFileName.set('OpenCat' + 'Standard' + '.ino.hex')
             print(self.strFileName.get())
         else:
             stt = NORMAL
-        for i in range(1,4):
-            self.rbnModes[i].configure(state=stt)
+        self.cbMode.config(state = stt)
+#        for i in range(1,4):
+        
+#    cbSoftwareVersion.configure(state=stt)
     
     def chooseSoftwareVersion(self, event):
         self.setActiveMode()
 
 
-    def chooseProduct(self):
+    def chooseProduct(self, event):
 #        print("self.strProduct is " + self.strProduct.get())
         if self.strProduct.get() == 'Bittle':
-            modeTuple = ('Standard', 'Random_Mind', 'Voice', 'Camera')
+            modeList = ['Standard', 'Random_Mind', 'Voice', 'Camera']
         elif self.strProduct.get() == 'Nybble':
-            modeTuple = ('Standard', 'Random_Mind', 'Voice', 'Ultrasonic')
-
-        for i in range(len(modeTuple)):
-            self.rbnModes[i].configure(text=modeTuple[i])
+            modeList = ['Standard', 'Random_Mind', 'Voice', 'Ultrasonic']
+        self.cbMode['values'] = modeList
+#        for i in range(len(modeList)):
+#            self.rbnModes[i].configure(text=modeList[i])
 
         if (self.strProduct.get() == 'Bittle' and self.strMode.get() == "Ultrasonic") \
             or (self.strProduct.get() == 'Nybble' and self.strMode.get() == "Camera"):
             messagebox.showwarning(txt('titleWarning'),txt('msgMode'))
-            self.intMode.set(0)
+#            self.intMode.set(0)
             self.strMode.set('Standard')
-            self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
+            self.strFileName.set("OpenCat" + 'Standard' + ".ino.hex")
             print(self.strFileName.get())
             self.force_focus()  # 强制主界面获取focus
 
 
-    def chooseMode(self):
+    def chooseMode(self, event):
 
         if self.strProduct.get() == 'Bittle':
             specialMode = "Camera"
         elif self.strProduct.get() == 'Nybble':
             specialMode = "Ultrasonic"
-        switcher = {
-            0 : "Standard",
-            1 : "Random_Mind",
-            2 : "Voice",
-            3 : specialMode
-        }
-        self.strMode.set(switcher.get(self.intMode.get(), "Invalid num of selection"))
+        switcher = ["Standard","Random_Mind","Voice",specialMode]
+#        self.strMode.set(switcher.get(self.intMode.get(), "Invalid num of selection"))
         self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
         
 
@@ -379,7 +392,7 @@ class Uploader:
         else:
             return in_str.encode(encoding)
 
-    def WriteInstinctProcess(self, port):
+    def WriteInstinctPrompts(self, port):
         ser = Communication(port, 115200, 0.5)
         logger.info(f"Connect to usb serial port: {port}.")
         strSoftwareVersion = self.strSoftwareVersion.get()
@@ -448,12 +461,29 @@ class Uploader:
         self.force_focus()  # 强制主界面获取focus
 
 
+    def saveConfigToFile(self,filename,config):
+        print(config)
+        f = open(filename, 'w+')
+        lines = '\n'.join(config)+'\n'
+        f.writelines(lines)
+        f.close()
+
+#    def progressiveDots(self, label):
+#        while self.inProgress:
+#            print(label,flush = True)
+#            time.sleep(1)
+#            label += '.'
+#            self.strStatus.set(label)
+#            self.win.update()
+#        print('exit fun')
+    
     def autoupload(self):
         strProd = self.strProduct.get()
+        strDefaultPath = self.strFileDir.get()
         strSoftwareVersion = self.strSoftwareVersion.get()
         strBoardVersion = self.strBoardVersion.get()
         strMode = self.strMode.get()
-        self.currentSetting = [strProd, strSoftwareVersion, strBoardVersion, strMode]
+        self.currentSetting = [strProd, strDefaultPath, strSoftwareVersion, strBoardVersion, strMode]
         logger.info(f"currentSetting: {self.currentSetting}.")
         path = self.strFileDir.get() + "/" + strSoftwareVersion + "/" + strBoardVersion + "/" + strProd
         strFileName = self.strFileName.get()
@@ -475,59 +505,75 @@ class Uploader:
             self.force_focus()  # 强制主界面获取focus
             return False
         logger.info(f"lastSetting: {self.lastSetting}.")
-        if self.bParaUploaded :
-            if self.currentSetting[:3] != self.lastSetting[:3]:
-                self.intVarWI.set(1)
-            else:
-                self.intVarWI.set(0)
-        else:
-            self.intVarWI.set(1)
-
-        ret = -1
-        for file in filename:
-            if (self.intVarWI.get() == 0) and (file == fnWriteI):
+            
+            
+        uploadStage = ['Parameters', 'Main function']
+        for s in range(2):
+            if s ==0 and self.bParaUploaded and self.currentSetting[:4] == self.lastSetting[:4]:
                 continue
-            if (self.intVarOC.get() == 0) and (file == fnOpenCat):
-                continue
-
-            if file == fnWriteI:
-                self.strStatus.set(txt('labStatus1') + txt('cbnFileWI') + '...' )
-            elif file == fnOpenCat:
-                self.strStatus.set(txt('labStatus1') + txt('cbnFileMF') + '...')
-            self.statusBar.update()
-
+            self.strStatus.set(txt('Uploading') + txt(uploadStage[s]) + '...' )
+            self.win.update()
+            self.inProgress = True
+#            status = txt('Uploading') + txt(uploadStage[s]) + '.'
+#            t = threading.Thread(target=self.progressiveDots, args=(status,))
+#            t.start()
+        
             ret = call('./avrdude -C./avrdude.conf -v -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
-                            (port, file), shell=self.shellOption)
-
+                            (port, filename[s]), shell=self.shellOption)
+            self.inProgress = False
             if ret == 0:
-                status =txt('labStatus3')
+#                status =txt('labStatus3')
+                status = txt(uploadStage[s]) + txt('is successully uploaded')
             else:
-                status = txt('labStatus2')
-            if file == fnWriteI:
-                self.strStatus.set(txt('cbnFileWI') + ' ' + status)
-                self.statusBar.update()
-                if ret == 0:
-                    self.WriteInstinctProcess(port)
-                    messagebox.showinfo(title=None, message=txt('parameterFinish'))
-            elif file == fnOpenCat:
-                self.strStatus.set(txt('cbnFileMF') + ' ' + status)
-                self.statusBar.update()
-                
-            if status == txt('labStatus2'):
-                return False
+                status = txt(uploadStage[s]) + txt('failed to upload')
+                return
+            self.strStatus.set(status)
+            self.statusBar.update()
+            if s ==0:
+                self.WriteInstinctPrompts(port)
+                messagebox.showinfo(title=None, message=txt('parameterFinish'))
+ 
+#
+#        if not self.bParaUploaded or self.currentSetting[:4] != self.lastSetting[:4]:
+#            self.intVarWI.set(1)
+#        else:
+#            self.intVarWI.set(0)
+#        ret = -1
+#        for file in filename:
+#            if (self.intVarWI.get() == 0) and (file == fnWriteI):
+#                continue
+#
+#            if file == fnWriteI:
+#                self.strStatus.set(txt('labStatus1') + txt('cbnFileWI') + '...' )
+#            elif file == fnOpenCat:
+#                self.strStatus.set(txt('labStatus1') + txt('cbnFileMF') + '...')
+#            self.statusBar.update()
+#
+#            ret = call('./avrdude -C./avrdude.conf -v -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+#                            (port, file), shell=self.shellOption)
+#
+#            if ret == 0:
+#                status =txt('labStatus3')
+#            else:
+#                status = txt('labStatus2')
+#            if file == fnWriteI:
+#                self.strStatus.set(txt('cbnFileWI') + ' ' + status)
+#                self.statusBar.update()
+#                if ret == 0:
+#                    self.WriteInstinctPrompts(port)
+#                    messagebox.showinfo(title=None, message=txt('parameterFinish'))
+#            elif file == fnOpenCat:
+#                self.strStatus.set(txt('cbnFileMF') + ' ' + status)
+#                self.statusBar.update()
+#
+#            if status == txt('labStatus2'):
+#                return False
 
         self.lastSetting = self.currentSetting
         self.bParaUploaded = True
         with open("./defaultConfig.txt", "w") as f:
-            lines = []
-            lines.append(self.defaultLan + '\n')               # save language in configuration file
-            lines.append(self.lastSetting[0] + '\n')           # save model in configuration file
-            lines.append(self.strFileDir.get() + '\n')         # save the route of release folder in configuration file
-            lines.append(self.lastSetting[1] + '\n')           # save software_version in configuration file
-            lines.append(self.lastSetting[2] + '\n')           # save board_version in configuration file
-            lines.append(self.lastSetting[3] + '\n')           # save modde in configuration file
-            f.writelines(lines)
-            f.close()
+            configuration = [self.defaultLan,self.lastSetting[0],self.lastSetting[1],self.lastSetting[2],self.lastSetting[3],self.lastSetting[4]]
+            self.saveConfigToFile('./defaultConfig.txt',configuration)
             
         print('Finish!')
         messagebox.showinfo(title=None, message=txt('msgFinish'))
@@ -540,15 +586,8 @@ class Uploader:
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             with open("./defaultConfig.txt", "w") as f:
-                lines = []
-                lines.append(self.defaultLan + '\n')               # save language in configuration file
-                lines.append(self.lastSetting[0] + '\n')           # save model in configuration file
-                lines.append(self.strFileDir.get() + '\n')         # save the route of release folder in configuration file
-                lines.append(self.lastSetting[1] + '\n')           # save software_version in configuration file
-                lines.append(self.lastSetting[2] + '\n')           # save board_version in configuration file
-                lines.append(self.lastSetting[3] + '\n')           # save modde in configuration file
-                f.writelines(lines)
-                f.close()
+                configuration = [self.defaultLan,self.lastSetting[0],self.lastSetting[1],self.lastSetting[2],self.lastSetting[3],self.lastSetting[4]]
+                self.saveConfigToFile('./defaultConfig.txt',configuration)
             self.win.destroy()
 
 if __name__ == '__main__':

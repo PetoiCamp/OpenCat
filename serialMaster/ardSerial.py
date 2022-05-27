@@ -10,7 +10,6 @@ import platform
 import copy
 import threading
 import os
-import os
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
