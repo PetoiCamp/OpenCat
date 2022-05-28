@@ -30,7 +30,7 @@ which means that the logging module will automatically filter out any DEBUG mess
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
-regularW = 10
+regularW = 12
 language = languageList['English']
 def txt(key):
     return language.get(key, textEN[key])
@@ -271,7 +271,7 @@ class Uploader:
         fmSerial.grid(row=3, columnspan=2, ipadx=2, padx=2, sticky=W + E)
         self.labPort = ttk.Label(fmSerial, text=txt('labPort'), font=('Arial', 16))
         self.labPort.grid(row=0,column = 0,  ipadx=5, padx=5, sticky=W)
-        cb = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=15, font=12)
+        cb = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=16, font=12)
 
         # list of serial port number
         port_list_number = []
@@ -289,9 +289,9 @@ class Uploader:
 #        fmSerial.rowconfigure(0, weight=1)  # 尺寸适配
 #        fmSerial.rowconfigure(1, weight=1)  # 尺寸适配
 
-        self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial', 14), foreground='blue',
-                                       background=self.backgroundColor, command=self.autoupload)    # 绑定 autoupload 方法
-        self.btnUpload.grid(row=1, column = 1, ipadx=5, padx=5, sticky=E)
+        self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial 24 bold'), width = 6,height = 2,foreground='blue',
+                                       background=self.backgroundColor, relief = 'groove', command=self.autoupload)    # 绑定 autoupload 方法
+        self.btnUpload.grid(row=0, column = 1, rowspan = 2, ipadx=5, padx=5, sticky=E)
 
         fmStatus = ttk.Frame(self.win)
         fmStatus.grid(row=4,columnspan = 2, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)

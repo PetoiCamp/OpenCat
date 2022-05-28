@@ -135,8 +135,7 @@ void loop() {
 #endif
 #ifdef GYRO_PIN
   readEnvironment();
-  if (token != T_CALIBRATE && exceptions) //the gyro reaction switch can be toggled on/off by the 'g' token
-    dealWithExceptions(); //fall over, lifted, etc.
+  dealWithExceptions(); //fall over, lifted, etc.
 #endif
   readSignal();
   reaction();

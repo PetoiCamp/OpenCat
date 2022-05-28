@@ -1,13 +1,15 @@
 
 void dealWithExceptions() {
-  //  soundFallOver();
-  //  for (int m = 0; m < 2; m++)
-  //    meow(30 - m * 12, 42 - m * 12, 20);
-  //  beep(15, 100, 100, 2);
-  meow();
-  token = T_SKILL;
-  strcpy(newCmd, "rc");
-  newCmdIdx = -1;
+  if (checkGyro && token != T_CALIBRATE && exceptions) { //the gyro reaction switch can be toggled on/off by the 'g' token
+    //  soundFallOver();
+    //  for (int m = 0; m < 2; m++)
+    //    meow(30 - m * 12, 42 - m * 12, 20);
+    //  beep(15, 100, 100, 2);
+    meow();
+    token = T_SKILL;
+    strcpy(newCmd, "rc");
+    newCmdIdx = -1;
+  }
 }
 
 #ifdef VOLTAGE_DETECTION_PIN

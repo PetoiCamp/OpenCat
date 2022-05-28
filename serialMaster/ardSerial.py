@@ -464,7 +464,7 @@ def checkPortList(goodPorts, allPorts):
         # if p == '/dev/ttyAMA0':
         #     continue
         serialObject = Communication(p, 115200, 0.5)
-        t = threading.Thread(target=testPort, args=(goodPorts, serialObject, p.split('/')[-1]))
+        t = threading.Thread(target=testPort, args=(goodPorts, serialObject, p.split('/')[-1])) #remove '/dev/' in the port name
         threads.append(t)
         t.start()
     for t in threads:
