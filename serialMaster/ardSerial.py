@@ -472,15 +472,16 @@ def checkPortList(goodPorts, allPorts):
             t.join(8)
 
 
-def keepCheckingPort(goodPorts):
+def keepCheckingPort(goodPorts, check = True):
     allPorts = Communication.Print_Used_Com()
     while len(goodPorts) > 0:
         currentPorts = Communication.Print_Used_Com()
         time.sleep(0.01)
         if set(currentPorts) - set(allPorts):
             newPort = list(set(currentPorts) - set(allPorts))
-            time.sleep(0.5)
-            checkPortList(goodPorts, newPort)
+            if check:
+                time.sleep(0.5)
+                checkPortList(goodPorts, newPort)
 
         elif set(allPorts) - set(currentPorts):
             closedPort = list(set(allPorts) - set(currentPorts))
