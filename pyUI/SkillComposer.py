@@ -1308,15 +1308,18 @@ class SkillComposer:
                     elif state == 'P':
                         self.dialValue[i].set(False)
                         self.frameDial.winfo_children()[2].config(fg='red')
+                        self.frameDial.winfo_children()[2].deselect()
                     elif state == 'g':
                         self.dialValue[i].set(False)
                         self.frameDial.winfo_children()[3].config(fg='red')
+                        self.frameDial.winfo_children()[3].deselect()
                     elif state == 'G':
                         self.dialValue[i].set(True)
                         self.frameDial.winfo_children()[3].config(fg='green')
                     elif state == 'z':
                         self.dialValue[i].set(False)
                         self.frameDial.winfo_children()[4].config(fg='red')
+                        self.frameDial.winfo_children()[4].deselect()
                     elif state == 'Z':
                         self.dialValue[i].set(True)
                         self.frameDial.winfo_children()[4].config(fg='green')
