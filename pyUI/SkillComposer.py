@@ -288,8 +288,8 @@ class SkillComposer:
                 frm = -35
                 to2 = 35
             elif i == 3:
-                frm = -16
-                to2 = 20
+                frm = -15
+                to2 = 15
             elif i == 4:
                 frm = -50
                 to2 = 40
