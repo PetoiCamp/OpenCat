@@ -276,8 +276,8 @@ class SkillComposer:
         self.frameImu = Frame(self.frameController)
         self.frameImu.grid(row=6, column=3, rowspan=6, columnspan=2)
         for i in range(6):
-            frm = -60
-            to2 = 60
+            frm = -40
+            to2 = 40
             if i in axisDisable[self.model]:
                 stt = DISABLED
                 clr = 'light yellow'
@@ -285,8 +285,8 @@ class SkillComposer:
                 stt = NORMAL
                 clr = 'yellow'
             if i == 2:
-                frm = -35
-                to2 = 35
+                frm = -30
+                to2 = 30
             elif i == 3:
                 frm = -15
                 to2 = 15
@@ -1160,11 +1160,11 @@ class SkillComposer:
                 negativeGroup = []
             elif i == 1:  # pitch
                 if jointConfig[self.model] == '>>':
-                    positiveGroup = [2, 6, 7, 10, 11, 12, 13]
-                    negativeGroup = [1, 4, 5, 8, 9, 14, 15]
+                    positiveGroup = [1, 4, 5, 8, 9, 14, 15]
+                    negativeGroup = [2, 6, 7, 10, 11, 12, 13]
                 else:
-                    positiveGroup = [6, 7, 12, 13, 14, 15]
-                    negativeGroup = [1, 4, 5, 8, 9, 10, 11, ]
+                    positiveGroup = [1, 4, 5, 8, 9, 10, 11,]
+                    negativeGroup = [6, 7, 12, 13, 14, 15]
             elif i == 2:  # roll
                 if jointConfig[self.model] == '>>':
                     positiveGroup = [4, 7, 8, 11, 13, 14]
@@ -1203,10 +1203,19 @@ class SkillComposer:
                     else:
                         factor = 1
                     if i == 1:
-                        if (value > 0 and frontQ and upperQ) or (value < 0 and not frontQ and upperQ):
-                            factor /= 4
+                        if jointConfig[self.model] == '>>':
+                            if upperQ:
+                                if frontQ:
+                                    if value < 0:
+                                        factor = 0
+                                else:
+                                    factor *= 2
+                                    
+                        if jointConfig[self.model] == '><':
+                            if upperQ:
+                                factor /= 3
+                            
                     if i == 2:
-
                         if (value > 0 and not leftQ) or (value < 0 and leftQ):
                             factor /= 2
 
