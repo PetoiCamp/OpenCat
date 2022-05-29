@@ -289,9 +289,9 @@ class SkillComposer:
                 to2 = 35
             elif i == 3:
                 frm = -16
-                to2 = 10
+                to2 = 20
             elif i == 4:
-                frm = -60
+                frm = -50
                 to2 = 40
 
             label = Label(self.frameImu, text=txt(sixAxisNames[i]), width=self.sixW, height=2, fg='blue',
@@ -618,6 +618,7 @@ class SkillComposer:
                 self.binderButton[i * 2 + 1].config(state=stt)
             self.createPosture()
             self.placeProductImage()
+            self.restartSkillEditor()
 
     def addFrame(self, currentRow):
         singleFrame = Frame(self.scrollable_frame, borderwidth=1, relief=RAISED)
