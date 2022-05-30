@@ -24,9 +24,9 @@ postureTable = postureDict[model]
 sixAxisNames = ['Yaw', 'Pitch', 'Roll', 'Spinal', 'Height', 'Sideway']
 dialTable = {'Connect': 'Connected', 'Servo': 'p', 'Gyro': 'g', 'Random': 'z'}
 tipDial = ['tipConnect', 'tipServo', 'tipGyro', 'tipRandom']
-labelSkillEditorHeader = ['Repeat', 'Set', 'Step', 'Delay', 'Trig', 'Angle', 'Note', 'Del', 'Add']
-tipSkillEditor = ['tipRepeat', 'tipSet', 'tipStep', 'tipDelay', 'tipTrig', 'tipTrigAngle', 'tipNote', 'tipDel', 'tipAdd', ]
-cLoop, cSet, cStep, cDelay, cTrig, cAngle, cNote, cDel, cAdd = range(len(labelSkillEditorHeader))
+labelSkillEditorHeader = ['Repeat', 'Set', 'Step', 'Trig', 'Angle', 'Delay', 'Note', 'Del', 'Add']
+tipSkillEditor = ['tipRepeat', 'tipSet', 'tipStep',  'tipTrig', 'tipTrigAngle','tipDelay', 'tipNote', 'tipDel', 'tipAdd', ]
+cLoop, cSet, cStep,  cTrig, cAngle, cDelay, cNote, cDel, cAdd = range(len(labelSkillEditorHeader))
 
 axisDisable = {
     'Nybble': [0, 5],
@@ -90,7 +90,7 @@ class SkillComposer:
         if self.OSname == 'win32':
             self.window.iconbitmap(resourcePath + 'Petoi.ico')
             # global frameItemWidth
-            self.frameItemWidth = [2, 4, 3, 4, 5, 4, 7, 3, 3]
+            self.frameItemWidth = [2, 4, 3, 5, 4, 4, 7, 3, 3]
             self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
             self.sixW = 6
@@ -106,12 +106,12 @@ class SkillComposer:
             self.dialPad = 2
         else:
             if self.OSname == 'aqua':
-                self.frameItemWidth = [2, 2, 3, 3, 4, 3, 4, 1, 1]
+                self.frameItemWidth = [2, 2, 3,  4, 3, 3,4, 1, 1]
                 self.headerOffset = [2, 2, 2, 2, 2, 2, 2, 2, 2]
 
             else:
                 self.frameItemWidth = [2, 2, 3, 4, 4, 4, 5, 2, 2]
-                self.headerOffset = [0, 0, 1, 0, 1, 0, 0, 0, 1]
+                self.headerOffset = [0, 0, 1,  1, 0,0, 0, 0, 1]
 
             self.sixW = 5
             self.sliderW = 338
@@ -641,12 +641,6 @@ class SkillComposer:
                 values=('1', '2', '4', '8', '12', '16', '32', '48', txt('max')), textvariable=vStep, wrap=True).grid(
             row=0, column=cStep)
 
-        vDelay = IntVar()
-        delayOption = list(range(0, 100, 50)) + list(range(100, 1000, 100)) + list(range(1000, 6001, 1000))
-
-        Spinbox(singleFrame, width=self.frameItemWidth[cDelay], values=delayOption, textvariable=vDelay,
-                wrap=True).grid(
-            row=0, column=cDelay)
 
         vTrig = StringVar()
         spTrig = Spinbox(singleFrame, width=self.frameItemWidth[cTrig], values=list(triggerAxis.values()),
@@ -657,6 +651,13 @@ class SkillComposer:
         Spinbox(singleFrame, width=self.frameItemWidth[cAngle], from_=-256, to=255, textvariable=vAngle,
                 wrap=True).grid(
             row=0, column=cAngle)
+            
+        vDelay = IntVar()
+        delayOption = list(range(0, 100, 50)) + list(range(100, 1000, 100)) + list(range(1000, 6001, 1000))
+
+        Spinbox(singleFrame, width=self.frameItemWidth[cDelay], values=delayOption, textvariable=vDelay,
+                wrap=True).grid(
+            row=0, column=cDelay)
 
         vNote = StringVar()
         #        letters = string.ascii_lowercase + string.ascii_uppercase + string.digits
