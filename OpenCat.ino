@@ -124,7 +124,7 @@ void setup() {
   imuSetup();
 #endif
 #endif              // **
-
+  PTLF("k");
   PTLF("Ready!");
 }
 

@@ -329,7 +329,7 @@ class Skill {
 
     void perform() {
       if (period < 0) {   //behaviors
-        int8_t repeat = loopCycle[2] - 1;
+        int8_t repeat = loopCycle[2] >= 0 && loopCycle[2] < 2 ? 0 : loopCycle[2] - 1;
         for (byte c = 0; c < abs(period); c++) { //the last two in the row are transition speed and delay
           //          PT("step "); PTL(c);
           //          printList(dutyAngles + c * frameSize);
@@ -358,16 +358,13 @@ class Skill {
               previousYpr = currentYpr;
             }
           }
-          else
 #endif
-          {
-            delay(dutyAngles[DOF + 1 + c * frameSize] * 50);
-          }
-          if (c == loopCycle[1] && repeat > 0) {
+          delay(dutyAngles[DOF + 1 + c * frameSize] * 50);
+          if (repeat != 0 && c != 0 && c == loopCycle[1]) {
             c = loopCycle[0] - 1;
-            repeat--;
+            if (repeat > 0) //if repeat <0, infinite loop. only reset button will break the loop
+              repeat--;
           }
-          //          delay(10);
         }
       }
       else {//postures and gaits

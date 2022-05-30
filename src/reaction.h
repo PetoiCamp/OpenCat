@@ -311,7 +311,11 @@ void reaction() {
         currentAdjust[i] = 0;
     }
     else {
-      strcpy(newCmd, "balance");
+      //      strcpy(newCmd, "balance");
+      strcpy(newCmd, "");
+      arrayNCPY(skill.dutyAngles, skill.dutyAngles + (abs(skill.period) - 1) * skill.frameSize, DOF);
+      skill.period = 1;
+      frame = 0;
     }
     if (strcmp(newCmd, ""))
       skill.loadFrame(newCmd);
