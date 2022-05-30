@@ -893,12 +893,13 @@ class SkillComposer:
         self.skillText = Text(entryFrame, width=120, spacing1=2)
         self.skillText.insert('1.0', txt('exampleFormat')
                               + '\n\nconst int8_t hi[] PROGMEM ={\n\
-            -4,  0, -30, 1,\n\
+            -5,  0,   0, 1,\n\
              1,  2,   3,\n\
              0,-20, -60,   0,   0,   0,   0,   0,  35,  30, 120, 105,  75,  60, -40, -30,     4, 2, 0, 0,\n\
             35, -5, -60,   0,   0,   0,   0,   0, -75,  30, 125,  95,  40,  75, -45, -30,    10, 0, 0, 0,\n\
             40,  0, -35,   0,   0,   0,   0,   0, -60,  30, 125,  95,  60,  75, -45, -30,    10, 0, 0, 0,\n\
              0,  0, -45,   0,  -5,  -5,  20,  20,  45,  45, 105, 105,  45,  45, -45, -45,     8, 0, 0, 0,\n\
+             0,  0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,     5, 0, 0, 0,\n\
         };')
         self.skillText.grid(row=0, column=0)
         # Create an Entry Widget in the Toplevel window
@@ -1020,15 +1021,14 @@ class SkillComposer:
             print(self.frameData[4:20])
             send(ports, ['L', self.frameData[4:20], 0])
             return
-
         if angleRatio == 2:
             for r in skillData:
                 if frameSize == 8 or frameSize == 12:
                     r = list(map(lambda x: x // angleRatio, r))
                 elif frameSize == 20:
                     r[:16] = list(map(lambda x: x // angleRatio, r[:16]))
-        if len(loopStructure) == 0:
-            loopStructure = [0]
+        if len(loopStructure) < 2:
+            loopStructure = [0,0]
         if len(loopStructure) > 2:
             for l in range(1, len(loopStructure) - 1):
                 f = loopStructure[l] + startFrame

@@ -40,13 +40,10 @@ class Uploader:
         self.win = Tk()
         self.OSname = self.win.call('tk', 'windowingsystem')
         self.shellOption = True
+        self.win.geometry('+260+100')
         if self.OSname == 'aqua':
-            self.win.geometry('+260+200')
-#            self.win.geometry('530x356+260+200')
             self.backgroundColor ='gray'
         else:
-#            self.win.geometry('+260+100')
-            self.win.geometry('530x410+260+100')
             self.backgroundColor = None
 
         if self.OSname == 'win32':
@@ -125,8 +122,6 @@ class Uploader:
         # 设置 Button 字体
         style = ttk.Style()
         # style.configure('my.TButton', font=('Arial', 14), background='gray')
-        style.configure('my.TRadiobutton', font=('Arial', 15))
-        style.configure('my.TCheckbutton', font=('Arial', 15))
         # style.configure('my.TEntry', background='white')
 
         product = ('Bittle', 'Nybble')
@@ -140,12 +135,11 @@ class Uploader:
         self.labFileDir.grid(row=0, column=0, ipadx=2, padx=2, sticky=W)
 
 
-        self.btnFileDir = Button(fmFileDir, text=txt('btnFileDir'), font=('Arial', 14), foreground='blue',
+        self.btnFileDir = Button(fmFileDir, text=txt('btnFileDir'), font=('Arial', 12), foreground='blue',
                                         background=self.backgroundColor, command=self.open_dir)  # 绑定 open_dir 方法
-        self.btnFileDir.grid(row=0, column=1, ipadx=5, padx=5, sticky=E)
+        self.btnFileDir.grid(row=0, column=1, ipadx=5, padx=5, pady=5, sticky=E)
 
-        self.entry = Entry(fmFileDir, textvariable=self.strFileDir,
-                                  font=('Arial', 16), foreground='green', background='white')
+        self.entry = Entry(fmFileDir, textvariable=self.strFileDir, font=('Arial', 16), foreground='green', background='white')
         self.entry.grid(row=1, columnspan=2, ipadx=5, padx=5, sticky=E + W)
         
         fmFileDir.columnconfigure(0, weight=8)  # 尺寸适配
@@ -211,14 +205,6 @@ class Uploader:
         cbProduct.grid(row=1, ipadx=5, padx=5, sticky=W)
         cbProduct.bind("<<ComboboxSelected>>",self.chooseProduct)
         
-        
-        
-        
-        
-        
-        
-        
-
         fmMode = ttk.Frame(self.win)
         fmMode.grid(row=2,column = 1, ipadx=2, padx=2, sticky=W + E + N + S)
         self.labMode = ttk.Label(fmMode, text=txt('labMode'), font=('Arial', 16))
@@ -229,7 +215,6 @@ class Uploader:
         elif self.strProduct.get() == 'Nybble':
             cbModeList = ['Standard', 'Random_Mind', 'Voice', 'Ultrasonic']
             
-            
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', width=regularW, font=12)
         # list of board_version
 #        cbModeList = ['Nybble', 'Bittle']
@@ -239,31 +224,6 @@ class Uploader:
         self.cbMode['values'] = cbModeList
         self.cbMode.grid(row=1, ipadx=5, padx=5, sticky=W)
         self.cbMode.bind("<<ComboboxSelected>>",self.chooseMode)
-        
-
-        # 为 rbMode 设置默认项
-#        if self.strProduct.get() == 'Bittle':
-#            specialMode = "Camera"
-#        elif self.strProduct.get() == 'Nybble':
-#            specialMode = "Ultrasonic"
-#        switcher = {
-#            "Standard",
-#            "Random_Mind",
-#            "Voice",
-#            specialMode
-#        }
-#        self.intMode.set(switcher.get(self.lastSetting[4], "Invalid mode of selection"))
-#        self.strMode.set(self.lastSetting[4])
-#        self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
-#        c = 0
-#        self.rbnModes = []
-#        for i in range(len(modeTuple)):
-#            rbMode = ttk.Radiobutton(fmMode, text=txt(modeTuple[i]), value=i, style='my.TRadiobutton',
-#                                     variable=self.intMode, state=NORMAL, command=self.chooseMode)
-#            rbMode.grid(row=1, column=c, ipadx=5, padx=5, sticky=W)
-#            self.rbnModes.append(rbMode)
-#            c += 1
-#        fmMode.rowconfigure(0, weight=1)  # 尺寸适配
         
         self.setActiveMode()
 
@@ -289,7 +249,7 @@ class Uploader:
 #        fmSerial.rowconfigure(0, weight=1)  # 尺寸适配
 #        fmSerial.rowconfigure(1, weight=1)  # 尺寸适配
 
-        self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial 24 bold'), width = 6,height = 2,foreground='blue',
+        self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial', 24, 'bold'), width = 6,foreground='blue',
                                        background=self.backgroundColor, relief = 'groove', command=self.autoupload)    # 绑定 autoupload 方法
         self.btnUpload.grid(row=0, column = 1, rowspan = 2, ipadx=5, padx=5, sticky=E)
 
@@ -539,42 +499,6 @@ class Uploader:
             if s ==0:
                 self.WriteInstinctPrompts(port)
                 messagebox.showinfo(title=None, message=txt('parameterFinish'))
- 
-#
-#        if not self.bParaUploaded or self.currentSetting[:4] != self.lastSetting[:4]:
-#            self.intVarWI.set(1)
-#        else:
-#            self.intVarWI.set(0)
-#        ret = -1
-#        for file in filename:
-#            if (self.intVarWI.get() == 0) and (file == fnWriteI):
-#                continue
-#
-#            if file == fnWriteI:
-#                self.strStatus.set(txt('labStatus1') + txt('cbnFileWI') + '...' )
-#            elif file == fnOpenCat:
-#                self.strStatus.set(txt('labStatus1') + txt('cbnFileMF') + '...')
-#            self.statusBar.update()
-#
-#            ret = call('./avrdude -C./avrdude.conf -v -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
-#                            (port, file), shell=self.shellOption)
-#
-#            if ret == 0:
-#                status =txt('labStatus3')
-#            else:
-#                status = txt('labStatus2')
-#            if file == fnWriteI:
-#                self.strStatus.set(txt('cbnFileWI') + ' ' + status)
-#                self.statusBar.update()
-#                if ret == 0:
-#                    self.WriteInstinctPrompts(port)
-#                    messagebox.showinfo(title=None, message=txt('parameterFinish'))
-#            elif file == fnOpenCat:
-#                self.strStatus.set(txt('cbnFileMF') + ' ' + status)
-#                self.statusBar.update()
-#
-#            if status == txt('labStatus2'):
-#                return False
 
         self.lastSetting = self.currentSetting
         self.bParaUploaded = True
