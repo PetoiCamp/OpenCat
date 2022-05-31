@@ -400,7 +400,6 @@ class Uploader:
                             print(progress)
                             self.strStatus.set(promptList[progress-1]['result'])
                             self.statusBar.update()
-                        progress+=1
                         retMsg = messagebox.askyesno(txt('titleWarning'), prompt['message'])
                         if retMsg:
                             self.strStatus.set(prompt['operating'])
@@ -410,6 +409,7 @@ class Uploader:
                             ser.Send_data(self.encode("n"))
                             if progress == 2:
                                 break
+                        progress+=1
                         
                     elif x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
                         self.strStatus.set(prompt['result'])
