@@ -32,6 +32,10 @@ logger = logging.getLogger(__name__)
 
 regularW = 12
 language = languageList['English']
+
+BittleModes = ['Standard', 'RandomMind', 'Voice', 'Camera']
+NybbleModes = ['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic']
+            
 def txt(key):
     return language.get(key, textEN[key])
     
@@ -201,9 +205,9 @@ class Uploader:
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
         if self.strProduct.get() == 'Bittle':
-            cbModeList = ['Standard', 'RandomMind', 'Voice', 'Camera']
+            cbModeList = BittleModes
         elif self.strProduct.get() == 'Nybble':
-            cbModeList = ['Standard', 'RandomMind', 'Voice', 'Ultrasonic']
+            cbModeList = NybbleModes
             
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', width=regularW, font=12)
         # 为 Combobox 设置默认项
@@ -238,7 +242,7 @@ class Uploader:
 
         self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial', 24, 'bold'), width = 6,foreground='blue',
                                        background=self.backgroundColor, relief = 'groove', command=self.autoupload)    # 绑定 autoupload 方法
-        self.btnUpload.grid(row=0, column = 1, rowspan = 2, ipadx=5, padx=5, sticky=E)
+        self.btnUpload.grid(row=0, column = 1, rowspan = 2, ipadx=5, padx=5, pady = 5, sticky=E)
 
         fmStatus = ttk.Frame(self.win)
         fmStatus.grid(row=4,columnspan = 2, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
@@ -271,13 +275,12 @@ class Uploader:
     def chooseProduct(self, event):
 #        print("self.strProduct is " + self.strProduct.get())
         if self.strProduct.get() == 'Bittle':
-            modeList = ['Standard', 'RandomMind', 'Voice', 'Camera']
+            modeList = BittleModes
         elif self.strProduct.get() == 'Nybble':
-            modeList = ['Standard', 'RandomMind', 'Voice', 'Ultrasonic']
+            modeList = NybbleModes
         self.cbMode['values'] = modeList
 
-        if (self.strProduct.get() == 'Bittle' and self.strMode.get() == "Ultrasonic") \
-            or (self.strProduct.get() == 'Nybble' and self.strMode.get() == "Camera"):
+        if self.strMode.get() not in modeList:
             messagebox.showwarning(txt('titleWarning'),txt('msgMode'))
             self.strMode.set('Standard')
             self.force_focus()  # 强制主界面获取focus
