@@ -114,8 +114,8 @@ def printSerialMessage(port, token, timeout=0):
         threshold = 4
     else:
         threshold = 2
-#    if token == 'K':
-#        timeout = 1
+    #    if token == 'K':
+    #        timeout = 1
     startTime = time.time()
     allPrints = ''
     while True:
@@ -129,7 +129,7 @@ def printSerialMessage(port, token, timeout=0):
                 if response.lower() == token.lower():
                     return [response, allPrints]
                 else:
-#                    print(response, flush=True)
+                    #                    print(response, flush=True)
                     allPrints += response + '\n'
         now = time.time()
         if (now - startTime) > threshold:
@@ -437,14 +437,14 @@ def testPort(goodPorts, serialObject, p):
     #    global sync
     try:
         time.sleep(2)
-        result =serialObject.main_engine.read_all().decode('ISO-8859-1')
-        if result !='':
+        result = serialObject.main_engine.read_all().decode('ISO-8859-1')
+        if result != '':
             print('Waiting for the robot to booting up')
             time.sleep(2)
             waitTime = 3
         else:
             waitTime = 1
-        result = sendTask(goodPorts, serialObject, ['b',[20,50],0], waitTime)
+        result = sendTask(goodPorts, serialObject, ['b', [20, 50], 0], waitTime)
         print(result)
         if result != -1:
             printH('Adding', p)
@@ -464,7 +464,8 @@ def checkPortList(goodPorts, allPorts):
         # if p == '/dev/ttyAMA0':
         #     continue
         serialObject = Communication(p, 115200, 0.5)
-        t = threading.Thread(target=testPort, args=(goodPorts, serialObject, p.split('/')[-1])) #remove '/dev/' in the port name
+        t = threading.Thread(target=testPort,
+                             args=(goodPorts, serialObject, p.split('/')[-1]))  # remove '/dev/' in the port name
         threads.append(t)
         t.start()
     for t in threads:
@@ -472,29 +473,29 @@ def checkPortList(goodPorts, allPorts):
             t.join(8)
 
 
-def keepCheckingPort(goodPorts, check = True):
+def keepCheckingPort(portList, check=True):
     allPorts = Communication.Print_Used_Com()
-    while len(goodPorts) > 0:
+    while len(portList) > 0:
         currentPorts = Communication.Print_Used_Com()
         time.sleep(0.01)
         if set(currentPorts) - set(allPorts):
             newPort = list(set(currentPorts) - set(allPorts))
             if check:
                 time.sleep(0.5)
-                checkPortList(goodPorts, newPort)
+                checkPortList(portList, newPort)
 
         elif set(allPorts) - set(currentPorts):
             closedPort = list(set(allPorts) - set(currentPorts))
-            inv_dict = {v: k for k, v in goodPorts.items()}
+            inv_dict = {v: k for k, v in portList.items()}
             for p in closedPort:
                 if inv_dict.get(p.split('/')[-1], -1) != -1:
                     printH('Removing', p)
-                    goodPorts.pop(inv_dict[p.split('/')[-1]])
+                    portList.pop(inv_dict[p.split('/')[-1]])
 
         allPorts = copy.deepcopy(currentPorts)
 
 
-def connectPort(goodPorts):
+def connectPort(PortList):
     global initialized
     allPorts = Communication.Print_Used_Com()
     if platform.uname()[1] == 'raspberrypi':
@@ -505,14 +506,14 @@ def connectPort(goodPorts):
 
     if len(allPorts) > 0:
         goodPortCount = 0
-        checkPortList(goodPorts, allPorts)
+        checkPortList(PortList, allPorts)
     initialized = True
-    if len(goodPorts) == 0:
+    if len(PortList) == 0:
         print('No port found!')
     else:
         logger.info(f"Connect to usb serial port:")
-        for p in goodPorts:
-            logger.info(f"{goodPorts[p]}")
+        for p in PortList:
+            logger.info(f"{PortList[p]}")
 
 
 goodPorts = {}
