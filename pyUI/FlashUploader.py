@@ -85,7 +85,6 @@ class Uploader:
         
         self.intMode = IntVar()
         self.strMode = StringVar()
-        self.strFileName = StringVar()
 
         lines = []
         try:
@@ -171,7 +170,7 @@ class Uploader:
         
         cbBoardVersion = ttk.Combobox(fmBoardVersion, textvariable=self.strBoardVersion, foreground='blue', width=regularW, font=12)
         # list of board_version
-        board_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1']
+        board_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1']#,'BiBoardV0']
         # 为 Combobox 设置默认项
         cbBoardVersion.set(self.lastSetting[3])
         # 为 Combobox 设置列表项
@@ -185,18 +184,9 @@ class Uploader:
         fmProduct.grid(row=2,columnspan = 2, ipadx=2, padx=2, sticky=W + E + N + S)
         self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
         self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
-        # rbProduct 默认选项为外部传入参数 model
-#        c = 1
-#        for p in product:
-#            rbProduct = ttk.Radiobutton(fmProduct, text=p, value=p, style='my.TRadiobutton',
-#                                     variable=self.strProduct, command=self.chooseProduct)
-#            rbProduct.grid(row=0, column=c, ipadx=5, padx=5, sticky=W) # pack(side=LEFT, padx=5)
-#            c += 1
-#        fmProduct.rowconfigure(0, weight=1)  # 尺寸适配
-#        self.strProduct.set(self.lastSetting[0])
         
         cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', width=regularW, font=12)
-        # list of board_version
+        # list of product
         cbProductList = ['Nybble', 'Bittle']
         # 为 Combobox 设置默认项
         cbProduct.set(self.lastSetting[0])
@@ -211,19 +201,16 @@ class Uploader:
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
         if self.strProduct.get() == 'Bittle':
-            cbModeList = ['Standard', 'Random_Mind', 'Voice', 'Camera']
+            cbModeList = ['Standard', 'RandomMind', 'Voice', 'Camera']
         elif self.strProduct.get() == 'Nybble':
-            cbModeList = ['Standard', 'Random_Mind', 'Voice', 'Ultrasonic']
+            cbModeList = ['Standard', 'RandomMind', 'Voice', 'Ultrasonic']
             
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', width=regularW, font=12)
-        # list of board_version
-#        cbModeList = ['Nybble', 'Bittle']
         # 为 Combobox 设置默认项
         self.cbMode.set(self.lastSetting[4])
         # 为 Combobox 设置列表项
         self.cbMode['values'] = cbModeList
         self.cbMode.grid(row=1, ipadx=5, padx=5, sticky=W)
-        self.cbMode.bind("<<ComboboxSelected>>",self.chooseMode)
         
         self.setActiveMode()
 
@@ -268,15 +255,10 @@ class Uploader:
     def setActiveMode(self):
         if self.strSoftwareVersion.get() == '1.0':
             stt = DISABLED
-#            self.intMode.set(0)
             self.strMode.set('Standard')
-            print(self.strMode.get())
-            self.strFileName.set('OpenCat' + 'Standard' + '.ino.hex')
-            print(self.strFileName.get())
         else:
             stt = NORMAL
             self.strMode.set(self.lastSetting[4])
-            self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
         self.cbMode.config(state = stt)
 #        for i in range(1,4):
         
@@ -289,34 +271,16 @@ class Uploader:
     def chooseProduct(self, event):
 #        print("self.strProduct is " + self.strProduct.get())
         if self.strProduct.get() == 'Bittle':
-            modeList = ['Standard', 'Random_Mind', 'Voice', 'Camera']
+            modeList = ['Standard', 'RandomMind', 'Voice', 'Camera']
         elif self.strProduct.get() == 'Nybble':
-            modeList = ['Standard', 'Random_Mind', 'Voice', 'Ultrasonic']
+            modeList = ['Standard', 'RandomMind', 'Voice', 'Ultrasonic']
         self.cbMode['values'] = modeList
-#        for i in range(len(modeList)):
-#            self.rbnModes[i].configure(text=modeList[i])
 
         if (self.strProduct.get() == 'Bittle' and self.strMode.get() == "Ultrasonic") \
             or (self.strProduct.get() == 'Nybble' and self.strMode.get() == "Camera"):
             messagebox.showwarning(txt('titleWarning'),txt('msgMode'))
-#            self.intMode.set(0)
             self.strMode.set('Standard')
-            self.strFileName.set("OpenCat" + 'Standard' + ".ino.hex")
-            print(self.strFileName.get())
             self.force_focus()  # 强制主界面获取focus
-
-
-    def chooseMode(self, event):
-
-        if self.strProduct.get() == 'Bittle':
-            specialMode = "Camera"
-        elif self.strProduct.get() == 'Nybble':
-            specialMode = "Ultrasonic"
-        switcher = ["Standard","Random_Mind","Voice",specialMode]
-#        self.strMode.set(switcher.get(self.intMode.get(), "Invalid num of selection"))
-        self.strFileName.set("OpenCat" + self.strMode.get() + ".ino.hex")
-        print(self.strFileName.get())
-        
 
     def formalize(self, strdir=' '):
         sep = "/"
@@ -377,17 +341,19 @@ class Uploader:
             'result':txt('IMU calibrated')
         }
         if strSoftwareVersion == '1.0':
-            promptList = [promptJointCalib,promptInstinct,promptJointCalib]
+            promptList = [promptJointCalib,promptInstinct,promptIMU]
         elif strSoftwareVersion == '2.0':
-            promptList = [promptJointCalib,promptJointCalib]
+            promptList = [promptJointCalib,promptIMU]
         
         progress = 0;
+        retMsg = False
         while True:
             time.sleep(0.01)
             if ser.main_engine.in_waiting > 0:
                 x = str(ser.main_engine.readline())
                 logger.debug(f"{x}")
                 if x != "":
+                    print(x)
                     questionMark = "Y/n"
                     if x.find(questionMark) != -1:
                         if x.find("joint") != -1:
@@ -396,8 +362,7 @@ class Uploader:
                             prompt = promptInstinct
                         elif x.find("Calibrate") != -1:
                             prompt = promptIMU
-                        if progress>0:
-                            print(progress)
+                        if progress>0 and retMsg == True:
                             self.strStatus.set(promptList[progress-1]['result'])
                             self.statusBar.update()
                         retMsg = messagebox.askyesno(txt('titleWarning'), prompt['message'])
@@ -407,7 +372,7 @@ class Uploader:
                             ser.Send_data(self.encode("Y"))
                         else:
                             ser.Send_data(self.encode("n"))
-                            if progress == 2:
+                            if progress == len(promptList) - 1:
                                 break
                         progress+=1
                         
@@ -447,11 +412,10 @@ class Uploader:
         strMode = self.strMode.get()
         self.currentSetting = [strProd, strDefaultPath, strSoftwareVersion, strBoardVersion, strMode]
         logger.info(f"currentSetting: {self.currentSetting}.")
-        path = self.strFileDir.get() + "/" + strSoftwareVersion + "/" + strBoardVersion + "/" + strProd
-        strFileName = self.strFileName.get()
+        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + strBoardVersion+ '/'
         
-        fnWriteI = path + "/WriteInstinct.ino.hex"
-        fnOpenCat = path + "/" + strFileName
+        fnWriteI = path + 'WriteInstinct.ino.hex'
+        fnOpenCat = path + 'OpenCat'+strMode+ '.ino.hex'
         filename = [fnWriteI, fnOpenCat]
         print(filename)
         port = self.strPort.get()

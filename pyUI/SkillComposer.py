@@ -1316,6 +1316,7 @@ class SkillComposer:
                     if state == 'p':
                         self.dialValue[i].set(True)
                         self.frameDial.winfo_children()[2].config(fg='green')
+                        self.frameDial.winfo_children()[2].select()
                     elif state == 'P':
                         self.dialValue[i].set(False)
                         self.frameDial.winfo_children()[2].config(fg='red')
@@ -1327,6 +1328,7 @@ class SkillComposer:
                     elif state == 'G':
                         self.dialValue[i].set(True)
                         self.frameDial.winfo_children()[3].config(fg='green')
+                        self.frameDial.winfo_children()[3].select()
                     elif state == 'z':
                         self.dialValue[i].set(False)
                         self.frameDial.winfo_children()[4].config(fg='red')
@@ -1334,6 +1336,7 @@ class SkillComposer:
                     elif state == 'Z':
                         self.dialValue[i].set(True)
                         self.frameDial.winfo_children()[4].config(fg='green')
+                        self.frameDial.winfo_children()[4].select()
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):

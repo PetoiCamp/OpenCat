@@ -134,7 +134,8 @@ textEN = {
     'IMU calibrated': 'Calibrate IMU complete!',
     
     
-    'parameterFinish': 'Parameters initialized!',
+    'parameterFinish': '''Parameters initialized!
+     The next step is uploading the Main Function!''',
     'msgFinish': 'Firmware upload complete!',
     'msgMode': 'Invalide, please select another mode!',
 
@@ -307,7 +308,8 @@ textCN = {
     'IMU calibrated': 'IMU校准完成！',
             
             
-    'parameterFinish': '参数初始化完成！',
+    'parameterFinish': '''参数初始化完成！
+                       接下来将开始上传主程序!''',
     'msgFinish': '固件上传完成!',
     'msgMode': '无效模式，请选择其他模式!',
     'Standard':'标准',
