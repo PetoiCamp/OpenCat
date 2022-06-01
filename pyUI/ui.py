@@ -12,9 +12,13 @@ from Calibrator import *
 from commonVar import *
 
 language = languageList['English']
-apps = ['Firmware Uploader','Joint Calibrator','Skill Composer']#,'Task Scheduler']
+apps = ['Firmware Uploader', 'Joint Calibrator', 'Skill Composer']  # ,'Task Scheduler']
+
+
 def txt(key):
     return language.get(key, textEN[key])
+
+
 class UI:
     def __init__(self):
         global model
@@ -22,7 +26,7 @@ class UI:
         try:
             with open("./defaultConfig.txt", "r") as f:
                 lines = f.readlines()
-                lines = [line[:-1] for line in lines] # remove the '\n' at the end of each line
+                lines = [line[:-1] for line in lines]  # remove the '\n' at the end of each line
                 self.defaultLan = lines[0]
                 model = lines[1]
                 self.defaultPath = lines[2]
@@ -30,19 +34,19 @@ class UI:
                 self.defaultBdVer = lines[4]
                 self.defaultMode = lines[5]
                 f.close()
-                
+
         except Exception as e:
-            print ('Create configuration file')
+            print('Create configuration file')
             self.defaultLan = 'English'
             model = 'Bittle'
             self.defaultPath = './release'
             self.defaultSwVer = '2.0'
             self.defaultBdVer = 'NyBoard_V1_0'
             self.defaultMode = 'Standard'
-#            raise e
-        
+        #            raise e
+
         language = languageList[self.defaultLan]
-                
+
         self.window = Tk()
         self.ready = False
 
@@ -52,26 +56,26 @@ class UI:
             self.window.geometry('320x270+100+10')
         else:
             self.window.geometry('+100+10')
-            self.backgroundColor ='gray'
-        
+            self.backgroundColor = 'gray'
+
         self.myFont = tkFont.Font(
-        family='Times New Roman', size=20, weight='bold')
+            family='Times New Roman', size=20, weight='bold')
         self.window.title(txt('uiTitle'))
         self.createMenu()
         bw = 18
-        self.modelLabel = Label(self.window,text = model,font=self.myFont)
-        self.modelLabel.grid(row = 0, column = 0,pady = 10)
+        self.modelLabel = Label(self.window, text=model, font=self.myFont)
+        self.modelLabel.grid(row=0, column=0, pady=10)
         for i in range(len(apps)):
-            Button(self.window,text = txt(apps[i]),font=self.myFont,width = bw,relief = 'raised',command = lambda app = apps[i]:self.utility(app)).grid(row = 1+i, column = 0, padx=10, pady=(0,10))
-        
+            Button(self.window, text=txt(apps[i]), font=self.myFont, fg='blue', width=bw, relief='raised',
+                   command=lambda app=apps[i]: self.utility(app)).grid(row=1 + i, column=0, padx=10, pady=(0, 10))
+
         self.ready = True
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
-        
+
         self.window.resizable(False, False)
         self.window.mainloop()
-        
-        
+
     def createMenu(self):
         self.menubar = Menu(self.window, background='#ff8000', foreground='black', activebackground='white',
                             activeforeground='black')
@@ -94,9 +98,9 @@ class UI:
     def changeModel(self, modelName):
         global model
         model = copy.deepcopy(modelName)
-        self.modelLabel.configure(text = model)
+        self.modelLabel.configure(text=model)
         print(model)
-        
+
     def changeLan(self, l):
         global language
         if self.ready and txt('lan') != l:
@@ -107,44 +111,41 @@ class UI:
             self.createMenu()
             self.window.title(txt('uiTitle'))
             for i in range(len(apps)):
-                self.window.winfo_children()[1+i].config(text = txt(apps[i]))
-           
-    def saveConfigToFile(self,filename,config):
+                self.window.winfo_children()[1 + i].config(text=txt(apps[i]))
+
+    def saveConfigToFile(self, filename, config):
         print(config)
         f = open(filename, 'w+')
-        lines = '\n'.join(config)+'\n'
+        lines = '\n'.join(config) + '\n'
         f.writelines(lines)
         f.close()
-        
-    def utility(self,app):
-        configuration = [self.defaultLan,model,self.defaultPath,self.defaultSwVer,self.defaultBdVer,self.defaultMode]
-        self.saveConfigToFile('./defaultConfig.txt',configuration)
+
+    def utility(self, app):
+        configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                         self.defaultMode]
+        self.saveConfigToFile('./defaultConfig.txt', configuration)
         self.window.destroy()
-        
+
         if app == 'Firmware Uploader':
             Uploader(model, language)
         elif app == 'Joint Calibrator':
             Calibrator(model, language)
-        elif app =='Skill Composer':
+        elif app == 'Skill Composer':
             SkillComposer(model, language)
         elif app == 'Task Scheduler':
             print('schedule')
-                
+
     def showAbout(self):
         messagebox.showinfo('Petoi Desktop App',
                             u'Petoi Desktop App\nOpen Source on GitHub\nCopyright © Petoi LLC\nwww.petoi.com')
-        
+
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
-            configuration = [self.defaultLan,model,self.defaultPath,self.defaultSwVer,self.defaultBdVer,self.defaultMode]
-            self.saveConfigToFile('./defaultConfig.txt',configuration)
+            configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                             self.defaultMode]
+            self.saveConfigToFile('./defaultConfig.txt', configuration)
             self.window.destroy()
-   
 
-        
+
 if __name__ == '__main__':
-
     UI()
-
-    
-        

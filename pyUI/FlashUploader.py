@@ -353,7 +353,7 @@ class Uploader:
                 x = str(ser.main_engine.readline())
                 logger.debug(f"{x}")
                 if x != "":
-                    print(x)
+                    print(x[2:-1])
                     questionMark = "Y/n"
                     if x.find(questionMark) != -1:
                         if x.find("joint") != -1:
@@ -449,7 +449,7 @@ class Uploader:
             else:
                 avrdudePath = './resources/avrdudeMac/'
             print()
-            ret = call(avrdudePath+'avrdude -C'+avrdudePath+'avrdude.conf -v -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+            ret = call(avrdudePath+'avrdude -C'+avrdudePath+'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
                             (port, filename[s]), shell=self.shellOption)
             self.inProgress = False
             if ret == 0:
