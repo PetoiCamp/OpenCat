@@ -468,7 +468,7 @@ class Uploader:
 
         self.lastSetting = self.currentSetting
         self.bParaUploaded = True
-        self.saveConfigToFile('./defaultConfig.txt',configuration)
+        self.saveConfigToFile('./defaultConfig.txt')
             
         print('Finish!')
         messagebox.showinfo(title=None, message=txt('msgFinish'))
@@ -480,7 +480,7 @@ class Uploader:
         
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
-            self.saveConfigToFile('./defaultConfig.txt',configuration)
+            self.saveConfigToFile('./defaultConfig.txt')
             self.win.destroy()
 
 if __name__ == '__main__':
