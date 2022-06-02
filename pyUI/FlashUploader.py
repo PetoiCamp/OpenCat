@@ -32,13 +32,10 @@ logger = logging.getLogger(__name__)
 
 regularW = 12
 language = languageList['English']
-
-BittleModes = ['Standard', 'RandomMind', 'Voice', 'Camera']
-NybbleModes = ['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic']
             
 def txt(key):
     return language.get(key, textEN[key])
-    
+
 class Uploader:
     def __init__(self,model,lan):
         self.win = Tk()
@@ -59,6 +56,9 @@ class Uploader:
         self.strProduct = StringVar()
         global language
         language = lan
+        self.BittleModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera']))
+        self.NybbleModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic']))
+        self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
 
         self.win.protocol('WM_DELETE_WINDOW', self.on_closing)
@@ -205,18 +205,16 @@ class Uploader:
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
         if self.strProduct.get() == 'Bittle':
-            cbModeList = BittleModes
+            cbModeList = self.BittleModes
         elif self.strProduct.get() == 'Nybble':
-            cbModeList = NybbleModes
+            cbModeList = self.NybbleModes
             
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', width=regularW, font=12)
         # 为 Combobox 设置默认项
-        self.cbMode.set(self.lastSetting[4])
+        self.cbMode.set(txt(self.lastSetting[4]))
         # 为 Combobox 设置列表项
         self.cbMode['values'] = cbModeList
         self.cbMode.grid(row=1, ipadx=5, padx=5, sticky=W)
-        
-        self.setActiveMode()
 
         fmSerial = ttk.Frame(self.win)
         fmSerial.grid(row=3, columnspan=2, ipadx=2, padx=2, sticky=W + E)
@@ -259,10 +257,10 @@ class Uploader:
     def setActiveMode(self):
         if self.strSoftwareVersion.get() == '1.0':
             stt = DISABLED
-            self.strMode.set('Standard')
+            self.strMode.set(txt('Standard'))
         else:
             stt = NORMAL
-            self.strMode.set(self.lastSetting[4])
+            self.strMode.set(txt(self.lastSetting[4]))
         self.cbMode.config(state = stt)
 #        for i in range(1,4):
         
@@ -275,14 +273,14 @@ class Uploader:
     def chooseProduct(self, event):
 #        print("self.strProduct is " + self.strProduct.get())
         if self.strProduct.get() == 'Bittle':
-            modeList = BittleModes
+            modeList = self.BittleModes
         elif self.strProduct.get() == 'Nybble':
-            modeList = NybbleModes
+            modeList = self.NybbleModes
         self.cbMode['values'] = modeList
 
         if self.strMode.get() not in modeList:
             messagebox.showwarning(txt('titleWarning'),txt('msgMode'))
-            self.strMode.set('Standard')
+            self.strMode.set(txt('Standard'))
             self.force_focus()  # 强制主界面获取focus
 
     def formalize(self, strdir=' '):
@@ -391,12 +389,13 @@ class Uploader:
         self.force_focus()  # 强制主界面获取focus
 
 
-    def saveConfigToFile(self,filename,config):
+    def saveConfigToFile(self,filename):
+        config = [self.defaultLan,self.lastSetting[0],self.lastSetting[1],self.lastSetting[2],self.lastSetting[3],self.lastSetting[4]]
         print(config)
-        f = open(filename, 'w+')
-        lines = '\n'.join(config)+'\n'
-        f.writelines(lines)
-        f.close()
+        with open(filename, "w") as f:
+            lines = '\n'.join(config)+'\n'
+            f.writelines(lines)
+            f.close()
 
 #    def progressiveDots(self, label):
 #        while self.inProgress:
@@ -412,7 +411,7 @@ class Uploader:
         strDefaultPath = self.strFileDir.get()
         strSoftwareVersion = self.strSoftwareVersion.get()
         strBoardVersion = self.strBoardVersion.get()
-        strMode = self.strMode.get()
+        strMode = self.inv_txt[self.strMode.get()]
         self.currentSetting = [strProd, strDefaultPath, strSoftwareVersion, strBoardVersion, strMode]
         logger.info(f"currentSetting: {self.currentSetting}.")
         path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + strBoardVersion+ '/'
@@ -469,9 +468,7 @@ class Uploader:
 
         self.lastSetting = self.currentSetting
         self.bParaUploaded = True
-        with open("./defaultConfig.txt", "w") as f:
-            configuration = [self.defaultLan,self.lastSetting[0],self.lastSetting[1],self.lastSetting[2],self.lastSetting[3],self.lastSetting[4]]
-            self.saveConfigToFile('./defaultConfig.txt',configuration)
+        self.saveConfigToFile('./defaultConfig.txt',configuration)
             
         print('Finish!')
         messagebox.showinfo(title=None, message=txt('msgFinish'))
@@ -483,9 +480,7 @@ class Uploader:
         
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
-            with open("./defaultConfig.txt", "w") as f:
-                configuration = [self.defaultLan,self.lastSetting[0],self.lastSetting[1],self.lastSetting[2],self.lastSetting[3],self.lastSetting[4]]
-                self.saveConfigToFile('./defaultConfig.txt',configuration)
+            self.saveConfigToFile('./defaultConfig.txt',configuration)
             self.win.destroy()
 
 if __name__ == '__main__':

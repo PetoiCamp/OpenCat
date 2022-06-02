@@ -141,10 +141,11 @@ textEN = {
 
 
     'Standard':'Standard',
-    'Random_Mind':'Random_Mind',
+    'RandomMind':'RandomMind',
     'Ultrasonic':'Ultrasonic',
     'Voice':'Voice',
     'Camera':'Camera',
+    'RandomMind_Ultrasonic':'RandomMind_Ultrasonic',
 
     '':'',
     'tipConnect':'Keep updating the active serial\nports until it\'s disabled',
@@ -313,10 +314,11 @@ textCN = {
     'msgFinish': '固件上传完成!',
     'msgMode': '无效模式，请选择其他模式!',
     'Standard':'标准',
-    'Random_Mind':'随机',
+    'RandomMind':'随机',
     'Ultrasonic':'超声波',
     'Voice':'语音',
     'Camera':'摄像头',
+    'RandomMind_Ultrasonic':'随机_超声波',
     'Parameters':'参数',
     'Main function':'主程序',
     
