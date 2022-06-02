@@ -20,7 +20,6 @@ def txt(key):
 def rgbtohex(r, g, b):
     return f'#{r:02x}{g:02x}{b:02x}'
 
-postureTable = postureDict[model]
 sixAxisNames = ['Yaw', 'Pitch', 'Roll', 'Spinal', 'Height', 'Sideway']
 dialTable = {'Connect': 'Connected', 'Servo': 'p', 'Gyro': 'g', 'Random': 'z'}
 tipDial = ['tipConnect', 'tipServo', 'tipGyro', 'tipRandom']
@@ -63,6 +62,7 @@ WORDS = animalNames
 class SkillComposer:
     def __init__(self,model, lan):
         self.model = model
+        self.postureTable = postureDict[model]
         global language
         language = lan
         connectPort(goodPorts)
@@ -409,7 +409,7 @@ class SkillComposer:
         labelPosture = Label(self.framePosture, text=txt('Postures'), font=self.myFont)
         labelPosture.grid(row=0, column=0, columnspan=4)
         i = 0
-        for pose in postureTable:
+        for pose in self.postureTable:
             button = Button(self.framePosture, text=pose, fg='blue', width=self.buttonW,
                             command=lambda p=pose: self.setPose(p))
             button.grid(row=i // 4 + 1, column=i % 4, padx=3)
@@ -600,10 +600,9 @@ class SkillComposer:
                             u'Petoi Controller for OpenCat\nOpen Source on GitHub\nCopyright © Petoi LLC\nwww.petoi.com')
 
     def changeModel(self, modelName):
-        global postureTable
         if self.ready and modelName != self.model:
             self.model = copy.deepcopy(modelName)
-            postureTable = postureDict[self.model]
+            self.postureTable = postureDict[self.model]
             self.framePosture.destroy()
             self.frameImage.destroy()
 
@@ -1234,7 +1233,7 @@ class SkillComposer:
         if self.ready == 1:
             self.getWidget(self.activeFrame, cNote).delete(0, END)
             self.getWidget(self.activeFrame, cNote).insert(0, pose + str(self.activeFrame))
-            self.updateSliders(postureTable[pose])
+            self.updateSliders(self.postureTable[pose])
             self.indicateEdit()
             for i in range(6):
                 self.values[16 + i].set(0)
