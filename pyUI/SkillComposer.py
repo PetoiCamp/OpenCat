@@ -314,6 +314,7 @@ class SkillComposer:
         labelDial = Label(self.frameDial, text=txt('State Dials'), font=self.myFont)
         labelDial.grid(row=0, column=0, columnspan=5, pady=5)
         defaultValue = [1, 1, 1, 0]
+        textColor = ['red','green']
         for i in range(len(dialTable)):
             key = list(dialTable)[i]
             if len(goodPorts) > 0 or i == 0:
@@ -332,7 +333,7 @@ class SkillComposer:
             else:
                 wth = self.dialW
             value = BooleanVar()
-            button = Checkbutton(self.frameDial, text=txt(key), indicator=0, width=wth, fg='green', state=dialState,
+            button = Checkbutton(self.frameDial, text=txt(key), indicator=0, width=wth, fg=textColor[defaultValue[i]], state=dialState,
                                  var=value, command=lambda idx=i: self.dial(idx))
             value.set(defaultValue[i])
             self.dialValue.append(value)
