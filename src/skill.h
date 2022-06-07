@@ -253,14 +253,14 @@ class Skill {
 
     }
 
-    void skillByName(const char* skillName, byte angleDataRatio = 1, float speedRatio = 1, bool shutServoAfterward = true) {
-      loadFrame(skillName);
-      transform(dutyAngles, angleDataRatio, speedRatio);
-      if (shutServoAfterward) {
-        pwm.shutServos();
-        token = 'd';
-      }
-    }
+//    void skillByName(const char* skillName, byte angleDataRatio = 1, float speedRatio = 1, bool shutServoAfterward = true) {
+//      loadFrame(skillName);
+//      transform(dutyAngles, angleDataRatio, speedRatio);
+//      if (shutServoAfterward) {
+//        pwm.shutServos();
+//        token = 'd';
+//      }
+//    }
 
     void loadFrameByDataBuffer() {
       //      period = dataBuffer[0];
@@ -403,7 +403,7 @@ class Skill {
           duty = (jointIndex != 1 ? offsetLR : 0) //look left or right
                  + 10 * sin (frame * (jointIndex + 2) * M_PI / abs(period));
         else
-          duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint];
+          duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint] * angleDataRatio;
 
         //          PT(duty); PT('\t');
         calibratedPWM(jointIndex, duty
