@@ -248,7 +248,7 @@ void imuSetup() {
       PTLF("\nLay the robot FLAT on a table");
       beep(8, 400, 600, 5);
       beep(15, 400, 600);
-      PTLF("Calibrate the IMU ");
+      PTLF("Calibrating...");
       mpu.CalibrateAccel(10);
       mpu.CalibrateGyro(10);
       EEPROMWriteInt(MPUCALIB, mpu.getXAccelOffset());

@@ -195,12 +195,12 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define T_TILT        't'
 #define T_TEMP        'T'           //call the last skill data received from the serial port
 #define T_MEOW        'u'
-#define T_PRINT_GYRO            'v' //print Gyro data
-#define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
-#define T_WORD        'w'
-#define T_XLEG        'x'
-#define T_ACCELERATE  '.'
-#define T_DECELERATE  ','
+//#define T_PRINT_GYRO            'v' //print Gyro data
+//#define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
+//#define T_WORD        'w'
+//#define T_XLEG        'x'
+//#define T_ACCELERATE  '.'
+//#define T_DECELERATE  ','
 #define T_RANDOM_MIND 'z'
 
 #define SERVO_FREQ 240
@@ -267,7 +267,7 @@ bool autoSwitch = true;
 bool walkingQ = false;
 byte exceptions = 0;
 byte transformSpeed = 2;
-float protectiveShift;//reduce the wearing of the potentiometer 
+float protectiveShift;//reduce the wearing of the potentiometer
 
 #define PT(s) Serial.print(s)  //makes life easier
 #define PTL(s) Serial.println(s)
@@ -343,6 +343,12 @@ Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 #else
 #define GYRO_PIN  0
+#endif
+
+#if defined NyBoard_V0_1 || defined NyBoard_V0_2
+#undef VOLTAGE_DETECTION_PIN
+#undef T_SERVO_MICROSECOND
+#undef T_RAMP
 #endif
 
 #include "eeprom.h"

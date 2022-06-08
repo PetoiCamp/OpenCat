@@ -131,7 +131,8 @@ void setup() {
 void loop() {
 #ifdef MAIN_SKETCH
 #ifdef VOLTAGE_DETECTION_PIN
-  while (lowBattery()); //block the loop if battery is low
+  //  while (lowBattery()); //  block the loop if battery is low
+                            //  can be disabled to save programming space and reduce low voltage interruptions
 #endif
 #ifdef GYRO_PIN
   readEnvironment();

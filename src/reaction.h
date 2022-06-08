@@ -84,33 +84,38 @@ void reaction() {
         //      case T_VERBOSELY_PRINT_GYRO:
 #endif
       case T_RANDOM_MIND:
-        //      case T_RAMP:
+#ifdef T_RAMP
+      case T_RAMP:
+#endif
         {
 #ifdef GYRO_PIN
           if (token == T_GYRO) {
             checkGyro = !checkGyro;
             token = checkGyro ? 'G' : 'g';  //G for activated gyro
           }
-          //          else if (token == T_PRINT_GYRO) {
-          //            print6Axis();
-          //          }
-          //          else if (token == T_VERBOSELY_PRINT_GYRO) {
-          //            printGyro = !printGyro;
-          //            token = printGyro ? 'V' : 'v';  //V for verbosely print gyro data
-          //          }
+#ifdef T_PRINT_GYRO
+          else if (token == T_PRINT_GYRO) {
+            print6Axis();
+          }
+#endif
+#ifdef T_VERBOSELY_PRINT_GYRO
+          else if (token == T_VERBOSELY_PRINT_GYRO) {
+            printGyro = !printGyro;
+            token = printGyro ? 'V' : 'v';  //V for verbosely print gyro data
+          }
+#endif
           else
 #endif
             if (token == T_RANDOM_MIND) {
               autoSwitch = !autoSwitch;
               token = autoSwitch ? 'Z' : 'z';  //Z for active random mind
             }
-          //          else if (token == T_RAMP) {//reverse the adjustment direction
-          //            ramp = -ramp;
-          //            token = ramp > 0 ? 'R' : 'r';
-          //          }
-          //          PTL(token);
-          //          if (lastToken == T_SKILL)
-          //            token = T_SKILL;
+#ifdef T_RAMP
+            else if (token == T_RAMP) {//reverse the adjustment direction
+              ramp = -ramp;
+              token = ramp > 0 ? 'R' : 'r';
+            }
+#endif
           break;
         }
       case T_PAUSE: {
@@ -143,7 +148,9 @@ void reaction() {
       case T_CALIBRATE: //calibration
       case T_MOVE_ASC: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
+#ifdef T_SERVO_MICROSECOND
       case T_SERVO_MICROSECOND: //send pulse with unit of microsecond to a servo
+#endif
       case T_TILT:  //tilt the robot, format: t axis angle. 0:yaw, 1:pitch, 2:roll
       case T_MEOW: //meow
       case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
@@ -193,9 +200,11 @@ void reaction() {
             else if (token == T_MOVE_ASC) {
               transform(targetFrame, 1, 2);
             }
+#ifdef T_SERVO_MICROSECOND
             else if (token == T_SERVO_MICROSECOND) {
               pwm.writeMicroseconds(eeprom(PWM_PIN, target[0]), target[1]);
             }
+#endif
             else if (token == T_TILT) {
               yprTilt[target[0]] = target[1];
             }
@@ -266,6 +275,8 @@ void reaction() {
           break;
         }
 #endif
+
+#ifdef T_SERVO_MICROSECOND
       case ';': {
           setServoP(P_SOFT);
           break;
@@ -274,6 +285,7 @@ void reaction() {
           setServoP(P_HARD);
           break;
         }
+#endif
       case T_REST: {
           strcpy(newCmd, "rest");
           skill.loadFrame(newCmd);
@@ -286,7 +298,14 @@ void reaction() {
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
-      if ((lowerToken == T_GYRO || lowerToken == T_PRINT_GYRO || lowerToken == T_BEEP || token == T_JOINTS ) && lastToken == T_SKILL || token == T_PAUSE || token == T_TILT)
+      if ((lowerToken == T_GYRO || lowerToken == T_BEEP || token == T_JOINTS ) && lastToken == T_SKILL || token == T_PAUSE || token == T_TILT
+#ifdef T_PRINT_GYRO
+          || lowerToken == T_PRINT_GYRO
+#endif
+#ifdef T_VERBOSELY_PRINT_GYRO
+          || token == T_VERBOSELY_PRINT_GYRO
+#endif
+         )
         token = T_SKILL;
     }
 
