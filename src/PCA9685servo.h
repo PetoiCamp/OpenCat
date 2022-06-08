@@ -144,7 +144,7 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
     void writeAngle(uint8_t servoNum, float angle) {
       int clipped = min(max(EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2) / 1000.0 * angle + (byte)eeprom(B_OFFSET) * 10, 500), 2500);
       setPWM(eeprom(PWM_PIN, servoNum), 0, clipped);
-//      if (servoNum == 12 || servoNum == 13 || servoNum == 14 || servoNum == 15) {
+//      if (servoNum == 1) {
 //        Serial.print(servoNum); Serial.print('\t');
 //        Serial.print(EEPROMReadInt(ANGLE2PULSE_FACTOR + servoNum * 2) / 1000.0 * angle + (byte)eeprom(B_OFFSET) * 10); Serial.print('\t');
 //        Serial.println(clipped);
