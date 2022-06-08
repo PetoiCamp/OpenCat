@@ -9,13 +9,14 @@ sit = [
 1, 0, -30, 1,
     0,   0, -45,   0,  -5,  -5,  20,  20,  45,  45, 105, 105,  45,  45, -45, -45]
 ck = [
-    -2, 0, 5, 1,
+    -3, 0, 5, 1,
     0, 1, 2,
     45,   0,   0,   0,   0,   0,   0,   0,  45,  35,  38,  50, -30, -10,   0, -20,     6, 1, 0, 0,
    -45,   0,   0,   0,   0,   0,   0,   0,  35,  45,  50,  38, -10, -30, -20,   0,     6, 1, 0, 0,
+     0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,     5, 0, 0, 0,
 ]
 pu = [
--8, 0, -15, 1,
+-9, 0, -15, 1,
  6, 7, 3,
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,     5, 0, 0, 0,
    15,   0,   0,   0,   0,   0,   0,   0,  30,  35,  40,  29,  50,  15,  15,  15,     5, 0, 0, 0,
@@ -25,14 +26,17 @@ pu = [
   -15,   0,   0,   0,   0,   0,   0,   0,  60,  60,  70,  70,  15,  15,  60,  60,     6, 0, 0, 0,
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  95,  95,  60,  60,  60,  60,     6, 1, 0, 0,
    30,   0,   0,   0,   0,   0,   0,   0,  75,  70,  80,  80, -50, -50,  60,  60,     8, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,     5, 0, 0, 0,
    ]
 pee = [
--4, 0, 10, 1,
+-5, 0, 10, 1,
  2, 3, 3,
    30,  20,   0,   0,  15, -10,  60, -10,  40,  40,  90,  45,  10,  60,  70,  45,     6, 0, 0, 0,
    45,  20,   0,   0,  15, -10,  60, -10,  60,  53, 115,  60, -30,  40,  50,  21,     2,10, 0, 0,
    30,  20,   0,   0,  15, -10,  60, -10,  40,  40,  90,  45,  10,  50,  70,  45,    16, 0, 0, 0,
-   30,  20,   0,   0,  15, -10,  60, -10,  40,  40, 103,  45,  10,  50,  80,  45,    16, 0, 0, 0,]
+   30,  20,   0,   0,  15, -10,  60, -10,  40,  40, 103,  45,  10,  50,  80,  45,    16, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,     5, 0, 0, 0,
+    ]
    
 vt = [
 21, 0, 0, 1,
@@ -179,8 +183,8 @@ if __name__ == '__main__':
             # - 50, 50, 50, 50, 0 indicate the rotation angle (this angle refers to the origin,
             #                     rather than additive), the unit is degree
             # - 3 indicates the postponed time after finishing the command, in seconds
-            ['I', [8, -20, 0, 0, 9, 50, 10, -20, 11, 50, 14, 80], 1],
-            ['I', [8, 20, 0, 40, 9, -20, 10, 50, 11, -20], 1],
+            ['I', [8, -20, 0, 0, 9, -20, 10, 20, 11, 20, 14, 80, 15, 80], 1],
+            ['I', [8, 20, 0, 40, 9,  20, 10, 50, 11, 50, 14, 60, 15, 60], 1],
 
             # - L indicates the command to control all joint servos to rotate at the same time
             #     (currently the command supports 16 degrees of freedom, that is, 16 servos)
@@ -217,9 +221,9 @@ if __name__ == '__main__':
             ['K', ck, 1],  # compare it with the previous 'kck' command
 
             # large angles out of -125~125 are also supported
-            ['I', [8, -140, 0, 40, 9, -140, 10, 50, 11, -20], 1],
+            ['I', [8, -140, 0, 40, 9, -140, 10, 50, 11, 50], 1],
             ['L', [20, 0, 0, 0, 0, 0, 0, 0,-55,-55, 45, 45, 130, 130, 36, 36], 1],
-            
+
             # Using this format, multiple tone commands can be encrypted in binary
             # the music melody is played.
             # - '20', '22', '24', '15', '20' indicate the music tones
@@ -227,7 +231,7 @@ if __name__ == '__main__':
             # - 2 indicates the postponed time after the music melody is played, in seconds
 
             # may be cut off by multithreading. haven't fixed it.
-            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2,],0],
+#            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2,],0],
             ['B',[15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1], 0],
             ['d', 0]
         ]
@@ -242,7 +246,7 @@ if __name__ == '__main__':
             print(task)
             send(goodPorts, task)
         
-        schedulerToSkill(goodPorts, testSchedule) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots.
+#        schedulerToSkill(goodPorts, testSchedule) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots.
         closeAllSerial(goodPorts)
         logger.info("finish!")
         os._exit(0)
