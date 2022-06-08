@@ -648,7 +648,7 @@ class SkillComposer:
         spTrig.grid(row=0, column=cTrig)
 
         vAngle = IntVar()
-        Spinbox(singleFrame, width=self.frameItemWidth[cAngle], from_=-256, to=255, textvariable=vAngle,
+        Spinbox(singleFrame, width=self.frameItemWidth[cAngle], from_=-128, to=127, textvariable=vAngle,
                 wrap=True).grid(
             row=0, column=cAngle)
             
@@ -1005,13 +1005,13 @@ class SkillComposer:
                 angleRatio = 2
             if self.frameData[3] == 1:
                 loopStructure.append(f - startFrame)
-            if self.getWidget(f, cStep).get() == txt('max'):
+            if self.getWidget(f, cStep).get() == txt('max') or int(self.getWidget(f, cStep).get())>127:
                 self.frameData[20] = 0
             else:
                 self.frameData[20] = int(self.getWidget(f, cStep).get())
-            self.frameData[21] = int(self.getWidget(f, cDelay).get()) // 50
+            self.frameData[21] = max(min(int(self.getWidget(f, cDelay).get()) // 50,127),0)
             self.frameData[22] = int(inv_triggerAxis[self.getWidget(f, cTrig).get()])
-            self.frameData[23] = int(self.getWidget(f, cAngle).get())
+            self.frameData[23] = max(min(int(self.getWidget(f, cAngle).get()),127),-128)
             if self.mirror:
                 self.mirrorAngles(self.frameData)
             self.updateSliders(self.frameData)
