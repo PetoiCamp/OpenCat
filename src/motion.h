@@ -74,7 +74,7 @@ void calibratedPWM(byte i, float angle, float speedRatio = 0) {
   int duty0 = EEPROMReadInt(CALIBRATED_ZERO_POSITIONS + i * 2) + currentAng[i] * eeprom(ROTATION_DIRECTION, i);
   currentAng[i] = angle;
   int duty = EEPROMReadInt(CALIBRATED_ZERO_POSITIONS + i * 2) + angle * eeprom(ROTATION_DIRECTION, i);
-  int steps = speedRatio ? int(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)) : 0;
+  int steps = speedRatio > 0 ? int(round(abs(duty - duty0) / 1.0/*degreeStep*/ / speedRatio)) : 0;
   //if default speed is 0, no interpolation will be used
   //otherwise the speed ratio is compared to 1 degree per second.
   for (int s = 0; s <= steps; s++) {
@@ -89,7 +89,7 @@ template <typename T> void allCalibratedPWM(T * dutyAng, byte offset = 0) {
 }
 
 template <typename T> void transform( T * target, byte angleDataRatio = 1, float speedRatio = 2, byte offset = 0) {
-  if (speedRatio == 0 || servoOff) {
+  if (speedRatio <= 0 || servoOff) { // the speed ratio should be >0, if the user enters some large numbers, it will become negative
     allCalibratedPWM(target, offset);
     if (servoOff) { //slow boot up for servos
       delay(1000);

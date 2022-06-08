@@ -253,14 +253,14 @@ class Skill {
 
     }
 
-//    void skillByName(const char* skillName, byte angleDataRatio = 1, float speedRatio = 1, bool shutServoAfterward = true) {
-//      loadFrame(skillName);
-//      transform(dutyAngles, angleDataRatio, speedRatio);
-//      if (shutServoAfterward) {
-//        pwm.shutServos();
-//        token = 'd';
-//      }
-//    }
+    //    void skillByName(const char* skillName, byte angleDataRatio = 1, float speedRatio = 1, bool shutServoAfterward = true) {
+    //      loadFrame(skillName);
+    //      transform(dutyAngles, angleDataRatio, speedRatio);
+    //      if (shutServoAfterward) {
+    //        pwm.shutServos();
+    //        token = 'd';
+    //      }
+    //    }
 
     void loadFrameByDataBuffer() {
       //      period = dataBuffer[0];
@@ -359,7 +359,7 @@ class Skill {
             }
           }
 #endif
-          delay(dutyAngles[DOF + 1 + c * frameSize] * 50);
+          delay(abs(dutyAngles[DOF + 1 + c * frameSize] * 50));
           if (repeat != 0 && c != 0 && c == loopCycle[1]) {
             c = loopCycle[0] - 1;
             if (repeat > 0) //if repeat <0, infinite loop. only reset button will break the loop
