@@ -192,7 +192,7 @@ if __name__ == '__main__':
             #               angle of each joint servo corresponding to 0-15 (this angle refers to
             #               the origin, rather than additive), the unit is degree
             # - 5 indicates the postponed time after finishing the command, in seconds
-            ['L', [20, 0, 0, 0, 0, 0, 0, 0, 25, 0, 45, 45, 80, 80, 36, 36], 1],
+            ['L', [20, 0, 0, 0, 0, 0, 0, 0, 5, 0, 45, 45, 80, 80, 36, 36], 1],
 
             # - u calls a 'meow' sound
             ['u',0],
