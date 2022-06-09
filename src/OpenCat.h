@@ -346,6 +346,10 @@ Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #define GYRO_PIN  0
 #endif
 
+#ifndef MAIN_SKETCH
+#define GYRO_PIN  0
+#endif
+
 #if defined NyBoard_V0_1 || defined NyBoard_V0_2
 #undef VOLTAGE_DETECTION_PIN
 #undef T_SERVO_MICROSECOND
