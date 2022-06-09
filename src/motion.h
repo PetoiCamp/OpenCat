@@ -89,12 +89,19 @@ template <typename T> void allCalibratedPWM(T * dutyAng, byte offset = 0) {
 }
 
 template <typename T> void transform( T * target, byte angleDataRatio = 1, float speedRatio = 2, byte offset = 0) {
-  if (speedRatio <= 0 || servoOff) { // the speed ratio should be >0, if the user enters some large numbers, it will become negative
+  if (speedRatio <= 0
+#ifdef SERVO_SLOW_BOOT
+      || servoOff
+#endif
+     ) { // the speed ratio should be >0, if the user enters some large numbers, it will become negative
+    PTL("slow boot");
     allCalibratedPWM(target, offset);
+#ifdef SERVO_SLOW_BOOT
     if (servoOff) { //slow boot up for servos
       delay(1000);
       servoOff = false;
     }
+#endif
   }
   else {
     int *diff = new int [DOF - offset], maxDiff = 0;

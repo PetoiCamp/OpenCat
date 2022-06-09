@@ -158,6 +158,7 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
       for (byte s = s0; s < s1; s++) {
         setPWM(s, 0, 4096);
       }
+      servoOff = true;
     }
 };
 
