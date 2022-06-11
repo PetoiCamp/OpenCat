@@ -61,7 +61,8 @@ float adjust(byte i) {
 #ifdef POSTURE_WALKING_FACTOR
                        (i > 3 ? postureOrWalkingFactor : 1) *
 #endif
-                       rollAdj - ramp * eeprom(ADAPT_PARAM, i, 1, 2) * ((i % 4 < 2) ? ( RollPitchDeviation[1]) : RollPitchDeviation[1]));
+                       rollAdj - //ramp * 
+                       eeprom(ADAPT_PARAM, i, 1, 2) * ((i % 4 < 2) ? ( RollPitchDeviation[1]) : RollPitchDeviation[1]));
   return currentAdjust[i];
 }
 
