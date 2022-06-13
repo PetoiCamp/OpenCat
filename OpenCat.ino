@@ -38,7 +38,7 @@
 */
 
 #define MAIN_SKETCH //the Petoi App only works when this mode is on
-//#define AUTO_INIT //automatically select 'Y' for the prompts
+#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
 #define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
@@ -102,6 +102,7 @@ void setup() {
 #endif
 
   playMelody(MELODY_NORMAL);
+
   delay(2000);//change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN
   read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
@@ -132,7 +133,7 @@ void loop() {
 #ifdef MAIN_SKETCH
 #ifdef VOLTAGE_DETECTION_PIN
   //  while (lowBattery()); //  block the loop if battery is low
-                            //  can be disabled to save programming space and reduce low voltage interruptions
+  //  can be disabled to save programming space and reduce low voltage interruptions
 #endif
 #ifdef GYRO_PIN
   readEnvironment();

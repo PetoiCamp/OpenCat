@@ -214,7 +214,7 @@ void imuSetup() {
     // verify connection
     //    PTLF("Test connection");
   } while (!mpu.testConnection());
-//  PTLF("Connected");
+  //  PTLF("Connected");
 
   // load and configure the DMP
   //  PTLF("Init DMP");
@@ -239,6 +239,7 @@ void imuSetup() {
   if (devStatus == 0) {
     // Calibration Time: generate offsets and calibrate our MPU6050
 #ifndef MAIN_SKETCH
+    beep(10);
 #ifndef AUTO_INIT
     PTLF("Calibrate IMU?(Y/n):");
     char choice = getUserInputChar();
@@ -246,7 +247,9 @@ void imuSetup() {
     if (choice == 'Y' || choice == 'y') {
 #endif
       PTLF("\nLay the robot FLAT on a table");
+#ifndef AUTO_INIT
       beep(8, 400, 600, 5);
+#endif
       beep(15, 400, 600);
       PTLF("Calibrating...");
       mpu.CalibrateAccel(10);
@@ -267,7 +270,7 @@ void imuSetup() {
 #endif
     //    mpu.PrintActiveOffsets(); //it takes 7% flash!
     // turn on the DMP, now that it's ready
-//    PTLF("Enable DMP");
+    //    PTLF("Enable DMP");
     mpu.setDMPEnabled(true);
 
     // enable Arduino interrupt detection

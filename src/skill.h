@@ -444,12 +444,15 @@ int testEEPROM(char* skillData) {
 #ifndef MAIN_SKETCH
 void writeConst() {
   //  flushEEPROM();
+  beep(20); 
   int melodyAddress = MELODY_NORMAL;
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
   saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
   saveMelody(melodyAddress, melodyLowBattery, sizeof(melodyLowBattery));
   saveMelody(melodyAddress, melody1, sizeof(melody1));
+#ifndef AUTO_INIT
   playMelody(MELODY_INIT);
+#endif
 #ifndef AUTO_INIT
   PTLF("Reset joint offsets?(Y/n)");//(Input ‘Y’ and hit enter, if you want to reset all the joint offsets to 0)
   char resetJointCalibrationQ = getUserInputChar();
