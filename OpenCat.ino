@@ -38,7 +38,7 @@
 */
 
 #define MAIN_SKETCH //the Petoi App only works when this mode is on
-#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
+//#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
 #define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
