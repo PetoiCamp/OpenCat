@@ -14,34 +14,45 @@ void dealWithExceptions() {
 
 #ifdef VOLTAGE_DETECTION_PIN
 bool lowBattery() {
-  int voltage = analogRead(VOLTAGE_DETECTION_PIN);
-  if (voltage < LOW_VOLTAGE && voltage == lastVoltage ) { //if battery voltage < threshold, it needs to be recharged
-    //give the robot a break when voltage drops after sprint
-    //adjust the thresholds according to your batteries' voltage
-    //if set too high, the robot will stop working when the battery still has power.
-    //If too low, the robot may not alarm before the battery shuts off
-    PTF("Low power:");
-    PT(voltage / 99);
-    PTL('V');
-    playMelody(MELODY_LOW_BATTERY);
-    //    int8_t bStep = 1;
-    //    for (byte brightness = 1; brightness > 0; brightness += bStep) {
-    //#ifdef NEOPIXEL_PIN
-    //      pixel.setPixelColor(0, pixel.Color(brightness, 0, 0));
-    //      pixel.show();
-    //#endif
-    //#if defined LED_PIN
-    //      analogWrite(LED_PIN, 255 - brightness);
-    //#endif
-    //      if (brightness == 255)
-    //        bStep = -1;
-    //      delay(5);
-    //    }
-    delay(2000);
+  long currentTime = millis() / CHECK_BATTERY_PERIOD;
+  if (currentTime > uptime) {
+    uptime = currentTime;
+    int voltage = analogRead(VOLTAGE_DETECTION_PIN);
+    PT(currentTime);
+    PT('\t');
+    PTL(uptime);
+    PT('\t');
+    PT(voltage);
+    PT('\t');
+    PTL(lastVoltage);
+    if (voltage < LOW_VOLTAGE && (voltage == lastVoltage || uptime < 2) ) { //if battery voltage < threshold, it needs to be recharged
+      //give the robot a break when voltage drops after sprint
+      //adjust the thresholds according to your batteries' voltage
+      //if set too high, the robot will stop working when the battery still has power.
+      //If too low, the robot may not alarm before the battery shuts off
+      PTF("Low power:");
+      PT(voltage / 99);
+      PTL('V');
+      playMelody(MELODY_LOW_BATTERY);
+      //    int8_t bStep = 1;
+      //    for (byte brightness = 1; brightness > 0; brightness += bStep) {
+      //#ifdef NEOPIXEL_PIN
+      //      pixel.setPixelColor(0, pixel.Color(brightness, 0, 0));
+      //      pixel.show();
+      //#endif
+      //#if defined LED_PIN
+      //      analogWrite(LED_PIN, 255 - brightness);
+      //#endif
+      //      if (brightness == 255)
+      //        bStep = -1;
+      //      delay(5);
+      //    }
+      delay(2000);
+      lastVoltage = voltage;
+      return true;
+    }
     lastVoltage = voltage;
-    return true;
   }
-  lastVoltage = voltage;
   return false;
 }
 #endif

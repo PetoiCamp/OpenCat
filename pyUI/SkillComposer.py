@@ -765,7 +765,6 @@ class SkillComposer:
         frame = self.frameList[currentRow]
         if currentRow != self.activeFrame:
             self.transformToFrame(currentRow)
-
             self.frameController.update()
 
         else:
@@ -1233,6 +1232,8 @@ class SkillComposer:
         if self.ready == 1:
             self.getWidget(self.activeFrame, cNote).delete(0, END)
             self.getWidget(self.activeFrame, cNote).insert(0, pose + str(self.activeFrame))
+            self.frameData[4:20] = copy.deepcopy(self.postureTable[pose])
+            self.originalAngle[0] = 0
             self.updateSliders(self.postureTable[pose])
             self.indicateEdit()
             for i in range(6):

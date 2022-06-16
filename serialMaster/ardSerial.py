@@ -43,28 +43,46 @@ def encode(in_str, encoding='utf-8'):
 def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b I K L o within Python
     # print("Num Token "); print(token);print(" var ");print(var);print("\n\n");
     logger.debug(f'serialWriteNumToByte, token={token}, var={var}')
-
     in_str = ""
     if var is None:
         var = []
     if token == 'K':
-        var = list(map(int, var))
         period = var[0]
         #        print(encode(in_str))
         if period > 0:
             skillHeader = 4
         else:
             skillHeader = 7
-
-        in_str = token.encode() + struct.pack('b' * skillHeader, *var[0:skillHeader])  # +'~'.encode()
-        port.Send_data(in_str)
-        time.sleep(0.005)
+            
         if period > 1:
             frameSize = 8  # gait
         elif period == 1:
             frameSize = 16  # posture
         else:
             frameSize = 20  # behavior
+    # divide large angles by 2
+        angleRatio = 1
+        for row in range(abs(period)):
+            for angle in var[skillHeader + row * frameSize:skillHeader + row * frameSize + min(16,frameSize)]:
+                if angle > 125 or angle<-125:
+                    angleRatio = 2
+                    break
+            if angleRatio ==2:
+                break
+        
+        if angleRatio == 2:
+            var[3] = 2
+            for row in range(abs(period)):
+                for i in range(skillHeader + row * frameSize,skillHeader + row * frameSize + min(16,frameSize)):
+                    var[i] //=2
+            printH('rescaled:\n',var)
+            
+        var = list(map(int, var))
+
+        in_str = token.encode() + struct.pack('b' * skillHeader, *var[0:skillHeader])  # +'~'.encode()
+        port.Send_data(in_str)
+        time.sleep(0.005)
+
         for f in range(abs(period)):
             in_str = struct.pack('b' * (frameSize),
                                  *var[skillHeader + f * frameSize:skillHeader + (f + 1) * frameSize])  # + '~'.encode()
