@@ -18,13 +18,6 @@ bool lowBattery() {
   if (currentTime > uptime) {
     uptime = currentTime;
     int voltage = analogRead(VOLTAGE_DETECTION_PIN);
-    PT(currentTime);
-    PT('\t');
-    PTL(uptime);
-    PT('\t');
-    PT(voltage);
-    PT('\t');
-    PTL(lastVoltage);
     if (voltage < LOW_VOLTAGE && (voltage == lastVoltage || uptime < 2) ) { //if battery voltage < threshold, it needs to be recharged
       //give the robot a break when voltage drops after sprint
       //adjust the thresholds according to your batteries' voltage
