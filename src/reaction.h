@@ -213,7 +213,7 @@ void reaction() {
               yprTilt[target[0]] = target[1];
             }
             else if (token == T_MEOW) {
-              meow(random() % 2 + 1, (random() % 4 + 2) * 5);
+              meow(random() % 2 + 1, (random() % 4 + 2) * 10);
             }
             else if (token == T_BEEP) {
               beep(target[0], target[1], 50);

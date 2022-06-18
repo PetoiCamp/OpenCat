@@ -340,11 +340,12 @@ Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #include "randomMind.h"
 #include "ultrasonic.h"
 
-#elif defined RANDOM_MIND
-#include "randomMind.h"
-
 #else
 #define GYRO_PIN  0
+#endif
+
+#ifdef RANDOM_MIND
+#include "randomMind.h"
 #endif
 
 #ifndef MAIN_SKETCH

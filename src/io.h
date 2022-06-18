@@ -50,15 +50,6 @@ void read_serial() {
 }
 
 void readSignal() {
-#ifdef ULTRASONIC
-  read_ultrasonic();
-#endif
-
-#ifdef RANDOM_MIND
-  if (autoSwitch)
-    randomMind();//make the robot do random demos
-#endif
-
 #if defined IR_PIN
   read_infrared();//  newCmdIdx = 1
 #endif
@@ -69,6 +60,18 @@ void readSignal() {
 #ifdef CAMERA
   read_camera();
 #endif
+#ifdef ULTRASONIC
+  read_ultrasonic();
+#endif
+
+#ifdef RANDOM_MIND
+  if (newCmdIdx) {
+    idleTimer = millis() + IDLE_TIME;
+  }
+  else if (autoSwitch)
+    randomMind();//make the robot do random demos
+#endif
+
   // powerSaver -> 4
   // randomMind -> 5
   // other -> 6

@@ -52,7 +52,7 @@
 
 //you can also activate the following modes (they will diable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
-//#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
+#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
 //#define CAMERA          //for Mu Vision camera
@@ -91,6 +91,9 @@ void setup() {
 #endif
 
   servoSetup();
+  for (byte i = 0; i < randomMindListLength; i++) {
+    randomBase += choiceWeight[i];
+  }
   randomSeed(analogRead(A2));//use the fluctuation of voltage caused by servos as entropy pool
   skill.assignSkillAddressToOnboardEeprom();
 
