@@ -223,7 +223,7 @@ class SkillComposer:
                 else:
                     COL = centerWidth + 2 + i // 4
                 ORI = VERTICAL
-                LEN = 130
+                LEN = 150
 
             if i in NaJoints[self.model]:
                 stt = DISABLED
@@ -523,7 +523,7 @@ class SkillComposer:
         return imageFrame
 
     def placeProductImage(self):
-        self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', 180)
+        self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', 200)
         self.frameImage.grid(row=3, column=3, rowspan=2, columnspan=2)
 
     def changeLan(self, l):
