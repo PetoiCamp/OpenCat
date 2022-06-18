@@ -16,12 +16,12 @@ const char mind16[] PROGMEM = "kwkR";
 
 const char* const mindList[] PROGMEM = {mind0, mind1, mind12,
 #ifdef BITTLE
-                                        mind3, mind4, mind5, mind6, mind7,
+                                        mind4, mind6, mind7, mind13, 
 #endif
                                        };
 byte choiceWeight[] = {100, 10, 5,
 #ifdef BITTLE
-                       2, 1, 1, 3, 1,
+                       1, 3, 1, 1,
 #endif
                       };
 #define IDLE_TIME 15000
@@ -47,7 +47,7 @@ void allRandom() {
 }
 void randomMind() {
   long current = millis();
-  if (current - idleTimer > randomInterval) {//every randomInterval throw a dice
+  if (token != T_CALIBRATE && current - idleTimer > randomInterval) {//every randomInterval throw a dice
     idleTimer = current;
     int randomNum = random() % randomBase;
     byte randomChoice = -1;
@@ -66,6 +66,6 @@ void randomMind() {
         strcpy((char *)dataBuffer, (char *)dataBuffer + 1);// this is duable only because dataBuffer+1 is after dataBuffer!
       //      PTL(newCmd);
     }
-    newCmdIdx = 5;
+    newCmdIdx = 100;
   }
 }

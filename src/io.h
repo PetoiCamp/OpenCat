@@ -73,8 +73,8 @@ void readSignal() {
 #endif
 
   // powerSaver -> 4
-  // randomMind -> 5
-  // other -> 6
+  // other -> 5
+  // randomMind -> 100
 }
 
 #define READING_COUNT 100

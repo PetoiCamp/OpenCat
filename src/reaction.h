@@ -182,7 +182,6 @@ void reaction() {
             if (token == T_CALIBRATE) {
               setServoP(P_HARD);
               checkGyro = false;
-              autoSwitch = false;
               if (lastToken != T_CALIBRATE) {
                 strcpy(newCmd, "calib");
                 skill.loadFrame(newCmd);
