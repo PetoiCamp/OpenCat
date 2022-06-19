@@ -54,22 +54,23 @@ void readSignal() {
   read_infrared();//  newCmdIdx = 1
 #endif
   read_serial();  //  newCmdIdx = 2
-#ifdef VOICE
-  read_voice();
-#endif
-#ifdef CAMERA
-  read_camera();
-#endif
-#ifdef ULTRASONIC
-  read_ultrasonic();
-#endif
-
+  long current = millis();
   if (newCmdIdx) {
     idleTimer = millis() + IDLE_TIME;
   }
-  else if (autoSwitch)
-    randomMind();//make the robot do random demos
-
+  else if (token != T_CALIBRATE && current - idleTimer > 0) {
+#ifdef VOICE
+    read_voice();
+#endif
+#ifdef CAMERA
+    read_camera();
+#endif
+#ifdef ULTRASONIC
+    read_ultrasonic();
+#endif
+    if (autoSwitch && newCmdIdx == 0)
+      randomMind();//make the robot do random demos
+  }
   // powerSaver -> 4
   // other -> 5
   // randomMind -> 100

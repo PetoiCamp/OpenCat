@@ -51,7 +51,7 @@ void allRandom() {
 }
 void randomMind() {
   long current = millis();
-  if (token != T_CALIBRATE && current - idleTimer > randomInterval) {//every randomInterval throw a dice
+  if (current - idleTimer > randomInterval) { //every randomInterval throw a dice
     idleTimer = current;
     int randomNum = random() % randomBase;
     byte randomChoice = -1;
