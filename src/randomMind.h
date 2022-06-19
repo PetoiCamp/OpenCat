@@ -3,7 +3,7 @@ const char mind1[] PROGMEM = "ksit";
 const char mind2[] PROGMEM = "kbalance";
 const char mind3[] PROGMEM = "kpee";
 const char mind4[] PROGMEM = "kpu";
-const char mind5[] PROGMEM = "krest";
+const char mind5[] PROGMEM = "khi";
 const char mind6[] PROGMEM = "kck";
 const char mind7[] PROGMEM = "kjy";
 const char mind8[] PROGMEM = "kvt";
@@ -14,23 +14,29 @@ const char mind14[] PROGMEM = "kwkF";
 const char mind15[] PROGMEM = "kwkL";
 const char mind16[] PROGMEM = "kwkR";
 
-const char* const mindList[] PROGMEM = {mind0, mind1, mind12,
+const char* const mindList[] PROGMEM = {mind0, mind1, mind5, mind12, mind13,
 #ifdef BITTLE
-                                        mind4, mind6, mind7, mind13, 
+                                        mind4, mind6, mind7, 
 #endif
                                        };
-byte choiceWeight[] = {100, 10, 5,
-#ifdef BITTLE
-                       1, 3, 1, 1,
+byte choiceWeight[] = {
+#ifdef RANDOM_MIND
+  50,
+#else
+  10,
 #endif
-                      };
+  10, 2, 4, 1,
+#ifdef BITTLE
+  1, 3, 1, 
+#endif
+};
 
 byte randomMindListLength = sizeof(mindList) / 2;
 int randomBase = 0;
 void allRandom() {
   char tokenSet[] = {T_INDEXED_SIMULTANEOUS_BIN, T_MOVE_BIN};
-  int8_t jointSet[] = {0, 1, 2, 8, 9,  12, 13};
-  byte rangeSet[] = {90, 90, 180, 10, 10, 20, 20};
+  int8_t jointSet[] = {0, 1, 2, 8, 9,  12, 13, 14, 15};
+  byte rangeSet[] = {90, 90, 180, 10, 10, 20, 20, 10, 10};
 
   token = tokenSet[random() % 2];
   cmdLen = random() % 4 + 2;
@@ -53,8 +59,11 @@ void randomMind() {
       randomChoice++;
       randomNum -= choiceWeight[randomChoice];
     }
-    if (randomChoice == 0)
+    if (randomChoice == 0) {
+#ifdef RANDOM_MIND
       allRandom();
+#endif
+    }
     else {
       strcpy_P((char *)dataBuffer, (char *)pgm_read_word(&mindList[randomChoice]));
       token = dataBuffer[0];

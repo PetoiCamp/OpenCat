@@ -64,13 +64,11 @@ void readSignal() {
   read_ultrasonic();
 #endif
 
-#ifdef RANDOM_MIND
   if (newCmdIdx) {
     idleTimer = millis() + IDLE_TIME;
   }
   else if (autoSwitch)
     randomMind();//make the robot do random demos
-#endif
 
   // powerSaver -> 4
   // other -> 5

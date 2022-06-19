@@ -41,8 +41,8 @@
 //#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-//#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+//#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
 //#define NyBoard_V0_2
@@ -52,18 +52,16 @@
 
 //you can also activate the following modes (they will diable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
-//#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
+//#define RANDOM_MIND     //advanced random behaviors. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
 //#define CAMERA          //for Mu Vision camera
-
 
 #include "src/OpenCat.h"
 
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(5);
-  PTLF(">");
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
@@ -92,12 +90,10 @@ void setup() {
 
   servoSetup();
   skill.assignSkillAddressToOnboardEeprom();
-#ifdef RANDOM_MIND
   for (byte i = 0; i < randomMindListLength; i++) {
     randomBase += choiceWeight[i];
   }
   randomSeed(analogRead(A2));//use the fluctuation of voltage caused by servos as entropy pool
-#endif
 
 #ifdef VOICE
   voiceSetup();
@@ -130,8 +126,7 @@ void setup() {
   imuSetup();
 #endif
 #endif              // **
-  PTLF("k");
-  PTLF("Ready!");
+  PTLF("Ready!\nk");
 }
 
 void loop() {

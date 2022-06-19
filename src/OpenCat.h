@@ -246,9 +246,9 @@ int currentAng[DOF] = { -30, -80, -45, 0,
 float currentAdjust[DOF] = {};
 
 //control related variables
-#define IDLE_TIME 15000
+#define IDLE_TIME 10000
 long idleTimer;
-int randomInterval = 1000;
+int randomInterval = 2000;
 #define CHECK_BATTERY_PERIOD 10000  //every 10 seconds. 60 mins -> 3600 seconds
 int uptime = -1;
 int frame = 0;
@@ -334,20 +334,19 @@ template <typename T> void arrayNCPY(T * destination, const T * source, int len)
 Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #endif
 
-#ifdef RANDOM_MIND
 #include "randomMind.h"
-#endif
-
 #ifdef VOICE
 #include "voice.h"
 #elif defined CAMERA
 #include "camera.h"
-
 #elif defined ULTRASONIC
 #include "ultrasonic.h"
-
 #else
 #define GYRO_PIN  0
+#endif
+
+#ifdef RANDOM_MIND
+#undef GYRO_PIN
 #endif
 
 #ifndef MAIN_SKETCH
