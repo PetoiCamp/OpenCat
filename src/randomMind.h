@@ -24,9 +24,7 @@ byte choiceWeight[] = {100, 10, 5,
                        1, 3, 1, 1,
 #endif
                       };
-#define IDLE_TIME 15000
-long idleTimer;
-int randomInterval = 1000;
+
 byte randomMindListLength = sizeof(mindList) / 2;
 int randomBase = 0;
 void allRandom() {
