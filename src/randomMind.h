@@ -14,9 +14,9 @@ const char mind14[] PROGMEM = "kwkF";
 const char mind15[] PROGMEM = "kwkL";
 const char mind16[] PROGMEM = "kwkR";
 
-const char* const mindList[] PROGMEM = {mind0, mind1, mind5, mind12, mind13,
+const char* const mindList[] PROGMEM = {mind0, mind1, mind4, mind5, mind12, mind13,
 #ifdef BITTLE
-                                        mind4, mind6, mind7, 
+                                        mind6, mind7,
 #endif
                                        };
 byte choiceWeight[] = {
@@ -25,9 +25,9 @@ byte choiceWeight[] = {
 #else
   10,
 #endif
-  10, 2, 4, 1,
+  10, 1, 2, 4, 1,
 #ifdef BITTLE
-  1, 3, 1, 
+  3, 1,
 #endif
 };
 

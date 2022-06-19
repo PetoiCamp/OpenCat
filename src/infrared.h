@@ -45,7 +45,8 @@ decode_results results;
 #define K61 "rt"      //
 #endif
 
-#define K62 "zero"
+#define K62 "z"  //turn on/off the random behaviors
+//#define K62 "zero" //call your customized Newbility saved to PROGMEM
 //#define K62 "T"    //call the last skill data received from the serial port
 
 #define SHORT_ENCODING // activating this line will use a shorter encoding of the HEX values
