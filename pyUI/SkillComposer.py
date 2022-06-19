@@ -313,7 +313,7 @@ class SkillComposer:
         self.frameDial.grid(row=0, column=1)
         labelDial = Label(self.frameDial, text=txt('State Dials'), font=self.myFont)
         labelDial.grid(row=0, column=0, columnspan=5, pady=5)
-        defaultValue = [1, 1, 1, 0]
+        defaultValue = [1, 1, 1, 1]
         textColor = ['red','green']
         for i in range(len(dialTable)):
             key = list(dialTable)[i]
