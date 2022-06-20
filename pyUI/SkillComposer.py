@@ -10,6 +10,7 @@ import tkinter.font as tkFont
 import copy
 import threading
 from tkinter.filedialog import asksaveasfile, askopenfilename
+from tkinter.colorchooser import askcolor
 from commonVar import *
 
 
@@ -169,6 +170,10 @@ class SkillComposer:
             lan.add_command(label=languageList[l]['lanOption'], command=lambda lanChoice=l: self.changeLan(lanChoice))
         self.menubar.add_cascade(label=txt('lanMenu'), menu=lan)
 
+        util = Menu(self.menubar, tearoff=0)
+        util.add_command(label=txt('Eye color picker'), command=lambda: self.popEyeColor())
+        self.menubar.add_cascade(label=txt('Utility'), menu=util)
+        
         helpMenu = Menu(self.menubar, tearoff=0)
         helpMenu.add_command(label=txt('About'), command=self.showAbout)
         self.menubar.add_cascade(label=txt('Help'), menu=helpMenu)
@@ -254,7 +259,6 @@ class SkillComposer:
             if i in range(16):
                 binderValue = IntVar()
                 values = {"+": 1,
-                          #                        "." : 0,
                           "-": -1, }
                 for d in range(2):
                     button = Radiobutton(self.frameController, text=list(values)[d], fg='blue', variable=binderValue,
@@ -785,8 +789,8 @@ class SkillComposer:
         if self.totalFrame == 1:
             self.activeFrame = 0
 
-    def closePop(self, top):
-        top.destroy()
+    def closePop(self, popWin):
+        popWin.destroy()
 
     def insert_val(self, e):
         e.insert(0, 'Hello World!')
@@ -920,6 +924,77 @@ class SkillComposer:
         #        self.skillText.config(xscrollcommand=scrollX.set)
         entryFrame.columnconfigure(0, weight=1)
         entryFrame.rowconfigure(0, weight=1)
+    
+    def changeColor(self,i):
+        colorTuple = askcolor(title="Tkinter Color Chooser")
+        colors = list(colorTuple[0])
+        for c in range(3):
+            colors[c] //= 2
+        if self.colorBinderValue.get():
+            self.activeEye = 0
+            self.eyeColors[0]=colors
+            for c in range(2):
+                self.canvasFace.itemconfig(self.eyes[c], fill=colorTuple[1])
+                self.eyeColors[c+1] = colors
+            send(ports, ['C', colors+[0,-1], 0])
+        else:
+            self.activeEye = i+1
+            self.canvasFace.itemconfig(self.eyes[i], fill=colorTuple[1])
+            self.eyeColors[i+1] = colors
+            send(ports, ['C', colors+[i+1,-1], 0])
+
+    def changeEffect(self,e):
+        print(self.eyeColors[self.activeEye])
+        send(ports, ['C', self.eyeColors[self.activeEye]+[self.activeEye, e], 0])
+        
+    def popEyeColor(self):
+        #E_RGB_ALL = 0
+        #E_RGB_RIGHT = 1
+        #E_RGB_LEFT = 2
+        #
+        #E_EFFECT_BREATHING = 0
+        #E_EFFECT_ROTATE = 1
+        #E_EFFECT_FLASH = 2
+        #E_EFFECT_NONE = -1
+        ledEffects = ['Breath','Rotate','Flash']
+        effectDictionary = {
+            'Breath':0,
+            'Rotate':1,
+            'Flash':2,
+            }
+        dia = 100
+        crd = [10,10]
+        gap = 35
+        btShift = [70,25]
+        width = dia*2 + gap + 2*crd[0]
+        self.eyeColors = [[0,0,0],[0,0,0],[0,0,0]]
+        self.activeEye = 0
+        topEye = Toplevel(self.window)
+        topEye.title('Eye Color Setter')
+        topEye.geometry(str(width)+'x170+400+200')
+        face = Frame(topEye)
+        face.grid(row = 0,column = 0)
+        self.canvasFace = Canvas(face,height=120)
+        self.canvasFace.grid(row = 0,column = 0, columnspan = 2)
+        eyeR = self.canvasFace.create_oval(crd[0], crd[1], crd[0]+dia, crd[1]+dia, outline="#000",
+                    fill="#606060", width=2)
+        eyeL = self.canvasFace.create_oval(crd[0]+dia+gap, crd[1], crd[0]+2*dia+gap, crd[1]+dia, outline="#000",
+                    fill="#606060", width=2)
+        self.eyes = [eyeR,eyeL]
+        btR = Button(face,text='Color',command=lambda:self.changeColor(0))
+        btR.place(x=crd[0]+dia/2-btShift[0]/2,y=crd[1]+dia/2-btShift[1]/2)
+        btL = Button(face,text='Color',command=lambda:self.changeColor(1))
+        btL.place(x=crd[0]+dia*3/2+gap-btShift[0]/2,y=crd[0]+dia/2-btShift[1]/2)
+        self.colorBinderValue = BooleanVar()
+        colorBinder = Checkbutton(face, text='<>', indicator=0, width=2,
+                                         variable=self.colorBinderValue,onvalue=True, offvalue=False)
+        colorBinder.place(x=crd[0]+dia+5,y=crd[1]+dia/2-btShift[1]/2)
+        
+        btnsEff = Frame(face)
+        btnsEff.grid(row = 1,column = 0,ipadx = 15)
+        for e in range(len(effectDictionary)):
+            Button(btnsEff,text=list(effectDictionary.keys())[e],width = 4,command = lambda eff=list(effectDictionary.values())[e]:self.changeEffect(eff)).grid(row = 0,column = e)
+
 
     def playThread(self):
         self.playStop = False

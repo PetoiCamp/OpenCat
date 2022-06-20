@@ -177,6 +177,7 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define T_BEEP        'b'
 #define T_BEEP_BIN    'B'
 #define T_CALIBRATE   'c'
+#define T_COLOR       'C'
 #define T_REST        'd'
 #define T_GYRO        'g'
 #define T_HELP        'h'

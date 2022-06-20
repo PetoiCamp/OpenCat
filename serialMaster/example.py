@@ -123,20 +123,34 @@ wkF = [
 model = 'Bittle'
 postureTable = postureDict[model]
 
+E_RGB_ALL = 0
+E_RGB_RIGHT = 1
+E_RGB_LEFT = 2
+
+E_EFFECT_BREATHING = 0
+E_EFFECT_ROTATE = 1
+E_EFFECT_FLASH = 2
+E_EFFECT_NONE = 3
+
+
 if __name__ == '__main__':
     try:
         '''
         testSchedule is used to test various serial port commands
         '''
         testSchedule = [
+                        
+            # turn off the gyroscope
+            ['g',0],
+            
+            # turn off the random behavior
+            ['z',0],
             
             # - 'kbalance' indicates the command to control Bittle to stand normally
             # - 1 indicates the postponed time after finishing the command, in seconds
             # - the skill data is stored locally on the robot
-            ['kbalance', 1],
             
-            # turn of the gyroscope
-            ['g',0],
+            ['kbalance', 1],
 
             # - m indicates the command to control the rotation of the joint servo
             # - 0 indicates the index number of joint servo
@@ -233,7 +247,16 @@ if __name__ == '__main__':
             # may be cut off by multithreading. haven't fixed it.
 #            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2,],0],
             ['B',[15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1], 0],
-            ['d', 0]
+            
+            # if the robot has our RGB LED ultrasonic sensor connected
+            # 'C' is for color
+            #    [R, G, B, enable, effect]
+            ['C',[127,  0,  0, E_RGB_ALL,   E_EFFECT_NONE],     2],
+            ['C',[  0,127,  0, E_RGB_RIGHT, E_EFFECT_BREATHING],2],
+            ['C',[  0,  0,127, E_RGB_LEFT,  E_EFFECT_ROTATE],   2],
+            ['C',[127,127,127, E_RGB_ALL,   E_EFFECT_BREATHING],2],
+            
+            ['d', 0],
         ]
         goodPorts = {}
         connectPort(goodPorts)

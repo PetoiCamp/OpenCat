@@ -26,7 +26,7 @@ void read_ultrasonic() {
     if (distance > 60) {
       mRUS04.SetRgbEffect(E_RGB_ALL, RGB_WHITE, E_EFFECT_BREATHING);
       ultraInterval = 1000;
-      autoSwitch = true;
+//      autoSwitch = true;
       randomInterval = 1000;
     }
     else if (distance > 40) {

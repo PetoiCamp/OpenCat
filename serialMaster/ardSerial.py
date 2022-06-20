@@ -91,8 +91,13 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             port.Send_data(in_str)
             time.sleep(0.005)
     else:
-        if token == 'L' or token == 'I' or token == 'B':
+        if token == 'L' or token == 'I' or token == 'B' or token == 'C':
+#            if token == 'C':
+#                packType = 'B'
+#            else:
+#                packType = 'b'
             var = list(map(int, var))
+            
             in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
 
         elif token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
@@ -147,7 +152,7 @@ def printSerialMessage(port, token, timeout=0):
                 if response.lower() == token.lower():
                     return [response, allPrints]
                 else:
-                    #                    print(response, flush=True)
+#                    print(response, flush=True)
                     allPrints += response + '\n'
         now = time.time()
         if (now - startTime) > threshold:

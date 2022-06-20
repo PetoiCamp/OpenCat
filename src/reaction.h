@@ -68,7 +68,7 @@ void reaction() {
   if (newCmdIdx) {
     //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
 #ifdef MAIN_SKETCH
-    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_TILT)
+    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_TILT && token != T_COLOR)
       beep(10 + newCmdIdx * 2); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
       setServoP(P_SOFT);
@@ -137,6 +137,16 @@ void reaction() {
           playMelody(MELODY_1);
           break;
         }
+#ifdef ULTRASONIC
+      case T_COLOR: {
+          long color = ((long)(dataBuffer[0]) << 16) + ((long)(dataBuffer[1]) << 8) + (long)(dataBuffer[2]);
+          if (dataBuffer[4] == -1) //no special effect
+            mRUS04.SetRgbColor(E_RGB_INDEX(dataBuffer[3]), color);
+          else
+            mRUS04.SetRgbEffect(E_RGB_INDEX(dataBuffer[3]), color, dataBuffer[4]);
+          break;
+        }
+#endif
       case T_SAVE: {
           PTLF("saved");
           saveCalib(servoCalib);
