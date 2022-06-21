@@ -269,7 +269,7 @@ bool servoOff = true;
 
 bool checkGyro = true;
 bool printGyro = false;
-bool autoSwitch = true;
+bool autoSwitch = false;
 bool walkingQ = false;
 byte exceptions = 0;
 byte transformSpeed = 2;
