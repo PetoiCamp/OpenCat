@@ -175,27 +175,19 @@ byte pwm_pin[] = {12, 11, 4, 3,
 //token list
 #define T_ABORT       'a'
 #define T_BEEP        'b'
-#define T_BEEP_BIN    'B'
 #define T_CALIBRATE   'c'
-#define T_COLOR       'C'
 #define T_REST        'd'
 #define T_GYRO        'g'
 #define T_HELP        'h'
 #define T_INDEXED_SIMULTANEOUS_ASC 'i'
-#define T_INDEXED_SIMULTANEOUS_BIN 'I'
 #define T_JOINTS      'j'
 #define T_SKILL       'k'
-#define T_SKILL_DATA  'K'
-#define T_LISTED_BIN  'L'
 #define T_MOVE_ASC    'm'
-#define T_MOVE_BIN    'M'
 #define T_MELODY      'o'
 #define T_PAUSE       'p'
 #define T_RAMP        'r'
 #define T_SAVE        's'
-#define T_SERVO_MICROSECOND 'S'
 #define T_TILT        't'
-#define T_TEMP        'T'           //call the last skill data received from the serial port
 #define T_MEOW        'u'
 //#define T_PRINT_GYRO            'v' //print Gyro data
 //#define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
@@ -204,6 +196,20 @@ byte pwm_pin[] = {12, 11, 4, 3,
 //#define T_ACCELERATE  '.'
 //#define T_DECELERATE  ','
 #define T_RANDOM_MIND 'z'
+
+#define T_COLOR       'C'
+#define T_INDEXED_SIMULTANEOUS_BIN 'I'
+#define T_INDEXED_SEQUENTIAL_BIN    'M'
+
+#define BINARY_COMMAND //disable the binary commands to save space for the simple random demo
+
+#ifdef BINARY_COMMAND
+#define T_BEEP_BIN    'B'
+#define T_SKILL_DATA  'K'
+#define T_LISTED_BIN  'L'
+#define T_SERVO_MICROSECOND 'S'
+#define T_TEMP        'T'           //call the last skill data received from the serial port
+#endif
 
 #define SERVO_FREQ 240
 
@@ -215,7 +221,7 @@ int8_t servoCalib[DOF] = {0, 0, 0, 0,
                           0, 0, 0, 0,
                           0, 0, 0, 0
                          };
-
+#ifndef MAIN_SKETCH
 enum ServoModel_t {
   G41 = 0,
   P1S
@@ -227,6 +233,7 @@ ServoModel_t servoModelList[] = {
   REGULAR, REGULAR, REGULAR, REGULAR,
   KNEE, KNEE, KNEE, KNEE
 };
+#endif
 
 int zeroPosition[DOF] = {};
 int calibratedZeroPosition[DOF] = {};
@@ -249,7 +256,7 @@ float currentAdjust[DOF] = {};
 //control related variables
 #define IDLE_TIME 15000
 long idleTimer;
-int randomInterval = 5000;
+int randomInterval = 1000;
 #define CHECK_BATTERY_PERIOD 10000  //every 10 seconds. 60 mins -> 3600 seconds
 int uptime = -1;
 int frame = 0;
@@ -267,9 +274,11 @@ int8_t yprTilt[3];
 int lastVoltage;
 bool servoOff = true;
 
+#ifdef RANDOM_MIND
+bool autoSwitch = true;
+#endif
 bool checkGyro = true;
 bool printGyro = false;
-bool autoSwitch = false;
 bool walkingQ = false;
 byte exceptions = 0;
 byte transformSpeed = 2;
@@ -334,8 +343,12 @@ template <typename T> void arrayNCPY(T * destination, const T * source, int len)
 #include <Adafruit_NeoPixel.h>
 Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #endif
-
+#ifdef RANDOM_MIND
+#define ALL_RANDOM // add random joint movements between the choice list of preset behaviors
 #include "randomMind.h"
+#undef BINARY_COMMAND
+#endif
+
 #ifdef VOICE
 #include "voice.h"
 #elif defined CAMERA
@@ -344,10 +357,6 @@ Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #include "ultrasonic.h"
 #else
 #define GYRO_PIN  0
-#endif
-
-#ifdef RANDOM_MIND
-#undef GYRO_PIN
 #endif
 
 #ifndef MAIN_SKETCH

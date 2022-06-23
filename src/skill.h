@@ -52,7 +52,7 @@ class Skill {
         } while ((--len > 0 ) && (eeAddress  % PAGE_LIMIT ) && (writtenToWire < WIRE_LIMIT));//be careful with the chained conditions
         //self-increment may not work as expected
         Wire.endTransmission();
-        delay(6);  // needs 5ms for page write
+        delay(10);  // needs 5ms for page write
         //PTL("\nwrote " + String(writtenToWire) + " bytes.");
       }
       //PTLF("finish copying to I2C EEPROM");
@@ -83,7 +83,7 @@ class Skill {
         } while ((--len > 0 ) && (eeAddress  % PAGE_LIMIT ) && (writtenToWire < WIRE_LIMIT));//be careful with the chained conditions
         //self-increment may not work as expected
         Wire.endTransmission();
-        delay(6);  // needs 5ms for page write
+        delay(10);  // needs 5ms for page write
         //PTL("\nwrote " + String(writtenToWire) + " bytes.");
       }
       //PTLF("finish copying to I2C EEPROM");
@@ -462,7 +462,7 @@ void writeConst() {
 #ifndef AUTO_INIT
     if (resetJointCalibrationQ == 'Y' || resetJointCalibrationQ == 'y') {
       EEPROM.update(CALIB + i, servoCalib[i]);
-      delay(5);
+      delay(10);
     }
 #endif
     EEPROM.update(PWM_PIN + i, pwm_pin[i]);

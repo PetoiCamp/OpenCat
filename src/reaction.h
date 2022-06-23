@@ -52,7 +52,11 @@ bool lowBattery() {
 
 void resetCmd() {
   //  PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
-  if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN && token != T_MOVE_BIN && token != T_SKILL_DATA) {
+  if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_INDEXED_SEQUENTIAL_BIN
+#ifdef BINARY_COMMAND
+      && token != T_LISTED_BIN && token != T_SKILL_DATA
+#endif
+     ) {
     delete [] lastCmd;
     lastCmd = new char(strlen(newCmd) + 1);
     strcpy(lastCmd, newCmd);
@@ -68,7 +72,11 @@ void reaction() {
   if (newCmdIdx) {
     //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
 #ifdef MAIN_SKETCH
-    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_TILT && token != T_COLOR)
+    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_TILT
+#ifdef BINARY_COMMAND
+        && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN  && token != T_COLOR
+#endif
+       )
       beep(10 + newCmdIdx * 2); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
       setServoP(P_SOFT);
@@ -87,7 +95,9 @@ void reaction() {
         //      case T_PRINT_GYRO:
         //      case T_VERBOSELY_PRINT_GYRO:
 #endif
+#ifdef RANDOM_MIND
       case T_RANDOM_MIND:
+#endif
 #ifdef T_RAMP
       case T_RAMP:
 #endif
@@ -110,15 +120,18 @@ void reaction() {
 #endif
           else
 #endif
+#ifdef RANDOM_MIND
             if (token == T_RANDOM_MIND) {
               autoSwitch = !autoSwitch;
               token = autoSwitch ? 'Z' : 'z';  //Z for active random mind
             }
+            else
+#endif
 #ifdef T_RAMP
-            else if (token == T_RAMP) {//reverse the adjustment direction
-              ramp = -ramp;
-              token = ramp > 0 ? 'R' : 'r';
-            }
+              if (token == T_RAMP) {//reverse the adjustment direction
+                ramp = -ramp;
+                token = ramp > 0 ? 'R' : 'r';
+              }
 #endif
           break;
         }
@@ -236,7 +249,7 @@ void reaction() {
         }
 
       // this block handles array like arguments
-      case T_MOVE_BIN:
+      case T_INDEXED_SEQUENTIAL_BIN:
       case T_INDEXED_SIMULTANEOUS_BIN: {//indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
           int targetFrame[DOF];
           //          for (int i = 0; i < DOF; i++) {
@@ -245,7 +258,7 @@ void reaction() {
           arrayNCPY(targetFrame, currentAng, DOF);
           for (int i = 0; i < cmdLen; i += 2) {
             targetFrame[dataBuffer[i]] = dataBuffer[i + 1];
-            if (token == T_MOVE_BIN) {
+            if (token == T_INDEXED_SEQUENTIAL_BIN) {
               transform(targetFrame, 1, 2);
               //              delay(10);
             }
@@ -254,6 +267,7 @@ void reaction() {
             transform(targetFrame, 1, transformSpeed);
           break;
         }
+#ifdef BINARY_COMMAND
       case T_LISTED_BIN: {//list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
           transform(dataBuffer, 1, transformSpeed); //need to add angleDataRatio if the angles are large
           break;
@@ -263,6 +277,7 @@ void reaction() {
             beep(dataBuffer[2 * b], 1000 / dataBuffer[2 * b + 1]);
           break;
         }
+#ifdef T_TEMP
       case T_TEMP: {//call the last skill data received from the serial port
           skill.loadDataFromI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF_RAND));
           skill.loadFrameByDataBuffer();
@@ -270,6 +285,7 @@ void reaction() {
           token = T_SKILL;
           break;
         }
+#endif
 #ifdef  T_SKILL_DATA
       case T_SKILL_DATA: {//takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
           unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + random() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF) - 500);
@@ -279,6 +295,7 @@ void reaction() {
           token = T_SKILL;
           break;
         }
+#endif
 #endif
       case T_SKILL: {
           if (strcmp(lastCmd, newCmd) //won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between

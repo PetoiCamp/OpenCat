@@ -72,6 +72,7 @@ void setup() {
 
   //----------------------------------
 #ifdef MAIN_SKETCH  // **
+  PTL('k');
 #ifdef GYRO_PIN
   imuSetup();
 #endif
@@ -90,9 +91,11 @@ void setup() {
 
   servoSetup();
   skill.assignSkillAddressToOnboardEeprom();
+#ifdef RANDOM_MIND
   for (byte i = 0; i < randomMindListLength; i++) {
     randomBase += choiceWeight[i];
   }
+#endif
   randomSeed(analogRead(A2));//use the fluctuation of voltage caused by servos as entropy pool
 
 #ifdef VOICE
@@ -126,7 +129,7 @@ void setup() {
   imuSetup();
 #endif
 #endif              // **
-  PTLF("Ready!\nk");
+  PTLF("Ready!");
 }
 
 void loop() {

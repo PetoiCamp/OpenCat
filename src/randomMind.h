@@ -16,30 +16,30 @@ const char mind16[] PROGMEM = "kwkR";
 
 const char* const mindList[] PROGMEM = {mind0, mind1, mind4, mind5, mind12, mind13,
 #ifdef BITTLE
-                                        mind6, mind7,
+                                        mind3, mind6, mind7,
 #endif
                                        };
 byte choiceWeight[] = {
-#ifdef RANDOM_MIND
-  50,
+#ifdef ALL_RANDOM
+  60,
 #else
   10,
 #endif
-  10, 1, 2, 4, 1,
+  10, 1, 2, 2, 1,
 #ifdef BITTLE
-  3, 1,
+  1, 3, 2,
 #endif
 };
 
 byte randomMindListLength = sizeof(mindList) / 2;
 int randomBase = 0;
 void allRandom() {
-  char tokenSet[] = {T_INDEXED_SIMULTANEOUS_BIN, T_MOVE_BIN};
-  int8_t jointSet[] = {0, 1, 2, 8, 9,  12, 13, 14, 15};
-  byte rangeSet[] = {90, 90, 180, 10, 10, 20, 20, 10, 10};
+  char tokenSet[] = {T_INDEXED_SIMULTANEOUS_BIN, T_INDEXED_SEQUENTIAL_BIN};
+  int8_t jointSet[] = {0, 1, 2,};// 8, 9,  12, 13, 14, 15};
+  byte rangeSet[] = {60, 60, 180,};// 10, 10, 20, 20, 10, 10};
 
   token = tokenSet[random() % 2];
-  cmdLen = random() % 4 + 2;
+  cmdLen =  sizeof(jointSet) ;//random() % 2 + 2;
   for (byte r = 0; r < cmdLen; r++) {
     byte j = random() % sizeof(jointSet);
     dataBuffer[r * 2] = jointSet[j];
@@ -60,7 +60,7 @@ void randomMind() {
       randomNum -= choiceWeight[randomChoice];
     }
     if (randomChoice == 0) {
-#ifdef RANDOM_MIND
+#ifdef ALL_RANDOM
       allRandom();
 #endif
     }
