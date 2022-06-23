@@ -178,8 +178,8 @@
 // ATmega48, ATmega88, ATmega168, ATmega328
 #elif defined(__AVR_ATmega328P__) || defined(__AVR_ATmega168__) // old default clause
 #  if !defined(IR_USE_TIMER1) && !defined(IR_USE_TIMER2)
-//#define IR_USE_TIMER1   // tx = pin 9
-#define IR_USE_TIMER2     // tx = pin 3
+#define IR_USE_TIMER1   // tx = pin 9
+//#define IR_USE_TIMER2     // tx = pin 3
 #  endif
 
 // Arduino Mega

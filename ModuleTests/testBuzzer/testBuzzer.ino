@@ -93,14 +93,40 @@ template <typename T> int8_t sign(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
-void meow( int startF = 1,  int endF = 25) {
+void meow( int startF = 1,  int endF = 25, int duration = 5) {
   int s = sign(endF - startF);
   float increment = 0.1 * s;
   for (float amp = startF; s * amp < s * endF; amp += increment) {
-    beep(amp, 5);
+    beep(amp, duration);
   }
 }
 
+
+// play tone on a piezo speaker: tone shorter values produce higher frequencies
+//  which is opposite beep() but avoids some math delay - similar to code by Erin Robotgrrl
+
+void playTone(uint16_t tone1, uint16_t duration) {
+  if (tone1 < 50 || tone1 > 15000) return; // these do not play on a piezo
+  for (long i = 0; i < duration * 1000L; i += tone1 * 2) {
+    digitalWrite(BUZZER, HIGH);
+    delayMicroseconds(tone1);
+    digitalWrite(BUZZER, LOW);
+    delayMicroseconds(tone1);
+  }
+}
+
+void chirp(int startF = 180,  int endF = 200, int duration = 10) {  // Bird chirp
+  for (uint8_t i = 180; i < 200; i++) {
+    playTone(i, duration);
+  }
+}
+
+void soundFallOver() {
+  for (byte m = 35; m >= 5; m -= 5) {
+    meow(m, m - 20, m / 5);
+    meow(m - 20, m - 5, m / 5);
+  }
+}
 void setup()
 {
   Serial.begin(115200);
@@ -112,6 +138,8 @@ void setup()
 int loopCounter = 0;
 void loop() {
   if (loopCounter == 0) {
+    for (int i = 0; i < 2; i++)
+      chirp();
     beep(1, 500, 500);
     beep(13, 500, 500);
     delay(500);

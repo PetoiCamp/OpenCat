@@ -1,17 +1,92 @@
 # Change Log
 
-## Mar 2, 2022
-* Add support for NyBoardV1\_1.
+## May 8, 2022
+* pyUI/ui.py: Add names to trigger axis
+* pyUI/ui.py: Optimize the layout for Windows machines
+* pyUI/ui.py: Add add hover tips to some buttons
 
-## Feb 16, 2022
-* Improve the successful rate of Nybble's roll recover behavior, the "rc" in InstinctNybble.h.
+## May 4, 2022
+* pyUI/ui.py: Import and export files
 
-## Feb 6, 2022
-* Add a 'v' token to print the MPU for once and a 'V' token to print the MPU for every loop. 
-* Fix a bug when reading IMU acceleration data.
+## May 2, 2022
+* pyUI/ui.py: Improve performance with large angles
+* pyUI/ui.py: Show connected ports
+* pyUI/ui.py: Improve logic and workflow for connecting multiple robots
+* pyUI/ui.py: Support connect to one or all robots dynamically
+* pyUI/ui.py: Improve global orientation and translation sliders
+* pyUI/ui.py: Change dial buttons from regular buttons to press-down buttons
 
-## Feb 5, 2022
-* Add T_PRINT_GYRO 'V' to toggle printing of Gyro data. 
+## Apr 30, 2022
+* pyUI/ui.py: Mirror single frame during editing
+* pyUI/ui.py: Fix bug in the loop structure when exporting 
+
+## Apr 29, 2022
+* pyUI/ui.py: Add binders (both positive and negative) for joint sliders to control several joints together.
+* pyUI/ui.py: Can control multiple robots at once. 
+* ardSerial: Get return value from threads.
+
+## Apr 24, 2022
+* pyUI/ui.py: Support loading and sending large angles
+* pyUI/ui.py: Optimize panel sizes
+
+## Apr 22, 2022
+* pyUI/ui.py: Support selecting different robot models. Update the center image for the model. 
+* pyUI/ui.py: Support different lanuguages.
+* pyUI/ui.py: Support importing and exporting a multi-frame skill as a behavior or gait. A single frame will always be exported as a posture.
+* pyUI/ui.py: Update the skill frame's state for delete operations.
+* pyUI/ui.py: Check the format of skill data that's manually entered. Pop up a warning window.  
+
+## Apr 20, 2022
+* pyUI/ui.py: Support trigger axis and angles for behaviors
+* pyUI/ui.py: Allow stop when playing frames
+* Add a button to connect and disconnect the robot in the "State Dials" block
+* Change the texts of the state dials to indicate their states
+
+## Apr 19, 2022
+* pyUI/ui.py: Support importing existing skill array and editing them frame by frame. Speed and delay are included. The trigger axis of behaviors has not been implemented.
+* pyUI/ui.py: Export the skill to the robot and print the skill data array in the terminal. 
+
+## Apr 6, 2022
+* Add ui.py in pyUI to allow changing the robot's postures and body tilts with sliders. 
+* Improve the structure of ardSerial.py to allow continuous inputs when it's used as a commandline tool. 
+* Fix a bug when a static posture is called after a gait by resetting the frame to 0.
+
+## Mar 29, 2022
+* Use dataBuffer to hold the incoming serial commands to allow a longer melody and other instructions. newCmd will only be used to hold skill names that are shorter. 
+* Save the serial skill data from the dataBuffer to I2C EEPROM so that it can be recalled. 
+
+## Mar 20, 2022
+* A schedulerToSkill function in serialMaster to summerize the motion commands and generate a new skill array that can be directly used in the instinct.h.
+* Design a convenient macro switch for regular walker, ultrasonic, and voice modes. 
+```cpp
+//you can activate the following modes (they will diable the gyro to save programming space)
+//allowed combinations: RANDOM_MIND, ULTRASONIC, RANDOM_MIND + ULTRASONIC, VOICE
+//#define RANDOM_MIND     //let the robot do random stuffs. use token 'z' to activate/deactivate
+//#define ULTRASONIC      //for Nybble's ultrasonic sensor
+//#define VOICE           //for LD3320 module
+```
+
+## Mar 17, 2022
+### OpenCat2.0 is pushed to the branch 2.0 for beta testers.
+### New Features:
+* **Complete redesign of the code structure to make it easier to understand and insert 3rd party codes.**
+* **Combine WriteInstinct.ino and OpenCat.ino into a single OpenCat.ino.** Use the ```#define MAIN_SKETCH``` macro to switch between the modes. 
+* Fixed many bugs in the original workflow. For example, the robot no longer skips commands randomly.
+* Improved the smoothness of motion and the speed of balance adaption. 
+* A better documented serialMaster Python module and provide a command scheduler in example.py. 
+* **Designd a new token "K"** to send a whole skill array from the Python serial master through serial in realtime then run it locally on the robot.
+* Optimized the token definitions. Print the token after finishing one task as a confirmation to the master program. 
+* Used a new MPU6050 function to avoid using the interrupt pin. **Accelerate the IMU calibration process.** 
+* Enter the joint calibration state by booting up the robot with one side up. 
+* Write a formalized servo class inherited from the AdafruitPWM servo library. Make it easier to change parameters of 3rd party servos.
+* **Use the built-in tone function to generate clean beeps and melody.**
+* Add random actions for the robot to make it more life-like. Use token ‘z’ to turn on/off the feature. 
+* Add angle limits to avoid most cases of of self-collision.
+* Put the skill-related functions into the Skill Class. Combine reused code blocks into single functions.
+* Make more use of the EEPROM and PRGMEM memory to save resources for flash and SRAM.
+* Mirror rightward gaits from the leftward gaits, to save static memory. 
+* Allow both “newline” and “no line ending” for the serial monitor.
+* Add support for LD3320 voice recognition module (the current code works for Chinese).
 
 ## Jan 30, 2022
 * Fix type conversion warnings of skill data.
