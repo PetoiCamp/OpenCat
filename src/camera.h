@@ -117,7 +117,7 @@ void read_camera() {
       cmdLen = DOF;
       token = T_LISTED_BIN;
       for (byte i = 0; i < cmdLen; i++)
-        dataBuffer[i] = (int8_t)min(max(allParameter[i], -128), 127);
+        dataBuffer[i] = (int8_t)min(max(allParameter[i], -125), 125);
       dataBuffer[cmdLen] = '\0';
       transformSpeed = 16;
       newCmdIdx = 6;
