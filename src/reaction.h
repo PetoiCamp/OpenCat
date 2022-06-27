@@ -349,7 +349,7 @@ void reaction() {
 #ifdef MAIN_SKETCH
   if (token == T_SKILL) {
     skill.perform();
-#if defined NyBoard_V0_1 || defined NyBoard_V0_2
+#if defined NyBoard_V0_1 || defined NyBoard_V0_2 || !defined GYRO_PIN
     delayMicroseconds(850); //Slow the robot down to smooth out motion; adjust delay PRN
 #endif
   }
