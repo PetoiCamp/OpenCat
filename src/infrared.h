@@ -45,8 +45,8 @@ decode_results results;
 #define K61 "rt"      //
 #endif
 
-#define K62 "z"  //turn on/off the random behaviors
-//#define K62 "zero" //call your customized Newbility saved to PROGMEM
+//#define K62 "z"  //turn on/off the random behaviors
+#define K62 "zero" //call your customized Newbility saved to PROGMEM
 //#define K62 "T"    //call the last skill data received from the serial port
 
 #define SHORT_ENCODING // activating this line will use a shorter encoding of the HEX values
@@ -143,7 +143,7 @@ String irParser(String raw) {
   }
   if (raw == "F" || raw == "L" || raw == "R") {
     direct = raw[0];
-    if (direct == 'F') {
+    if (direct == 'F' && gait == "bk") {
       //      if (gait == "bk")
       //        gait = "vt";
       //      else if (gait == "vt")
@@ -151,7 +151,7 @@ String irParser(String raw) {
     }
     return gait + direct;
   }
-  else if (raw == "cr" || raw == "wk" || raw == "tr") {
+  else if (raw == "vt" || raw == "cr" || raw == "wk" || raw == "tr") {
     gait = raw;
     return gait + direct;
   }

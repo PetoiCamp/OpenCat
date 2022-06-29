@@ -459,7 +459,7 @@ def testPort(goodPorts, serialObject, p):
     global goodPortCount
     #    global sync
     try:
-        time.sleep(2)
+        time.sleep(3)
         result = serialObject.main_engine.read_all().decode('ISO-8859-1')
         if result != '':
             print('Waiting for the robot to booting up')
@@ -486,7 +486,7 @@ def checkPortList(goodPorts, allPorts):
     for p in reversed(allPorts):  # assuming the last one is the most possible port
         # if p == '/dev/ttyAMA0':
         #     continue
-        serialObject = Communication(p, 115200, 0.5)
+        serialObject = Communication(p, 115200, 1)
         t = threading.Thread(target=testPort,
                              args=(goodPorts, serialObject, p.split('/')[-1]))  # remove '/dev/' in the port name
         threads.append(t)
