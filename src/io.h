@@ -21,6 +21,7 @@ int readSerialUntil(char * destination, char terminator) {
 
 void read_serial() {
   if (Serial.available() > 0) {
+    serialConnectedQ = true;
     newCmdIdx = 2;
     token = Serial.read();
     delay(1); //leave enough time for serial read
@@ -59,7 +60,8 @@ void read_serial() {
 
 void readSignal() {
 #if defined IR_PIN
-  read_infrared();//  newCmdIdx = 1
+  if (!serialConnectedQ)//serial connection will disable infrared receiver
+    read_infrared();//  newCmdIdx = 1
 #endif
   read_serial();  //  newCmdIdx = 2
   long current = millis();
@@ -67,6 +69,7 @@ void readSignal() {
     idleTimer = millis() + IDLE_TIME;
   }
   else if (token != T_CALIBRATE && current - idleTimer > 0) {
+    serialConnectedQ = false;
 #ifdef VOICE
     read_voice();
 #endif
@@ -74,7 +77,7 @@ void readSignal() {
     read_camera();
 #endif
 #ifdef ULTRASONIC
-    read_ultrasonic();
+    //    read_ultrasonic();
 #endif
 #ifdef RANDOM_MIND
     if (autoSwitch && newCmdIdx == 0)
