@@ -151,7 +151,8 @@ String irParser(String raw) {
     }
     return gait + direct;
   }
-  else if (raw == "cr" || raw == "wk" || raw == "tr") {
+
+  else if (raw == "vt" || raw == "cr" || raw == "wk" || raw == "tr" || raw == "ph") {
     gait = raw;
     return gait + direct;
   }

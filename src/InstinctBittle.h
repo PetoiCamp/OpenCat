@@ -1,5 +1,6 @@
 #define BITTLE
-//number of skills: 35
+
+//number of skills: 38
 
 const int8_t bdF[] PROGMEM = { 
 15, 0, 0, 1,
@@ -230,6 +231,50 @@ const int8_t pcF[] PROGMEM = {
   22,  74,  31,  70,  15,  25,  11,  41,
   32,  87,  40,  87,  10,  -7,   9,   3,
   41,  66,  47,  74,   9, -25,   9, -22,
+};
+const int8_t phF[] PROGMEM = { 
+22, 0, 15, 1,
+ -44, -46,  45,  53,  11,   9,   9,  -5,
+ -44, -46,  48,  44,  11,   9,  12,  -8,
+ -44, -46,  49,  32,  11,   9,  15,  -6,
+ -44, -47,  52,  22,  11,  11,  19,  -2,
+ -44, -46,  52,  18,  11,  13,  24,   7,
+ -44, -44,  52,  20,  11,  11,  32,   9,
+ -42, -44,  52,  26,   7,  11,  37,   6,
+ -43, -44,  58,  31,   5,  11,  32,   5,
+ -44, -44,  64,  35,   7,  11,  20,   5,
+ -44, -44,  63,  40,   7,  11,   7,   5,
+ -44, -44,  58,  43,   7,  11,  -2,   7,
+ -46, -44,  51,  47,   9,  11,  -7,   9,
+ -46, -44,  40,  49,   9,  11,  -8,  12,
+ -46, -44,  28,  51,   9,  11,  -6,  16,
+ -47, -44,  19,  52,  12,  11,   1,  20,
+ -45, -44,  18,  53,  11,  11,   8,  27,
+ -44, -43,  21,  51,  11,   9,   9,  37,
+ -44, -43,  27,  54,  11,   7,   7,  38,
+ -44, -44,  32,  61,  11,   7,   6,  27,
+ -44, -44,  36,  64,  11,   7,   6,  13,
+ -44, -44,  41,  61,  11,   7,   7,   2,
+ -44, -44,  44,  55,  11,   7,   9,  -5,
+};
+const int8_t phL[] PROGMEM = { 
+16, 5, 15, 1,
+ -45, -45,  53,  43,   9,  11,  -5,   3,
+ -45, -45,  40,  45,   9,  11,  -8,   3,
+ -45, -43,  23,  47,   9,   7,  -3,   3,
+ -45, -44,  18,  48,   9,   7,   7,   5,
+ -45, -44,  21,  49,   9,   7,   9,   6,
+ -45, -44,  29,  52,   9,   7,   6,   6,
+ -45, -44,  35,  54,   9,   7,   5,   2,
+ -45, -44,  41,  51,   9,   7,   7,  -2,
+ -45, -46,  45,  47,   9,  11,   9,  -2,
+ -45, -45,  49,  43,   9,  11,  12,  -3,
+ -45, -45,  51,  38,   9,  11,  19,  -3,
+ -45, -45,  52,  35,   9,  11,  26,   0,
+ -45, -45,  51,  36,   9,  11,  37,   1,
+ -45, -45,  57,  39,   9,  11,  35,   1,
+ -45, -45,  64,  40,   9,  11,  18,   2,
+ -45, -45,  61,  42,   9,  11,   2,   1,
 };
 const int8_t trF[] PROGMEM = { 
 21, 0, 0, 1,
@@ -592,15 +637,25 @@ const int8_t stp[] PROGMEM = {
     0,   0,   0,   0,   0,   0,   0,   0,  65, -10,  70,  60,  45,  30, -45, -45,	 8, 0, 0, 0,
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,	 8, 0, 0, 0,
 };
-  const char* skillNameWithType[]={"bdFI","bkI","bkLI","crFI","crLI","mhFI","mhLI","pcFI","trFI","trLI","vtI","wkFI","wkLI","wkSI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","bfI","ckI","climbCeilI","fdI","hiI","jyI","pdI","peeI","puI","rcI","rtI","stpI",};
+
+const int8_t testServo[] PROGMEM = { 
+-2, 0, 0, 1,
+ 0, 0, 0, 
+    0,   0,   0,   0,  15,  15,  15,  15,  30,  30,  30,  30,  30,  30,  30,  30,	 4, 0, 0, 0,
+  -30, -80, -45,  30, -15, -15, -15, -15,  75,  75,  75,  75, -55, -55, -55, -55,	 4, 0, 0, 0,
+};
+  const char* skillNameWithType[]={"bdFI","bkI","bkLI","crFI","crLI","mhFI","mhLI","pcFI","phFI","phLI","trFI","trLI","vtFI","vtLI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","bfI","ckI","climbCeilI","fdI","hiI","jyI","pdI","peeI","puI","rcI","rtI","stpI","testServoI",};
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
-  const int8_t* progmemPointer[] = {bdF, bk, bkL, crF, crL, mhF, mhL, pcF, trF, trL, vt, wkF, wkL, wkS, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, climbCeil, fd, hi, jy, pd, pee, pu, rc, rt, stp, };
+  const int8_t* progmemPointer[] = {bdF, bk, bkL, crF, crL, mhF, mhL, pcF, phF, phL, trF, trL, vtF, vtL, wkF, wkL, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, climbCeil, fd, hi, jy, pd, pee, pu, rc, rt, stp, testServo, };
+
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses
   const int8_t* progmemPointer[] = {zero, };
 #endif
-//the total byte of instincts is 5296
-//the maximal array size is 429 bytes of wkF. 
+
+//the total byte of instincts is 5735
+//the maximal array size is 317 bytes of wkF. 
+
 //Make sure to leave enough memory for SRAM to work properly. Any single skill should be smaller than 400 bytes for safety.
