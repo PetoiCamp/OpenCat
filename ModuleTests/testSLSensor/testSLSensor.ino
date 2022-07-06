@@ -56,6 +56,10 @@ bool sensorConnectedQ(int n) {
     a = analogRead(A2);
     b = analogRead(A3);
     mean = mean + ((a - b) * (a - b) - mean) / (i + 1);
+        Serial.print(0);
+        Serial.print('\t');
+        Serial.print(1024);
+        Serial.print('\t');
         Serial.print(a);
         Serial.print('\t');
         Serial.print(b);
