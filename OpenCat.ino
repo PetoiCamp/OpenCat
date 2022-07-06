@@ -55,7 +55,17 @@
 //#define RANDOM_MIND     //advanced random behaviors. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
-//#define CAMERA          //for Mu Vision camera
+//#define CAMERA          //for BallTracking using Mu Vision camera 
+//You need to install https://github.com/mu-opensource/MuVisionSensor3 as a zip library in Arduino IDE.
+//Set the four dial switches on the camera as **v ^ v v** (the second switch dialed up to I2C) and connect the camera module to the I2C grove on NyBoard.
+//The battery should be turned on to drive the servos. 
+//
+//You can use these 3D printed structures to attach the camera module.  
+//https://github.com/PetoiCamp/NonCodeFiles/blob/master/stl/MuIntelligentCamera_mount.stl
+//https://github.com/PetoiCamp/NonCodeFiles/blob/master/stl/bone.stl
+//After uploading the code, you may need to press the reset buttons on the module and then the NyBoard.
+//The tracking demo works the best with a yellow tennis ball or some other round objects. Demo: https://www.youtube.com/watch?v=CxGI-MzCGWM
+
 
 #include "src/OpenCat.h"
 
