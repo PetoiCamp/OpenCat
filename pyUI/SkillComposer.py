@@ -930,21 +930,24 @@ class SkillComposer:
         colors = list(colorTuple[0])
         for c in range(3):
             colors[c] //= 2
+#        printH('RGB: ',colors)
         if self.colorBinderValue.get():
             self.activeEye = 0
             self.eyeColors[0]=colors
             for c in range(2):
                 self.canvasFace.itemconfig(self.eyes[c], fill=colorTuple[1])
                 self.eyeColors[c+1] = colors
+                self.eyeBtn[c].config(text = str(colors))
             send(ports, ['C', colors+[0,-1], 0])
         else:
             self.activeEye = i+1
             self.canvasFace.itemconfig(self.eyes[i], fill=colorTuple[1])
             self.eyeColors[i+1] = colors
+            self.eyeBtn[i].config(text = str(colors))
             send(ports, ['C', colors+[i+1,-1], 0])
 
     def changeEffect(self,e):
-        print(self.eyeColors[self.activeEye])
+#        print(self.eyeColors[self.activeEye])
         send(ports, ['C', self.eyeColors[self.activeEye]+[self.activeEye, e], 0])
         
     def popEyeColor(self):
@@ -964,8 +967,8 @@ class SkillComposer:
             }
         dia = 100
         crd = [10,10]
-        gap = 35
-        btShift = [70,25]
+        gap = 40
+        btShift = [100,25]
         width = dia*2 + gap + 2*crd[0]
         self.eyeColors = [[0,0,0],[0,0,0],[0,0,0]]
         self.activeEye = 0
@@ -981,19 +984,21 @@ class SkillComposer:
         eyeL = self.canvasFace.create_oval(crd[0]+dia+gap, crd[1], crd[0]+2*dia+gap, crd[1]+dia, outline="#000",
                     fill="#606060", width=2)
         self.eyes = [eyeR,eyeL]
-        btR = Button(face,text='Color',command=lambda:self.changeColor(0))
+        btR = Button(face,text=str(self.eyeColors[1]),width = 7, command=lambda:self.changeColor(0))
         btR.place(x=crd[0]+dia/2-btShift[0]/2,y=crd[1]+dia/2-btShift[1]/2)
-        btL = Button(face,text='Color',command=lambda:self.changeColor(1))
+        btL = Button(face,text=str(self.eyeColors[2]),width = 7, command=lambda:self.changeColor(1))
         btL.place(x=crd[0]+dia*3/2+gap-btShift[0]/2,y=crd[0]+dia/2-btShift[1]/2)
+        self.eyeBtn = [btR,btL]
         self.colorBinderValue = BooleanVar()
-        colorBinder = Checkbutton(face, text='<>', indicator=0, width=2,
+        colorBinder = Checkbutton(face, text='<>', indicator=0, width=3,
                                          variable=self.colorBinderValue,onvalue=True, offvalue=False)
         colorBinder.place(x=crd[0]+dia+5,y=crd[1]+dia/2-btShift[1]/2)
         
         btnsEff = Frame(face)
-        btnsEff.grid(row = 1,column = 0,ipadx = 15)
+        btnsEff.grid(row = 1,column = 0)
         for e in range(len(effectDictionary)):
-            Button(btnsEff,text=list(effectDictionary.keys())[e],width = 4,command = lambda eff=list(effectDictionary.values())[e]:self.changeEffect(eff)).grid(row = 0,column = e)
+            Button(btnsEff,text=txt(list(effectDictionary.keys())[e]),width = 3,command = lambda eff=list(effectDictionary.values())[e]:self.changeEffect(eff)).grid(row = 0,column = e)
+        Button(btnsEff,text=txt('Meow'),width = 3,command = lambda :send(ports, ['u', 0])).grid(row = 0,column = 3)
 
 
     def playThread(self):

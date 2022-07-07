@@ -25,25 +25,28 @@ class Calibrator:
         if self.OSname == 'win32':
             self.calibButtonW = 8
         else:
-            self.calibButtonW = 6
+            self.calibButtonW = 4
         self.frameCalibButtons = Frame(self.winCalib)
         self.frameCalibButtons.grid(row=0, column=3, rowspan=13)
-        calibButton = Button(self.frameCalibButtons, text=txt('Calibration'), fg = 'blue', width=self.calibButtonW,command=lambda cmd='c': self.calibFun(cmd))
+        calibButton = Button(self.frameCalibButtons, text=txt('Calibrate'), fg = 'blue', width=self.calibButtonW,command=lambda cmd='c': self.calibFun(cmd))
         standButton = Button(self.frameCalibButtons, text=txt('Stand Up'), fg = 'blue', width=self.calibButtonW, command=lambda cmd='balance': self.calibFun(cmd))
         restButton = Button(self.frameCalibButtons, text=txt('Rest'),fg = 'blue', width=self.calibButtonW, command=lambda cmd='d': self.calibFun(cmd))
+        walkButton = Button(self.frameCalibButtons, text=txt('Walk'),fg = 'blue', width=self.calibButtonW, command=lambda cmd='walk': self.calibFun(cmd))
         saveButton = Button(self.frameCalibButtons, text=txt('Save'),fg = 'blue', width=self.calibButtonW, command=lambda: send(ports, ['s', 0]))
         abortButton = Button(self.frameCalibButtons, text=txt('Abort'),fg = 'blue', width=self.calibButtonW, command=lambda: send(ports, ['a', 0]))
-        quitButton = Button(self.frameCalibButtons, text=txt('Quit'),fg = 'blue', width=self.calibButtonW, command=self.closeCalib)
+#        quitButton = Button(self.frameCalibButtons, text=txt('Quit'),fg = 'blue', width=self.calibButtonW, command=self.closeCalib)
         calibButton.grid(row=6, column=0)
-        standButton.grid(row=6, column=1)
-        restButton.grid(row=6, column=2)
-        saveButton.grid(row=11, column=0)
-        abortButton.grid(row=11, column=1)
-        quitButton.grid(row=11, column=2)
+        restButton.grid(row=6, column=1)
+        standButton.grid(row=6, column=2)
+        walkButton.grid(row=11, column=0)
+        saveButton.grid(row=11, column=1)
+        abortButton.grid(row=11, column=2)
+#        quitButton.grid(row=11, column=2)
 
         imageW = 250
         self.imgWiring = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Wire.jpeg', imageW)
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
+        Hovertip(self.imgWiring, txt('tipImgWiring'))
         self.imgPosture = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Ruler.jpeg', imageW)
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
 
@@ -134,7 +137,11 @@ class Calibrator:
         elif cmd == 'balance':
             self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Stand.jpeg', imageW)
             send(ports, ['kbalance', 0])
+        elif cmd == 'walk':
+            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Walk.jpeg', imageW)
+            send(ports, ['kwkF', 0])
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
+        Hovertip(self.imgPosture, txt('tipImgPosture'))
         self.winCalib.update()
 
     def setCalib(self, idx, value):

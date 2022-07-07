@@ -235,7 +235,9 @@ void reaction() {
               yprTilt[target[0]] = target[1];
             }
             else if (token == T_MEOW) {
-              meow(random() % 2 + 1, (random() % 4 + 2) * 10);
+
+              meow(random() % 3 + 1, (random() % 4 + 2) * 5);
+
             }
             else if (token == T_BEEP) {
               beep(target[0], target[1], 50);
@@ -349,7 +351,8 @@ void reaction() {
 #ifdef MAIN_SKETCH
   if (token == T_SKILL) {
     skill.perform();
-#if defined NyBoard_V0_1 || defined NyBoard_V0_2
+
+#if defined NyBoard_V0_1 || defined NyBoard_V0_2 || !defined GYRO_PIN
     delayMicroseconds(850); //Slow the robot down to smooth out motion; adjust delay PRN
 #endif
   }

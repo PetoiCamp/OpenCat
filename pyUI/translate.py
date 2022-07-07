@@ -80,9 +80,10 @@ textEN = {
     'Clear':'Clear',
     'max':'max',
     
-    'Calibration':'Calibration',
-    'Stand Up':'Stand Up',
+    'Calibrate':'Calibrate',
     'Rest':'Rest',
+    'Stand Up':'Stand Up',
+    'Walk':'Walk',
     'Abort':'Abort',
     'Do you want to save the offsets?':'Do you want to save the offsets?',
     'uploaderTitle': 'Flash uploader',
@@ -134,7 +135,6 @@ textEN = {
     'calibrating IMU': 'Calibrating IMU...',
     'IMU calibrated': 'Calibrate IMU complete!',
     
-    
     'parameterFinish': '''Parameters initialized!
      The next step is uploading the Main Function!''',
     'msgFinish': 'Firmware upload complete!',
@@ -147,6 +147,11 @@ textEN = {
     'Voice':'Voice',
     'Camera':'Camera',
     'RandomMind_Ultrasonic':'RandomMind_Ultrasonic',
+    
+    'Breath':'Breath',
+    'Rotate':'Rotate',
+    'Flash':'Flash',
+    'Meow':'Meow',
 
     '':'',
     'tipConnect':'Keep updating the active serial\nports until it\'s disabled',
@@ -174,9 +179,8 @@ textEN = {
     'tipAdd':'Copy the active frame and\ninsert it to the next row',
     'tipDel':'Delete the current frame',
     
-
-    
-
+    'tipImgWiring':'Pay attention to the location and direction of the servo plugs\nLong-press the battery\'s button to turn on the power\nClick \"Calibrate\" to rotate all the servos to the calibration state\nAttach the legs and head perpendicularly\nUse the slider to align the edges of the legs and the reference ruler parallelly',
+    'tipImgPosture':'Switch between postures to test the calibration results\nSave the offsets in time\nNo need for calibration in the future',
 }
 textCN = {
     'lan':'Chinese',
@@ -260,9 +264,10 @@ textCN = {
     'Behavior':'   行为',
     'Clear':'清空',
     'max':'最快',
-    'Calibration':'校准位',
-    'Stand Up':'站立',
+    'Calibrate':'校准位',
     'Rest':'休息',
+    'Stand Up':'站立',
+    'Walk':'行走',
     'Abort':'放弃',
     'Do you want to save the offsets?':'要保存校准值吗？',
 
@@ -324,6 +329,11 @@ textCN = {
     'Parameters':'参数',
     'Main function':'主程序',
     
+    'Breath':'渐变',
+    'Rotate':'旋转',
+    'Flash':'闪烁',
+    'Meow':'喵！',
+    
     'tipConnect':'持续更新活跃串口列表直到被挂起',
     'tipPortMenu':'控制单个或所有设备',
     'tipServo':'启用或禁用舵机',
@@ -348,6 +358,8 @@ textCN = {
     'tipNote':'给当前帧起一个便于记忆的名字',
     'tipAdd':'复制当前帧并插入到下一行',
     'tipDel':'删除当前帧',
+    'tipImgWiring':'接舵机线时注意插头的位置和正反\n长按电池按钮通电\n点击“校准“使所有舵机旋转到校准位\n按垂直关系安装四肢和头\n控制滑条使大小腿边缘与校准尺平行',
+    'tipImgPosture':'在各姿势间切换，检查校准效果\n及时保存修正值\n后续使用无需再校准',
 }
 
 textFR={
