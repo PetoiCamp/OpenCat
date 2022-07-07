@@ -77,7 +77,7 @@ void readSignal() {
     read_camera();
 #endif
 #ifdef ULTRASONIC
-    //    read_ultrasonic();
+    read_ultrasonic();
 #endif
 #ifdef RANDOM_MIND
     if (autoSwitch && newCmdIdx == 0)
