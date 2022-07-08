@@ -486,7 +486,9 @@ def checkPortList(goodPorts, allPorts):
     for p in reversed(allPorts):  # assuming the last one is the most possible port
         # if p == '/dev/ttyAMA0':
         #     continue
+
         serialObject = Communication(p, 115200, 1)
+
         t = threading.Thread(target=testPort,
                              args=(goodPorts, serialObject, p.split('/')[-1]))  # remove '/dev/' in the port name
         threads.append(t)
