@@ -50,7 +50,7 @@
 #define NyBoard_V1_1
 //#define NyBoard_V1_2
 
-//you can also activate the following modes (they will diable the gyro to save programming space)
+//you can also activate the following modes (they will disable the gyro to save programming space)
 //allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
 //#define RANDOM_MIND     //advanced random behaviors. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
@@ -75,7 +75,8 @@ void setup() {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
-  TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz)
+//  TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz)
+  Wire.setClock(500000L);
   //#elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   //  Fastwire::setup(400, true);
   //#endif
