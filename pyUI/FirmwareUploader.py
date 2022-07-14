@@ -13,6 +13,7 @@ import logging
 from subprocess import call
 from tkinter import ttk
 from tkinter import filedialog
+import pathlib
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
@@ -286,8 +287,8 @@ class Uploader:
     def formalize(self, strdir=' '):
         sep = "/"
         listDir = strdir.split("/")
-        print("listDir:" + str(listDir))
-        if (listDir[-1] == "FlashUploader"):
+#        print("listDir:" + str(listDir))
+        if (strdir == str(pathlib.Path().resolve())):
             strdir = sep.join(listDir) + '/release'
         else:
             if (listDir[-1].find("release") == -1) and len(listDir) >= 2:

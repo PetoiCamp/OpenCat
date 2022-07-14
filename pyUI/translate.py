@@ -85,7 +85,7 @@ textEN = {
     'Rest':'Rest',
     'Abort':'Abort',
     'Do you want to save the offsets?':'Do you want to save the offsets?',
-    'uploaderTitle': 'Flash uploader',
+    'uploaderTitle': 'Firmware Uploader',
     'labTrans': 'Change Language',
     'labChi': 'Chinese',
     'labEng': 'English',
@@ -115,7 +115,7 @@ textEN = {
     'msgPort': 'Please choose the correct serial port!',
     'titleVersion': 'Version information',
     'msgVersion': '''Version: 1.0.0
-    Flash upload tool for OpenCat
+    Firmware upload tool for OpenCat
     Copyright © 2018-2022
     All rights reserved
     Petoi LLC
