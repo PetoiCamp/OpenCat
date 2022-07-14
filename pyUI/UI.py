@@ -6,7 +6,7 @@
 # May.22nd, 2022
 
 
-from FlashUploader import *
+from FirmwareUploader import *
 from SkillComposer import *
 from Calibrator import *
 from commonVar import *
