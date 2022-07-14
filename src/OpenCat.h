@@ -160,10 +160,11 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define ANGLE2PULSE_FACTOR  160       // 16*2 = 32  160+32 = 192
 #define ANGLE_LIMIT         192       // 16*2*2 = 64   192+64 = 256
 #define MPUCALIB            256       // 9 int byte array 9x2 =18  256+18=274
-#define B_OFFSET            274
-#define NUM_SKILLS          275
-#define SERIAL_BUFF         276
-#define SERIAL_BUFF_RAND    278
+#define B_OFFSET            274       // 1 bytes
+#define PCA9685_FREQ        275       // 2 bytes
+#define NUM_SKILLS          277       // 1 bytes
+#define SERIAL_BUFF         278       // 2 bytes
+#define SERIAL_BUFF_RAND    280       // 2 bytes
 #define SKILLS              320       // 1 byte for skill name length, followed by the char array for skill name
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
@@ -210,8 +211,6 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define T_SERVO_MICROSECOND 'S'
 #define T_TEMP        'T'           //call the last skill data received from the serial port
 #endif
-
-#define SERVO_FREQ 240
 
 float degPerRad = 180.0 / M_PI;
 float radPerDeg = M_PI / 180.0;
