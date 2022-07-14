@@ -96,8 +96,8 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
 #endif
 #ifdef NEOPIXEL_PIN
-  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
-  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+//  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
+//  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
 #endif
 
   servoSetup();

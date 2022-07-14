@@ -343,7 +343,7 @@ template <typename T> void arrayNCPY(T * destination, const T * source, int len)
 
 #ifdef NEOPIXEL_PIN
 #include <Adafruit_NeoPixel.h>
-Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+//Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #endif
 #ifdef RANDOM_MIND
 #define ALL_RANDOM // add random joint movements between the choice list of preset behaviors
