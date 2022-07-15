@@ -281,7 +281,8 @@ void imuSetup() {
     // set our DMP Ready flag so the main loop() function knows it's okay to use it
     //    PTLF("DMP ready!");
     dmpReady = true;
-
+    read_IMU();
+    PT(ypr[1]);PT('\t');PTL(ypr[2]);//keep them for the tilt-calibration logic
     // get expected DMP packet size for later comparison
     packetSize = mpu.dmpGetFIFOPacketSize();
   } else {

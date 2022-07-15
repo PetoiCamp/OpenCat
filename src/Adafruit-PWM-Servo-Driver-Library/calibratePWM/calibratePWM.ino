@@ -32,8 +32,11 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 #define SERVO_FREQ    240 // Analog servos run at ~50 Hz updates
 #define PCA9685_FREQ   275 // 2 bytes
+#define PTL(s) Serial.println(s)
 #define PTLF(s) Serial.println(F(s))
-int initValue;
+long initValue;
+int target;
+int pwmReadPin = A2;
 
 void EEPROMWriteInt(int p_address, int p_value)
 {
@@ -51,39 +54,78 @@ int EEPROMReadInt(int p_address)
   byte highByte = EEPROM.read(p_address + 1);
   return ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
 }
-void sendPCA9685CalibrationSignal() {
-  PTLF("Enter any character to calibrate the PCA9685.\n");
-  while (!Serial.available());
-  while (Serial.available() && Serial.read());
-  PTLF("Attach an oscilloscope to one of the PWM signal pins and GND.");
-  PTLF("Enter the actual PWM's pulse-width until it becomes 1500 microseconds.");
-  PTLF("(1200~1800):");
+void PCA9685CalibrationPrompt() {
+  PTLF("\n* PCA9685 Internal Oscillator Frequency Calibrator *\n");
+  PTLF("Command list:\n");
+  PTLF("s - Send a PWM signal in microseconds (us) to all the 16 pins");
+  PTLF("    e.g. s1500\n");
+  PTLF("o - Use an oscilloscope to calibrate PCA9685's internal oscillator");
+  PTLF("    1. Attach the oscilloscope between one of the PWM signal pins and GND");
+  PTLF("    2. Enter the actual PWM's pulse width reading until it matches the target signal");
+  PTLF("    e.g. o1440\n");
+  PTLF("a - Automatically calibrate PCA9685's internal oscillator");
+  PTLF("    1. Connect Uno's A2 with one of the PWM pins");
+  PTLF("    2. Enter 'a'\n");
+  target = 1500;
   for (byte i = 0; i < 16; i++) {
-    pwm.writeMicroseconds(i, 1500);
+    pwm.writeMicroseconds(i, target);
   }
+}
+
+int measureWidth() {
+  long t1;
+  while (!digitalRead(pwmReadPin));
+  t1 = micros();
+  while (digitalRead(pwmReadPin));
+  return (micros() - t1);
 }
 void calibratePCA9685() {
   if (Serial.available()) {
-    int actualPulseWidth = Serial.parseInt();
-    Serial.println(actualPulseWidth);
-    int actualFreq = round(initValue / (actualPulseWidth / 1500.0));
-    EEPROMWriteInt(PCA9685_FREQ, actualFreq);
-    Serial.println("The PCA9685 has been calibrated as " + String(actualFreq) + " kHz!\n");
-    pwm.setOscillatorFrequency(long(actualFreq) * 1000);
-    pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
-    delay(10);
-    for (byte i = 0; i < 16; i++) {
-      pwm.writeMicroseconds(i, 1500);
+    char calibrateToken = Serial.read();
+    if (calibrateToken == 's') {
+      target = Serial.parseInt();
+      for (byte i = 0; i < 16; i++) {
+        pwm.writeMicroseconds(i, target);
+      }
+      PTL("Sent " + String(target) + " us\n");
     }
-    initValue = actualFreq;
+    else {
+      int actualPulseWidth;
+      if (calibrateToken == 'a') {
+        actualPulseWidth = 0;
+        for (int i = 0; i < 11; i++) {
+          int temp = measureWidth();
+          if (i > 0)
+            actualPulseWidth += temp;
+        }
+        actualPulseWidth /= 10;
+        Serial.print("Auto read by input pin: ");
+      }
+      else if (calibrateToken == 'o') {
+        actualPulseWidth = Serial.parseInt();
+        Serial.print("Measured by the oscillator: ");
+      }
+      Serial.println(String(actualPulseWidth) + " us");
+      long actualFreq = round(initValue * target / actualPulseWidth);
+      EEPROMWriteInt(PCA9685_FREQ, actualFreq);
+      Serial.println("The PCA9685 has been calibrated as " + String(actualFreq) + " kHz!\n");
+      pwm.setOscillatorFrequency(actualFreq * 1000);
+      pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
+      delay(10);
+      for (byte i = 0; i < 16; i++) {
+        pwm.writeMicroseconds(i, target);
+      }
+      initValue = actualFreq;
+    }
+    delay(10);
   }
 }
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("\n\n** PCA9685 Frequency Calibrator **");
+  Serial.setTimeout(2);
   initValue = EEPROMReadInt(PCA9685_FREQ);
-  Serial.println("Initial value: " + String(initValue));
+  Serial.println("\nInitial value: " + String(initValue));
   if (initValue < 20000 || initValue > 30000) {
     initValue = 25000;
     Serial.println("The PCA9685 has never been calibrated! Using default 25000 KHz.");
@@ -91,10 +133,10 @@ void setup() {
   else
     Serial.println("The PCA9685 has been calibrated as " + String(initValue) + " kHz.");
   pwm.begin();
-  pwm.setOscillatorFrequency(long(initValue) * 1000);
+  pwm.setOscillatorFrequency(initValue * 1000);
   pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
   delay(10);
-  sendPCA9685CalibrationSignal();
+  PCA9685CalibrationPrompt();
 }
 
 void loop() {
