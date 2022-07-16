@@ -37,7 +37,7 @@
   3. Uncomment #define MAIN_SKETCH to make it active. Then upload the program for main functions.
 */
 
-//#define MAIN_SKETCH //the Petoi App only works when this mode is on
+#define MAIN_SKETCH //the Petoi App only works when this mode is on
 //#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
@@ -120,7 +120,8 @@ void setup() {
 
   delay(2000);//change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN
-  read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
+  for (byte r = 0; r < 3; r++)
+    read_IMU(); //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs
   newCmdIdx = 2;
 #endif
@@ -142,7 +143,7 @@ void setup() {
 #endif              // **
   PTLF("Ready!");
 #ifndef MAIN_SKETCH
-//  PCA9685CalibrationPrompt();
+  PCA9685CalibrationPrompt();
 #endif
 }
 
@@ -159,6 +160,6 @@ void loop() {
   readSignal();
   reaction();
 #else
-//  calibratePCA9685();
+  calibratePCA9685();
 #endif
 }

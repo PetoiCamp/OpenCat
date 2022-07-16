@@ -179,16 +179,12 @@ void setServoP(unsigned int p) {
 */
 long initValue;
 void PCA9685CalibrationPrompt() {
-  PTLF("Calibrate PCA9685");
-  PTF("Connect ");
+  PTF("Optional: Connect pin");
   PT("A2");
-  PTLF(" and one of the PWM pins\nEnter 'a'");
-  for (byte i = 0; i < 16; i++) {
-    pwm.writeMicroseconds(i, 1500);
-  }
+  PTLF(" and PWM pin 3 to calibrate PCA9685");
 }
 
-int measureWidth() {
+int measurePulseWidth() {
   while (!digitalRead(PWM_READ_PIN));
   long t1 = micros();
   while (digitalRead(PWM_READ_PIN));
@@ -196,35 +192,32 @@ int measureWidth() {
 }
 
 void calibratePCA9685() {
-  if (Serial.available() && Serial.read()) {
+  if (analogRead(PWM_READ_PIN) == 0) {//the pins are connected
+    //  if (Serial.available() && Serial.read()) {
+    //    for (byte i = 0; i < 16; i++)
+    pwm.writeMicroseconds(3, 1500);
+    delay(5);
     int actualPulseWidth;
     actualPulseWidth = 0;
     for (int i = 0; i < 11; i++) {
-      int temp = measureWidth();
+      int oneReading = measurePulseWidth();
       if (i > 0)
-        actualPulseWidth += temp;
+        actualPulseWidth += oneReading;
     }
     actualPulseWidth /= 10;
     long actualFreq = round(initValue * 1500 / actualPulseWidth);
     EEPROMWriteInt(PCA9685_FREQ, actualFreq);
-    Serial.println("PCA9685: " + String(actualFreq) + " kHz\n");
-    //    pwm.setOscillatorFrequency(actualFreq * 1000);
-    //    pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
-    //    delay(10);
-    //    for (byte i = 0; i < 16; i++) {
-    //      pwm.writeMicroseconds(i, 1500);
-    //    }
-    //    initValue = actualFreq;
+    Serial.println("Calibrated: " + String(actualFreq) + " kHz");
+    beep(20, 1000, 1000);
   }
 }
 void servoSetup() {
-  Serial.println("Init servos");
+  PTF("Init servos: ");
   for (byte i = 0; i < DOF; i++) {
     servoCalib[i] = eeprom(CALIB, i);
   }
   pwm.begin();
   initValue = EEPROMReadInt(PCA9685_FREQ);
-  PTF("PCA9685: ");
   if (initValue < 23000 || initValue > 27000) {
     initValue = 25000;
     PTLF("25MHz"); \
