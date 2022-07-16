@@ -1,12 +1,12 @@
 /***************************************************
   PCA9685 frequency calibrator
 
-  In theory the internal oscillator (clock) is 25MHz but it really isn't
+  In theory, the internal oscillator (clock) is 25MHz, but it really isn't
   that precise. You can 'calibrate' this by tweaking this number until
   you get the PWM update frequency you're expecting!
   The int.osc. for the PCA9685 chip is a range between about 23-27MHz and
   is used for calculating things like writeMicroseconds()
-  Analog servos run at ~50 Hz updates, It is importaint to use an
+  It is important to use an
   oscilloscope in setting the int.osc frequency for the I2C PCA9685 chip.
   1) Attach the oscilloscope to one of the PWM signal pins and ground on
     the I2C PCA9685 chip you are setting the value for.
@@ -25,18 +25,20 @@
 
 #include <Wire.h>
 #include <EEPROM.h>
-#include "Adafruit_PWMServoDriver.h"
+#include <Adafruit_PWMServoDriver.h>
 
 // called this way, it uses the default address 0x40
 Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 #define SERVO_FREQ    240 // Analog servos run at ~50 Hz updates
-#define PCA9685_FREQ   275 // 2 bytes
+#define PCA9685_FREQ  275 // 2 bytes
 #define PTL(s) Serial.println(s)
 #define PTLF(s) Serial.println(F(s))
 long initValue;
 int target;
-int pwmReadPin = A2;
+#ifndef PWM_READ_PIN
+#define PWM_READ_PIN  A2
+#endif
 
 void EEPROMWriteInt(int p_address, int p_value)
 {
@@ -74,11 +76,12 @@ void PCA9685CalibrationPrompt() {
 
 int measureWidth() {
   long t1;
-  while (!digitalRead(pwmReadPin));
+  while (!digitalRead(PWM_READ_PIN));
   t1 = micros();
-  while (digitalRead(pwmReadPin));
+  while (digitalRead(PWM_READ_PIN));
   return (micros() - t1);
 }
+
 void calibratePCA9685() {
   if (Serial.available()) {
     char calibrateToken = Serial.read();
@@ -126,7 +129,7 @@ void setup() {
   Serial.setTimeout(2);
   initValue = EEPROMReadInt(PCA9685_FREQ);
   Serial.println("\nInitial value: " + String(initValue));
-  if (initValue < 20000 || initValue > 30000) {
+  if (initValue < 23000 || initValue > 27000) {
     initValue = 25000;
     Serial.println("The PCA9685 has never been calibrated! Using default 25000 KHz.");
   }

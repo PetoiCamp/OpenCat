@@ -31,6 +31,9 @@
 #define P_SOFT (P_BASE - P_STEP * 4)
 
 #define SERVO_FREQ 240
+#ifndef PWM_READ_PIN
+#define PWM_READ_PIN A2
+#endif
 
 // Depending on your servo make, the pulse width min and max may vary, you
 // want these to be as small/large as possible without hitting the hard stop
@@ -158,19 +161,6 @@ void setServoP(unsigned int p) {
   for (byte i = 0; i < 16; i++)
     pwm.writeMicroseconds(i, p);
 }
-
-int initValue;
-void sendPCA9685CalibrationSignal() {
-  PTLF("Enter any character to calibrate the PCA9685.\n");
-  while (!Serial.available());
-  while (Serial.available() && Serial.read());
-  PTLF("Attach an oscilloscope to one servo pin and GND.");
-  PTLF("Enter the actual PWM pulse-width until it becomes 1500 us.");
-  PTLF("(1200~1800):");
-  for (byte i = 0; i < 16; i++) {
-    pwm.writeMicroseconds(i, 1500);
-  }
-}
 /*
   In theory the internal oscillator (clock) is 25MHz but it really isn't
   that precise. You can 'calibrate' this by tweaking this number until
@@ -187,20 +177,44 @@ void sendPCA9685CalibrationSignal() {
   affects the calculations for the PWM update frequency.
   Failure to correctly set the int.osc value will cause unexpected PWM results
 */
+long initValue;
+void PCA9685CalibrationPrompt() {
+  PTLF("Calibrate PCA9685");
+  PTF("Connect ");
+  PT("A2");
+  PTLF(" and one of the PWM pins\nEnter 'a'");
+  for (byte i = 0; i < 16; i++) {
+    pwm.writeMicroseconds(i, 1500);
+  }
+}
+
+int measureWidth() {
+  while (!digitalRead(PWM_READ_PIN));
+  long t1 = micros();
+  while (digitalRead(PWM_READ_PIN));
+  return (micros() - t1);
+}
+
 void calibratePCA9685() {
-  if (Serial.available()) {
-    int actualPulseWidth = Serial.parseInt();
-    Serial.println(actualPulseWidth);
-    int actualFreq = round(initValue / (actualPulseWidth / 1500.0));
-    EEPROMWriteInt(PCA9685_FREQ, actualFreq);
-    Serial.println("The PCA9685 has been calibrated as " + String(actualFreq) + " kHz!\n");
-    pwm.setOscillatorFrequency(long(actualFreq) * 1000);
-    pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
-    delay(10);
-    for (byte i = 0; i < 16; i++) {
-      pwm.writeMicroseconds(i, 1500);
+  if (Serial.available() && Serial.read()) {
+    int actualPulseWidth;
+    actualPulseWidth = 0;
+    for (int i = 0; i < 11; i++) {
+      int temp = measureWidth();
+      if (i > 0)
+        actualPulseWidth += temp;
     }
-    initValue = actualFreq;
+    actualPulseWidth /= 10;
+    long actualFreq = round(initValue * 1500 / actualPulseWidth);
+    EEPROMWriteInt(PCA9685_FREQ, actualFreq);
+    Serial.println("PCA9685: " + String(actualFreq) + " kHz\n");
+    //    pwm.setOscillatorFrequency(actualFreq * 1000);
+    //    pwm.setPWMFreq(SERVO_FREQ);  // Analog servos run at ~50 Hz updates
+    //    delay(10);
+    //    for (byte i = 0; i < 16; i++) {
+    //      pwm.writeMicroseconds(i, 1500);
+    //    }
+    //    initValue = actualFreq;
   }
 }
 void servoSetup() {
@@ -211,7 +225,7 @@ void servoSetup() {
   pwm.begin();
   initValue = EEPROMReadInt(PCA9685_FREQ);
   PTF("PCA9685: ");
-  if (initValue < 20000 || initValue > 30000) {
+  if (initValue < 23000 || initValue > 27000) {
     initValue = 25000;
     PTLF("25MHz"); \
   }
