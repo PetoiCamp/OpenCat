@@ -55,12 +55,12 @@
 //#define RANDOM_MIND     //advanced random behaviors. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //for LD3320 module
-//#define CAMERA          //for BallTracking using Mu Vision camera 
+//#define CAMERA          //for BallTracking using Mu Vision camera
 //You need to install https://github.com/mu-opensource/MuVisionSensor3 as a zip library in Arduino IDE.
 //Set the four dial switches on the camera as **v ^ v v** (the second switch dialed up to I2C) and connect the camera module to the I2C grove on NyBoard.
-//The battery should be turned on to drive the servos. 
+//The battery should be turned on to drive the servos.
 //
-//You can use these 3D printed structures to attach the camera module.  
+//You can use these 3D printed structures to attach the camera module.
 //https://github.com/PetoiCamp/NonCodeFiles/blob/master/stl/MuIntelligentCamera_mount.stl
 //https://github.com/PetoiCamp/NonCodeFiles/blob/master/stl/bone.stl
 //After uploading the code, you may need to press the reset buttons on the module and then the NyBoard.
@@ -75,7 +75,7 @@ void setup() {
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
-//  TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz)
+  //  TWBR = 24; // 400kHz I2C clock (200kHz if CPU is 8MHz)
   Wire.setClock(500000L);
   //#elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   //  Fastwire::setup(400, true);
@@ -96,8 +96,8 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
 #endif
 #ifdef NEOPIXEL_PIN
-//  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
-//  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
+  //  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
+  //  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
 #endif
 
   servoSetup();
@@ -120,7 +120,8 @@ void setup() {
 
   delay(2000);//change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN
-  read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
+  for (byte r = 0; r < 3; r++)
+    read_IMU();  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs
   newCmdIdx = 2;
 #endif
