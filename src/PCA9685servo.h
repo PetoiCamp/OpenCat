@@ -28,7 +28,7 @@
 #define P_STEP 32
 #define P_BASE 3000 + 4 * P_STEP
 #define P_HARD (P_BASE + P_STEP * 4)
-#define P_SOFT (P_BASE - P_STEP * 4)
+#define P_SOFT (P_BASE - P_STEP * 2)
 
 #define SERVO_FREQ 240
 #ifndef PWM_READ_PIN
