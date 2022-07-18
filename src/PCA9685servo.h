@@ -32,7 +32,7 @@
 
 #define SERVO_FREQ 240
 #ifndef PWM_READ_PIN
-#define PWM_READ_PIN A2
+#define PWM_READ_PIN 8
 #endif
 
 // Depending on your servo make, the pulse width min and max may vary, you
@@ -179,9 +179,9 @@ void setServoP(unsigned int p) {
 */
 long initValue;
 void PCA9685CalibrationPrompt() {
-  PTF("Optional: Connect pin");
-  PT("A2");
-  PTLF(" and PWM pin 3 to calibrate PCA9685");
+  PTF("Optional: Connect PWM pin 3 -> Grove pin ");
+  PT(PWM_READ_PIN);
+  PTLF(" to calibrate PCA9685");
 }
 
 int measurePulseWidth() {
@@ -192,7 +192,7 @@ int measurePulseWidth() {
 }
 
 void calibratePCA9685() {
-  if (analogRead(PWM_READ_PIN) == 0) {//the pins are connected
+  if (digitalRead(PWM_READ_PIN) == 0) {//the pins are connected
     //  if (Serial.available() && Serial.read()) {
     //    for (byte i = 0; i < 16; i++)
     pwm.writeMicroseconds(3, 1500);
@@ -206,9 +206,11 @@ void calibratePCA9685() {
     }
     actualPulseWidth /= 10;
     long actualFreq = round(initValue * 1500 / actualPulseWidth);
-    EEPROMWriteInt(PCA9685_FREQ, actualFreq);
-    Serial.println("Calibrated: " + String(actualFreq) + " kHz");
-    beep(20, 1000, 1000);
+    if (actualFreq >= 23000 && actualFreq <= 27000) {
+      EEPROMWriteInt(PCA9685_FREQ, actualFreq);
+      Serial.println("Calibrated: " + String(actualFreq) + " kHz");
+      beep(20, 1000, 1000);
+    }
   }
 }
 void servoSetup() {
