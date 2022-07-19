@@ -32,7 +32,7 @@
 
 #define SERVO_FREQ 240
 #ifndef PWM_READ_PIN
-#define PWM_READ_PIN 8
+#define PWM_READ_PIN 9
 #endif
 
 bool calibrated = false;
