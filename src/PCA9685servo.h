@@ -209,14 +209,16 @@ void calibratePCA9685() {
     }
     actualPulseWidth /= 10;
     long actualFreq = round(initValue * 1500 / actualPulseWidth);
-    PTL(actualFreq);
-    if (actualFreq >= 23000 && actualFreq <= 27000) //not necessary.
+
+    if (actualFreq >= 23000 && actualFreq <= 27000) {
+      PTL(actualFreq);
       if (actualFreq == lastValue) {//this condition is strong enough to ensure the calibration is correct
         EEPROMWriteInt(PCA9685_FREQ, actualFreq);
         Serial.println("Calibrated: " + String(actualFreq) + " kHz");
         beep(20, 500, 100, 3);
         calibrated = true;
       }
+    }
     lastValue = actualFreq;
   }
 }
