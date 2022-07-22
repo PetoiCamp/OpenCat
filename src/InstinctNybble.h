@@ -604,12 +604,13 @@ const int8_t rc[] PROGMEM = {
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,	 8, 0, 0, 0,
 };
 const int8_t stand[] PROGMEM = { 
--5, 0, 0, 1,
- 2, 3, 1, 
+-6, 0, 0, 1,
+ 3, 4, 1, 
     0, -20, -60,   0,  -5,  -5,  20,  20,  30,  30, -90, -90,  60,  60,  45,  45,	16, 0, 0, 0,
-    0, -10,   0,   0,  -5,  -5,  20,  20,  30,  30, -80, -80,  60,  60, -40, -40,	16, 0, 0, 0,
-   20, -20,   7,   0,  -5,  -5,  20,  20, -50,  60,  -5,  -5,  60, -30, -60, -60,	 8, 2, 0, 0,
-  -20, -40,  -7,   0,  -5,  -5,  20,  20,  50, -70,  -5,  -5,  40,  60, -60, -60,	32, 0, 0, 0,
+    0, -10,   0,   0,  -5,  -5,  20,  20,  30,  30, -68, -68,  60,  60, -40, -40,	16, 0, 0, 0,
+   20, -20, -20,   0,  -5,  -5,  20,  20,  68,  73,   6,   6,  60,  56, -70, -70,	 8, 0, 0, 0,
+   20, -20, -20,   0,  -5,  -5,  20,  20, -28,  78,   6,   6,  60,  56, -70, -70,	12, 2, 0, 0,
+  -20, -40,  -7,   0,  -5,  -5,  20,  20,  50, -70,   6,   6,  40,  60, -70, -70,	32, 0, 0, 0,
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,	 8, 0, 0, 0,
 };
   const char* skillNameWithType[]={"bdI","biI","bkI","bkLI","crFI","crLI","lyI","sxI","trFI","trLI","vtFI","vtLI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","luI","restI","sitI","sleepI","strI","zeroN","ckI","hiI","peeI","puI","rcI","standI",};
@@ -621,6 +622,6 @@ const int8_t stand[] PROGMEM = {
 	//while the newbilities on progmem are assigned to new addresses
   const int8_t* progmemPointer[] = {zero, };
 #endif
-//the total byte of instincts is 4818
+//the total byte of instincts is 4838
 //the maximal array size is 365 bytes of bkL. 
 //Make sure to leave enough memory for SRAM to work properly. Any single skill should be smaller than 400 bytes for safety.
