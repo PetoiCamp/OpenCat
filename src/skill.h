@@ -362,18 +362,18 @@ class Skill {
           delay(abs(dutyAngles[DOF + 1 + c * frameSize] * 50));
           if (repeat != 0 && c != 0 && c == loopCycle[1]) {
             c = loopCycle[0] - 1;
-            if (repeat > 0) //if repeat <0, infinite loop. only reset button will break the loop
+            if (repeat > 0) //if repeat <0, infinite loop. only the reset button will break the loop
               repeat--;
           }
         }
       }
       else {//postures and gaits
 #ifdef GYRO_PIN
-        //                if (imuUpdated)
+        // if (imuUpdated)
         if (!(frame % IMU_SKIP)) {
           for (byte i = 0; i < 2; i++) {
             RollPitchDeviation[i] = ypr[2 - i]  - expectedRollPitch[i]; //all in degrees
-            RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i])) - levelTolerance[i], float(0)) + yprTilt[2 - i]; //filter out small angles
+            RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i]) - levelTolerance[i]), float(0)) + yprTilt[2 - i]; //filter out small angles
           }
         }
 #endif

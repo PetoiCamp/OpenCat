@@ -37,8 +37,11 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 long initValue;
 int target;
 #ifndef PWM_READ_PIN
-#define PWM_READ_PIN  A2
+#define PWM_READ_PIN  9
 #endif
+
+bool calibrated = false;
+int lastValue = 0;
 
 void EEPROMWriteInt(int p_address, int p_value)
 {
@@ -74,10 +77,9 @@ void PCA9685CalibrationPrompt() {
   }
 }
 
-int measureWidth() {
-  long t1;
+int measurePulseWidth() {
   while (!digitalRead(PWM_READ_PIN));
-  t1 = micros();
+  long t1 = micros();
   while (digitalRead(PWM_READ_PIN));
   return (micros() - t1);
 }
@@ -92,22 +94,9 @@ void calibratePCA9685() {
       }
       PTL("Sent " + String(target) + " us\n");
     }
-    else {
-      int actualPulseWidth;
-      if (calibrateToken == 'a') {
-        actualPulseWidth = 0;
-        for (int i = 0; i < 11; i++) {
-          int temp = measureWidth();
-          if (i > 0)
-            actualPulseWidth += temp;
-        }
-        actualPulseWidth /= 10;
-        Serial.print("Auto read by input pin: ");
-      }
-      else if (calibrateToken == 'o') {
-        actualPulseWidth = Serial.parseInt();
-        Serial.print("Measured by the oscillator: ");
-      }
+    else if (calibrateToken == 'o') {
+      int actualPulseWidth = Serial.parseInt();
+      Serial.print("Measured by the oscillator: ");
       Serial.println(String(actualPulseWidth) + " us");
       long actualFreq = round(initValue * target / actualPulseWidth);
       EEPROMWriteInt(PCA9685_FREQ, actualFreq);
@@ -121,6 +110,30 @@ void calibratePCA9685() {
       initValue = actualFreq;
     }
     delay(10);
+  }
+  else if (!calibrated && digitalRead(PWM_READ_PIN) == 0) {//the pins are connected
+    //  if (Serial.available() && Serial.read()) {
+    //    for (byte i = 0; i < 16; i++)
+    pwm.writeMicroseconds(3, 1500);
+    delay(5);
+    int actualPulseWidth;
+    actualPulseWidth = 0;
+    for (int i = 0; i < 11; i++) {
+      int oneReading = measurePulseWidth();
+      if (i > 0)
+        actualPulseWidth += oneReading;
+    }
+    actualPulseWidth /= 10;
+    long actualFreq = round(initValue * 1500 / actualPulseWidth);
+    if (actualFreq >= 23000 && actualFreq <= 27000) {
+      PTL(actualFreq);
+      if (actualFreq == lastValue) {//this condition is strong enough to ensure the calibration is correct
+        EEPROMWriteInt(PCA9685_FREQ, actualFreq);
+        Serial.println("Calibrated: " + String(actualFreq) + " kHz");
+        calibrated = true;
+      }
+    }
+    lastValue = actualFreq;
   }
 }
 
