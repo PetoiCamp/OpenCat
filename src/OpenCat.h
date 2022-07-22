@@ -285,9 +285,9 @@ byte exceptions = 0;
 byte transformSpeed = 2;
 float protectiveShift;//reduce the wearing of the potentiometer
 
-#define PT(s) Serial.print(s)  //makes life easier
+#define PT(s) Serial.print(s)  // abbreviate print commands
 #define PTL(s) Serial.println(s)
-#define PTF(s) Serial.print(F(s))//trade flash memory for dynamic memory with F() function
+#define PTF(s) Serial.print(F(s))// trade flash memory for dynamic memory with F() function
 #define PTLF(s) Serial.println(F(s))
 
 #ifdef DEVELOPER

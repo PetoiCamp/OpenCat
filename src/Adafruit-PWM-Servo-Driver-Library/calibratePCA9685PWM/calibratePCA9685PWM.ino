@@ -32,6 +32,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 
 #define SERVO_FREQ    240 // Analog servos run at ~50 Hz updates
 #define PCA9685_FREQ  275 // 2 bytes
+#define PT(s) Serial.print(s)  // abbreviate print commands
 #define PTL(s) Serial.println(s)
 #define PTLF(s) Serial.println(F(s))
 long initValue;
@@ -59,18 +60,20 @@ int EEPROMReadInt(int p_address)
   byte highByte = EEPROM.read(p_address + 1);
   return ((lowByte << 0) & 0xFF) + ((highByte << 8) & 0xFF00);
 }
+
 void PCA9685CalibrationPrompt() {
   PTLF("\n* PCA9685 Internal Oscillator Frequency Calibrator *\n");
   PTLF("Command list:\n");
+  PTLF("AUTO - Automatically calibrate PCA9685's internal oscillator");
+    PT("    1. Connect Uno's pin " + String(PWM_READ_PIN) + " with one of the PWM pins\n");
+  PTLF("    2. The calibration will finish automatically\n");
   PTLF("s - Send a PWM signal in microseconds (us) to all the 16 pins");
   PTLF("    e.g. s1500\n");
   PTLF("o - Use an oscilloscope to calibrate PCA9685's internal oscillator");
   PTLF("    1. Attach the oscilloscope between one of the PWM signal pins and GND");
   PTLF("    2. Enter the actual PWM's pulse width reading until it matches the target signal");
   PTLF("    e.g. o1440\n");
-  PTLF("a - Automatically calibrate PCA9685's internal oscillator");
-  PTLF("    1. Connect Uno's A2 with one of the PWM pins");
-  PTLF("    2. Enter 'a'\n");
+
   target = 1500;
   for (byte i = 0; i < 16; i++) {
     pwm.writeMicroseconds(i, target);
@@ -129,7 +132,7 @@ void calibratePCA9685() {
       PTL(actualFreq);
       if (actualFreq == lastValue) {//this condition is strong enough to ensure the calibration is correct
         EEPROMWriteInt(PCA9685_FREQ, actualFreq);
-        Serial.println("Calibrated: " + String(actualFreq) + " kHz");
+        Serial.println("Auto calibrated: " + String(actualFreq) + " kHz");
         calibrated = true;
       }
     }
