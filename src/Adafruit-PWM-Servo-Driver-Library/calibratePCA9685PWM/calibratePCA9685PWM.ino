@@ -38,7 +38,7 @@ Adafruit_PWMServoDriver pwm = Adafruit_PWMServoDriver();
 long initValue;
 int target;
 #ifndef PWM_READ_PIN
-#define PWM_READ_PIN  9
+#define PWM_READ_PIN  A3
 #endif
 
 bool calibrated = false;
@@ -65,7 +65,7 @@ void PCA9685CalibrationPrompt() {
   PTLF("\n* PCA9685 Internal Oscillator Frequency Calibrator *\n");
   PTLF("Command list:\n");
   PTLF("AUTO - Automatically calibrate PCA9685's internal oscillator");
-    PT("    1. Connect Uno's pin " + String(PWM_READ_PIN) + " with one of the PWM pins\n");
+    PT("    1. Connect Uno's pin A3 with one of the PWM pins\n");
   PTLF("    2. The calibration will finish automatically\n");
   PTLF("s - Send a PWM signal in microseconds (us) to all the 16 pins");
   PTLF("    e.g. s1500\n");
@@ -81,15 +81,16 @@ void PCA9685CalibrationPrompt() {
 }
 
 int measurePulseWidth() {
-  while (!digitalRead(PWM_READ_PIN));
+  while (!analogRead(PWM_READ_PIN));
   long t1 = micros();
-  while (digitalRead(PWM_READ_PIN));
+  while (analogRead(PWM_READ_PIN));
   return (micros() - t1);
 }
 
 void calibratePCA9685() {
   if (Serial.available()) {
     char calibrateToken = Serial.read();
+    PTL(calibrateToken);
     if (calibrateToken == 's') {
       target = Serial.parseInt();
       for (byte i = 0; i < 16; i++) {
@@ -114,7 +115,7 @@ void calibratePCA9685() {
     }
     delay(10);
   }
-  else if (!calibrated && digitalRead(PWM_READ_PIN) == 0) {//the pins are connected
+  else if (!calibrated && analogRead(PWM_READ_PIN) == 0) {//the pins are connected
     //  if (Serial.available() && Serial.read()) {
     //    for (byte i = 0; i < 16; i++)
     pwm.writeMicroseconds(3, 1500);
