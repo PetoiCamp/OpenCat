@@ -20,7 +20,7 @@ translate.py provides multi-language support for the UI. You may help to transla
 Before running the app, you need to use the included USB adapter or the Bluetooth dongle to connect to a Petoi robot. 
 
 ## Pre-compiled binaries
-You can download the [pre-compiled binaries](https://tn2lsjcal7.larksuite.com/drive/folder/fldusfMtqRB7pzw1eHYFJ7oR15G).
+You can download the [pre-compiled binaries](https://a4776308-1c7f-4550-ae3b-9435cb7fc784.usrfiles.com/archives/a47763_e1e190b6030d46629d8de85a550f6fd8.zip).
 After downloading the Mac version, you must drag it into the Application folder. 
 
 ## Run the app from the Terminal 
