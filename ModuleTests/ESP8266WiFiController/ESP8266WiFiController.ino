@@ -48,10 +48,6 @@ void handleMainPage() {
   server.send(200, "text/html", renderHtml(FPSTR(mainpage), "Home"));
 }
 
-void handleActionPage() {
-  server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
-}
-
 void handleCalibrationPage() {
   server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
   Serial.print("c");
@@ -69,7 +65,12 @@ void handleCalibration() {
   server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
 }
 
-void handleAction() {
+/**
+ * @brief get command argument from request and send to opencat
+ * TODO: change return type
+ * @return result
+ **/
+void sendCmd() {
   String argname = server.arg("name");
 
   if(argname == "gyro"){              // gyro switch
@@ -145,8 +146,27 @@ void handleAction() {
     Serial.print(argname);      // pass through hhtp argument to Bittle
   }
 
+  // return something
+}
+
+/**
+ * @brief action page
+ **/
+void handleActionPage() {
+  if (server.hasArg("name"))
+      sendCmd();
   // Return to actionpage after CMD
-  handleActionPage();
+  server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
+}
+
+/**
+ * @brief handle action api call
+ **/
+void handleAction()
+{
+  // TODO: Change to serial response
+  sendCmd();
+  server.send(200, "text/plain", "success");
 }
 
 void setup(void) {
