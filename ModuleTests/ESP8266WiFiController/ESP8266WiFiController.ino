@@ -70,7 +70,7 @@ void handleCalibration() {
  * TODO: change return type
  * @return result
  **/
-void sendCmd() {
+String sendCmd() {
   String argname = server.arg("name");
 
   if(argname == "gyro"){              // gyro switch
@@ -146,7 +146,9 @@ void sendCmd() {
     Serial.print(argname);      // pass through hhtp argument to Bittle
   }
 
-  // return something
+  // read result
+  String ret = Serial.readString();
+  return ret;
 }
 
 /**
@@ -154,7 +156,7 @@ void sendCmd() {
  **/
 void handleActionPage() {
   if (server.hasArg("name"))
-      sendCmd();
+      String _ = sendCmd();
   // Return to actionpage after CMD
   server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
 }
@@ -164,15 +166,18 @@ void handleActionPage() {
  **/
 void handleAction()
 {
-  // TODO: Change to serial response
-  sendCmd();
-  server.send(200, "text/plain", "success");
+  String ret = sendCmd();
+  server.send(200, "text/plain", ret);
 }
 
 void setup(void) {
 
   // Serial and GPIO LED
   Serial.begin(115200);
+
+  // this number should match to wait time in sender
+  Serial.setTimeout(40);
+
   pinMode(BUILTIN_LED, OUTPUT);
 
   // WiFiManager
