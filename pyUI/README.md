@@ -13,6 +13,8 @@ UI.py is the general entry for all the modules:
 
 -> SkillComposer.py
 
+![gui](https://github.com/PetoiCamp/NonCodeFiles/blob/master/img/GUI.jpeg)
+
 translate.py provides multi-language support for the UI. You may help to translate the UI into your language. 
 
 Before running the app, you need to use the included USB adapter or the Bluetooth dongle to connect to a Petoi robot. 
