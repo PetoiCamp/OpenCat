@@ -361,7 +361,7 @@ void reaction() {
 #endif
   }
   if (skill.period < 0 ) {
-    if (exceptions && strcmp(lastCmd, "pd") && skill.lookupAddressByName(lastCmd) > 0) { //lastToken == T_SKILL && lastSkill->period > 0) {
+    if (exceptions && lastCmd[strlen(lastCmd) - 1] < 'a' && skill.lookupAddressByName(lastCmd) > 0) { //lastToken == T_SKILL && lastSkill->period > 0) {
       strcpy(newCmd, lastCmd);
       for (int i = 0; i < DOF; i++)
         currentAdjust[i] = 0;
