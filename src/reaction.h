@@ -363,8 +363,6 @@ void reaction() {
   if (skill.period < 0 ) {
     if (exceptions && lastCmd[strlen(lastCmd) - 1] < 'a' && skill.lookupAddressByName(lastCmd) > 0) { //lastToken == T_SKILL && lastSkill->period > 0) {
       strcpy(newCmd, lastCmd);
-      for (int i = 0; i < DOF; i++)
-        currentAdjust[i] = 0;
     }
     else {
       //      strcpy(newCmd, "balance");
@@ -373,6 +371,8 @@ void reaction() {
       skill.period = 1;
       frame = 0;
     }
+    for (int i = 0; i < DOF; i++)
+      currentAdjust[i] = 0;
     if (strcmp(newCmd, ""))
       skill.loadFrame(newCmd);
     PTL(token);//behavior can confirm completion by sending the token back
