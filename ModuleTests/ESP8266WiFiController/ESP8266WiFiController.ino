@@ -68,7 +68,7 @@ void handleCalibration() {
   } else {
     Serial.print("c" + joint + " " + offset);
   }
-  server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
+  server.send(200, "text/html", "ok");
 }
 
 /**
