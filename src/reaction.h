@@ -184,7 +184,7 @@ void reaction() {
 #endif
       case T_TILT:  //tilt the robot, format: t axis angle. 0:yaw, 1:pitch, 2:roll
       case T_MEOW: //meow
-      case T_BEEP: //beep(tone, duration): tone 0 is pause, duration range is 0~255
+      case T_BEEP: //beep(tone, duration): tone 0 is pause. the duration corresponds to 1/duration second
         {
           int targetFrame[DOF];
           //          for (int i = 0; i < DOF; i += 1) {
@@ -244,7 +244,8 @@ void reaction() {
 
             }
             else if (token == T_BEEP) {
-              beep(target[0], target[1], 50);
+              if (target[1])
+                beep(target[0], 1000 / target[1], 50);
             }
           } while (pch != NULL);
           if (token == T_INDEXED_SIMULTANEOUS_ASC) {
@@ -334,7 +335,7 @@ void reaction() {
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);//postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
-      if ((lowerToken == T_GYRO || lowerToken == T_BEEP || token == T_JOINTS ) && lastToken == T_SKILL || token == T_PAUSE || token == T_TILT
+      if ((lowerToken == T_GYRO || token == T_JOINTS ) && lastToken == T_SKILL || token == T_PAUSE || token == T_TILT
 #ifdef T_PRINT_GYRO
           || lowerToken == T_PRINT_GYRO
 #endif
