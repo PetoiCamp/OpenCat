@@ -48,10 +48,6 @@ void handleMainPage() {
   server.send(200, "text/html", renderHtml(FPSTR(mainpage), "Home"));
 }
 
-void handleActionPage() {
-  server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
-}
-
 void handleCalibrationPage() {
   server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
   Serial.print("c");
@@ -69,7 +65,12 @@ void handleCalibration() {
   server.send(200, "text/html", renderHtml(FPSTR(calibrationpage), "Calibration"));
 }
 
-void handleAction() {
+/**
+ * @brief get command argument from request and send to opencat
+ * TODO: change return type
+ * @return result
+ **/
+String sendCmd() {
   String argname = server.arg("name");
 
   if(argname == "gyro"){              // gyro switch
@@ -145,14 +146,38 @@ void handleAction() {
     Serial.print(argname);      // pass through hhtp argument to Bittle
   }
 
+  // read result
+  String ret = Serial.readString();
+  return ret;
+}
+
+/**
+ * @brief action page
+ **/
+void handleActionPage() {
+  if (server.hasArg("name"))
+      String _ = sendCmd();
   // Return to actionpage after CMD
-  handleActionPage();
+  server.send(200, "text/html", renderHtml(FPSTR(actionpage), "Actions"));
+}
+
+/**
+ * @brief handle action api call
+ **/
+void handleAction()
+{
+  String ret = sendCmd();
+  server.send(200, "text/plain", ret);
 }
 
 void setup(void) {
 
   // Serial and GPIO LED
   Serial.begin(115200);
+
+  // this number should match to wait time in sender
+  Serial.setTimeout(40);
+
   pinMode(BUILTIN_LED, OUTPUT);
 
   // WiFiManager
