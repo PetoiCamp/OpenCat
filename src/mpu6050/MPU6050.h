@@ -779,6 +779,12 @@ class MPU6050 {
         int16_t getZGyroOffset();
         void setZGyroOffset(int16_t offset);
         
+        // iteratable functions by RzLi
+        int16_t getAccelOffset(byte axis);
+        void setAccelOffset(byte axis, int16_t offset);
+        int16_t getGyroOffset(byte axis);
+        void setGyroOffset(byte axis, int16_t offset);
+        
         // INT_ENABLE register (DMP functions)
         bool getIntPLLReadyEnabled();
         void setIntPLLReadyEnabled(bool enabled);

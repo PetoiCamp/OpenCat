@@ -222,20 +222,20 @@ void imuSetup() {
   devStatus = mpu.dmpInitialize();
   wdt_disable();
 
-  //  void (MPU6050::*setOffset[6])(int16_t) = { &MPU6050::setXAccelOffset, &MPU6050::setYAccelOffset, &MPU6050::setZAccelOffset,
-  //                                             &MPU6050::setXGyroOffset, &MPU6050::setYGyroOffset, &MPU6050::setZGyroOffset
-  //                                           };
-  for (byte m = 0; m < 6; m++)
-    imuOffset[m] = EEPROMReadInt(MPUCALIB + m * 2);
-  //    (mpu.*setOffset[m])(EEPROMReadInt(MPUCALIB + m * 2));
-
   // supply the gyro offsets here, scaled for min sensitivity
-  mpu.setXAccelOffset(imuOffset[0]);
-  mpu.setYAccelOffset(imuOffset[1]);
-  mpu.setZAccelOffset(imuOffset[2]);  //gravity
-  mpu.setXGyroOffset(imuOffset[3]);   //yaw
-  mpu.setYGyroOffset(imuOffset[4]);   //pitch
-  mpu.setZGyroOffset(imuOffset[5]);   //roll
+  for (byte axis = 0; axis < 6; axis++) {
+    imuOffset[axis] = EEPROMReadInt(MPUCALIB + axis * 2);
+    if (axis < 3)
+      mpu.setAccelOffset(axis, imuOffset[axis]);
+    else
+      mpu.setGyroOffset(axis, imuOffset[axis]);
+    }
+  //  mpu.setXAccelOffset(imuOffset[0]);
+  //  mpu.setYAccelOffset(imuOffset[1]);
+  //  mpu.setZAccelOffset(imuOffset[2]);  //gravity
+  //  mpu.setXGyroOffset(imuOffset[3]);   //yaw
+  //  mpu.setYGyroOffset(imuOffset[4]);   //pitch
+  //  mpu.setZGyroOffset(imuOffset[5]);   //roll
 
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
@@ -252,18 +252,23 @@ void imuSetup() {
       PTLF("Calibrating...");
       mpu.CalibrateAccel(10);
       mpu.CalibrateGyro(10);
-      EEPROMWriteInt(MPUCALIB, mpu.getXAccelOffset());
-      EEPROMWriteInt(MPUCALIB + 2, mpu.getYAccelOffset());
-      EEPROMWriteInt(MPUCALIB + 4, mpu.getZAccelOffset());
-      EEPROMWriteInt(MPUCALIB + 6, mpu.getXGyroOffset());
-      EEPROMWriteInt(MPUCALIB + 8, mpu.getYGyroOffset());
-      EEPROMWriteInt(MPUCALIB + 10, mpu.getZGyroOffset());
+      for (byte axis = 0; axis < 6; axis++) {
+        if (axis < 3)
+          EEPROMWriteInt(MPUCALIB + axis * 2, mpu.getAccelOffset(axis));
+        else
+          EEPROMWriteInt(MPUCALIB + axis * 2, mpu.getGyroOffset(axis));
+      }
+      //      EEPROMWriteInt(MPUCALIB, mpu.getXAccelOffset());
+      //      EEPROMWriteInt(MPUCALIB + 2, mpu.getYAccelOffset());
+      //      EEPROMWriteInt(MPUCALIB + 4, mpu.getZAccelOffset());
+      //      EEPROMWriteInt(MPUCALIB + 6, mpu.getXGyroOffset());
+      //      EEPROMWriteInt(MPUCALIB + 8, mpu.getYGyroOffset());
+      //      EEPROMWriteInt(MPUCALIB + 10, mpu.getZGyroOffset());
 
 #ifndef AUTO_INIT
     }
 #endif
-    PTLF("\nEEPROM contents:");
-    printEEPROM();
+//    printEEPROM();
     beep(18, 50, 70, 6);
 #endif
     //    mpu.PrintActiveOffsets(); //it takes 7% flash!

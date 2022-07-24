@@ -27,13 +27,16 @@ void flushEEPROM(char b = -1) {
 }
 
 void printEEPROM() {
+  PTLF("\nEEPROM contents:");
   for (int i = 0; i < 1024; i++) {
-    PT(eeprom(i));
-    PT('\t');
-    if ((i % 16) == 15){
-      PTL();
+    if (!(i % 16)) {
+      PT(String(i / 16) + ":\t");
       delay(6);
     }
+    PT(eeprom(i));
+    PT('\t');
+    if (i % 16 == 15)
+      PTL();
   }
 }
 
