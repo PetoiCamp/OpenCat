@@ -215,16 +215,16 @@ if __name__ == '__main__':
             ['o',0],
 
             # - b indicates the command to control the buzzer to beep, encrypted in ASCII
-            # - 15 indicates the music tone
-            # - 90 indicates the lengths of duration, the value range is 0~255
-            # - 2 indicates the postponed time after completing the pronunciation, in seconds
+            # - the first number in the pair indicates the music tone
+            # - the second number in the pair indicates the duration, corresponding to 1/duration second
+            # - 1 indicates the postponed time after completing the pronunciation, in seconds
 
-            ['b',[15, 90, 12, 90, 15, 90, 12, 90, 15, 90, 12, 90, 8, 180, 10, 90, 13, 90, 12, 90, 10, 90, 15, 180,],1],
+            ['b',[0, 1, 14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4],1],
 
             # - 'K' indicates the skill data to send to Bittle in realtime
             # they are sent to the robot on the go and executed locally on the robot
             # no overhead of communication and waiting for both sides.
-            ['kvt', 2],
+            ['kvtF', 2],
             ['K',sit, 1],
             ['kck', 1],
 #            # 'T' calls the last temp skill data of 'K' received from the serial port
