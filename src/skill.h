@@ -444,7 +444,7 @@ int testEEPROM(char* skillData) {
 #ifndef MAIN_SKETCH
 void writeConst() {
   //  flushEEPROM();
-  beep(20); 
+  beep(20);
   int melodyAddress = MELODY_NORMAL;
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
   saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
@@ -480,7 +480,9 @@ int configureEEPROM() {
   PTLF("\n* Change model and board definitions in OpenCat.ino!");
   PTLF("\nConfigure EEPROM");
   writeConst(); // only run for the first time when writing to the board.
+  wdt_enable(WDTO_8S);
   skill.saveSkillInfoFromProgmemToOnboardEeprom();
+  wdt_reset();
   return 1;
 }
 #endif

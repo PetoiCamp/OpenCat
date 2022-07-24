@@ -205,6 +205,7 @@ void readEnvironment() {
 //This function will write a 2-byte integer to the EEPROM at the specified address and address + 1
 
 void imuSetup() {
+  wdt_enable(WDTO_2S);
   do {
     delay(100);
     // initialize device
@@ -219,6 +220,7 @@ void imuSetup() {
   // load and configure the DMP
   //  PTLF("Init DMP");
   devStatus = mpu.dmpInitialize();
+  wdt_disable();
 
   //  void (MPU6050::*setOffset[6])(int16_t) = { &MPU6050::setXAccelOffset, &MPU6050::setYAccelOffset, &MPU6050::setZAccelOffset,
   //                                             &MPU6050::setXGyroOffset, &MPU6050::setYGyroOffset, &MPU6050::setZGyroOffset
@@ -241,14 +243,10 @@ void imuSetup() {
 #ifndef MAIN_SKETCH
     beep(10);
 #ifndef AUTO_INIT
-    PTLF("Calibrate IMU?(Y/n):");
+    PTLF("\nLay the robot/board FLAT on a table. Calibrate IMU?(Y/n):");
     char choice = getUserInputChar();
     PTL(choice);
     if (choice == 'Y' || choice == 'y') {
-#endif
-      PTLF("\nLay the robot FLAT on a table");
-#ifndef AUTO_INIT
-      beep(8, 400, 600, 5);
 #endif
       beep(15, 400, 600);
       PTLF("Calibrating...");

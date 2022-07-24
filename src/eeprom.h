@@ -6,7 +6,7 @@ void EEPROMWriteInt(int p_address, int p_value)
   byte highByte = ((p_value >> 8) & 0xFF);
   EEPROM.update(p_address, lowByte);
   EEPROM.update(p_address + 1, highByte);
-  delay(10);
+  delay(6);
 }
 //This function will read a 2-byte integer from the EEPROM at the specified address and address + 1
 int EEPROMReadInt(int p_address)
@@ -32,7 +32,7 @@ void printEEPROM() {
     PT('\t');
     if ((i % 16) == 15){
       PTL();
-      delay(10);
+      delay(6);
     }
   }
 }

@@ -370,6 +370,7 @@ template <typename T> void arrayNCPY(T * destination, const T * source, int len)
 #undef T_RAMP
 #endif
 
+#include <avr/wdt.h> // https://create.arduino.cc/projecthub/rafitc/what-is-watchdog-timer-fffe20
 #include "eeprom.h"
 #include "io.h"
 
