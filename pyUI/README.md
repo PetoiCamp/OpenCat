@@ -3,7 +3,7 @@
 
 The major function modules are the [Firmware Uploader](https://docs.petoi.com/desktop-app/firmware-uploader), [Joint Calibrator](https://docs.petoi.com/desktop-app/calibrator), and [Skill Composer](https://docs.petoi.com/desktop-app/skill-composer). 
 
-UI.py is the general entry for all the modules:
+**UI.py** is the general entry for all the modules:
 
 - UI.py
 
@@ -15,13 +15,15 @@ UI.py is the general entry for all the modules:
 
 ![gui](https://github.com/PetoiCamp/NonCodeFiles/blob/master/img/GUI.jpeg)
 
-translate.py provides multi-language support for the UI. You may help to translate the UI into your language. 
+**translate.py** provides multi-language support for the UI. You may help to translate the UI into your language. 
 
 Before running the app, you need to use the included USB adapter or the Bluetooth dongle to connect to a Petoi robot. 
 
 ## Pre-compiled binaries
 You can download the [pre-compiled binaries](https://a4776308-1c7f-4550-ae3b-9435cb7fc784.usrfiles.com/archives/a47763_e1e190b6030d46629d8de85a550f6fd8.zip).
 After downloading the Mac version, you must drag it into the Application folder. 
+
+If you see the error message that "Petoi Desktop App" cannot be opened because the developer cannot be verified, you can right-click the icon, hold the **Shift** key and click **Open**.
 
 ## Run the app from the Terminal 
 In the case of compatibility issues, or if you want to modify the source and test, you can also run the code from the Terminal. 
@@ -39,5 +41,5 @@ You can install them by entering ```pip3 install pyserial pillow``` in the Termi
 To run the code:
 1. In the Terminal, use the ```cd``` command to navigate to the ```OpenCat/pyUI/``` folder. You can use the Tab key to auto-complete the path name. 
 2. After entering the pyUI/ folder, enter ```ls``` and ensure you can see the UI.py and other python source codes listed. 
-3. Enter ```python3 xxx.py```.
+3. Enter ```python3 UI.py```.
 
