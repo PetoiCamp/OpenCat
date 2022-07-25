@@ -25,7 +25,7 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <WiFiManager.h>         // https://github.com/tzapu/WiFiManager
-#include <Dictionary.h>
+#include <Dictionary.h> //https://www.arduino.cc/reference/en/libraries/dictionary/
 
 #include "commons.h"
 #include "mainpage.h"
