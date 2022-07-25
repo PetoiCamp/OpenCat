@@ -69,11 +69,11 @@ const char calibrationpage[] PROGMEM = R"=====(
         }
   
         function increase(joint) {
-            window.location.href=`/calibration?c=${joint}&o=${1000 + parseInt(document.getElementById('offsetAmountSetter').value)}`;
+            httpGet(`/calibration?c=${joint}&o=${1000 + parseInt(document.getElementById('offsetAmountSetter').value)}`);
         }
   
         function decrease(joint) {
-            window.location.href=`/calibration?c=${joint}&o=${-1000 - parseInt(document.getElementById('offsetAmountSetter').value)}`;
+            httpGet(`/calibration?c=${joint}&o=${-1000 - parseInt(document.getElementById('offsetAmountSetter').value)}`);
         }
     </script>
 </div>

@@ -133,6 +133,13 @@ const char head[] PROGMEM = R"=====(
             let title = "%TITLE%";
             document.getElementById(title).classList.add('active')
         });
+        function httpGet(theUrl)
+        {
+           var xmlHttp = new XMLHttpRequest();
+           xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+           xmlHttp.send( null );
+           return xmlHttp.responseText;
+        }
     </script>
 </head>
 
