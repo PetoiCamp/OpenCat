@@ -227,14 +227,10 @@ void servoSetup() {
   }
   pwm.begin();
   initValue = EEPROMReadInt(PCA9685_FREQ);
-  if (initValue < 23000 || initValue > 27000) {
+  if (initValue < 23000 || initValue > 27000)
     initValue = 25000;
-    PTLF("25MHz");
-  }
-  else {
-    PT(initValue);
-    PTLF("kHz");
-  }
+  PT(float(initValue) / 1000);
+  PTLF("MHz");
   pwm.setup(DOF, long(initValue) * 1000);
   pwm.shutServos();
 }
