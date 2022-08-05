@@ -77,7 +77,7 @@ void reaction() {
         && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN  && token != T_COLOR
 #endif
        )
-      beep(10 + newCmdIdx * 2); //ToDo: check the muted sound when newCmdIdx = -1
+      beep(15 + newCmdIdx, 5); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
       setServoP(P_SOFT);
       checkGyro = true;
@@ -92,8 +92,12 @@ void reaction() {
 #ifdef MAIN_SKETCH
 #ifdef GYRO_PIN
       case T_GYRO:
-        //      case T_PRINT_GYRO:
-        //      case T_VERBOSELY_PRINT_GYRO:
+#ifdef T_PRINT_GYRO
+      case T_PRINT_GYRO:
+#endif
+#ifdef T_VERBOSELY_PRINT_GYRO
+      case T_VERBOSELY_PRINT_GYRO:
+#endif
 #endif
 #ifdef RANDOM_MIND
       case T_RANDOM_MIND:
@@ -357,7 +361,7 @@ void reaction() {
 #endif
   }
   if (skill.period < 0 ) {
-    if (exceptions && strcmp(lastCmd,"pd") && skill.lookupAddressByName(lastCmd) > 0) { //lastToken == T_SKILL && lastSkill->period > 0) {
+    if (exceptions && strcmp(lastCmd, "pd") && skill.lookupAddressByName(lastCmd) > 0) { //lastToken == T_SKILL && lastSkill->period > 0) {
       strcpy(newCmd, lastCmd);
       for (int i = 0; i < DOF; i++)
         currentAdjust[i] = 0;
