@@ -207,9 +207,9 @@ void reaction() {
             targetFrame[target[0]] = target[1];
             int angleStep = 0;
             if (token == T_CALIBRATE) {
-              setServoP(P_HARD);
               checkGyro = false;
               if (lastToken != T_CALIBRATE) {
+                setServoP(P_HARD);
                 strcpy(newCmd, "calib");
                 skill.loadFrame(newCmd);
               }

@@ -28,11 +28,7 @@
 #define P_STEP 32
 #define P_BASE 3000 + 4 * P_STEP
 #define P_HARD (P_BASE + P_STEP * 4)
-#ifdef BITTLE
-#define P_SOFT (P_BASE - P_STEP * 2)
-#else
-#define P_SOFT (P_BASE + P_STEP)
-#endif
+#define P_SOFT (P_BASE - P_STEP * 3)
 
 
 // Depending on your servo make, the pulse width min and max may vary, you
