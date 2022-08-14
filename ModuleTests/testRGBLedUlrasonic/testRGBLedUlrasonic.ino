@@ -38,7 +38,9 @@ void setup() {
 }
 void loop() {
   int distance = mRUS04.GetUltrasonicDistance();
-
+  Serial.print("distance is :");
+  Serial.print(distance);
+  Serial.print("cm ");
   if (distance > 50) {
     mRUS04.SetRgbEffect(E_RGB_ALL, RGB_WHITE, E_EFFECT_BREATHING);
   }
