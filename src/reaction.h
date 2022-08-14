@@ -72,12 +72,12 @@ void reaction() {
   if (newCmdIdx) {
     //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
 #ifdef MAIN_SKETCH
-    if (newCmdIdx < 5 && token != T_SKILL && token != T_BEEP && token != T_MEOW && token != T_TILT
+    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_TILT
 #ifdef BINARY_COMMAND
         && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN  && token != T_COLOR
 #endif
        )
-      beep(10 + newCmdIdx * 2); //ToDo: check the muted sound when newCmdIdx = -1
+      beep(15 + newCmdIdx, 5); //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
       setServoP(P_SOFT);
       checkGyro = true;
