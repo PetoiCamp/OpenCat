@@ -21,10 +21,6 @@ uint16_t RgbUltrasonic::GetUltrasonicDistance(void)
   Time_Echo_us = pulseIn(SignalPin, HIGH);
   if ((Time_Echo_us < 60000) && (Time_Echo_us > 1)) {
       FrontDistance = Time_Echo_us / 58.00;
-      Serial.print("distance is :");
-      Serial.print(FrontDistance);
-      Serial.print("cm");
-      Serial.println();  
   }
     return FrontDistance;
 }

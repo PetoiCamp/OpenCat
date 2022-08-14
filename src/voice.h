@@ -20,7 +20,7 @@ const char voice13[] PROGMEM = "yao tou:m0 -45 0 45 0 -45 0 45";      //stand up
 const char voice14[] PROGMEM = "chong fu:T ";
 const char* const voiceTable[] PROGMEM = {voice1, voice2, voice3, voice4,
                                           voice5, voice6, voice7, voice8,
-                                          voice9, voice10, voice11, voice12,voice13,voice14
+                                          voice9, voice10, voice11, voice12, voice13, voice14
                                          };
 
 void voiceSetup()
@@ -57,8 +57,8 @@ void read_voice()
     unsigned char result;
     result = ld3320_get_result();
     if (result != 0xFF) {
-      //    Serial.print("asr result is:");
-      //    Serial.println(result);   //返回识别结果，即识别到的词条编号
+      Serial.print("asr result is:");
+      Serial.println(result);   //返回识别结果，即识别到的词条编号
       for (byte v = 0; v < sizeof(voiceTable) / 2; v++) {
         if (result == v) {
           char *ptr;
