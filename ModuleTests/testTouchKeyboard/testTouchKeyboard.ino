@@ -23,7 +23,7 @@ const int threshold = 10;    // minimum reading of the sensors that generates a 
 #define BUZZ_PIN 5
 // notes to play, corresponding to the 3 sensors:
 int notes[] = {
-  NOTE_C4, NOTE_D4, NOTE_E4, NOTE_F4, 
+  NOTE_C4, NOTE_D4, NOTE_E4, NOTE_F4,
 };
 
 int pins[] = {6, 7, 8, 9};
@@ -32,15 +32,16 @@ void setup() {
 }
 
 void loop() {
-  for (int thisSensor = 0; thisSensor < 4; thisSensor++) {
+  for (int thisSensor = 0; thisSensor < 2; thisSensor++) {
     // get a sensor reading:
     int sensorReading = digitalRead(pins[thisSensor]);
-    if (sensorReading)
-      Serial.println(sensorReading);
+    Serial.print(sensorReading);
+    Serial.print('\t');
     // if the sensor is pressed hard enough:
     if (sensorReading) {
       // play the note corresponding to this sensor:
       tone(BUZZ_PIN, notes[thisSensor], 20);
     }
   }
+  Serial.println();
 }
