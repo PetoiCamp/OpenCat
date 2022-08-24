@@ -26,8 +26,8 @@
 #include "Adafruit-PWM-Servo-Driver-Library/Adafruit_PWMServoDriver.h"
 
 #define P_STEP 32
-#define P_BASE 3000 + 4 * P_STEP
-#define P_HARD (P_BASE + P_STEP * 4)
+#define P_BASE 3000 + P_STEP * 6  //3000~3320
+#define P_HARD (P_BASE + P_STEP * 2)
 #define P_SOFT (P_BASE - P_STEP * 2)
 
 #define SERVO_FREQ 240
@@ -192,6 +192,7 @@ int measurePulseWidth(uint8_t pwmReadPin) {
   return (micros() - t1);
 }
 
+byte match = 0;
 void calibratePCA9685() {
   delay(50);
   if (!calibrated && analogRead(PWM_READ_PIN) == 0) { //the pins are connected
@@ -210,12 +211,17 @@ void calibratePCA9685() {
 
     if (actualFreq >= 23000 && actualFreq <= 27000) {
       PTL(actualFreq);
-      if (actualFreq == lastValue) {//this condition is strong enough to ensure the calibration is correct
-        EEPROMWriteInt(PCA9685_FREQ, actualFreq);
-        Serial.println("Calibrated: " + String(actualFreq) + " kHz");
-        beep(20, 100, 50, 3);
-        calibrated = true;
+      if (actualFreq == lastValue) {
+        match++;
+        if (match == 2) {
+          EEPROMWriteInt(PCA9685_FREQ, actualFreq);
+          Serial.println("Calibrated: " + String(actualFreq) + " kHz");
+          beep(20, 100, 50, 3);
+          calibrated = true;
+        }
       }
+      else
+        match = 0;
     }
     lastValue = actualFreq;
   }
