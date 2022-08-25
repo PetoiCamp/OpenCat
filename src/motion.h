@@ -99,7 +99,7 @@ template <typename T> void transform( T * target, byte angleDataRatio = 1, float
     allCalibratedPWM(target, offset);
 #ifdef SERVO_SLOW_BOOT
     if (servoOff) { //slow boot up for servos
-      delay(1000);
+      delay(500);
       servoOff = false;
     }
 #endif
