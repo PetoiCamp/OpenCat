@@ -194,7 +194,7 @@ int measurePulseWidth(uint8_t pwmReadPin) {
 
 byte match = 0;
 void calibratePCA9685() {
-  delay(50);
+  delay(100);
   if (!calibrated && analogRead(PWM_READ_PIN) == 0) { //the pins are connected
     //    for (byte i = 0; i < 16; i++)
     pwm.writeMicroseconds(eeprom(PWM_PIN, 3), 1500);

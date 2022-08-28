@@ -293,8 +293,7 @@ class Skill {
         protectiveShift = 0;
       for (byte i = 0; i < DOF; i++)
         dutyAngles[i] += protectiveShift;
-      if (period > 1 && offsetLR < 0
-          || period <= 1 && random(100) % 2 && token != T_CALIBRATE)
+      if (offsetLR < 0 || period <= 1 && offsetLR == 0 && random(100) % 2 && token != T_CALIBRATE)
         mirror();
       frame = 0;
       transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);

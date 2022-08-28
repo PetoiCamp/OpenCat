@@ -1,5 +1,5 @@
 #define BITTLE
-//number of skills: 38
+//number of skills: 40
 
 const int8_t bdF[] PROGMEM = { 
 15, 0, 0, 1,
@@ -499,13 +499,13 @@ const int8_t zero[] PROGMEM = {
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,};
 
 const int8_t bf[] PROGMEM = { 
-  -5,   0,   0,   2,
-   0,   0,   0,
-   0,   0,   0,   0,   0,   0,   0,   0,  27,  27,  27,  27,  -9,  -9,  -9,  -9,   8,   2,   0,   0,
-   0,   0,   0,   0,   0,   0,   0,   0,   5,   5, -22, -22,  50,  50,  25,  25,  48,   0,   0,   0,
-   0,   0,   0,   0,   0,   0,   0,   0,  -8,  -8,  26,  26, -28, -28,  68,  68,  48,   0,   0,   0,
-   0,   0,   0,   0,   0,   0,   0,   0,  16,  16,  26,  26, -28, -28, -10, -10,  48,   1,   0,   0,
-   0,   0,   0,   0,   0,   0,   0,   0,  15,  15,  15,  15,  15,  15,  15,  15,   8,   2,   0,   0,
+-5, 0, 0, 1,
+ 0, 0, 0, 
+    0,   0,   0,   0,   0,   0,   0,   0,  54,  54,  54,  54, -18, -18, -18, -18,	 8, 2, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  10,  10, -44, -44, 100, 100,  50,  50,	48, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0, -16, -16,  52,  52, -56, -56, 125, 125,	 0, 1, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  54,  54,  82,  82, -44, -44, -50, -50,	48, 4, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,	 8, 2, 0, 0,
 };
 const int8_t ck[] PROGMEM = { 
 -3, 0, 0, 1,
@@ -546,6 +546,16 @@ const int8_t fd[] PROGMEM = {
   -30, -80, -45,   0,  -3,  -3,   3,   3,  70,  70,  70,  70, -55, -55, -55, -55,	 5, 0, 0, 0,
   -30, -80, -45,   0, -90, -90,   3,   3,  60,  60, -80, -80, -65, -65,  70,  70,	 5, 0, 0, 0,
     0,   0,   0,   0, -90, -90, -90, -90,  60,  60, -63, -63, -68, -68,  30,  30,	 4,10, 0, 0,
+};
+const int8_t ff[] PROGMEM = { 
+-6, 0, 0, 1,
+ 0, 0, 0, 
+    0,   0,   0,   0,   0,   0,   0,   0,  22,  22,  30,  30,  86,  86,  30,  30,	 8, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  48,  48,  30,  30, 102, 102,  30,  30,	 8, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0, -20, -20,  40,  40,  42,  42, -12, -12,	48, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  12,  12, -22, -22,  -3,  -3,  31,  31,	48, 0, 0, 0,
+  -30, -80, -45,   0,  -3,  -3,   3,   3,  70,  70,  70,  70, -55, -55, -55, -55,	32, 0, 0, 0,
+  -30, -80, -45,   0,  -3,  -3,   3,   3,  30,  30,  30,  30,  30,  30,  30,  30,	 8, 0, 0, 0,
 };
 const int8_t hi[] PROGMEM = { 
 -4, 0, 0, 1,
@@ -605,6 +615,16 @@ const int8_t rc[] PROGMEM = {
    -8, -20, -11,   0,  -1,  -1,   0,   0,  18,  18,  18,  18, -14, -14, -14, -14,	 8, 0, 0, 0,
     0,   0,   0,   0,   0,   0,   0,   0,  15,  15,  15,  15,  15,  15,  15,  15,	 8, 0, 0, 0,
 };
+const int8_t rlL[] PROGMEM = { 
+-6, 0, 0, 2,
+ 0, 4, 0, 
+  -15,   0,   0,   0,  15,  -8,  -8,  15,  32,   1,  -2,  35, -25,  47,  45, -23,	32, 2, 0, 0,
+   15, -40,  22,   0,  -2,  -2,   1,   1,   3, -48,  51,   1,  42,  46,  40,  42,	16, 1, 0, 0,
+   15, -40,  22,   0,  -2,  -2,   1,   1, -84, -48,  55,  90,  42, -28,  60,  42,	48, 0, 0, 0,
+   15, -40,  22,   0,  -2,  -2,   1,   1, -84, -76,  60,  90,  42,  19,  60,  42,	48, 0, 0, 0,
+   15, -40,  22,   0,  -2,  -2,   1,   1,  35,  35,  35,  35, -28, -28, -28, -28,	16, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  15,  15,  15,  15,  15,  15,  15,  15,	 8, 0, 0, 0,
+};
 const int8_t rt[] PROGMEM = { 
 -6, 0, 0, 1,
  0, 5, 3, 
@@ -648,15 +668,15 @@ const int8_t testServo[] PROGMEM = {
     0,   0,   0,   0,  15,  15,  15,  15,  30,  30,  30,  30,  30,  30,  30,  30,	 4, 0, 0, 0,
   -30, -80, -45,  30, -15, -15, -15, -15,  75,  75,  75,  75, -55, -55, -55, -55,	 4, 0, 0, 0,
 };
-  const char* skillNameWithType[]={"bdFI","bkI","bkLI","crFI","crLI","mhFI","mhLI","pcFI","phFI","phLI","trFI","trLI","vtFI","vtLI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","bfI","ckI","climbCeilI","fdI","hiI","jyI","pdI","peeI","puI","rcI","rtI","stpI","testServoI",};
+  const char* skillNameWithType[]={"bdFI","bkI","bkLI","crFI","crLI","mhFI","mhLI","pcFI","phFI","phLI","trFI","trLI","vtFI","vtLI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","bfI","ckI","climbCeilI","fdI","ffI","hiI","jyI","pdI","peeI","puI","rcI","rlLI","rtI","stpI","testServoI",};
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
-  const int8_t* progmemPointer[] = {bdF, bk, bkL, crF, crL, mhF, mhL, pcF, phF, phL, trF, trL, vtF, vtL, wkF, wkL, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, climbCeil, fd, hi, jy, pd, pee, pu, rc, rt, stp, testServo, };
+  const int8_t* progmemPointer[] = {bdF, bk, bkL, crF, crL, mhF, mhL, pcF, phF, phL, trF, trL, vtF, vtL, wkF, wkL, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, bf, ck, climbCeil, fd, ff, hi, jy, pd, pee, pu, rc, rlL, rt, stp, testServo, };
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses
   const int8_t* progmemPointer[] = {zero, };
 #endif
-//the total byte of instincts is 5735
+//the total byte of instincts is 5909
 //the maximal array size is 317 bytes of wkF. 
 //Make sure to leave enough memory for SRAM to work properly. Any single skill should be smaller than 400 bytes for safety.
