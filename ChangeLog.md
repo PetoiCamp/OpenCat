@@ -1,5 +1,16 @@
 # Change Log
 
+## Aug 31, 2022
+* Add a watchdog to reset the board if the initialization for MPU or skills fails.
+* At the last stage of the first configuration process (with #define MAIN_SKETCH commented out), provide an optional step to calibrate the PCA9685's PWM frequency. The calibration value is saved in the EEPROM table to be loaded by the main sketch. 
+* Change the unit of the duration for music notes ('b' and 'B' token) from duration (miliseconds) to half notes (use 2, 4, 8 to represent 1/2, 1/4, 1/8).
+* For Bittle: Add front flip, roll left, roll right, and tune back flip. It's better to remove its head to perform those tricks. 
+* Shrink the size of codes for getting and saving MPU offsets.
+* Won't repeat the last behavior after roll recover.
+* ESP8266WiFiController: won't refresh the page after sending command to save time
+* ESP8266WiFiController: Simplify the cases on the main command page with a dictionary. 
+* Add some new moduleTest codes
+
 ## May 8, 2022
 * pyUI/ui.py: Add names to trigger axis
 * pyUI/ui.py: Optimize the layout for Windows machines
