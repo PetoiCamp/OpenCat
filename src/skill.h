@@ -293,8 +293,7 @@ class Skill {
         protectiveShift = 0;
       for (byte i = 0; i < DOF; i++)
         dutyAngles[i] += protectiveShift;
-      if (period > 1 && offsetLR < 0
-          || period <= 1 && random(100) % 2 && token != T_CALIBRATE)
+      if (offsetLR < 0 || period <= 1 && offsetLR == 0 && random(100) % 2 && token != T_CALIBRATE)
         mirror();
       frame = 0;
       transform( dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
@@ -362,18 +361,18 @@ class Skill {
           delay(abs(dutyAngles[DOF + 1 + c * frameSize] * 50));
           if (repeat != 0 && c != 0 && c == loopCycle[1]) {
             c = loopCycle[0] - 1;
-            if (repeat > 0) //if repeat <0, infinite loop. only reset button will break the loop
+            if (repeat > 0) //if repeat <0, infinite loop. only the reset button will break the loop
               repeat--;
           }
         }
       }
       else {//postures and gaits
 #ifdef GYRO_PIN
-        //                if (imuUpdated)
+        // if (imuUpdated)
         if (!(frame % IMU_SKIP)) {
           for (byte i = 0; i < 2; i++) {
             RollPitchDeviation[i] = ypr[2 - i]  - expectedRollPitch[i]; //all in degrees
-            RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i])) - levelTolerance[i], float(0)) + yprTilt[2 - i]; //filter out small angles
+            RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i]) - levelTolerance[i]), float(0)) + yprTilt[2 - i]; //filter out small angles
           }
         }
 #endif
@@ -444,7 +443,7 @@ int testEEPROM(char* skillData) {
 #ifndef MAIN_SKETCH
 void writeConst() {
   //  flushEEPROM();
-  beep(20); 
+  beep(20);
   int melodyAddress = MELODY_NORMAL;
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
   saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
@@ -480,7 +479,9 @@ int configureEEPROM() {
   PTLF("\n* Change model and board definitions in OpenCat.ino!");
   PTLF("\nConfigure EEPROM");
   writeConst(); // only run for the first time when writing to the board.
+  wdt_enable(WDTO_8S);
   skill.saveSkillInfoFromProgmemToOnboardEeprom();
+  wdt_reset();
   return 1;
 }
 #endif

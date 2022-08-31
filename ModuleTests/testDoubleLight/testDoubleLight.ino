@@ -1,29 +1,14 @@
-#define SOUND A2
-#define LIGHT A3
+#define LIGHT1 A2
+#define LIGHT2 A3
 #define BUZZER 5
-#define READING_COUNT 100
+#define READING_COUNT 30
 
-//S_n=S_n-1+(x_n - m_n-1)(x_n - m_n)
+#define IN1 LIGHT1
+#define IN2 LIGHT2
+#define MAX_READING 1024
 
-void beep(int8_t note, float duration = 10, int pause = 0, byte repeat = 1 ) {
-  if (note == 0) {//rest note
-    analogWrite(BUZZER, 0);
-    delay(duration);
-    return;
-  }
-  int freq = 220 * pow(1.059463, note - 1); // 1.059463 comes from https://en.wikipedia.org/wiki/Twelfth_root_of_two
-  float period = 1000000.0 / freq;
-  for (byte r = 0; r < repeat; r++) {
-    for (float t = 0; t < duration * 1000; t += period) {
-      analogWrite(BUZZER, 150);      // Almost any value can be used except 0 and 255
-      // experiment to get the best tone
-      delayMicroseconds(period / 2);        // rise for half period
-      analogWrite(BUZZER, 0);       // 0 turns it off
-      delayMicroseconds(period / 2);        // down for half period
-    }
-    delay(pause);
-  }
-}
+int meanA = 0, meanB = 0, diffA_B = 0;
+int tolerance = 20;
 
 float mean(int *a, int n) {
   float sum = 0;
@@ -47,41 +32,27 @@ float correlation(int *a, int *b, int n) {
   return sqrt(sum / n);
 }
 
-bool sensorConnectedQ(int n) {
-  float mean = 0;
-  float bLag = analogRead(A3);
+template <typename T> int8_t sign(T val) {
+  return (T(0) < val) - (val < T(0));
+}
 
-  for (int i = 0; i < READING_COUNT; i++) {
-    int a, b;
-    a = analogRead(A2);
-    b = analogRead(A3);
-    mean = mean + ((a - b) * (a - b) - mean) / (i + 1);
-    Serial.print(0);
-    Serial.print('\t');
-    Serial.print(1024);
-    Serial.print('\t');
-    Serial.print(a);
-    Serial.print('\t');
-    Serial.print(b);
-    Serial.println('\t');
+bool readSensor(int n) {
+  int a = analogRead(IN1) - meanA;
+  int b = analogRead(IN2) - meanB;
+  int offset = a-b;//max(abs(a - b) - tolerance, 0) * sign(a - b);
 
-    //        Serial.print(mean);
-    //        Serial.println('\t');
+  Serial.print(MAX_READING);
+  Serial.print('\t');
+  Serial.print(0);
+  Serial.print('\t');
+  Serial.print(a);
+  Serial.print('\t');
+  Serial.print(b);
+  Serial.print('\t');
+  Serial.print(offset);
+  Serial.println();
 
-    if (abs(a - b) > 50 && abs(b - bLag) < 5) {
-      //      Serial.print(a);
-      //      Serial.print('\t');
-      //      Serial.print(b);
-      return true;
-    }
-
-    bLag = b;
-    delay(5);
-  }
-  //Serial.println(sqrt(sum));
-
-  return sqrt(mean) > 20 ? true : false;
-
+  delayMicroseconds(50);
 }
 void stats() {
   //  int sound[READING_COUNT];
@@ -126,24 +97,33 @@ void stats() {
   //  Serial.println(cor > 20 ? "connected" : "Null");
 
 }
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   delay(100);
   Serial.println("start");
-  for (int i = 0; i < 50; i++) {
-    analogRead(A2);
-    analogRead(A3);
+  for (int i = 0; i < READING_COUNT; i++) {
+    int a = analogRead(IN1);
+    int b = analogRead(IN2);
+    meanA += (a / READING_COUNT);
+    meanB += (b / READING_COUNT);
+    diffA_B += (a - b) / READING_COUNT;
     delay(1);
   }
 
+  Serial.print(meanA);
+  Serial.print('\t');
+  Serial.print(meanB);
+  Serial.print('\t');
+  Serial.println(diffA_B);
+  delay(2000);
+  //  resetReading();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  //stats();
-  //  sensorConnectedQ(READING_COUNT);
-  bool con = sensorConnectedQ(READING_COUNT);
+
+  bool con = readSensor(READING_COUNT);
   //  Serial.println(con);
   //  con ? beep(10, 200) : beep(20, 200);
 }

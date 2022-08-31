@@ -1,8 +1,8 @@
 
 
 // balancing parameters
-#define ROLL_LEVEL_TOLERANCE 3//the body is still considered as level, no angle adjustment
-#define PITCH_LEVEL_TOLERANCE 2
+#define ROLL_LEVEL_TOLERANCE 5//the body is still considered as level, no angle adjustment
+#define PITCH_LEVEL_TOLERANCE 3
 int8_t levelTolerance[2] = {ROLL_LEVEL_TOLERANCE, PITCH_LEVEL_TOLERANCE}; //the body is still considered as level, no angle adjustment
 
 //the following coefficients will be divided by radPerDeg in the adjust() function. so (float) 0.1 can be saved as (int8_t) 1
@@ -96,11 +96,10 @@ template <typename T> void transform( T * target, byte angleDataRatio = 1, float
       || servoOff
 #endif
      ) { // the speed ratio should be >0, if the user enters some large numbers, it will become negative
-    PTL("slow boot");
     allCalibratedPWM(target, offset);
 #ifdef SERVO_SLOW_BOOT
     if (servoOff) { //slow boot up for servos
-      delay(1000);
+      delay(500);
       servoOff = false;
     }
 #endif

@@ -205,6 +205,7 @@ void readEnvironment() {
 //This function will write a 2-byte integer to the EEPROM at the specified address and address + 1
 
 void imuSetup() {
+  wdt_enable(WDTO_2S);
   do {
     delay(100);
     // initialize device
@@ -219,21 +220,22 @@ void imuSetup() {
   // load and configure the DMP
   //  PTLF("Init DMP");
   devStatus = mpu.dmpInitialize();
-
-  //  void (MPU6050::*setOffset[6])(int16_t) = { &MPU6050::setXAccelOffset, &MPU6050::setYAccelOffset, &MPU6050::setZAccelOffset,
-  //                                             &MPU6050::setXGyroOffset, &MPU6050::setYGyroOffset, &MPU6050::setZGyroOffset
-  //                                           };
-  for (byte m = 0; m < 6; m++)
-    imuOffset[m] = EEPROMReadInt(MPUCALIB + m * 2);
-  //    (mpu.*setOffset[m])(EEPROMReadInt(MPUCALIB + m * 2));
+  wdt_disable();
 
   // supply the gyro offsets here, scaled for min sensitivity
-  mpu.setXAccelOffset(imuOffset[0]);
-  mpu.setYAccelOffset(imuOffset[1]);
-  mpu.setZAccelOffset(imuOffset[2]);  //gravity
-  mpu.setXGyroOffset(imuOffset[3]);   //yaw
-  mpu.setYGyroOffset(imuOffset[4]);   //pitch
-  mpu.setZGyroOffset(imuOffset[5]);   //roll
+  for (byte axis = 0; axis < 6; axis++) {
+    imuOffset[axis] = EEPROMReadInt(MPUCALIB + axis * 2);
+    if (axis < 3)
+      mpu.setAccelOffset(axis, imuOffset[axis]);
+    else
+      mpu.setGyroOffset(axis, imuOffset[axis]);
+    }
+  //  mpu.setXAccelOffset(imuOffset[0]);
+  //  mpu.setYAccelOffset(imuOffset[1]);
+  //  mpu.setZAccelOffset(imuOffset[2]);  //gravity
+  //  mpu.setXGyroOffset(imuOffset[3]);   //yaw
+  //  mpu.setYGyroOffset(imuOffset[4]);   //pitch
+  //  mpu.setZGyroOffset(imuOffset[5]);   //roll
 
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
@@ -241,31 +243,32 @@ void imuSetup() {
 #ifndef MAIN_SKETCH
     beep(10);
 #ifndef AUTO_INIT
-    PTLF("Calibrate IMU?(Y/n):");
+    PTLF("\nLay the robot/board FLAT on a table. Calibrate IMU?(Y/n):");
     char choice = getUserInputChar();
     PTL(choice);
     if (choice == 'Y' || choice == 'y') {
-#endif
-      PTLF("\nLay the robot FLAT on a table");
-#ifndef AUTO_INIT
-      beep(8, 400, 600, 5);
 #endif
       beep(15, 400, 600);
       PTLF("Calibrating...");
       mpu.CalibrateAccel(10);
       mpu.CalibrateGyro(10);
-      EEPROMWriteInt(MPUCALIB, mpu.getXAccelOffset());
-      EEPROMWriteInt(MPUCALIB + 2, mpu.getYAccelOffset());
-      EEPROMWriteInt(MPUCALIB + 4, mpu.getZAccelOffset());
-      EEPROMWriteInt(MPUCALIB + 6, mpu.getXGyroOffset());
-      EEPROMWriteInt(MPUCALIB + 8, mpu.getYGyroOffset());
-      EEPROMWriteInt(MPUCALIB + 10, mpu.getZGyroOffset());
+      for (byte axis = 0; axis < 6; axis++) {
+        if (axis < 3)
+          EEPROMWriteInt(MPUCALIB + axis * 2, mpu.getAccelOffset(axis));
+        else
+          EEPROMWriteInt(MPUCALIB + axis * 2, mpu.getGyroOffset(axis));
+      }
+      //      EEPROMWriteInt(MPUCALIB, mpu.getXAccelOffset());
+      //      EEPROMWriteInt(MPUCALIB + 2, mpu.getYAccelOffset());
+      //      EEPROMWriteInt(MPUCALIB + 4, mpu.getZAccelOffset());
+      //      EEPROMWriteInt(MPUCALIB + 6, mpu.getXGyroOffset());
+      //      EEPROMWriteInt(MPUCALIB + 8, mpu.getYGyroOffset());
+      //      EEPROMWriteInt(MPUCALIB + 10, mpu.getZGyroOffset());
 
 #ifndef AUTO_INIT
     }
 #endif
-    PTLF("\nEEPROM contents:");
-    printEEPROM();
+//    printEEPROM();
     beep(18, 50, 70, 6);
 #endif
     //    mpu.PrintActiveOffsets(); //it takes 7% flash!
@@ -281,7 +284,6 @@ void imuSetup() {
     // set our DMP Ready flag so the main loop() function knows it's okay to use it
     //    PTLF("DMP ready!");
     dmpReady = true;
-
     // get expected DMP packet size for later comparison
     packetSize = mpu.dmpGetFIFOPacketSize();
   } else {

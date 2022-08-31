@@ -20,6 +20,7 @@ The major function modules are the [Firmware Uploader](https://docs.petoi.com/de
 Before running the app, you need to use the included USB adapter or the Bluetooth dongle to connect to a Petoi robot. 
 
 ## Pre-compiled binaries
+
 You can download the [pre-compiled binaries](https://a4776308-1c7f-4550-ae3b-9435cb7fc784.usrfiles.com/archives/a47763_e1e190b6030d46629d8de85a550f6fd8.zip).
 After downloading the Mac version, you must drag it into the Application folder. 
 

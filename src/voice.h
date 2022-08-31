@@ -11,7 +11,7 @@ const char voice4[] PROGMEM = "zuo xia:ksit";                 //坐下
 const char voice5[] PROGMEM = "fu wo cheng:kpu";              //俯卧撑
 const char voice6[] PROGMEM = "jia you:kjy";                  //加油
 const char voice7[] PROGMEM = "ta bu:kvt";                    //踏步
-const char voice8[] PROGMEM = "liang zhi lao hu:b8 90 10 90 12 90 8 90 8 90 10 90 12 90 8 90 12 90 13 90 15 180 12 90 13 90 15 180";  //两只老虎
+const char voice8[] PROGMEM = "xiao xing xing:b14 8 14 8 21 8 21 8 23 8 23 8 21 4 19 8 19 8 18 8 18 8 16 8 16 8 14 4";  //两只老虎
 const char voice9[] PROGMEM = "shui jiao:d ";                 //睡觉
 const char voice10[] PROGMEM = "guan cha:kck";                //观察
 const char voice11[] PROGMEM = "he lou:khi";                  //hello
@@ -20,7 +20,7 @@ const char voice13[] PROGMEM = "yao tou:m0 -45 0 45 0 -45 0 45";      //stand up
 const char voice14[] PROGMEM = "chong fu:T ";
 const char* const voiceTable[] PROGMEM = {voice1, voice2, voice3, voice4,
                                           voice5, voice6, voice7, voice8,
-                                          voice9, voice10, voice11, voice12,voice13,voice14
+                                          voice9, voice10, voice11, voice12, voice13, voice14
                                          };
 
 void voiceSetup()
@@ -57,8 +57,8 @@ void read_voice()
     unsigned char result;
     result = ld3320_get_result();
     if (result != 0xFF) {
-      //    Serial.print("asr result is:");
-      //    Serial.println(result);   //返回识别结果，即识别到的词条编号
+      Serial.print("asr result is:");
+      Serial.println(result);   //返回识别结果，即识别到的词条编号
       for (byte v = 0; v < sizeof(voiceTable) / 2; v++) {
         if (result == v) {
           char *ptr;

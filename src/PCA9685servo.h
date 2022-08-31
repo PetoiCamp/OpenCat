@@ -26,10 +26,17 @@
 #include "Adafruit-PWM-Servo-Driver-Library/Adafruit_PWMServoDriver.h"
 
 #define P_STEP 32
-#define P_BASE 3000 + 4 * P_STEP
-#define P_HARD (P_BASE + P_STEP * 4)
+#define P_BASE 3000 + P_STEP * 6  //3000~3320
+#define P_HARD (P_BASE + P_STEP * 2)
 #define P_SOFT (P_BASE - P_STEP * 2)
 
+#define SERVO_FREQ 240
+#ifndef PWM_READ_PIN
+#define PWM_READ_PIN A3
+#endif
+
+bool calibrated = false;
+int lastValue = 0;
 
 // Depending on your servo make, the pulse width min and max may vary, you
 // want these to be as small/large as possible without hitting the hard stop
@@ -70,22 +77,6 @@ class Petoi_PWMServoDriver: public Adafruit_PWMServoDriver {
       setPWMFreq(SERVO_FREQ);
       this->oscillatorFreq = oscillatorFreq;
       setOscillatorFrequency(oscillatorFreq);
-      /*Note in Adafruit_PWMServoDriver:
-        In theory, the internal oscillator (clock) is 25MHz but it really isn't
-        that precise. You can 'calibrate' this by tweaking this number until
-        you get the PWM update frequency you're expecting!
-        The int.osc. for the PCA9685 chip is a range between about 23-27MHz and
-        is used for calculating things like writeMicroseconds()
-        Analog servos run at ~50 Hz updates, It is important to use an
-        oscilloscope in setting the int.osc frequency for the I2C PCA9685 chip.
-        1) Attach the oscilloscope to one of the PWM signal pins and ground on
-        the I2C PCA9685 chip you are setting the value for.
-        2) Adjust setoscillatorFrequency() until the PWM update frequency is the
-        expected value (50Hz for most ESCs)
-        Setting the value here is specific to each individual I2C PCA9685 chip and
-        affects the calculations for the PWM update frequency.
-        Failure to correctly set the int.osc value will cause unexpected PWM results
-      */
 
 #ifndef MAIN_SKETCH
       servoPWMFreq = SERVO_FREQ;
@@ -173,14 +164,80 @@ void setServoP(unsigned int p) {
   for (byte i = 0; i < 16; i++)
     pwm.writeMicroseconds(i, p);
 }
+/*
+  In theory the internal oscillator (clock) is 25MHz but it really isn't
+  that precise. You can 'calibrate' this by tweaking this number until
+  you get the PWM update frequency you're expecting!
+  The int.osc. for the PCA9685 chip is a range between about 23-27MHz and
+  is used for calculating things like writeMicroseconds()
+  It is importaint to use an oscilloscope in setting the int.osc frequency
+  for the I2C PCA9685 chip.
+  1) Attach the oscilloscope to one of the PWM signal pins and ground on
+    the I2C PCA9685 chip you are setting the value for.
+  2) Enter the actual PWM's pulse-width until it becomes the
+    expected value (1500 us).
+  Setting the value here is specific to each individual I2C PCA9685 chip and
+  affects the calculations for the PWM update frequency.
+  Failure to correctly set the int.osc value will cause unexpected PWM results
+*/
+long initValue;
+void PCA9685CalibrationPrompt() {
+  PTL("Optional: Connect PWM pin " + String(eeprom(PWM_PIN, 3)) + " -> Grove pin A3 to calibrate PCA9685");
+}
 
+int measurePulseWidth(uint8_t pwmReadPin) {
+  while (!analogRead(pwmReadPin));
+  long t1 = micros();
+  while (analogRead(pwmReadPin));
+  return (micros() - t1);
+}
+
+byte match = 0;
+void calibratePCA9685() {
+  delay(100);
+  if (!calibrated && analogRead(PWM_READ_PIN) == 0) { //the pins are connected
+    //    for (byte i = 0; i < 16; i++)
+    pwm.writeMicroseconds(eeprom(PWM_PIN, 3), 1500);
+    delay(5);
+    int actualPulseWidth;
+    actualPulseWidth = 0;
+    for (int i = 0; i < 11; i++) {
+      int oneReading = measurePulseWidth(PWM_READ_PIN);
+      if (i > 0)
+        actualPulseWidth += oneReading;
+    }
+    actualPulseWidth /= 10;
+    long actualFreq = round(initValue * 1500 / actualPulseWidth);
+
+    if (actualFreq >= 23000 && actualFreq <= 27000) {
+      PTL(actualFreq);
+      if (actualFreq == lastValue) {
+        match++;
+        if (match == 2) {
+          EEPROMWriteInt(PCA9685_FREQ, actualFreq);
+          Serial.println("Calibrated: " + String(actualFreq) + " kHz");
+          beep(20, 100, 50, 3);
+          calibrated = true;
+        }
+      }
+      else
+        match = 0;
+    }
+    lastValue = actualFreq;
+  }
+}
 void servoSetup() {
-  Serial.println("Init servos");
+  PTF("Init servos: ");
   for (byte i = 0; i < DOF; i++) {
     servoCalib[i] = eeprom(CALIB, i);
   }
   pwm.begin();
-  pwm.setup();
+  initValue = EEPROMReadInt(PCA9685_FREQ);
+  if (initValue < 23000 || initValue > 27000)
+    initValue = 25000;
+  PT(float(initValue) / 1000);
+  PTLF("MHz");
+  pwm.setup(DOF, long(initValue) * 1000);
   pwm.shutServos();
 }
 
