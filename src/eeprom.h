@@ -30,7 +30,8 @@ void printEEPROM() {
   PTLF("\nEEPROM contents:");
   for (int i = 0; i < 1024; i++) {
     if (!(i % 16)) {
-      PT(String(i / 16) + ":\t");
+      PT(i / 16);
+      PT(":\t");
       delay(6);
     }
     PT(eeprom(i));

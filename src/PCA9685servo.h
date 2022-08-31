@@ -182,7 +182,9 @@ void setServoP(unsigned int p) {
 */
 long initValue;
 void PCA9685CalibrationPrompt() {
-  PTL("Optional: Connect PWM pin " + String(eeprom(PWM_PIN, 3)) + " -> Grove pin A3 to calibrate PCA9685");
+  PT("Optional: Connect PWM ");
+  PT(eeprom(PWM_PIN, 3));
+  PTL(" -> Grove pin A3 to calibrate PCA9685");
 }
 
 int measurePulseWidth(uint8_t pwmReadPin) {
@@ -198,10 +200,10 @@ void calibratePCA9685() {
   if (!calibrated && analogRead(PWM_READ_PIN) == 0) { //the pins are connected
     //    for (byte i = 0; i < 16; i++)
     pwm.writeMicroseconds(eeprom(PWM_PIN, 3), 1500);
-    delay(5);
     int actualPulseWidth;
     actualPulseWidth = 0;
     for (int i = 0; i < 11; i++) {
+      delay(10);
       int oneReading = measurePulseWidth(PWM_READ_PIN);
       if (i > 0)
         actualPulseWidth += oneReading;
@@ -215,7 +217,9 @@ void calibratePCA9685() {
         match++;
         if (match == 2) {
           EEPROMWriteInt(PCA9685_FREQ, actualFreq);
-          Serial.println("Calibrated: " + String(actualFreq) + " kHz");
+          PT("Calibrated: ");
+          PT(actualFreq);
+          PT(" kHz");
           beep(20, 100, 50, 3);
           calibrated = true;
         }
