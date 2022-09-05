@@ -6,28 +6,33 @@ const char mind4[] PROGMEM = "kpu";
 const char mind5[] PROGMEM = "khi";
 const char mind6[] PROGMEM = "kck";
 const char mind7[] PROGMEM = "kjy";
-const char mind8[] PROGMEM = "kvt";
+const char mind8[] PROGMEM = "kvtF";
+const char mind9[] PROGMEM = "kvtL";
+const char mind10[] PROGMEM = "kvtR";
 const char mind11[] PROGMEM = "o ";
 const char mind12[] PROGMEM = "u ";
 const char mind13[] PROGMEM = "kstr";
 const char mind14[] PROGMEM = "kwkF";
 const char mind15[] PROGMEM = "kwkL";
 const char mind16[] PROGMEM = "kwkR";
+const char mind17[] PROGMEM = "kpu1";
+const char mind18[] PROGMEM = "kwkF";
+const char mind19[] PROGMEM = "kbk";
 
 const char* const mindList[] PROGMEM = {mind0, mind1, mind4, mind5, mind12, mind13,
 #ifdef BITTLE
-                                        mind3, mind6, mind7,
+                                        mind3, mind6, mind7, mind8, mind9, mind10, mind17, mind18, mind19,
 #endif
                                        };
 byte choiceWeight[] = {
 #ifdef ALL_RANDOM
-  60,
+  30,
 #else
   10,
 #endif
-  10, 1, 2, 2, 1,
+  5, 1, 2, 2, 1,
 #ifdef BITTLE
-  1, 3, 2,
+  1, 3, 2, 1, 1, 1, 1, 1, 1
 #endif
 };
 
