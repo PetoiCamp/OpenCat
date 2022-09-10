@@ -177,7 +177,7 @@ void reaction() {
           break;
         }
       case T_CALIBRATE: //calibration
-      case T_MOVE_ASC: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
+      case T_INDEXED_SEQUENTIAL_ASC: //move multiple indexed joints to angles once at a time (ASCII format entered in the serial monitor)
       case T_INDEXED_SIMULTANEOUS_ASC: //move multiple indexed joints to angles simultaneously (ASCII format entered in the serial monitor)
 #ifdef T_SERVO_MICROSECOND
       case T_SERVO_MICROSECOND: //send pulse with unit of microsecond to a servo
@@ -227,7 +227,7 @@ void reaction() {
               //              PT(token);
               //              printList(target, 2);
             }
-            else if (token == T_MOVE_ASC) {
+            else if (token == T_INDEXED_SEQUENTIAL_ASC) {
               transform(targetFrame, 1, 2);
             }
 #ifdef T_SERVO_MICROSECOND

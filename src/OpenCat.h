@@ -183,7 +183,7 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define T_INDEXED_SIMULTANEOUS_ASC 'i'
 #define T_JOINTS      'j'
 #define T_SKILL       'k'
-#define T_MOVE_ASC    'm'
+#define T_INDEXED_SEQUENTIAL_ASC    'm'
 #define T_MELODY      'o'
 #define T_PAUSE       'p'
 #define T_RAMP        'r'
