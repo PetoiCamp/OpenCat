@@ -10,12 +10,18 @@ This file is a collection of new skills that can be performed by OpenCat robots,
 You can create new skills with the Skill Composer and you are welcome to share your skills by sending merge requests to this file. 
 
 \# Creator: XXX
+
 \# Country: XXX
+
 \# Date: Sep 9, 2022
+
 \# Note: Make Nybble do push-ups with one hand. More find movements added.
+
 {
+
 .....
 
 }
+
 \# The data array must be surrounded by {}. The skill composer will use the first pair of {} to parse the array, so you don't need to delete the commenting information. 
 
