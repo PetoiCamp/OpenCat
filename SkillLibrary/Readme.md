@@ -20,5 +20,5 @@ You can create new skills with the Skill Composer and you are welcome to share y
 }
 ```
 
-\# The data array must be surrounded by {}. The skill composer will use the first pair of {} to parse the array, so you don't need to delete the commenting information. 
+The data array must be surrounded by {}. The skill composer will use the first pair of {} to parse the array, so you don't need to delete the commenting information. 
 
