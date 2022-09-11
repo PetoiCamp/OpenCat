@@ -1,3 +1,8 @@
+# Creator: Rongzhong Li
+# Country: China
+# Date: Sep 8, 2022
+# Note: Make Nybble do push-ups with one hand.
+
 {
   -7,   0,   0,   1,
    4,   5,   3,
