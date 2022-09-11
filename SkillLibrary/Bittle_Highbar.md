@@ -1,7 +1,8 @@
 # Creator: David Lin
 # Country: China
 # Date: July 18, 2022
-# Note: Make Bittle roll on a high bar 111 times. Change the 111 to -1 to make it infinite. You need to install [hooks](https://github.com/PetoiCamp/NonCodeFiles/tree/master/stl/BittleHighbarHooks) on Bittle's front hands. [Demo](https://youtu.be/kam61UxwSVc)
+# Note: Make Bittle roll on a high bar 111 times. Change the 111 to -1 to make it infinite. You need to install [hooks](https://github.com/PetoiCamp/NonCodeFiles/tree/master/stl/BittleHighbarHooks) on Bittle's front hands. 
+# [Demo](https://youtu.be/kam61UxwSVc)
 
 
 {
