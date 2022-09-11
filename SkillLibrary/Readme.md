@@ -4,7 +4,7 @@ This folder is a collection of new skills that can be performed by OpenCat robot
 
 There are several ways to perform the new skills:
 
-1. Import a skill file through the Petoi Desktop app -> [Skill Composer](https://docs.petoi.com/desktop-app/skill-composer). It will be saved to the robot's memory and overwrite the last sent skill. Use Token 'T' to call the skill. You can send 'T' through the serial command or assign it to one of the infrared remote key. 
+1. Import a skill file through the Petoi Desktop app -> [Skill Composer](https://docs.petoi.com/desktop-app/skill-composer). It will be saved to the robot's memory and overwrite the last sent skill. Use token 'T' to call the skill. You can send 'T' through the serial command or assign it to one of the infrared remote key. 
 
 2. Insert it in [OpenCat/serialMaster/example.py](https://docs.petoi.com/api/serialmaster-user-guide#method-2-run-the-custom-scheduler-example.py).
 
@@ -17,9 +17,11 @@ You can create new skills with the [Skill Composer](https://docs.petoi.com/deskt
 # Creator: XXX
 # Country: XXX
 # Date: Sep 9, 2022
-# Note: Make Nybble do push-ups with one hand. More find movements added.
+# Note: Make Nybble do push-ups with one hand. More fine movements are added.
+# Demo Video link
 {
-.....
+  skill data array
+  .....
 }
 ```
 
