@@ -35,6 +35,8 @@
 #define PWM_READ_PIN A3
 #endif
 
+#define MATCHING_TIMES 2
+
 bool calibrated = false;
 int lastValue = 0;
 
@@ -215,7 +217,7 @@ void calibratePCA9685() {
       PTL(actualFreq);
       if (actualFreq == lastValue) {
         match++;
-        if (match == 2) {
+        if (match == MATCHING_TIMES) {
           EEPROMWriteInt(PCA9685_FREQ, actualFreq);
           PT("Calibrated: ");
           PT(actualFreq);
