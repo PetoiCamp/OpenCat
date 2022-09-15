@@ -10,7 +10,10 @@ There are several ways to perform the new skills:
 
 3. Integrate the skill directly into the OpenCat main code. But it requires a deeper understanding of the [data structure](https://bittle.petoi.com/11-tutorial-on-creating-new-skills). 
 
-You can create new skills with the [Skill Composer](https://docs.petoi.com/desktop-app/skill-composer) and you are welcome to share your skills by sending merge requests to this folder. 
+You can check the [Video Tutorial](https://youtu.be/kyN5vFY9fAI) and create new skills with the [Skill Composer](https://docs.petoi.com/desktop-app/skill-composer).
+
+You are welcome to share your skills by sending merge requests to this folder. 
+
 
 ```
 # Name: Model-ShortSkillName
