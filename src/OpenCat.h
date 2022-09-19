@@ -190,7 +190,7 @@ byte pwm_pin[] = {12, 11, 4, 3,
 #define T_SAVE        's'
 #define T_TILT        't'
 #define T_MEOW        'u'
-//#define T_PRINT_GYRO            'v' //print Gyro data
+#define T_PRINT_GYRO            'v' //print Gyro data
 //#define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
 //#define T_WORD        'w'
 //#define T_XLEG        'x'
