@@ -253,12 +253,13 @@ def send(port, task, timeout=0):
     queue = splitTaskForLargeAngles(task)
     for task in queue:
         if len(port) > 1:
-            return sendTaskParallel(p, task, timeout)
+            returnResult = sendTaskParallel(p, task, timeout)
         elif len(port) == 1:
-            return sendTask(goodPorts, p[0], task, timeout)
+            returnResult = sendTask(goodPorts, p[0], task, timeout)
         else:
             #            print('no ports')
             return -1
+    return returnResult
 
 
 def keepReadingInput(ports):
