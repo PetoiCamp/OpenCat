@@ -231,8 +231,9 @@ def splitTaskForLargeAngles(task):
                         indexedList += [4 * j + i, angle]
                         var[4 * j + i] = max(min(angle, 125), -125)
             if len(var):
-                queue.append(['L', var, 0])
+                queue.append(['L', var, task[-1]])
             if len(indexedList):
+                queue[0][-1] = 0
                 queue.append(['i', indexedList, task[-1]])
         #                print(queue)
         elif token == 'I':
