@@ -7,7 +7,7 @@
 */
 
 #include <IRremote.h>
-
+#define IR_USE_TIMER1  //check the IRremote header file to modify the timer 
 IRsend irsend;
 
 // On the Zero and others we switch explicitly to SerialUSB
@@ -42,7 +42,7 @@ void loop() {
     //        irsend.sendJVC(0xC5B8, 16,1); // hex value, 16 bits, repeat
     //        Serial.println(F("sendJVC(9xC5B8, 16)"));
 
-    delay(200);
+    delay(50);
   }
-  delay(500); //5 second delay between each signal burst
+  delay(50); //5 second delay between each signal burst
 }

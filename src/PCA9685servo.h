@@ -36,6 +36,7 @@
 #endif
 
 #define MATCHING_TIMES 2
+#define COUNT_TIMES 7
 
 bool calibrated = false;
 int lastValue = 0;
@@ -204,13 +205,13 @@ void calibratePCA9685() {
     pwm.writeMicroseconds(eeprom(PWM_PIN, 3), 1500);
     int actualPulseWidth;
     actualPulseWidth = 0;
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < COUNT_TIMES+1; i++) {
       delay(10);
       int oneReading = measurePulseWidth(PWM_READ_PIN);
       if (i > 0)
         actualPulseWidth += oneReading;
     }
-    actualPulseWidth /= 10;
+    actualPulseWidth /= COUNT_TIMES;
     long actualFreq = round(initValue * 1500 / actualPulseWidth);
 
     if (actualFreq >= 23000 && actualFreq <= 27000) {

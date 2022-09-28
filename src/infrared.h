@@ -118,6 +118,8 @@ String translateIR() // takes action based on IR code received
     case 0x4A: /*PTLF(" 8");  */          return (F(K61));
     case 0x52: /*PTLF(" 9");  */          return (F(K62));
 
+    case 0x12: return("ts"); //for factory use
+
     case 0xFF: return ""; //Serial.println(" REPEAT");
 #endif
     default: {
