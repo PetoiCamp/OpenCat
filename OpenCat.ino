@@ -65,13 +65,13 @@
 //https://github.com/PetoiCamp/NonCodeFiles/blob/master/stl/bone.stl
 //After uploading the code, you may need to press the reset buttons on the module and then the NyBoard.
 //The tracking demo works the best with a yellow tennis ball or some other round objects. Demo: https://www.youtube.com/watch?v=CxGI-MzCGWM
-
+#define OTHER_MODULES
 
 #include "src/OpenCat.h"
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  Serial.setTimeout(2);
+  Serial.setTimeout(5);
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
