@@ -1,7 +1,15 @@
-# Creator: Rongzhong Li
-# Country: China
-# Date: Sep 8, 2022
-# Note: Make Nybble do push-ups with one hand.
+# One Hand Pushups
+Note: Make Nybble do push-ups with one hand.
+
+Model: Nybble
+
+Creator: Rongzhong Li
+
+Country: China
+
+Date: Sep 8, 2022
+
+# Data
 
 {
   -7,   0,   0,   1,
