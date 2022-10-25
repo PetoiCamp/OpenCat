@@ -37,11 +37,11 @@
   3. Uncomment #define MAIN_SKETCH to make it active. Then upload the program for main functions.
 */
 
-#define MAIN_SKETCH //the Petoi App only works when this mode is on
+// #define MAIN_SKETCH  //the Petoi App only works when this mode is on
 //#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
 
-#define BITTLE    //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+#define BITTLE  //Petoi 9 DOF robot dog: 1x on head + 8x on leg
 //#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 //#define NyBoard_V0_1
@@ -65,7 +65,8 @@
 //https://github.com/PetoiCamp/NonCodeFiles/blob/master/stl/bone.stl
 //After uploading the code, you may need to press the reset buttons on the module and then the NyBoard.
 //The tracking demo works the best with a yellow tennis ball or some other round objects. Demo: https://www.youtube.com/watch?v=CxGI-MzCGWM
-// #define OTHER_MODULES
+
+// #define OTHER_MODULES  //uncomment this line to disable the gyroscope code to save programming resources for other modules.
 
 #include "src/OpenCat.h"
 
@@ -80,86 +81,54 @@ void setup() {
   //#elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
   //  Fastwire::setup(400, true);
   //#endif
-
-  //----------------------------------
-#ifdef MAIN_SKETCH  // **
-  PTL('k');
-#ifdef GYRO_PIN
-  imuSetup();
-#endif
-#ifdef IR_PIN
-  irrecv.enableIRIn(); // Start the receiver
-  gait.reserve(4);
-#endif
-
-#ifdef LED_PIN
-  pinMode(LED_PIN, OUTPUT);
-#endif
-#ifdef NEOPIXEL_PIN
-  //  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
-  //  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
-#endif
-
-  servoSetup();
-  skill.assignSkillAddressToOnboardEeprom();
-#ifdef RANDOM_MIND
-  for (byte i = 0; i < randomMindListLength; i++) {
-    randomBase += choiceWeight[i];
-  }
-#endif
-  randomSeed(analogRead(A2));//use the fluctuation of voltage caused by servos as entropy pool
-
-#ifdef VOICE
-  voiceSetup();
-#endif
-#ifdef CAMERA
-  cameraSetup();
-#endif
-
-  playMelody(MELODY_NORMAL);
-
-  delay(2000);//change the delay if the app doesn't recognize the Petoi device.
-#ifdef GYRO_PIN
-  for (byte r = 0; r < 3; r++)
-    read_IMU(); //ypr is slow when starting up. leave enough time between IMU initialization and this reading
-  token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST; //put the robot's side on the table to enter calibration posture for attaching legs
-  newCmdIdx = 2;
-#endif
-  PTLF("\n* Start *");
-#ifdef BITTLE
-  PTLF("Bittle");
-#elif defined NYBBLE
-  PTLF("Nybble");
-#elif defined CUB
-  PTLF("Cub");
-#endif
-  //----------------------------------
-#else               // ** save parameters to device's static memory
-  configureEEPROM();
-  servoSetup(); //servo needs to be after configureEEPROM and before imuSetup
-#ifdef GYRO_PIN
-  imuSetup();
-#endif
-#endif              // **
-  PTLF("Ready!");
-#ifndef MAIN_SKETCH
-  PCA9685CalibrationPrompt();
-#endif
+  initRobot();
 }
 
 void loop() {
 #ifdef MAIN_SKETCH
 #ifdef VOLTAGE_DETECTION_PIN
-  lowBattery(); //  block the loop if battery is low
-  //  can be disabled to save programming space and reduce low voltage interruptions
+  lowBattery();  //  block the loop if battery is low
+  //  can be disabled to save programming space and reduce the low voltage interruptions
 #endif
 #ifdef GYRO_PIN
-  readEnvironment();
-  dealWithExceptions(); //fall over, lifted, etc.
+  readEnvironment();     //reads the IMU (Inertia Measurement Unit, i.e. acceleration and angles).
+                         //May read more sensors in the future
+  dealWithExceptions();  //fall over, lifted, etc.
 #endif
-  readSignal();
-  reaction();
+  readSignal();  //commands sent by user interfaces and sensors
+
+#ifdef OTHER_MODULES
+  otherModule();  //you can create your own code here
+  //or put it in the readSignal() function of src/io.h
+#endif
+
+  reaction();  //handle different commands
 #else
   calibratePCA9685();
 #endif
 }
+
+#ifdef OTHER_MODULES  //remember to activate the #define OTHER_MODULES at the begining of this code to activate the following section
+void otherModule() {  //this is an example that use the analog input pin A2 as a touch pad
+                      //The A2 pin is in the second Grove socket of the NyBoard
+  int currentReading = analogRead(A2);
+  PT("Reading on pin A2:\t");
+  PTL(currentReading);
+  if (currentReading > 200) {          //touch and hold on the A2 pin until the condition is met
+    beep(10, 20, 50, 3);               //make sound within this function body
+    skill.loadFrame("balance");        //load a posture within this function body
+    strcpy(newCmd, "balance");         //because this command is not processed by the reaction(), you need to update the newCmd for the program to track it
+    strcpy(dataBuffer, "0 -30 0 30");  //load a command to be processed by the later reaction function
+    newCmdIdx = 5;                     //tells the reaction function that there's a new command (as long as it's larger than 0)
+    token = T_INDEXED_SEQUENTIAL_ASC;  //tells the reaction function about the command type
+                                       //T_INDEXED_SEQUENTIAL_ASC moves a joint sequentially
+                                       //more tokens are defined in OpenCat.h
+  } else {
+    strcpy(newCmd, "sit");          //load a skill to be processed by the later reaction function
+    if (strcmp(lastCmd, newCmd)) {  //won't repeatively load the same skill
+      newCmdIdx = 5;
+      token = T_SKILL;  //T_SKILL loads a skill
+    }
+  }
+}
+#endif

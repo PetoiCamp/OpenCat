@@ -35,6 +35,8 @@
 #define PWM_READ_PIN A3
 #endif
 
+#define F_MIN 23000
+#define F_MAX 27000
 #define MATCHING_TIMES 2
 #define COUNT_TIMES 7
 
@@ -217,7 +219,7 @@ void calibratePCA9685() {
     actualPulseWidth /= COUNT_TIMES;
     long actualFreq = round(initValue * 1500 / actualPulseWidth);
 
-    if (actualFreq >= 23000 && actualFreq <= 27000) {
+    if (actualFreq >= F_MIN && actualFreq <= F_MAX) {
       PTL(actualFreq);
       if (actualFreq == lastValue) {
         match++;
@@ -228,6 +230,8 @@ void calibratePCA9685() {
           PT(" kHz");
           beep(20, 100, 50, 3);
           calibrated = true;
+          pwm.setup(DOF, long(actualFreq) * 1000);
+          pwm.writeMicroseconds(eeprom(PWM_PIN, 3), 1500);
         }
       } else
         match = 0;
@@ -242,7 +246,7 @@ void servoSetup() {
   }
   pwm.begin();
   initValue = EEPROMReadInt(PCA9685_FREQ);
-  if (initValue < 23000 || initValue > 27000)
+  if (initValue < F_MIN || initValue > F_MAX)
     initValue = 25000;
   PT(float(initValue) / 1000);
   PTLF("MHz");

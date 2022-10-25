@@ -1,5 +1,9 @@
 # Change Log
 
+## Oct 26, 2022
+* Move the detailed initializing functions in **OpenCat.ino**'s setup() to OpenCat.h. 
+* Add a simple example to elaborate the integration of customized sensors. You need to enable "#define OTHER_MODULES" to see its effects. 
+
 ## Aug 31, 2022
 * Add a watchdog to reset the board if the initialization for MPU or skills fails.
 * At the last stage of the first configuration process (with #define MAIN_SKETCH commented out), provide an optional step to calibrate the PCA9685's PWM frequency. The calibration value is saved in the EEPROM table to be loaded by the main sketch. 
