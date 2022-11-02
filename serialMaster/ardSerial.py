@@ -39,7 +39,6 @@ def encode(in_str, encoding='utf-8'):
     else:
         return in_str.encode(encoding)
 
-
 def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b I K L o within Python
     # print("Num Token "); print(token);print(" var ");print(var);print("\n\n");
     logger.debug(f'serialWriteNumToByte, token={token}, var={var}')
@@ -133,10 +132,10 @@ def serialWriteByte(port, var=None):
 
 
 def printSerialMessage(port, token, timeout=0):
-    if token == 'k':
+    if token == 'k' or token == 'K':
         threshold = 4
     else:
-        threshold = 2
+        threshold = 1
     #    if token == 'K':
     #        timeout = 1
     startTime = time.time()
@@ -464,11 +463,11 @@ def testPort(goodPorts, serialObject, p):
         time.sleep(3)
         result = serialObject.main_engine.read_all().decode('ISO-8859-1')
         if result != '':
-            print('Waiting for the robot to booting up')
+            print('Waiting for the robot to boot up')
             time.sleep(2)
             waitTime = 3
         else:
-            waitTime = 1
+            waitTime = 2
         result = sendTask(goodPorts, serialObject, ['b', [20, 50], 0], waitTime)
         print(result)
         if result != -1:
@@ -488,9 +487,7 @@ def checkPortList(goodPorts, allPorts):
     for p in reversed(allPorts):  # assuming the last one is the most possible port
         # if p == '/dev/ttyAMA0':
         #     continue
-
         serialObject = Communication(p, 115200, 1)
-
         t = threading.Thread(target=testPort,
                              args=(goodPorts, serialObject, p.split('/')[-1]))  # remove '/dev/' in the port name
         threads.append(t)
@@ -538,7 +535,7 @@ def connectPort(PortList):
     if len(PortList) == 0:
         print('No port found!')
     else:
-        logger.info(f"Connect to usb serial port:")
+        logger.info(f"Connect to serial port:")
         for p in PortList:
             logger.info(f"{PortList[p]}")
 
