@@ -213,9 +213,9 @@ void reaction() {
             if (token == T_CALIBRATE) {
               checkGyro = false;
               if (lastToken != T_CALIBRATE) {
+                setServoP(P_HARD);
                 strcpy(newCmd, "calib");
                 skill.loadFrame(newCmd);
-                setServoP(P_HARD);
               }
               if (inLen == 2) {
                 //                if (target[1] >= 1001) { // Using 1001 for incremental calibration. 1001 is adding 1 degree, 1002 is adding 2 and 1009 is adding 9 degrees
