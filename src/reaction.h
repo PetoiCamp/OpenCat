@@ -273,14 +273,16 @@ void reaction() {
             }
           }
           if (token == T_INDEXED_SIMULTANEOUS_BIN) {
-            PTL(token);
+            PTL(token);  //make real-time motion instructions more timely
             transform(targetFrame, 1, 4);
           }
           break;
         }
 #ifdef BINARY_COMMAND
       case T_LISTED_BIN:
-        {                                            //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
+        {
+          PTL(token);                                //make real-time motion instructions more timely
+                                                     //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
           transform(dataBuffer, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
           break;
         }
@@ -345,7 +347,8 @@ void reaction() {
         }
     }
     if (token != T_SKILL || skill.period > 0) {
-      PTL(token);  //postures, gaits, and other tokens can confirm completion by sending the token back
+      if (token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN)
+        PTL(token);  //postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
       if (lastToken == T_SKILL && (lowerToken == T_GYRO || token == T_JOINTS || token == T_PAUSE || token == T_TILT
 #ifdef T_PRINT_GYRO
