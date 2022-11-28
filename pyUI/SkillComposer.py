@@ -858,6 +858,7 @@ class SkillComposer:
                 skillData[header + frameSize * f:header + frameSize * (f + 1)])
             if skillData[3] > 1:
                 frame[2][4:20] = list(map(lambda x: x * 2, frame[2][4:20]))
+                print(frame[2][4:24])
 
             if skillData[0] < 0:
                 if f == loopFrom or f == loopTo:

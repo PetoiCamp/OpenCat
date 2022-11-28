@@ -272,8 +272,10 @@ void reaction() {
               //              delay(10);
             }
           }
-          if (token == T_INDEXED_SIMULTANEOUS_BIN)
-            transform(targetFrame, 1, transformSpeed);
+          if (token == T_INDEXED_SIMULTANEOUS_BIN) {
+            PTL(token);
+            transform(targetFrame, 1, 4);
+          }
           break;
         }
 #ifdef BINARY_COMMAND
@@ -313,7 +315,7 @@ void reaction() {
       case T_SKILL:
         {
           if (strcmp(lastCmd, newCmd)  //won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
-              || skill.period <= 1) {   // for repeating behaviors. if it's set < 1, won't repeat the last behavior
+              || skill.period <= 1) {  // for repeating behaviors. if it's set < 1, won't repeat the last behavior
             skill.loadFrame(newCmd);
           }
           break;

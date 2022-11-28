@@ -10,7 +10,7 @@
 from commonVar import *
 import serial.tools.list_ports
 import logging
-from subprocess import call
+from subprocess import check_call
 from tkinter import ttk
 from tkinter import filedialog
 import pathlib
@@ -33,10 +33,12 @@ logger = logging.getLogger(__name__)
 
 regularW = 12
 language = languageList['English']
-            
+NyBoard_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1', 'NyBoard_V1_2']
+BiBoard_version_list = ['BiBoard_V0']
+
 def txt(key):
     return language.get(key, textEN[key])
-
+    
 class Uploader:
     def __init__(self,model,lan):
         self.win = Tk()
@@ -110,7 +112,7 @@ class Uploader:
             model = 'Bittle'
             strDefaultPath = './release'
             strSwVersion = '2.0'
-            strBdVersion = 'NyBoard_V1_0'
+            strBdVersion = NyBoard_version_list[-1]
             mode = 'Standard'
             
         num = len(lines)
@@ -133,7 +135,7 @@ class Uploader:
         # fmFileDir = ttk.Frame(self.win)
         fmFileDir = Frame(self.win)
         # fmFileDir.pack(side=TOP, fill=BOTH, expand=YES)
-        fmFileDir.grid(row=0, columnspan = 2, ipadx=2, padx=2, sticky=W + E + N + S)
+        fmFileDir.grid(row=0, columnspan=2, ipadx=2, padx=2, sticky=W + E + N + S)
 
         self.labFileDir = Label(fmFileDir, text=txt('labFileDir'), font=('Arial', 16))
         self.labFileDir.grid(row=0, column=0, ipadx=2, padx=2, sticky=W)
@@ -151,42 +153,43 @@ class Uploader:
         fmFileDir.rowconfigure(1, weight=1)  # 尺寸适配
 
         fmSoftwareVersion = ttk.Frame(self.win)
-        fmSoftwareVersion.grid(row=1,column = 0, ipadx=2, padx=2, sticky=W)
+        fmSoftwareVersion.grid(row=1, column=0, ipadx=2, padx=2, sticky=W)
         self.labSoftwareVersion = ttk.Label(fmSoftwareVersion, text=txt('labSoftwareVersion'), font=('Arial', 16))
         self.labSoftwareVersion.grid(row=0, ipadx=5, padx=5, sticky=W)
-        cbSoftwareVersion = ttk.Combobox(fmSoftwareVersion, textvariable=self.strSoftwareVersion, foreground='blue', width=regularW, font=12)
-        cbSoftwareVersion.bind("<<ComboboxSelected>>",self.chooseSoftwareVersion)
+        self.cbSoftwareVersion = ttk.Combobox(fmSoftwareVersion, textvariable=self.strSoftwareVersion, foreground='blue', width=regularW, font=12)
+        self.cbSoftwareVersion.bind("<<ComboboxSelected>>",self.chooseSoftwareVersion)
 
         # list of software_version
         software_version_list = ['1.0', '2.0']
         # 为 Combobox 设置默认项
-        cbSoftwareVersion.set(self.lastSetting[2])
+        self.cbSoftwareVersion.set(self.lastSetting[2])
         
         # 为 Combobox 设置列表项
-        cbSoftwareVersion['values'] = software_version_list
-        cbSoftwareVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
+        self.cbSoftwareVersion['values'] = software_version_list
+        self.cbSoftwareVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
 #        fmSoftwareVersion.rowconfigure(0, weight=1)  # 尺寸适配
 #        fmSoftwareVersion.rowconfigure(1, weight=1)  # 尺寸适配
 
         fmBoardVersion = ttk.Frame(self.win)
-        fmBoardVersion.grid(row=1,column = 1, ipadx=2, padx=2, sticky=W)
+        fmBoardVersion.grid(row=1, column=1, ipadx=2, padx=2, sticky=W)
         self.labBoardVersion = ttk.Label(fmBoardVersion, text=txt('labBoardVersion'), font=('Arial', 16))
         self.labBoardVersion.grid(row=0, ipadx=5, padx=5, sticky=W)
         
-        cbBoardVersion = ttk.Combobox(fmBoardVersion, textvariable=self.strBoardVersion, foreground='blue', width=regularW, font=12)
+        self.cbBoardVersion = ttk.Combobox(fmBoardVersion, textvariable=self.strBoardVersion, foreground='blue', width=regularW, font=12)
+        self.cbBoardVersion.bind("<<ComboboxSelected>>", self.chooseBoardVersion)
         # list of board_version
-        board_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1']#,'BiBoardV0']
+        board_version_list = NyBoard_version_list + BiBoard_version_list
         # 为 Combobox 设置默认项
-        cbBoardVersion.set(self.lastSetting[3])
+        self.cbBoardVersion.set(self.lastSetting[3])
         # 为 Combobox 设置列表项
-        cbBoardVersion['values'] = board_version_list
-        cbBoardVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
+        self.cbBoardVersion['values'] = board_version_list
+        self.cbBoardVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
         
 #        fmBoardVersion.rowconfigure(0, weight=1)  # 尺寸适配
 #        fmBoardVersion.rowconfigure(1, weight=1)  # 尺寸适配
 
         fmProduct = ttk.Frame(self.win)
-        fmProduct.grid(row=2,columnspan = 2, ipadx=2, padx=2, sticky=W + E + N + S)
+        fmProduct.grid(row=2, columnspan=2, ipadx=2, padx=2, sticky=W + E + N + S)
         self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
         self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
         
@@ -201,7 +204,7 @@ class Uploader:
         cbProduct.bind("<<ComboboxSelected>>",self.chooseProduct)
         
         fmMode = ttk.Frame(self.win)
-        fmMode.grid(row=2,column = 1, ipadx=2, padx=2, sticky=W + E + N + S)
+        fmMode.grid(row=2, column=1, ipadx=2, padx=2, sticky=W + E + N + S)
         self.labMode = ttk.Label(fmMode, text=txt('labMode'), font=('Arial', 16))
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
@@ -235,20 +238,20 @@ class Uploader:
                 port_list_number.append(each_port[0])
         # 为 Combobox 设置列表项
         cb['values'] = port_list_number
-        cb.grid(row=1, column = 0, ipadx=5, padx=5, sticky=W)
+        cb.grid(row=1, column=0, ipadx=5, padx=5, sticky=W)
 #        fmSerial.rowconfigure(0, weight=1)  # 尺寸适配
 #        fmSerial.rowconfigure(1, weight=1)  # 尺寸适配
 
-        self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial', 24, 'bold'), width = 6,foreground='blue',
-                                       background=self.backgroundColor, relief = 'groove', command=self.autoupload)    # 绑定 autoupload 方法
-        self.btnUpload.grid(row=0, column = 1, rowspan = 2, ipadx=5, padx=5, pady = 5, sticky=E)
+        self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial', 22, 'bold'), foreground='blue',
+                                       background=self.backgroundColor, relief = 'groove', command=self.autoupload)    # 绑定 autoupload 方法 
+        self.btnUpload.grid(row=0, column=1, rowspan=2, ipadx=5, padx=5, pady=5, sticky=E)
 
         fmStatus = ttk.Frame(self.win)
-        fmStatus.grid(row=4,columnspan = 2, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
+        fmStatus.grid(row=4, columnspan=2, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
         self.statusBar = ttk.Label(fmStatus, textvariable=self.strStatus, font=('Arial', 16), relief=SUNKEN)
         self.statusBar.grid(row=0, ipadx=5, padx=5, sticky=W + E + N + S)
         fmStatus.columnconfigure(0, weight=1)    # 尺寸适配
-#        fmStatus.rowconfigure(0, weight=1)  # 尺寸适配
+        # fmStatus.rowconfigure(0, weight=1)  # 尺寸适配
 
 
     def about(self):
@@ -259,17 +262,35 @@ class Uploader:
         if self.strSoftwareVersion.get() == '1.0':
             stt = DISABLED
             self.strMode.set(txt('Standard'))
+            board_version_list = NyBoard_version_list
+            self.strBoardVersion.set(board_version_list[-1])
+            
         else:
             stt = NORMAL
-            self.strMode.set(txt(self.lastSetting[4]))
+            # self.strMode.set(txt(self.lastSetting[4]))
+            # self.cbBoardVersion.set(self.lastSetting[3])
+            board_version_list = NyBoard_version_list + BiBoard_version_list
+        # 为 Combobox 设置列表项
+        self.cbBoardVersion['values'] = board_version_list
         self.cbMode.config(state = stt)
-#        for i in range(1,4):
-        
-#    cbSoftwareVersion.configure(state=stt)
     
     def chooseSoftwareVersion(self, event):
         self.setActiveMode()
 
+    def setActiveOption(self):
+        if self.cbBoardVersion.get() in BiBoard_version_list:
+            stt = DISABLED
+            self.strMode.set(txt('Standard'))
+            self.strSoftwareVersion.set('2.0')
+        else:
+            stt = NORMAL
+            # self.strMode.set(txt(self.lastSetting[4]))
+            # self.strSoftwareVersion.set(self.lastSetting[2])
+        self.cbMode.config(state=stt)
+        self.cbSoftwareVersion.config(state=stt)
+
+    def chooseBoardVersion(self, event):
+        self.setActiveOption()
 
     def chooseProduct(self, event):
 #        print("self.strProduct is " + self.strProduct.get())
@@ -347,7 +368,8 @@ class Uploader:
         elif strSoftwareVersion == '2.0':
             promptList = [promptJointCalib,promptIMU]
         
-        progress = 0;
+        progress = 0
+        prompt = None
         retMsg = False
         while True:
             time.sleep(0.01)
@@ -364,6 +386,9 @@ class Uploader:
                             prompt = promptInstinct
                         elif x.find("Calibrate") != -1:
                             prompt = promptIMU
+                        elif x.find("assurance") != -1:
+                            ser.Send_data(self.encode("n"))
+                            continue
                         if progress>0 and retMsg == True:
                             self.strStatus.set(promptList[progress-1]['result'])
                             self.statusBar.update()
@@ -379,11 +404,11 @@ class Uploader:
                         progress+=1
                         
                     elif x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
+                        if prompt == None:
+                            prompt = promptIMU
                         self.strStatus.set(prompt['result'])
                         self.statusBar.update()
                         break
-                        
-                        
 
         ser.Close_Engine()
         logger.info("close the serial port.")
@@ -408,6 +433,7 @@ class Uploader:
 #        print('exit fun')
     
     def autoupload(self):
+        logger.info(f"lastSetting: {self.lastSetting}.")
         strProd = self.strProduct.get()
         strDefaultPath = self.strFileDir.get()
         strSoftwareVersion = self.strSoftwareVersion.get()
@@ -415,57 +441,89 @@ class Uploader:
         strMode = self.inv_txt[self.strMode.get()]
         self.currentSetting = [strProd, strDefaultPath, strSoftwareVersion, strBoardVersion, strMode]
         logger.info(f"currentSetting: {self.currentSetting}.")
-        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + strBoardVersion+ '/'
-        
-        fnWriteI = path + 'WriteInstinct.ino.hex'
-        fnOpenCat = path + 'OpenCat'+strMode+ '.ino.hex'
-        filename = [fnWriteI, fnOpenCat]
-        print(filename)
-        port = self.strPort.get()
-        print(self.strPort.get())
 
         if self.strFileDir.get() == '' or self.strFileDir.get() == ' ':
             messagebox.showwarning(txt('titleWarning'), txt('msgFileDir'))
             self.force_focus()  # 强制主界面获取focus
             return False
+        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + strBoardVersion + '/'
 
+        port = self.strPort.get()
+        print(self.strPort.get())
         if port == ' ' or port == '':
             messagebox.showwarning(txt('titleWarning'), txt('msgPort'))
             self.force_focus()  # 强制主界面获取focus
             return False
-        logger.info(f"lastSetting: {self.lastSetting}.")
-            
-            
-        uploadStage = ['Parameters', 'Main function']
-        for s in range(2):
-            if s ==0 and self.bParaUploaded and self.currentSetting[:4] == self.lastSetting[:4]:
-                continue
-            self.strStatus.set(txt('Uploading') + txt(uploadStage[s]) + '...' )
-            self.win.update()
-            self.inProgress = True
-#            status = txt('Uploading') + txt(uploadStage[s]) + '.'
-#            t = threading.Thread(target=self.progressiveDots, args=(status,))
-#            t.start()
 
+
+
+        if strBoardVersion in NyBoard_version_list:
+            fnWriteI = path + 'WriteInstinct.ino.hex'
+            fnOpenCat = path + 'OpenCat' + strMode + '.ino.hex'
+            filename = [fnWriteI, fnOpenCat]
+            print(filename)
+            uploadStage = ['Parameters', 'Main function']
+            for s in range(len(uploadStage)):
+                if s == 0 and self.bParaUploaded and self.currentSetting[:4] == self.lastSetting[:4]:
+                    continue
+                self.strStatus.set(txt('Uploading') + txt(uploadStage[s]) + '...' )
+                self.win.update()
+                # self.inProgress = True
+                # status = txt('Uploading') + txt(uploadStage[s]) + '.'
+                # t = threading.Thread(target=self.progressiveDots, args=(status,))
+                # t.start()
+                if self.OSname == 'win32':
+                    avrdudePath = './resources/avrdudeWin/'
+                else:
+                    avrdudePath = './resources/avrdudeMac/'
+                print()
+                try:
+                    check_call(avrdudePath+'avrdude -C'+avrdudePath+'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+                                (port, filename[s]), shell=self.shellOption)
+                # self.inProgress = False
+                except:
+                    status = txt(uploadStage[s]) + txt('failed to upload')
+                    self.strStatus.set(status)
+                    self.statusBar.update()
+                    return
+                else:
+                    status = txt(uploadStage[s]) + txt('is successully uploaded')
+                
+                self.strStatus.set(status)
+                self.statusBar.update()
+
+                if s == 0:
+                    self.WriteInstinctPrompts(port)
+                    messagebox.showinfo(title=None, message=txt('parameterFinish'))
+
+        elif strBoardVersion in BiBoard_version_list:
+            fnBootLoader = path + 'OpenCatEsp32Standard.ino.bootloader.bin'
+            fnPartitions = path + 'OpenCatEsp32Standard.ino.partitions.bin'
+            fnBootApp = path + 'boot_app0.bin'
+            fnMainFunc = path + 'OpenCatEsp32Standard.ino.bin '
+            filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
+            print(filename)
+            self.strStatus.set(txt('Uploading') + txt('Main function') + '...' )
+            self.win.update()
             if self.OSname == 'win32':
-                avrdudePath = './resources/avrdudeWin/'
+                esptoolPath = './resources/esptoolWin/'
             else:
-                avrdudePath = './resources/avrdudeMac/'
+                esptoolPath = './resources/esptoolMac/'
             print()
-            ret = call(avrdudePath+'avrdude -C'+avrdudePath+'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
-                            (port, filename[s]), shell=self.shellOption)
-            self.inProgress = False
-            if ret == 0:
-#                status =txt('labStatus3')
-                status = txt(uploadStage[s]) + txt('is successully uploaded')
-            else:
-                status = txt(uploadStage[s]) + txt('failed to upload')
+            try:
+                check_call(esptoolPath + 'esptool --chip esp32 --port %s --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size 16MB 0x1000 %s 0x8000 %s 0xe000 %s 0x10000 %s' % \
+                (port, filename[0], filename[1], filename[2], filename[3]), shell=self.shellOption)
+            except:
+                status = txt('Main function') + txt('failed to upload')
+                self.strStatus.set(status)
+                self.statusBar.update()
                 return
+            else:
+                status = txt('Main function') + txt('is successully uploaded')
+                
             self.strStatus.set(status)
             self.statusBar.update()
-            if s ==0:
-                self.WriteInstinctPrompts(port)
-                messagebox.showinfo(title=None, message=txt('parameterFinish'))
+            self.WriteInstinctPrompts(port)
 
         self.lastSetting = self.currentSetting
         self.bParaUploaded = True

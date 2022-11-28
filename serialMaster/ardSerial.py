@@ -80,7 +80,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
 
         in_str = token.encode() + struct.pack('b' * skillHeader, *var[0:skillHeader])  # +'~'.encode()
         port.Send_data(in_str)
-        time.sleep(0.005)
+        time.sleep(0.001)
 
         for f in range(abs(period)):
             in_str = struct.pack('b' * (frameSize),
@@ -88,7 +88,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             if f == abs(period) - 1:
                 in_str = in_str + '~'.encode()
             port.Send_data(in_str)
-            time.sleep(0.005)
+            time.sleep(0.001)
     else:
         if token == 'L' or token == 'I' or token == 'B' or token == 'C':
 #            if token == 'C':
@@ -141,7 +141,7 @@ def printSerialMessage(port, token, timeout=0):
     startTime = time.time()
     allPrints = ''
     while True:
-        time.sleep(0.005)
+        time.sleep(0.001)
         #            return 'err'
         if port:
             response = port.main_engine.readline().decode('ISO-8859-1')
@@ -263,7 +263,7 @@ def send(port, task, timeout=0):
 
 def keepReadingInput(ports):
     while True and len(ports):
-        time.sleep(0.005)
+        time.sleep(0.001)
         x = input()  # blocked waiting for the user's input
         if x != "":
             if x == "q" or x == "quit":
