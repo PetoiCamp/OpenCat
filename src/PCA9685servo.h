@@ -218,7 +218,7 @@ void calibratePCA9685() {
     }
     actualPulseWidth /= COUNT_TIMES;
     long actualFreq = round(initValue * 1500 / actualPulseWidth);
-    PTL(actualFreq); //if the loop cannot stop and prints numbers larger than 27000, you may increase F_MAX
+    PTL(actualFreq);  //if the loop cannot stop and prints numbers larger than 27000, you may increase F_MAX
     if (actualFreq >= F_MIN && actualFreq <= F_MAX) {
 
       if (actualFreq == lastValue) {
