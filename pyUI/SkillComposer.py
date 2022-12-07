@@ -271,9 +271,9 @@ class SkillComposer:
                         button.grid(row=ROW + 2 + d * (rSPAN - 1), column=COL, sticky='ns'[d])
                     binderValue.set(0)
                     if d == 0:
-                        Hovertip(button, txt('tipBinder'))
+                        tip(button, txt('tipBinder'))
                     else:
-                        Hovertip(button, txt('tipRevBinder'))
+                        tip(button, txt('tipRevBinder'))
                     self.binderButton.append(button)
                 self.binderValue.append(binderValue)
 
@@ -342,7 +342,7 @@ class SkillComposer:
             value.set(defaultValue[i])
             self.dialValue.append(value)
             button.grid(row=1, column=i + (i > 0), padx=self.dialPad)
-            Hovertip(button, txt(tipDial[i]))
+            tip(button, txt(tipDial[i]))
 
         self.createPortMenu()
 
@@ -356,7 +356,7 @@ class SkillComposer:
         self.portMenu.grid(row=1, column=1, padx=2)
         self.updatePortMenu()
 
-        Hovertip(self.portMenu, txt('tipPortMenu'))
+        tip(self.portMenu, txt('tipPortMenu'))
 
     def updatePortMenu(self):
         self.options = list(goodPorts.values())
@@ -430,25 +430,25 @@ class SkillComposer:
                                  command=self.playThread)
         self.buttonPlay.grid(row=1, column=0, padx=pd)
 
-        Hovertip(self.buttonPlay, txt('tipPlay'))
+        tip(self.buttonPlay, txt('tipPlay'))
 
         buttonImp = Button(self.frameSkillEditor, text=txt('Import'), width=self.buttonW, fg='blue',
                            command=self.popImport)
         buttonImp.grid(row=1, column=1, padx=pd)
 
-        Hovertip(buttonImp, txt('tipImport'))
+        tip(buttonImp, txt('tipImport'))
 
         buttonRestart = Button(self.frameSkillEditor, text=txt('Restart'), width=self.buttonW, fg='red',
                                command=self.restartSkillEditor)
         buttonRestart.grid(row=1, column=2, padx=pd)
 
-        Hovertip(buttonRestart, txt('tipRestart'))
+        tip(buttonRestart, txt('tipRestart'))
 
         buttonExp = Button(self.frameSkillEditor, text=txt('Export'), width=self.buttonW, fg='blue',
                            command=self.export)
         buttonExp.grid(row=1, column=3, padx=pd)
 
-        Hovertip(buttonExp, txt('tipExport'))
+        tip(buttonExp, txt('tipExport'))
 
         buttonUndo = Button(self.frameSkillEditor, text=txt('Undo'), width=self.buttonW, fg='blue', state=DISABLED,
                             command=self.restartSkillEditor)
@@ -463,13 +463,13 @@ class SkillComposer:
                               command=self.setMirror)
         cbMiroX.grid(row=2, column=2, sticky='e', padx=pd)
 
-        Hovertip(cbMiroX, txt('tipMirrorXport'))
+        tip(cbMiroX, txt('tipMirrorXport'))
 
         buttonMirror = Button(self.frameSkillEditor, text=txt('>|<'), width=self.mirrorW, fg='blue',
                               command=self.generateMirrorFrame)
         buttonMirror.grid(row=2, column=2, sticky='w', padx=pd)
 
-        Hovertip(buttonMirror, txt('tipMirror'))
+        tip(buttonMirror, txt('tipMirror'))
 
         self.gaitOrBehavior = StringVar()
         self.GorB = OptionMenu(self.frameSkillEditor, self.gaitOrBehavior, txt('Gait'), txt('Behavior'))
@@ -477,7 +477,7 @@ class SkillComposer:
         self.gaitOrBehavior.set(txt('Behavior'))
         self.GorB.grid(row=2, column=3, padx=pd)
 
-        Hovertip(self.GorB, txt('tipGorB'))
+        tip(self.GorB, txt('tipGorB'))
 
     def setMirror(self):
         self.mirror = not self.mirror
@@ -490,14 +490,14 @@ class SkillComposer:
         self.loopRepeat = Entry(self.frameRowScheduler, width=self.frameItemWidth[cLoop], textvariable=self.vRepeat)
         self.loopRepeat.grid(row=0, column=cLoop)
 
-        Hovertip(self.loopRepeat, txt('tipRepeat'))
+        tip(self.loopRepeat, txt('tipRepeat'))
 
         for i in range(1, len(labelSkillEditorHeader)):
             label = Label(self.frameRowScheduler, text=txt(labelSkillEditorHeader[i]),
                           width=self.frameItemWidth[i] + self.headerOffset[i])
             label.grid(row=0, column=i, sticky='w')
             if tipSkillEditor[i]:
-                Hovertip(label, txt(tipSkillEditor[i]))
+                tip(label, txt(tipSkillEditor[i]))
 
         canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=310, bd=0)
         scrollbar = Scrollbar(self.frameRowScheduler, orient='vertical', cursor='double_arrow', troughcolor='yellow',
@@ -551,9 +551,9 @@ class SkillComposer:
 
                 for d in range(2):
                     if d == 0:
-                        Hovertip(self.binderButton[i * 2], txt('tipBinder'))
+                        tip(self.binderButton[i * 2], txt('tipBinder'))
                     else:
-                        Hovertip(self.binderButton[i * 2 + 1], txt('tipRevBinder'))
+                        tip(self.binderButton[i * 2 + 1], txt('tipRevBinder'))
 
             self.frameDial.destroy()
             self.framePosture.destroy()
@@ -566,7 +566,7 @@ class SkillComposer:
                 if i > 0:
                     self.frameRowScheduler.winfo_children()[i].config(text=txt(labelSkillEditorHeader[i]))
                 if tipSkillEditor[i]:
-                    Hovertip(self.frameRowScheduler.winfo_children()[i], txt(tipSkillEditor[i]))
+                    tip(self.frameRowScheduler.winfo_children()[i], txt(tipSkillEditor[i]))
 
             triggerAxis = {
                 0: txt('None'),
@@ -576,7 +576,7 @@ class SkillComposer:
                 -2: txt('-Roll'),
             }
             for r in range(len(self.frameList)):
-                Hovertip(self.getWidget(r, cLoop), txt('tipLoop'))
+                tip(self.getWidget(r, cLoop), txt('tipLoop'))
                 tt = '='  # +txt('Set')
                 ft = 'sans 12'
                 if self.activeFrame == r:
@@ -632,7 +632,7 @@ class SkillComposer:
                                 indicator=0, width=self.frameItemWidth[cLoop],
                                 command=lambda idx=currentRow: self.setCheckBox(idx))
         loopCheck.grid(row=0, column=cLoop)
-        Hovertip(loopCheck, txt('tipLoop'))
+        tip(loopCheck, txt('tipLoop'))
         #        rowLabel = Label(singleFrame, text = str(currentRow), width = self.frameItemWidth[cLabel])
         #        rowLabel.grid(row=0, column=cLabel)
 
