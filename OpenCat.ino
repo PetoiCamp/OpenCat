@@ -37,7 +37,7 @@
   3. Uncomment #define MAIN_SKETCH to make it active. Then upload the program for main functions.
 */
 
-// #define MAIN_SKETCH  //the Petoi App only works when this mode is on
+//#define MAIN_SKETCH  //the Petoi App only works when this mode is on
 //#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
                     //it may increase the code size and crash the bootloader. 
@@ -56,7 +56,8 @@
 //allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
 //#define RANDOM_MIND     //advanced random behaviors. use token 'z' to activate/deactivate
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
-//#define VOICE           //for LD3320 module
+//#define VOICE           //Petoi Grove voice module
+//#define VOICE_LD3320    //for LD3320 module
 //#define CAMERA          //for BallTracking using Mu Vision camera
 //You need to install https://github.com/mu-opensource/MuVisionSensor3 as a zip library in Arduino IDE.
 //Set the four dial switches on the camera as **v ^ v v** (the second switch dialed up to I2C) and connect the camera module to the I2C grove on NyBoard.

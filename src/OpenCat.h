@@ -376,6 +376,8 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
 
 #ifdef VOICE
 #include "voice.h"
+#elif defined VOICE_LD3320
+#include "voiceLD3320.h"
 #elif defined CAMERA
 #include "camera.h"
 #elif defined ULTRASONIC
@@ -439,6 +441,9 @@ void initRobot() {
 
 #ifdef VOICE
   voiceSetup();
+#endif
+#ifdef VOICE_LD3320
+  voiceLD3320Setup();
 #endif
 #ifdef CAMERA
   cameraSetup();
