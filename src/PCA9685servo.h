@@ -194,24 +194,24 @@ void PCA9685CalibrationPrompt() {
 }
 
 int measurePulseWidth(uint8_t pwmReadPin) {
-  while (!analogRead(pwmReadPin))
+  while (!digitalRead(pwmReadPin))
     ;
   long t1 = micros();
-  while (analogRead(pwmReadPin))
+  while (digitalRead(pwmReadPin))
     ;
   return (micros() - t1);
 }
 
 byte match = 0;
 void calibratePCA9685() {
-  delay(100);
-  if (!calibrated && analogRead(PWM_READ_PIN) == 0) {  //the pins are connected
+  delay(10);
+  if (!calibrated && !digitalRead(PWM_READ_PIN)) {  //the pins are connected
     //    for (byte i = 0; i < 16; i++)
     pwm.writeMicroseconds(eeprom(PWM_PIN, 3), 1500);
     int actualPulseWidth;
     actualPulseWidth = 0;
     for (int i = 0; i < COUNT_TIMES + 1; i++) {
-      delay(10);
+      delay(5);  //the width is 1500 microsceonds, or 1.5 milliseconds. so the delay should be > 3. use 5 to be safe.
       int oneReading = measurePulseWidth(PWM_READ_PIN);
       if (i > 0)
         actualPulseWidth += oneReading;
@@ -219,10 +219,11 @@ void calibratePCA9685() {
     actualPulseWidth /= COUNT_TIMES;
     long actualFreq = round(initValue * 1500 / actualPulseWidth);
     PTL(actualFreq);  //if the loop cannot stop and prints numbers larger than 27000, you may increase F_MAX
+    // PTL();
     if (actualFreq >= F_MIN && actualFreq <= F_MAX) {
-
       if (actualFreq == lastValue) {
         match++;
+        // PTL(match);
         if (match == MATCHING_TIMES) {
           EEPROMWriteInt(PCA9685_FREQ, actualFreq);
           PT("Calibrated: ");

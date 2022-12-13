@@ -40,6 +40,8 @@
 // #define MAIN_SKETCH  //the Petoi App only works when this mode is on
 //#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
+                    //it may increase the code size and crash the bootloader. 
+                    //make sure you know ISP and how to reset the bootloader!!!
 
 #define BITTLE  //Petoi 9 DOF robot dog: 1x on head + 8x on leg
 //#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
