@@ -36,7 +36,7 @@
 #endif
 
 #define F_MIN 23000
-#define F_MAX 27000
+#define F_MAX 27500
 #define MATCHING_TIMES 2
 #define COUNT_TIMES 7
 
