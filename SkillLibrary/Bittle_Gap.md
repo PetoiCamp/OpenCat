@@ -1,5 +1,5 @@
 # Over Gap
-Note: Make Bittle walk over a gap. The distance between Bittle's shoulder joints is 105mm. The gap is 58mm. You may try to increase the distance or reduce the time spent. 
+Note: This skill is vary large and can only run on the BiBoard!! Make Bittle walk over a gap. The distance between Bittle's shoulder joints is 105mm. The gap is 58mm. You may try to increase the distance or reduce the time spent. 
 
 Model: Bittle
 
