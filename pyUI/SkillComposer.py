@@ -246,7 +246,7 @@ class SkillComposer:
             value = DoubleVar()
             sliderBar = Scale(self.frameController, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
                               borderwidth=2, relief='flat', width=8, from_=-180 * tickDirection, to=180 * tickDirection,
-                              length=LEN, tickinterval=90, resolution=1, repeatdelay=100, repeatinterval=100,
+                              length=LEN, tickinterval=90, resolution=1, repeatdelay=100, repeatinterval=300,
                               command=lambda value, idx=i: self.setAngle(idx, value))
             sliderBar.set(0)
             label.grid(row=ROW + 1, column=COL, columnspan=cSPAN, pady=2, sticky='s')
@@ -304,6 +304,7 @@ class SkillComposer:
             value = DoubleVar()
             sliderBar = Scale(self.frameImu, state=stt, fg='blue', bg=clr, variable=value, orient=HORIZONTAL,
                               borderwidth=2, relief='flat', width=10, from_=frm, to=to2, length=125, resolution=1,
+                              repeatdelay=100, repeatinterval=300,
                               command=lambda ang, idx=i: self.set6Axis(idx, ang))  # tickinterval=(to2-frm)//4,
             sliderBar.set(0)
             label.grid(row=i, column=0)
