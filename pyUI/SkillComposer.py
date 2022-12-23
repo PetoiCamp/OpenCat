@@ -4,7 +4,9 @@
 # Rongzhong Li
 # Petoi LLC
 # May.22nd, 2022
-
+import sys
+sys.path.append('../serialMaster/')
+import var
 import random
 import tkinter.font as tkFont
 import copy
@@ -67,6 +69,9 @@ class SkillComposer:
         global language
         language = lan
         connectPort(goodPorts)
+        while var.model_ == '':
+            pass
+        self.model = var.model_
         ports = goodPorts
         self.window = Tk()
         self.sliders = list()
@@ -82,7 +87,7 @@ class SkillComposer:
         print(self.OSname)
         self.window.geometry('+100+10')
         self.window.resizable(False, False)
-
+        
         if self.OSname == 'aqua':
             self.backgroundColor = 'gray'
         else:
@@ -152,7 +157,8 @@ class SkillComposer:
         self.ready = 1
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
-        t = threading.Thread(target=self.keepCheckingPort, args=(goodPorts,))
+        t = threading.Thread(target=self.SCkeepCheckingPort, args=(goodPorts,))
+        t.daemon = True
         t.start()
         self.window.mainloop()
 
@@ -1457,7 +1463,7 @@ class SkillComposer:
         for i in range(16):
             self.values[i].set(angles[4 + i])
             self.frameData[4 + i] = angles[4 + i]
-
+    """
     def keepCheckingPort(self, goodPorts):
         allPorts = Communication.Print_Used_Com()
         while self.keepChecking:
@@ -1477,7 +1483,9 @@ class SkillComposer:
                         goodPorts.pop(inv_dict[p.split('/')[-1]])
                 self.updatePortMenu()
             allPorts = copy.deepcopy(currentPorts)
-
+    """
+    def SCkeepCheckingPort(self, goodPorts):
+        keepCheckingPort(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu)
     def dial(self, i):
         if self.ready == 1:
             global ports
@@ -1504,7 +1512,7 @@ class SkillComposer:
                     #                    self.createPortMenu()
 
                     self.keepChecking = True
-                    t = threading.Thread(target=self.keepCheckingPort, args=(goodPorts,))
+                    t = threading.Thread(target=self.SCkeepCheckingPort, args=(goodPorts,))
                     t.start()
                     send(ports, ['b', [10, 90], 0])
                     if len(goodPorts) > 0:
@@ -1548,8 +1556,7 @@ class SkillComposer:
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
-
-
+            
 if __name__ == '__main__':
     goodPorts = {}
     try:
