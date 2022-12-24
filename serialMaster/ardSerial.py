@@ -10,7 +10,8 @@ import platform
 import copy
 import threading
 import os
-
+import var 
+import tkinter as tk
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
 Level: The level determines the minimum priority level of messages to log. 
@@ -26,6 +27,7 @@ which means that the logging module will automatically filter out any DEBUG mess
 # logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
+#global model_
 
 
 def printH(head, value):
@@ -103,8 +105,9 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             in_str = token + " "
             for element in var:
                 in_str = in_str + str(element) + " "
+        
         logger.debug(f"!!!! {in_str}")
-        #        print(encode(in_str))
+        #print(encode(in_str))
         port.Send_data(encode(in_str))
 
 
@@ -458,6 +461,8 @@ def schedulerToSkill(ports, testSchedule):
 
 def testPort(goodPorts, serialObject, p):
     global goodPortCount
+   
+    
     #    global sync
     try:
         time.sleep(3)
@@ -472,6 +477,13 @@ def testPort(goodPorts, serialObject, p):
         print(result)
         if result != -1:
             printH('Adding', p)
+            for r in result:
+                if 'Bittle' in r:
+                    var.model_ = 'Bittle'
+                    break
+                elif 'Nybble' in r:
+                    var.model_ = 'Nybble'
+                    break
             goodPorts.update({serialObject: p})
             goodPortCount += 1
         else:
@@ -482,8 +494,10 @@ def testPort(goodPorts, serialObject, p):
         print('* Port ' + p + ' cannot be opened!')
 
 
+
 def checkPortList(goodPorts, allPorts):
     threads = list()
+    
     for p in reversed(allPorts):  # assuming the last one is the most possible port
         # if p == '/dev/ttyAMA0':
         #     continue
@@ -496,7 +510,7 @@ def checkPortList(goodPorts, allPorts):
         if t.is_alive():
             t.join(8)
 
-
+"""
 def keepCheckingPort(portList, check=True):
     allPorts = Communication.Print_Used_Com()
     while len(portList) > 0:
@@ -517,7 +531,27 @@ def keepCheckingPort(portList, check=True):
                     portList.pop(inv_dict[p.split('/')[-1]])
 
         allPorts = copy.deepcopy(currentPorts)
-
+"""
+def keepCheckingPort(portList,cond1,check,updateFunc,):
+    allPorts = Communication.Print_Used_Com()
+    while cond1():
+        currentPorts = Communication.Print_Used_Com()
+        time.sleep(0.01)
+        if set(currentPorts) - set(allPorts):
+            newPort = list(set(currentPorts) - set(allPorts))
+            if check():
+                time.sleep(0.5)
+                checkPortList(portList, newPort)
+                updateFunc()
+        elif set(allPorts) - set(currentPorts):
+            closedPort = list(set(allPorts) - set(currentPorts))
+            inv_dict = {v: k for k, v in portList.items()}
+            for p in closedPort:
+                if inv_dict.get(p.split('/')[-1], -1) != -1:
+                    printH('Removing', p)
+                    portList.pop(inv_dict[p.split('/')[-1]])
+            updateFunc()
+        allPorts = copy.deepcopy(currentPorts)
 
 def connectPort(PortList):
     global initialized
@@ -534,12 +568,62 @@ def connectPort(PortList):
     initialized = True
     if len(PortList) == 0:
         print('No port found!')
+        print('Manual mode')
+        manualSelect(PortList)
     else:
         logger.info(f"Connect to serial port:")
         for p in PortList:
             logger.info(f"{PortList[p]}")
-
-
+def selectList(PortList,ls,win):
+    global goodPortCount
+    for i in ls.curselection():
+        p = ls.get(i)
+        
+        serialObject = Communication(p, 115200, 1)
+        waitTime = 3
+        time.sleep(5)
+        
+        result = sendTask(goodPorts, serialObject, ['b', [20, 50], 0], waitTime)
+        try:
+            if result!=-1:
+                goodPorts.update({serialObject: p})
+                goodPortCount += 1
+                logger.info(f"Connected to serial port: {p}")
+                var.model_ = 'Bittle'
+                tk.messagebox.showwarning(title='Warning', message='Need to manually select model')
+                win.destroy()
+            else:
+                if serialObject:
+                    serialObject.Close_Engine()
+                print('* Port ' + p + ' is not connected to a Petoi device!')
+        except Exception as e:
+            print("Cannot open {}".format(p))
+        
+def refreshBox(ls):
+    allPorts = Communication.Print_Used_Com()
+    ls.delete(0,tk.END)
+    for p in allPorts:
+        ls.insert(tk.END,p)
+def manualSelect(PortList):
+    
+    allPorts = Communication.Print_Used_Com()
+    window = tk.Tk()
+    def on_closing():
+        window.destroy()
+        os._exit(0)
+    window.protocol('WM_DELETE_WINDOW', on_closing)
+    
+    ls = tk.Listbox(window,selectmode="multiple")
+    ls.grid(row=0,column=0)
+    
+    for p in allPorts:
+        ls.insert(tk.END,p)
+    bu = tk.Button(window, text="Done", command=lambda:selectList(PortList,ls,window))
+    bu.grid(row=1,column=1)
+    bu2 = tk.Button(window, text="Refresh", command=lambda:refreshBox(ls))
+    bu2.grid(row=0,column=1)
+    tk.messagebox.showwarning(title='Warning', message='Manual mode')
+    window.mainloop()
 goodPorts = {}
 initialized = False
 goodPortCount = 0

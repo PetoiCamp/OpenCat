@@ -1556,7 +1556,9 @@ class SkillComposer:
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
-            
+            import os
+            os._exit(0)
+           
 if __name__ == '__main__':
     goodPorts = {}
     try:
