@@ -172,7 +172,9 @@ public:
         readName[l] = EEPROM.read(SKILLS + skillAddressShift++);
       }
       readName[nameLen] = '\0';
-      if (!strcmp(readName, skillName) || readName[nameLen - 1] == 'L' && !strncmp(readName, skillName, nameLen - 1)) {
+      if (!strcmp(readName, skillName)                                                   //gait type + F or L
+          || readName[nameLen - 1] == 'L' && !strncmp(readName, skillName, nameLen - 1)  //gait type + R
+      ) {
         delete[] readName;
         period = EEPROM.read(SKILLS + skillAddressShift + 1);
         int bufferLen = dataLen(period);
