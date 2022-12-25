@@ -564,21 +564,76 @@ def connectPort(PortList):
 
     if len(allPorts) > 0:
         goodPortCount = 0
-        checkPortList(PortList, allPorts)
+        checkPortList(PortList,allPorts)
     initialized = True
     if len(PortList) == 0:
         print('No port found!')
         print('Manual mode')
-        manualSelect(PortList)
+        replug(PortList)
     else:
         logger.info(f"Connect to serial port:")
         for p in PortList:
             logger.info(f"{PortList[p]}")
-def selectList(PortList,ls,win):
+def replug(PortList):
     global goodPortCount
+    print('Please disconnect and then connect the device')
+    thres = 30
+    ap = copy.deepcopy(Communication.Print_Used_Com())
+    start = time.time()
+    while True:
+        time.sleep(0.1)
+        curPorts = copy.deepcopy(Communication.Print_Used_Com())
+        print(curPorts)
+        print(len(curPorts))
+        print('---')
+        print(ap)
+        print(len(ap))
+        if len(curPorts)!=len(ap):
+            print(curPorts                )
+            if len(curPorts) < len(ap):
+                ap  = curPorts
+            else:
+                print("dif")
+                dif = list(set(curPorts)-set(ap))
+                
+                success = False
+                for p in dif:
+                    try:
+                        serialObject = Communication(p, 115200, 1)
+                        goodPorts.update({serialObject: p})
+                        goodPortCount += 1
+                        var.model_ = 'Bittle'
+                        logger.info(f"Connected to serial port: {p}")
+                        success = True
+                    except Exception:
+                        print("Cannot open {}".format(p))
+                if success:
+                    return
+                else:
+                    break
+        if time.time()-start>thres:
+            break
+        
+    manualSelect(PortList)
+
+def selectList(PortList,ls,win):
+    
+    global goodPortCount
+    
     for i in ls.curselection():
         p = ls.get(i)
-        
+        try:
+            serialObject = Communication(p, 115200, 1)
+            goodPorts.update({serialObject: p})
+            goodPortCount += 1
+            logger.info(f"Connected to serial port: {p}")
+            var.model_ = 'Bittle'
+            tk.messagebox.showwarning(title='Warning', message='Need to manually select model')
+            win.destroy()
+        except Exception:
+            print("Cannot open {}".format(p))
+            tk.messagebox.showwarning(title='Warning', message='* Port ' + p + ' cannot be opened')
+        """"
         serialObject = Communication(p, 115200, 1)
         waitTime = 3
         time.sleep(5)
@@ -595,9 +650,10 @@ def selectList(PortList,ls,win):
             else:
                 if serialObject:
                     serialObject.Close_Engine()
-                print('* Port ' + p + ' is not connected to a Petoi device!')
+                tk.messagebox.showwarning(title='Warning', message='* Port ' + p + ' is not connected to a Petoi device!')
         except Exception as e:
             print("Cannot open {}".format(p))
+        """
         
 def refreshBox(ls):
     allPorts = Communication.Print_Used_Com()
