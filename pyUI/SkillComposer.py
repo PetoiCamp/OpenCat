@@ -762,9 +762,9 @@ class SkillComposer:
         self.changeButtonState(f)
 
         if len(indexedList) > 16:
-            send(ports, ['L', self.frameData[4:20], 0])
+            send(ports, ['L', self.frameData[4:20], 0.05])
         elif len(indexedList):
-            send(ports, ['I', indexedList, 0])
+            send(ports, ['I', indexedList, 0.05])
 
     def setFrame(self, currentRow):
         frame = self.frameList[currentRow]
@@ -1045,7 +1045,7 @@ class SkillComposer:
         self.updateSliders(self.frameData)
         self.indicateEdit()
         self.frameController.update()
-        send(ports, ['L', self.frameData[4:20], 0])
+        send(ports, ['L', self.frameData[4:20], 0.05])
 
     def export(self):
         files = [('Text Document', '*.txt'),
@@ -1101,7 +1101,7 @@ class SkillComposer:
             skillData.append(self.frameData[copyFrom: copyFrom + frameSize])
         if period == 1:
             print(self.frameData[4:20])
-            send(ports, ['L', self.frameData[4:20], 0])
+            send(ports, ['L', self.frameData[4:20], 0.05])
             return
         if angleRatio == 2:
             for r in skillData:
@@ -1213,9 +1213,9 @@ class SkillComposer:
             if self.binderValue[idx].get() == 0:
                 self.frameData[4 + idx] = value
                 if -126 < value < 126:
-                    send(ports, ['I', [idx, value], 0])
+                    send(ports, ['I', [idx, value], 0.05])
                 else:
-                    send(ports, ['i', [idx, value], 0])
+                    send(ports, ['i', [idx, value], 0.05])
             else:
                 diff = value - self.frameData[4 + idx]
                 indexedList = list()
@@ -1223,7 +1223,7 @@ class SkillComposer:
                     if self.binderValue[i].get():
                         self.frameData[4 + i] += diff * self.binderValue[i].get() * self.binderValue[idx].get()
                         indexedList += [i, self.frameData[4 + i]]
-                send(ports, ['I', indexedList, 0])
+                send(ports, ['I', indexedList, 0.05])
 
             self.indicateEdit()
             self.updateSliders(self.frameData)
@@ -1306,7 +1306,7 @@ class SkillComposer:
                 if j in negativeGroup:
                     self.frameData[4 + j] = self.originalAngle[4 + j] - int(value * factor)
 
-            send(ports, ['L', self.frameData[4:20], 0])
+            send(ports, ['L', self.frameData[4:20], 0.05])
             self.updateSliders(self.frameData)
             self.indicateEdit()
 

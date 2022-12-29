@@ -10,6 +10,7 @@ import platform
 import copy
 import threading
 import os
+from tkinter import *
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
@@ -183,6 +184,8 @@ def sendTask(goodPorts, port, task, timeout=0):  # task Structure is [token, var
                 #        print('c') #which case
                 serialWriteByte(port, task[1])
             token = task[0][0]
+            if token == 'I' or token =='L':
+                timeout = 1 # in case the UI gets stuck
             lastMessage = printSerialMessage(port, token, timeout)
             time.sleep(task[-1])
         #    with lock:
@@ -470,7 +473,7 @@ def testPort(goodPorts, serialObject, p):
             waitTime = 2
         result = sendTask(goodPorts, serialObject, ['b', [20, 50], 0], waitTime)
         print(result)
-        if result != -1:
+        if result != -1 or 'Bittle' in p or 'Nybble' in p or 'Petoi' in p:
             printH('Adding', p)
             goodPorts.update({serialObject: p})
             goodPortCount += 1
@@ -496,6 +499,8 @@ def checkPortList(goodPorts, allPorts):
         if t.is_alive():
             t.join(8)
 
+#def popManualMenu(allPorts):
+    
 
 def keepCheckingPort(portList, check=True):
     allPorts = Communication.Print_Used_Com()
@@ -507,6 +512,8 @@ def keepCheckingPort(portList, check=True):
             if check:
                 time.sleep(0.5)
                 checkPortList(portList, newPort)
+#            if goodPortCount == 0:
+#                popManualMenu(allPorts)
 
         elif set(allPorts) - set(currentPorts):
             closedPort = list(set(allPorts) - set(currentPorts))
@@ -522,8 +529,15 @@ def keepCheckingPort(portList, check=True):
 def connectPort(PortList):
     global initialized
     allPorts = Communication.Print_Used_Com()
-    if platform.uname()[1] == 'raspberrypi':
-        allPorts.append('/dev/ttyS0')
+    
+    if platform.system() == 'Linux':
+        file = open("/etc/os-release", 'r')
+        line = file.readline()
+        # print("Line:" + line)
+        file.close()
+        target = "Raspbian"
+        if target in line:
+            allPorts.append('/dev/ttyS0')
 
     for index in range(len(allPorts)):
         logger.info(f"port[{index}] is {allPorts[index]} ")

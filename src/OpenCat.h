@@ -215,6 +215,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_PAUSE 'p'
 #define T_RAMP 'r'
 #define T_SAVE 's'
+#define T_SOUND 'S'
 #define T_TILT 't'
 #define T_MEOW 'u'
 #define T_PRINT_GYRO 'v'  //print Gyro data
@@ -235,7 +236,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_BEEP_BIN 'B'
 #define T_SKILL_DATA 'K'
 #define T_LISTED_BIN 'L'
-#define T_SERVO_MICROSECOND 'S'
+#define T_SERVO_MICROSECOND 'W' //PWM width modulation
 #define T_TEMP 'T'  //call the last skill data received from the serial port
 #endif
 

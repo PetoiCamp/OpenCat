@@ -27,7 +27,7 @@
 
 #define P_STEP 32
 #define P_BASE 3000 + P_STEP * 3  //3000~3320
-#define P_HARD (P_BASE + P_STEP * 1)
+#define P_HARD (P_BASE + P_STEP * 2)
 #define P_SOFT (P_BASE - P_STEP * 2)
 
 #define SERVO_FREQ 240
@@ -169,7 +169,6 @@ Petoi_PWMServoDriver pwm = Petoi_PWMServoDriver();
 void setServoP(unsigned int p) {
   for (byte i = 0; i < 16; i++)
     pwm.writeMicroseconds(i, p);
-  delay(10);
 }
 /*
   In theory the internal oscillator (clock) is 25MHz but it really isn't
