@@ -69,8 +69,11 @@ class SkillComposer:
         global language
         language = lan
         connectPort(goodPorts)
+        start = time.time()
         while var.model_ == '':
-            pass
+            if time.time()-start > 5:
+                var.model_ = 'Bittle'
+            time.sleep(0.01)
         self.model = var.model_
         ports = goodPorts
         self.window = Tk()
@@ -925,9 +928,10 @@ class SkillComposer:
         print(self.skillN)
         top.destroy()
         self.comboTop = Toplevel(self.window)
-        typeLabel = Label(self.comboTop,text = "Type of skill")
+        self.comboTop.title(txt("Skill List"))
+        typeLabel = Label(self.comboTop,text = txt("Type of skill"))
         typeLabel.grid(row=1,column=0)
-        nameLabel = Label(self.comboTop,text = "Name of skill")
+        nameLabel = Label(self.comboTop,text = txt("Name of skill"))
         nameLabel.grid(row=1,column=1)
         self.typeComb = ttk.Combobox(self.comboTop,values=["Posture","Gait","Behavior"],state='readonly')
         self.typeComb.grid(row=2, column=0)
@@ -1017,7 +1021,7 @@ class SkillComposer:
         
         self.typeComb.bind('<<ComboboxSelected>>',selectTy)
         Button(self.comboTop, text=txt('Cancel'), width=10, command=lambda: self.closePop(self.comboTop)).grid(row=3, column=1)
-        Button(self.comboTop, text=txt('Ok'), width=10, command=select).grid(row=3, column=0)
+        Button(self.comboTop, text=txt('OK'), width=10, command=select).grid(row=3, column=0)
     def popImport(self):
         # Create a Toplevel window
         top = Toplevel(self.window)
@@ -1042,8 +1046,8 @@ class SkillComposer:
         Button(top, text=txt('Clear'), width=10, command=self.clearSkillText).grid(row=0, column=1)
         # Create a Button Widget in the Toplevel Window
         Button(top, text=txt('Cancel'), width=10, command=lambda: self.closePop(top)).grid(row=0, column=2)
-        Button(top, text=txt('Ok'), width=10, command=lambda: self.loadSkillDataText(top)).grid(row=0, column=3)
-        Button(top, text=txt('Multiple'), width=10, command=lambda: self.loadSkillDataTextMul(top)).grid(row=0, column=4)
+#        Button(top, text=txt('OK'), width=10, command=lambda: self.loadSkillDataText(top)).grid(row=0, column=3)
+        Button(top, text=txt('OK'), width=10, command=lambda: self.loadSkillDataTextMul(top)).grid(row=0, column=3)
         scrollY = Scrollbar(entryFrame, width=20, orient=VERTICAL)
         scrollY.grid(row=0, column=1, sticky='ns')
         scrollY.config(command=self.skillText.yview)
@@ -1556,7 +1560,6 @@ class SkillComposer:
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
-            import os
             os._exit(0)
            
 if __name__ == '__main__':

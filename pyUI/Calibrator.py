@@ -10,9 +10,8 @@ def txt(key):
 class Calibrator:
     def __init__(self,model,lan):
         self.calibratorReady = False
-        global ports
+#        global ports
         connectPort(goodPorts)
-        ports = goodPorts
         self.model = model
         global language
         language = lan
@@ -32,8 +31,8 @@ class Calibrator:
         standButton = Button(self.frameCalibButtons, text=txt('Stand Up'), fg = 'blue', width=self.calibButtonW, command=lambda cmd='balance': self.calibFun(cmd))
         restButton = Button(self.frameCalibButtons, text=txt('Rest'),fg = 'blue', width=self.calibButtonW, command=lambda cmd='d': self.calibFun(cmd))
         walkButton = Button(self.frameCalibButtons, text=txt('Walk'),fg = 'blue', width=self.calibButtonW, command=lambda cmd='walk': self.calibFun(cmd))
-        saveButton = Button(self.frameCalibButtons, text=txt('Save'),fg = 'blue', width=self.calibButtonW, command=lambda: send(ports, ['s', 0]))
-        abortButton = Button(self.frameCalibButtons, text=txt('Abort'),fg = 'blue', width=self.calibButtonW, command=lambda: send(ports, ['a', 0]))
+        saveButton = Button(self.frameCalibButtons, text=txt('Save'),fg = 'blue', width=self.calibButtonW, command=lambda: send(goodPorts, ['s', 0]))
+        abortButton = Button(self.frameCalibButtons, text=txt('Abort'),fg = 'blue', width=self.calibButtonW, command=lambda: send(goodPorts, ['a', 0]))
 #        quitButton = Button(self.frameCalibButtons, text=txt('Quit'),fg = 'blue', width=self.calibButtonW, command=self.closeCalib)
         calibButton.grid(row=6, column=0)
         restButton.grid(row=6, column=1)
@@ -104,6 +103,7 @@ class Calibrator:
             self.calibSliders.append(sliderBar)
             label.grid(row=ROW, column=COL, columnspan=cSPAN, pady=2, sticky=ALIGN)
             sliderBar.grid(row=ROW + 1, column=COL, rowspan=rSPAN, columnspan=cSPAN, sticky=ALIGN)
+        time.sleep(3) # wait for the robot to reboot
         self.calibFun('c')
         self.winCalib.update()
         self.calibratorReady = True
@@ -111,12 +111,12 @@ class Calibrator:
         self.winCalib.mainloop()
 
     def calibFun(self, cmd):
-        global ports
+#        global ports
         imageW = 250
         self.imgPosture.destroy()
         if cmd == 'c':
             self.imgPosture = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Ruler.jpeg', imageW)
-            result = send(ports, ['c', 0])
+            result = send(goodPorts, ['c', 0])
             if result != -1:
                 offsets = result[1]
                 #                print(offsets)
@@ -133,32 +133,32 @@ class Calibrator:
 
         elif cmd == 'd':
             self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Rest.jpeg', imageW)
-            send(ports, ['d', 0])
+            send(goodPorts, ['d', 0])
         elif cmd == 'balance':
             self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Stand.jpeg', imageW)
-            send(ports, ['kbalance', 0])
+            send(goodPorts, ['kbalance', 0])
         elif cmd == 'walk':
             self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Walk.jpeg', imageW)
-            send(ports, ['kwkF', 0])
+            send(goodPorts, ['kwkF', 0])
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
         Hovertip(self.imgPosture, txt('tipImgPosture'))
         self.winCalib.update()
 
     def setCalib(self, idx, value):
         if self.calibratorReady:
-            global ports
+#            global ports
             value = int(value)
-            send(ports, ['c', [idx, value], 0])
+            send(goodPorts, ['c', [idx, value], 0])
 
     def closeCalib(self):
         confirm = messagebox.askyesnocancel(title=None, message=txt('Do you want to save the offsets?'),
                                             default=messagebox.YES)
         if confirm is not None:
-            global ports
+#            global ports
             if confirm:
-                send(ports, ['s', 0])
+                send(goodPorts, ['s', 0])
             else:
-                send(ports, ['a', 0])
+                send(goodPorts, ['a', 0])
             time.sleep(0.1)
             self.calibratorReady = False
             self.calibSliders.clear()

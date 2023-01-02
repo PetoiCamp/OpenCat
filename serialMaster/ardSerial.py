@@ -186,6 +186,7 @@ def sendTask(goodPorts, port, task, timeout=0):  # task Structure is [token, var
                 #        print('c') #which case
                 serialWriteByte(port, task[1])
             token = task[0][0]
+            printH("token",token)
             lastMessage = printSerialMessage(port, token, timeout)
             time.sleep(task[-1])
         #    with lock:
@@ -574,22 +575,23 @@ def connectPort(PortList):
         logger.info(f"Connect to serial port:")
         for p in PortList:
             logger.info(f"{PortList[p]}")
+            
 def replug(PortList):
     global goodPortCount
     print('Please disconnect and then connect the device')
-    thres = 30
+    tk.messagebox.showwarning(title='Warning', message='Please disconnect and then connect the device')
+    thres = 10 # time out for the manual plug and unplug
     ap = copy.deepcopy(Communication.Print_Used_Com())
     start = time.time()
     while True:
         time.sleep(0.1)
         curPorts = copy.deepcopy(Communication.Print_Used_Com())
-        print(curPorts)
-        print(len(curPorts))
-        print('---')
-        print(ap)
-        print(len(ap))
         if len(curPorts)!=len(ap):
-            print(curPorts                )
+            print(curPorts)
+            print(len(curPorts))
+            print('---')
+            print(ap)
+            print(len(ap))
             if len(curPorts) < len(ap):
                 ap  = curPorts
             else:
@@ -621,13 +623,13 @@ def selectList(PortList,ls,win):
     global goodPortCount
     
     for i in ls.curselection():
-        p = ls.get(i)
+        p = ls.get(i).split('/')[-1]
         try:
             serialObject = Communication(p, 115200, 1)
             goodPorts.update({serialObject: p})
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
-            var.model_ = 'Bittle'
+            var.model_ = 'Bittle' #default value
             tk.messagebox.showwarning(title='Warning', message='Need to manually select model')
             win.destroy()
         except Exception:
@@ -660,10 +662,11 @@ def refreshBox(ls):
     ls.delete(0,tk.END)
     for p in allPorts:
         ls.insert(tk.END,p)
+        
 def manualSelect(PortList):
-    
     allPorts = Communication.Print_Used_Com()
     window = tk.Tk()
+    window.title('Manual mode')
     def on_closing():
         window.destroy()
         os._exit(0)
@@ -678,8 +681,9 @@ def manualSelect(PortList):
     bu.grid(row=1,column=1)
     bu2 = tk.Button(window, text="Refresh", command=lambda:refreshBox(ls))
     bu2.grid(row=0,column=1)
-    tk.messagebox.showwarning(title='Warning', message='Manual mode')
+#    tk.messagebox.showwarning(title='Warning', message='Manual mode')
     window.mainloop()
+    
 goodPorts = {}
 initialized = False
 goodPortCount = 0
