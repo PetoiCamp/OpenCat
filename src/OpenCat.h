@@ -236,8 +236,8 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_BEEP_BIN 'B'
 #define T_SKILL_DATA 'K'
 #define T_LISTED_BIN 'L'
-#define T_SERVO_MICROSECOND 'W' //PWM width modulation
-#define T_TEMP 'T'  //call the last skill data received from the serial port
+#define T_SERVO_MICROSECOND 'W'  //PWM width modulation
+#define T_TEMP 'T'               //call the last skill data received from the serial port
 #endif
 
 float degPerRad = 180.0 / M_PI;
@@ -480,6 +480,9 @@ void initRobot() {
   imuSetup();
 #endif
 #endif  // **
+
+  allCalibratedPWM(currentAng);  //soft boot for servos
+  delay(500);
   PTLF("Ready!");
 #ifndef MAIN_SKETCH
   PCA9685CalibrationPrompt();
