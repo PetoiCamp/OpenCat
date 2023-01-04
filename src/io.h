@@ -81,6 +81,10 @@ void readSignal() {
 #ifdef ULTRASONIC
     read_ultrasonic();
 #endif
+#ifdef GESTURE
+    read_gesture();
+#endif
+
 #ifdef RANDOM_MIND
     if (autoSwitch && newCmdIdx == 0)
       randomMind();  //make the robot do random demos

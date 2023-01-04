@@ -383,6 +383,8 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
 #include "camera.h"
 #elif defined ULTRASONIC
 #include "ultrasonic.h"
+#elif defined GESTURE
+#include "gesture.h"
 #elif defined OTHER_MODULES
 #else
 #define GYRO_PIN 0
@@ -448,6 +450,9 @@ void initRobot() {
 #endif
 #ifdef CAMERA
   cameraSetup();
+#endif
+#ifdef GESTURE
+  gestureSetup();
 #endif
 
   playMelody(MELODY_NORMAL);

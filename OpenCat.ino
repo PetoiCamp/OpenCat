@@ -58,6 +58,7 @@
 //#define ULTRASONIC      //for Nybble's ultrasonic sensor
 //#define VOICE           //Petoi Grove voice module
 //#define VOICE_LD3320    //for LD3320 module
+//#define GESTURE          //for Gesture module
 //#define CAMERA          //for BallTracking using Mu Vision camera
 //You need to install https://github.com/mu-opensource/MuVisionSensor3 as a zip library in Arduino IDE.
 //Set the four dial switches on the camera as **v ^ v v** (the second switch dialed up to I2C) and connect the camera module to the I2C grove on NyBoard.
