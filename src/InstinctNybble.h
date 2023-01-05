@@ -589,11 +589,11 @@ const int8_t pu[] PROGMEM = {
     0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,	 8, 0, 0, 0,
 };
 const int8_t rc[] PROGMEM = { 
-  -3,   0,   0,   1,
-   0,   0,   0,
-  30, -74,  34,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -59, -31,   8,  12,   0,   0,
-  62,   0,  -20,   0,   0,   0,   0,   0,  -3, -99, 115,   0,  81,   9,  -9, -71,  32,  10,   0,   0,
-   0,  17,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,   8,   0,   0,   0,
+-3, 0, 0, 1,
+ 0, 0, 0, 
+   30, -74,  34,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -59, -31,	 8,12, 0, 0,
+   62,   0, -20,   0,   0,   0,   0,   0,  -3, -99, 115,   0,  81,   9,  -9, -71,	32,10, 0, 0,
+    0,  17,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,	 8, 0, 0, 0,
 };
 const int8_t stand[] PROGMEM = { 
 -6, 0, 0, 1,
@@ -614,6 +614,6 @@ const int8_t stand[] PROGMEM = {
 	//while the newbilities on progmem are assigned to new addresses
   const int8_t* progmemPointer[] = {zero, };
 #endif
-//the total byte of instincts is 4838
+//the total byte of instincts is 4678
 //the maximal array size is 365 bytes of bkL. 
 //Make sure to leave enough memory for SRAM to work properly. Any single skill should be smaller than 400 bytes for safety.
