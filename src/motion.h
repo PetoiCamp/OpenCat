@@ -115,8 +115,6 @@ template<typename T> void allCalibratedPWM(T *dutyAng, byte offset = 0) {
 }
 
 template<typename T> void transform(T *target, byte angleDataRatio = 1, float speedRatio = 2, byte offset = 0) {
-  printTable(currentAng);
-  printTable(target);
   if (speedRatio <= 0
 #ifdef SERVO_SLOW_BOOT
       || servoOff
