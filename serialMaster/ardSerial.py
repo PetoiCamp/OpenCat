@@ -592,7 +592,7 @@ def replug(PortList):
     window.protocol('WM_DELETE_WINDOW', on_closing)
     window.title("Replug mode")
     tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and then connect the device'))
-   
+    window.destroy()
     thres = 10 # time out for the manual plug and unplug
     ap = copy.deepcopy(Communication.Print_Used_Com())
     start = time.time()
@@ -623,13 +623,12 @@ def replug(PortList):
                     except Exception:
                         print("Cannot open {}".format(p))
                 if success:
-                    window.destroy()
+                    
                     return
                 else:
                     break
         if time.time()-start>thres:
             break
-    window.destroy()
     manualSelect(PortList)
 
 def selectList(PortList,ls,win):

@@ -1495,8 +1495,7 @@ class SkillComposer:
                 self.updatePortMenu()
             allPorts = copy.deepcopy(currentPorts)
     """
-    def SCkeepCheckingPort(self, goodPorts):
-        keepCheckingPort(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu)
+    
     def dial(self, i):
         if self.ready == 1:
             global ports
@@ -1523,7 +1522,7 @@ class SkillComposer:
                     #                    self.createPortMenu()
 
                     self.keepChecking = True
-                    t = threading.Thread(target=self.SCkeepCheckingPort, args=(goodPorts,))
+                    t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
                     t.start()
                     send(ports, ['b', [10, 90], 0])
                     if len(goodPorts) > 0:
