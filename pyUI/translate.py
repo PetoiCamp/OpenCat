@@ -71,6 +71,7 @@ textEN = {
     'Open File':'Open File',
     'Cancel':'Cancel',
     'OK':'OK',
+    "Refresh":"Refresh",
     'Multiple':'Multiple',
     'Skill List':'Skill List',
     'Type of skill':'Type of skill',
@@ -84,7 +85,8 @@ textEN = {
     'Behavior':'  Behavior',
     'Clear':'Clear',
     'max':'max',
-    
+    'Manual mode':'Manual mode',
+    'Please disconnect and then connect the device':'Please disconnect and then connect the device',
     'Calibrate':'Calibrate',
     'Rest':'Rest',
     'Stand Up':'Stand Up',
@@ -116,7 +118,7 @@ textEN = {
     'Uploading': 'Uploading ',
     'is successully uploaded':' is successully uploaded',
     'failed to upload':' failed to upload',
-
+    'Need to manually select model type':'Need to manually select model type',
     'msgFileDir': 'Please choose the release folder!',
     'msgPort': 'Please choose the correct serial port!',
     'titleVersion': 'Version information',
@@ -157,7 +159,7 @@ textEN = {
     'Rotate':'Rotate',
     'Flash':'Flash',
     'Meow':'Meow',
-
+ 
     '':'',
     'tipConnect':'Keep updating the active serial\nports until it\'s disabled',
     'tipPortMenu':'Control single or all of the devices',
@@ -278,8 +280,10 @@ textCN = {
     'Stand Up':'站立',
     'Walk':'行走',
     'Abort':'放弃',
+    "Refresh":"刷新",
+    'Manual mode':"手动模式",
     'Do you want to save the offsets?':'要保存校准值吗？',
-
+    'Need to manually select model type':'请手动选择型号',
     'uploaderTitle': '上传工具',
     'labTrans': '切换语言',
     'title': '上传工具',
@@ -342,7 +346,7 @@ textCN = {
     'Rotate':'旋转',
     'Flash':'闪烁',
     'Meow':'喵！',
-    
+    'Please disconnect and then connect the device':'请重新插拔设备',
     'tipConnect':'持续更新活跃串口列表直到被挂起',
     'tipPortMenu':'控制单个或所有设备',
     'tipServo':'启用或禁用舵机',

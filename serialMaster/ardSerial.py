@@ -12,6 +12,11 @@ import threading
 import os
 import var 
 import tkinter as tk
+sys.path.append("../pyUI")
+from translate import *
+language = languageList['English']
+def txt(key):
+    return language.get(key, textEN[key])
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
 Level: The level determines the minimum priority level of messages to log. 
@@ -579,7 +584,15 @@ def connectPort(PortList):
 def replug(PortList):
     global goodPortCount
     print('Please disconnect and then connect the device')
-    tk.messagebox.showwarning(title='Warning', message='Please disconnect and then connect the device')
+    
+    window = tk.Tk()
+    def on_closing():
+        window.destroy()
+        os._exit(0)
+    window.protocol('WM_DELETE_WINDOW', on_closing)
+    window.title("Replug mode")
+    tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and then connect the device'))
+   
     thres = 10 # time out for the manual plug and unplug
     ap = copy.deepcopy(Communication.Print_Used_Com())
     start = time.time()
@@ -610,12 +623,13 @@ def replug(PortList):
                     except Exception:
                         print("Cannot open {}".format(p))
                 if success:
+                    window.destroy()
                     return
                 else:
                     break
         if time.time()-start>thres:
             break
-        
+    window.destroy()
     manualSelect(PortList)
 
 def selectList(PortList,ls,win):
@@ -630,7 +644,7 @@ def selectList(PortList,ls,win):
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
             var.model_ = 'Bittle' #default value
-            tk.messagebox.showwarning(title='Warning', message='Need to manually select model')
+            tk.messagebox.showwarning(title='Warning', message=txt('Need to manually select model type'))
             win.destroy()
         except Exception:
             print("Cannot open {}".format(p))
@@ -666,22 +680,23 @@ def refreshBox(ls):
 def manualSelect(PortList):
     allPorts = Communication.Print_Used_Com()
     window = tk.Tk()
-    window.title('Manual mode')
     def on_closing():
         window.destroy()
         os._exit(0)
     window.protocol('WM_DELETE_WINDOW', on_closing)
+    window.title('Manual mode')
+    
     
     ls = tk.Listbox(window,selectmode="multiple")
     ls.grid(row=0,column=0)
     
     for p in allPorts:
         ls.insert(tk.END,p)
-    bu = tk.Button(window, text="Done", command=lambda:selectList(PortList,ls,window))
+    bu = tk.Button(window, text=txt("OK"), command=lambda:selectList(PortList,ls,window))
     bu.grid(row=1,column=1)
-    bu2 = tk.Button(window, text="Refresh", command=lambda:refreshBox(ls))
+    bu2 = tk.Button(window, text=txt("Refresh"), command=lambda:refreshBox(ls))
     bu2.grid(row=0,column=1)
-#    tk.messagebox.showwarning(title='Warning', message='Manual mode')
+    tk.messagebox.showwarning(title='Warning', message=txt('Manual mode'))
     window.mainloop()
     
 goodPorts = {}

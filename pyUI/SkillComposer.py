@@ -160,7 +160,7 @@ class SkillComposer:
         self.ready = 1
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
-        t = threading.Thread(target=self.SCkeepCheckingPort, args=(goodPorts,))
+        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
         t.daemon = True
         t.start()
         self.window.mainloop()
@@ -933,16 +933,23 @@ class SkillComposer:
         typeLabel.grid(row=1,column=0)
         nameLabel = Label(self.comboTop,text = txt("Name of skill"))
         nameLabel.grid(row=1,column=1)
-        self.typeComb = ttk.Combobox(self.comboTop,values=["Posture","Gait","Behavior"],state='readonly')
+        values = []
+        if len(self.skillN[0]):
+            values.append(txt("Posture"))
+        if len(self.skillN[1]):
+            values.append(txt("Gait"))
+        if len(self.skillN[2]):
+            values.append(txt("Behavior"))
+        self.typeComb = ttk.Combobox(self.comboTop,values=values,state='readonly')
         self.typeComb.grid(row=2, column=0)
         self.nameComb = ttk.Combobox(self.comboTop,values=[])
         self.nameComb.grid(row=2, column=1)
         def selectTy(event):
             V = self.typeComb.get()
             self.nameComb.set('')
-            if V=="Posture":
+            if V==txt("Posture"):
                 self.nameComb['values'] = self.skillN[0]
-            elif V=="Gait":
+            elif V==txt("Gait"):
                 self.nameComb['values'] = self.skillN[1]
             else:
                 self.nameComb['values'] = self.skillN[2]
