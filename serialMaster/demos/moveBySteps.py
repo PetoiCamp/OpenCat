@@ -7,7 +7,8 @@ from ardSerial import *
 
 if __name__ == '__main__':
     try:
-        connectPort()
+        goodPorts = {}
+        connectPort(goodPorts)
         if len(goodPorts)>0:
             time.sleep(3);
             send(goodPorts,['g',1])

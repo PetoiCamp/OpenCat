@@ -38,7 +38,8 @@ if __name__ == '__main__':
             ['i', [0, -80, 1, 20], 2],
             ['d', 1],
         ]
-        connectPort()
+        goodPorts = {}
+        connectPort(goodPorts)
         if len(goodPorts)>0:
             for task in testSchedule:  # execute the tasks in the testSchedule
                 print(task)
