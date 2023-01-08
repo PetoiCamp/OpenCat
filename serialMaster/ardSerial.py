@@ -191,7 +191,7 @@ def sendTask(goodPorts, port, task, timeout=0):  # task Structure is [token, var
                 #        print('c') #which case
                 serialWriteByte(port, task[1])
             token = task[0][0]
-            printH("token",token)
+#            printH("token",token)
             lastMessage = printSerialMessage(port, token, timeout)
             time.sleep(task[-1])
         #    with lock:
@@ -550,6 +550,8 @@ def keepCheckingPort(portList,cond1,check,updateFunc,):
                 checkPortList(portList, newPort)
                 updateFunc()
         elif set(allPorts) - set(currentPorts):
+            time.sleep(0.5) #usbmodem is slower in detection
+            currentPorts = Communication.Print_Used_Com()
             closedPort = list(set(allPorts) - set(currentPorts))
             inv_dict = {v: k for k, v in portList.items()}
             for p in closedPort:
@@ -583,7 +585,7 @@ def connectPort(PortList):
             
 def replug(PortList):
     global goodPortCount
-    print('Please disconnect and then connect the device')
+    print('Please disconnect and reconnect the device from the COMPUTER side')
     
     window = tk.Tk()
     def on_closing():
@@ -591,15 +593,18 @@ def replug(PortList):
         os._exit(0)
     window.protocol('WM_DELETE_WINDOW', on_closing)
     window.title("Replug mode")
-    tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and then connect the device'))
+    tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
     window.destroy()
     thres = 10 # time out for the manual plug and unplug
     ap = copy.deepcopy(Communication.Print_Used_Com())
     start = time.time()
+    print('Counting down to manual mode:')
     while True:
         time.sleep(0.1)
         curPorts = copy.deepcopy(Communication.Print_Used_Com())
         if len(curPorts)!=len(ap):
+            time.sleep(0.5)
+            curPorts = copy.deepcopy(Communication.Print_Used_Com())
             print(curPorts)
             print(len(curPorts))
             print('---')
@@ -607,14 +612,14 @@ def replug(PortList):
             print(len(ap))
             if len(curPorts) < len(ap):
                 ap  = curPorts
+                start = time.time()
             else:
-                print("dif")
                 dif = list(set(curPorts)-set(ap))
-                
+                printH("dif",reversed(dif))
                 success = False
-                for p in dif:
+                for p in reversed(dif):
                     try:
-                        serialObject = Communication(p, 115200, 1)
+                        serialObject = Communication(p, 115200, 2)
                         goodPorts.update({serialObject: p})
                         goodPortCount += 1
                         var.model_ = 'Bittle'
@@ -623,12 +628,13 @@ def replug(PortList):
                     except Exception:
                         print("Cannot open {}".format(p))
                 if success:
-                    
                     return
                 else:
                     break
         if time.time()-start>thres:
             break
+        elif (time.time()-start)%1<0.1:
+            print(thres-round(time.time()-start)//1)
     manualSelect(PortList)
 
 def selectList(PortList,ls,win):
@@ -636,9 +642,11 @@ def selectList(PortList,ls,win):
     global goodPortCount
     
     for i in ls.curselection():
-        p = ls.get(i).split('/')[-1]
+        p = ls.get(i)#.split('/')[-1]
         try:
-            serialObject = Communication(p, 115200, 1)
+            print(p)
+            print(p.split('/')[-1])
+            serialObject = Communication(p, 115200, 2)
             goodPorts.update({serialObject: p})
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
@@ -684,7 +692,6 @@ def manualSelect(PortList):
         os._exit(0)
     window.protocol('WM_DELETE_WINDOW', on_closing)
     window.title('Manual mode')
-    
     
     ls = tk.Listbox(window,selectmode="multiple")
     ls.grid(row=0,column=0)

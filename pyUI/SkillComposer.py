@@ -958,6 +958,7 @@ class SkillComposer:
             print(v)
             if v=='':
                 print("No option selected")
+                return
             skillData = self.skills[self.skillDic[v]]
             print(skillData)
             self.restartSkillEditor()
