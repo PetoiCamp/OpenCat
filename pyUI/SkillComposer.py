@@ -930,8 +930,9 @@ class SkillComposer:
     def changeColor(self,i):
         colorTuple = askcolor(title="Tkinter Color Chooser")
         colors = list(colorTuple[0])
-        for c in range(3):
-            colors[c] //= 2
+#        for c in range(3):
+#            colors[c] //= 2    #it's not always returning interger.
+        colors = list(map(lambda x:int(x//2),colors)) #colors have to be integer
 #        printH('RGB: ',colors)
         if self.colorBinderValue.get():
             self.activeEye = 0
