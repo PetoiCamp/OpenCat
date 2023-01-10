@@ -598,9 +598,9 @@ def replug(PortList):
     
     thres = 10 # time out for the manual plug and unplug
     print('Counting down to manual mode:')
-    
-    def countdown(start):
-        ap = copy.deepcopy(Communication.Print_Used_Com())
+   
+    def countdown(start,ap):
+        
         
         curPorts = copy.deepcopy(Communication.Print_Used_Com())
         if len(curPorts)!=len(ap):
@@ -642,13 +642,15 @@ def replug(PortList):
         elif (time.time()-start)%1<0.1:
             print(thres-round(time.time()-start)//1)
             label['text']=(thres-round(time.time()-start)//1)
-        window.after(100,lambda:countdown(start))
+        window.after(100,lambda:countdown(start,ap))
+    labelT = tk.Label(window)
+    labelT['text']= "Counting down to manual mode:  "
+    labelT.grid(row=0,column=0)
     label = tk.Label(window)
-    label.place(x=35, y=15)
+    label.grid(row=0,column=1)
     label['text']=thres
     tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
-    start = time.time()
-    countdown(start)
+    countdown(time.time(),copy.deepcopy(Communication.Print_Used_Com()))
     window.mainloop()
     
 
