@@ -593,14 +593,15 @@ def replug(PortList):
         os._exit(0)
     window.protocol('WM_DELETE_WINDOW', on_closing)
     window.title("Replug mode")
-    tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
-    window.destroy()
+    
+    
+    
     thres = 10 # time out for the manual plug and unplug
-    ap = copy.deepcopy(Communication.Print_Used_Com())
-    start = time.time()
     print('Counting down to manual mode:')
-    while True:
-        time.sleep(0.1)
+    
+    def countdown(start):
+        ap = copy.deepcopy(Communication.Print_Used_Com())
+        
         curPorts = copy.deepcopy(Communication.Print_Used_Com())
         if len(curPorts)!=len(ap):
             time.sleep(0.5)
@@ -627,15 +628,29 @@ def replug(PortList):
                         success = True
                     except Exception:
                         print("Cannot open {}".format(p))
+                window.destroy()
                 if success:
+                    
                     return
                 else:
-                    break
+                    manualSelect(PortList)
+                    
         if time.time()-start>thres:
-            break
+            window.destroy()
+            manualSelect(PortList)
+            
         elif (time.time()-start)%1<0.1:
             print(thres-round(time.time()-start)//1)
-    manualSelect(PortList)
+            label['text']=(thres-round(time.time()-start)//1)
+        window.after(100,lambda:countdown(start))
+    label = tk.Label(window)
+    label.place(x=35, y=15)
+    label['text']=thres
+    tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
+    start = time.time()
+    countdown(start)
+    window.mainloop()
+    
 
 def selectList(PortList,ls,win):
     
