@@ -2,3 +2,8 @@
 *.DS_Store
 *.pyc
 pyUI/defaultConfig.txt
+*.cfg
+*.svd
+ModuleTests/testDoubleLight/debug_custom.json
+ModuleTests/testDoubleAnalog/debug_custom.json
+ModuleTests/testVoiceCommander/debug_custom.json
