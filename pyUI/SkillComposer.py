@@ -896,7 +896,74 @@ class SkillComposer:
         if self.totalFrame == 1:
             self.activeFrame = -1
         self.setFrame(0)
-    
+    def loadSkill(self,skillData):
+        
+        print(skillData)
+        self.restartSkillEditor()
+        if skillData[0] < 0:
+            header = 7
+            frameSize = 20
+            loopFrom, loopTo, repeat = skillData[4:7]
+            self.vRepeat.set(repeat)
+            copyFrom = 4
+            self.gaitOrBehavior.set(txt('Behavior'))
+        else:
+            header = 4
+            if skillData[0] == 1:  # posture
+                frameSize = 16
+                copyFrom = 4
+            else:  # gait
+                if self.model == 'Nybble' or 'Bittle':
+                    frameSize = 8
+                    copyFrom = 12
+                else:
+                    frameSize = 12
+                    copyFrom = 8
+            self.gaitOrBehavior.set(txt('Gait'))
+        if (len(skillData) - header) % abs(skillData[0]) != 0 or frameSize != (len(skillData) - header) // abs(
+                skillData[0]):
+            messagebox.showwarning(title='Warning', message='Wrong format!')
+            print('Wrong format!')
+            
+            return
+        
+        for f in range(abs(skillData[0])):
+            if f != 0:
+                self.addFrame(f)
+            frame = self.frameList[f]
+            frame[2][copyFrom:copyFrom + frameSize] = copy.deepcopy(
+                skillData[header + frameSize * f:header + frameSize * (f + 1)])
+            if skillData[3] > 1:
+                frame[2][4:20] = list(map(lambda x: x * 2, frame[2][4:20]))
+                print(frame[2][4:24])
+
+            if skillData[0] < 0:
+                if f == loopFrom or f == loopTo:
+                    self.getWidget(f, cLoop).select()
+                    frame[2][3] = 1
+                else:
+                    frame[2][3] = 0
+                #                    print(self.getWidget(f, cLoop).get())
+                self.getWidget(f, cStep).delete(0, END)
+                if frame[2][20] == 0:
+                    self.getWidget(f, cStep).insert(0, txt('max'))
+                else:
+                    self.getWidget(f, cStep).insert(0, frame[2][20])
+                self.getWidget(f, cDelay).delete(0, END)
+                self.getWidget(f, cDelay).insert(0, frame[2][21] * 50)
+
+                self.getWidget(f, cTrig).delete(0, END)
+                self.getWidget(f, cAngle).delete(0, END)
+                self.getWidget(f, cTrig).insert(0, triggerAxis[frame[2][22]])
+                self.getWidget(f, cAngle).insert(0, frame[2][23])
+
+            else:
+                self.getWidget(f, cStep).delete(0, END)
+                self.getWidget(f, cStep).insert(0, txt('max'))
+            self.activeFrame = f
+        if self.totalFrame == 1:
+            self.activeFrame = -1
+        self.setFrame(0)
     def loadSkillDataTextMul(self,top):
         skillDataString = self.skillText.get('1.0', 'end')
         if len(skillDataString) == 1:
@@ -915,121 +982,59 @@ class SkillComposer:
             lst = list(map(int, lst))
             return lst
         self.skills = list(map(processing, skills))
-        assert len(skillNames) == len(self.skills)
-        self.skillDic = dict(zip(skillNames,range(len(skillNames))))
-        self.skillN = ([],[],[])
-        for (n,s) in zip(skillNames,range(len(skillNames))):
-            if self.skills[s][0] < 0:
-                self.skillN[2].append(n)
-            elif self.skills[s][0] > 1:
-                self.skillN[1].append(n)
-            else:
-                self.skillN[0].append(n)
-        print(self.skillN)
-        top.destroy()
-        self.comboTop = Toplevel(self.window)
-        self.comboTop.title(txt("Skill List"))
-        typeLabel = Label(self.comboTop,text = txt("Type of skill"))
-        typeLabel.grid(row=1,column=0)
-        nameLabel = Label(self.comboTop,text = txt("Name of skill"))
-        nameLabel.grid(row=1,column=1)
-        values = []
-        if len(self.skillN[0]):
-            values.append(txt("Posture"))
-        if len(self.skillN[1]):
-            values.append(txt("Gait"))
-        if len(self.skillN[2]):
-            values.append(txt("Behavior"))
-        self.typeComb = ttk.Combobox(self.comboTop,values=values,state='readonly')
-        self.typeComb.grid(row=2, column=0)
-        self.nameComb = ttk.Combobox(self.comboTop,values=[])
-        self.nameComb.grid(row=2, column=1)
-        def selectTy(event):
-            V = self.typeComb.get()
-            self.nameComb.set('')
-            if V==txt("Posture"):
-                self.nameComb['values'] = self.skillN[0]
-            elif V==txt("Gait"):
-                self.nameComb['values'] = self.skillN[1]
-            else:
-                self.nameComb['values'] = self.skillN[2]
-        def select():
-            v = self.nameComb.get()
-            print(v)
-            if v=='':
-                print("No option selected")
-                return
-            skillData = self.skills[self.skillDic[v]]
-            print(skillData)
-            self.restartSkillEditor()
-            if skillData[0] < 0:
-                header = 7
-                frameSize = 20
-                loopFrom, loopTo, repeat = skillData[4:7]
-                self.vRepeat.set(repeat)
-                copyFrom = 4
-                self.gaitOrBehavior.set(txt('Behavior'))
-            else:
-                header = 4
-                if skillData[0] == 1:  # posture
-                    frameSize = 16
-                    copyFrom = 4
-                else:  # gait
-                    if self.model == 'Nybble' or 'Bittle':
-                        frameSize = 8
-                        copyFrom = 12
-                    else:
-                        frameSize = 12
-                        copyFrom = 8
-                self.gaitOrBehavior.set(txt('Gait'))
-            if (len(skillData) - header) % abs(skillData[0]) != 0 or frameSize != (len(skillData) - header) // abs(
-                    skillData[0]):
-                messagebox.showwarning(title='Warning', message='Wrong format!')
-                print('Wrong format!')
-                
-                return
-            
-            for f in range(abs(skillData[0])):
-                if f != 0:
-                    self.addFrame(f)
-                frame = self.frameList[f]
-                frame[2][copyFrom:copyFrom + frameSize] = copy.deepcopy(
-                    skillData[header + frameSize * f:header + frameSize * (f + 1)])
-                if skillData[3] > 1:
-                    frame[2][4:20] = list(map(lambda x: x * 2, frame[2][4:20]))
-                    print(frame[2][4:24])
-
-                if skillData[0] < 0:
-                    if f == loopFrom or f == loopTo:
-                        self.getWidget(f, cLoop).select()
-                        frame[2][3] = 1
-                    else:
-                        frame[2][3] = 0
-                    #                    print(self.getWidget(f, cLoop).get())
-                    self.getWidget(f, cStep).delete(0, END)
-                    if frame[2][20] == 0:
-                        self.getWidget(f, cStep).insert(0, txt('max'))
-                    else:
-                        self.getWidget(f, cStep).insert(0, frame[2][20])
-                    self.getWidget(f, cDelay).delete(0, END)
-                    self.getWidget(f, cDelay).insert(0, frame[2][21] * 50)
-
-                    self.getWidget(f, cTrig).delete(0, END)
-                    self.getWidget(f, cAngle).delete(0, END)
-                    self.getWidget(f, cTrig).insert(0, triggerAxis[frame[2][22]])
-                    self.getWidget(f, cAngle).insert(0, frame[2][23])
-
+        if len(self.skills) ==1:
+            top.destroy()
+            self.loadSkill(self.skills[0])
+        else:
+            assert len(skillNames) == len(self.skills)
+            self.skillDic = dict(zip(skillNames,range(len(skillNames))))
+            self.skillN = ([],[],[])
+            for (n,s) in zip(skillNames,range(len(skillNames))):
+                if self.skills[s][0] < 0:
+                    self.skillN[2].append(n)
+                elif self.skills[s][0] > 1:
+                    self.skillN[1].append(n)
                 else:
-                    self.getWidget(f, cStep).delete(0, END)
-                    self.getWidget(f, cStep).insert(0, txt('max'))
-                self.activeFrame = f
-            if self.totalFrame == 1:
-                self.activeFrame = -1
-            self.setFrame(0)
-        
-        self.typeComb.bind('<<ComboboxSelected>>',selectTy)
-        Button(self.comboTop, text=txt('Cancel'), width=10, command=lambda: self.closePop(self.comboTop)).grid(row=3, column=1)
-        Button(self.comboTop, text=txt('OK'), width=10, command=select).grid(row=3, column=0)
+                    self.skillN[0].append(n)
+            print(self.skillN)
+            top.destroy()
+            self.comboTop = Toplevel(self.window)
+            self.comboTop.title(txt("Skill List"))
+            typeLabel = Label(self.comboTop,text = txt("Type of skill"))
+            typeLabel.grid(row=1,column=0)
+            nameLabel = Label(self.comboTop,text = txt("Name of skill"))
+            nameLabel.grid(row=1,column=1)
+            values = []
+            if len(self.skillN[0]):
+                values.append(txt("Posture"))
+            if len(self.skillN[1]):
+                values.append(txt("Gait"))
+            if len(self.skillN[2]):
+                values.append(txt("Behavior"))
+            self.typeComb = ttk.Combobox(self.comboTop,values=values,state='readonly')
+            self.typeComb.grid(row=2, column=0)
+            self.nameComb = ttk.Combobox(self.comboTop,values=[])
+            self.nameComb.grid(row=2, column=1)
+            def selectTy(event):
+                V = self.typeComb.get()
+                self.nameComb.set('')
+                if V==txt("Posture"):
+                    self.nameComb['values'] = self.skillN[0]
+                elif V==txt("Gait"):
+                    self.nameComb['values'] = self.skillN[1]
+                else:
+                    self.nameComb['values'] = self.skillN[2]
+            def select():
+                v = self.nameComb.get()
+                print(v)
+                if v=='':
+                    print("No option selected")
+                    return
+                self.loadSkill(self.skills[self.skillDic[v]])
+            
+            self.typeComb.bind('<<ComboboxSelected>>',selectTy)
+            Button(self.comboTop, text=txt('Cancel'), width=10, command=lambda: self.closePop(self.comboTop)).grid(row=3, column=1)
+            Button(self.comboTop, text=txt('OK'), width=10, command=select).grid(row=3, column=0)
     def popImport(self):
         # Create a Toplevel window
         top = Toplevel(self.window)
