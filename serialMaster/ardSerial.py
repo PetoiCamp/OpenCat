@@ -618,6 +618,7 @@ def replug(PortList):
                 dif = list(set(curPorts)-set(ap))
                 printH("dif",reversed(dif))
                 success = False
+                global goodPortCount
                 for p in reversed(dif):
                     try:
                         serialObject = Communication(p, 115200, 2)
@@ -626,7 +627,8 @@ def replug(PortList):
                         var.model_ = 'Bittle'
                         logger.info(f"Connected to serial port: {p}")
                         success = True
-                    except Exception:
+                    except Exception as e:
+                        print(e)
                         print("Cannot open {}".format(p))
                 window.destroy()
                 if success:
