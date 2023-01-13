@@ -621,6 +621,7 @@ def replug(PortList):
                 dif = list(set(curPorts)-set(ap))
                 printH("dif",reversed(dif))
                 success = False
+                global goodPortCount
                 for p in reversed(dif):
                     try:
                         serialObject = Communication(p, 115200, 1)
