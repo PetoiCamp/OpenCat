@@ -6,7 +6,7 @@
 // Petoi LLC
 // Jan 12, 2023
 
-// #define SOFTWARE_SERIAL //disable this line to use the serial 2 of BiBoard
+#define SOFTWARE_SERIAL //disable this line to use the serial 2 of BiBoard
 #ifdef SOFTWARE_SERIAL
 #include <SoftwareSerial.h>
 SoftwareSerial Serial2(6, 7);  //(Rx,Tx)
