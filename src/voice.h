@@ -1,7 +1,6 @@
 #ifdef VOICE
 #include <SoftwareSerial.h>
-// SoftwareSerial mySerial(6, 7);
-SoftwareSerial mySerial(7, 6);
+SoftwareSerial mySerial(6, 7);
 #endif
 #define SERIAL2_BAUD_RATE 9600
 
