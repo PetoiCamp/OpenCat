@@ -598,7 +598,23 @@ def replug(PortList):
     
     thres = 10 # time out for the manual plug and unplug
     print('Counting down to manual mode:')
-   
+    def bCallback():
+        labelC.destroy()
+        buttonC.destroy()
+        
+        labelT['text']= "Counting down to manual mode:  "
+        labelT.grid(row=0,column=0)
+        
+        label.grid(row=1,column=0)
+        label['text']="{} s".format(thres)
+        countdown(time.time(),copy.deepcopy(Communication.Print_Used_Com()))
+    labelC = tk.Label(window, font='sans 14 bold')
+    labelC['text']= "Please unplug and replug the port from the computer side"
+    labelC.grid(row=0,column=0)
+    buttonC = tk.Button(window, text="Confirm", command=bCallback)
+    buttonC.grid(row=1,column=0)
+    labelT = tk.Label(window, font='sans 14 bold')
+    label = tk.Label(window, font='sans 14 bold')
     def countdown(start,ap):
         
         
@@ -630,29 +646,27 @@ def replug(PortList):
                     except Exception as e:
                         print(e)
                         print("Cannot open {}".format(p))
-                window.destroy()
+                
                 if success:
-                    
+                    window.destroy()
                     return
                 else:
-                    manualSelect(PortList)
+                    labelT.destroy()
+                    label.destroy()
+                    manualSelect(PortList, window)
+                    return
                     
         if time.time()-start>thres:
-            window.destroy()
-            manualSelect(PortList)
-            
+            labelT.destroy()
+            label.destroy()
+            manualSelect(PortList, window)
+            return
         elif (time.time()-start)%1<0.1:
             print(thres-round(time.time()-start)//1)
-            label['text']=(thres-round(time.time()-start)//1)
+            label['text']="{} s".format((thres-round(time.time()-start)//1))
         window.after(100,lambda:countdown(start,ap))
-    labelT = tk.Label(window)
-    labelT['text']= "Counting down to manual mode:  "
-    labelT.grid(row=0,column=0)
-    label = tk.Label(window)
-    label.grid(row=0,column=1)
-    label['text']=thres
-    tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
-    countdown(time.time(),copy.deepcopy(Communication.Print_Used_Com()))
+    #tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
+    
     window.mainloop()
     
 
@@ -697,30 +711,30 @@ def selectList(PortList,ls,win):
             print("Cannot open {}".format(p))
         """
         
-def refreshBox(ls):
-    allPorts = Communication.Print_Used_Com()
-    ls.delete(0,tk.END)
-    for p in allPorts:
-        ls.insert(tk.END,p)
+
         
-def manualSelect(PortList):
+def manualSelect(PortList, window):
     allPorts = Communication.Print_Used_Com()
-    window = tk.Tk()
-    def on_closing():
-        window.destroy()
-        os._exit(0)
-    window.protocol('WM_DELETE_WINDOW', on_closing)
     window.title('Manual mode')
-    
+    l1 = tk.Label(window, font = 'sans 14 bold')
+    l1['text'] = "Manual mode" 
+    l1.grid(row=0,column = 0)
+    l2 = tk.Label(window, font='sans 14 bold')
+    l2["text"]="Please select the port from the list"
+    l2.grid(row=1,column=0)
     ls = tk.Listbox(window,selectmode="multiple")
-    ls.grid(row=0,column=0)
-    
+    ls.grid(row=2,column=0)
+    def refreshBox(ls):
+        allPorts = Communication.Print_Used_Com()
+        ls.delete(0,tk.END)
+        for p in allPorts:
+            ls.insert(tk.END,p)
     for p in allPorts:
         ls.insert(tk.END,p)
     bu = tk.Button(window, text=txt("OK"), command=lambda:selectList(PortList,ls,window))
-    bu.grid(row=1,column=1)
+    bu.grid(row=2,column=1)
     bu2 = tk.Button(window, text=txt("Refresh"), command=lambda:refreshBox(ls))
-    bu2.grid(row=0,column=1)
+    bu2.grid(row=1,column=1)
     tk.messagebox.showwarning(title='Warning', message=txt('Manual mode'))
     window.mainloop()
     
