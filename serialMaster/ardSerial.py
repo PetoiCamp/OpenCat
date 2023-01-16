@@ -472,32 +472,35 @@ def testPort(goodPorts, serialObject, p):
     #    global sync
     try:
         time.sleep(3)
-        result = serialObject.main_engine.read_all().decode('ISO-8859-1')
-        if result != '':
-            print('Waiting for the robot to boot up')
-            time.sleep(2)
-            waitTime = 3
-        else:
-            waitTime = 2
-        result = sendTask(goodPorts, serialObject, ['b', [20, 50], 0], waitTime)
-        print(result)
-        if result != -1:
-            printH('Adding', p)
-            for r in result:
-                if 'Bittle' in r:
-                    var.model_ = 'Bittle'
-                    break
-                elif 'Nybble' in r:
-                    var.model_ = 'Nybble'
-                    break
-            goodPorts.update({serialObject: p})
-            goodPortCount += 1
-        else:
-            serialObject.Close_Engine()
-            print('* Port ' + p + ' is not connected to a Petoi device!')
+        result = serialObject.main_engine
+        if result != None:
+            result = result.read_all().decode('ISO-8859-1')
+            if result != '':
+                print('Waiting for the robot to boot up')
+                time.sleep(2)
+                waitTime = 3
+            else:
+                waitTime = 2
+            result = sendTask(goodPorts, serialObject, ['b', [20, 50], 0], waitTime)
+            print(result)
+            if result != -1:
+                printH('Adding', p)
+                for r in result:
+                    if 'Bittle' in r:
+                        var.model_ = 'Bittle'
+                        break
+                    elif 'Nybble' in r:
+                        var.model_ = 'Nybble'
+                        break
+                goodPorts.update({serialObject: p})
+                goodPortCount += 1
+            else:
+                serialObject.Close_Engine()
+                print('* Port ' + p + ' is not connected to a Petoi device!')
     #    sync +=1
-    except Exception:
+    except Exception as e:
         print('* Port ' + p + ' cannot be opened!')
+        raise e
 
 
 
@@ -576,7 +579,7 @@ def connectPort(PortList):
     initialized = True
     if len(PortList) == 0:
         print('No port found!')
-        print('Manual mode')
+        print('Replug mode')
         replug(PortList)
     else:
         logger.info(f"Connect to serial port:")
@@ -584,7 +587,7 @@ def connectPort(PortList):
             logger.info(f"{PortList[p]}")
             
 def replug(PortList):
-    global goodPortCount
+    global timePassed
     print('Please disconnect and reconnect the device from the COMPUTER side')
     
     window = tk.Tk()
@@ -593,9 +596,7 @@ def replug(PortList):
         os._exit(0)
     window.protocol('WM_DELETE_WINDOW', on_closing)
     window.title("Replug mode")
-    
-    
-    
+
     thres = 10 # time out for the manual plug and unplug
     print('Counting down to manual mode:')
     def bCallback():
@@ -616,35 +617,35 @@ def replug(PortList):
     labelT = tk.Label(window, font='sans 14 bold')
     label = tk.Label(window, font='sans 14 bold')
     def countdown(start,ap):
-        
-        
+        global goodPortCount
+        global timePassed
         curPorts = copy.deepcopy(Communication.Print_Used_Com())
         if len(curPorts)!=len(ap):
-            time.sleep(0.5)
-            curPorts = copy.deepcopy(Communication.Print_Used_Com())
-            print(curPorts)
-            print(len(curPorts))
-            print('---')
+#            time.sleep(0.5)
+#            curPorts = copy.deepcopy(Communication.Print_Used_Com())
             print(ap)
             print(len(ap))
+            print('---')
+            print(curPorts)
+            print(len(curPorts))
             if len(curPorts) < len(ap):
                 ap  = curPorts
                 start = time.time()
+                timePassed = 0
             else:
                 dif = list(set(curPorts)-set(ap))
                 printH("dif",reversed(dif))
                 success = False
-                global goodPortCount
                 for p in reversed(dif):
                     try:
-                        serialObject = Communication(p, 115200, 2)
-                        goodPorts.update({serialObject: p})
+                        serialObject = Communication(p, 115200, 1)
+                        goodPorts.update({serialObject: p.split('/')[-1]})
                         goodPortCount += 1
                         var.model_ = 'Bittle'
                         logger.info(f"Connected to serial port: {p}")
                         success = True
                     except Exception as e:
-                        print(e)
+                        raise e
                         print("Cannot open {}".format(p))
                 
                 if success:
@@ -679,37 +680,19 @@ def selectList(PortList,ls,win):
         try:
             print(p)
             print(p.split('/')[-1])
-            serialObject = Communication(p, 115200, 2)
-            goodPorts.update({serialObject: p})
+            serialObject = Communication(p, 115200, 1)
+            goodPorts.update({serialObject: p.split('/')[-1]})
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
             var.model_ = 'Bittle' #default value
-            tk.messagebox.showwarning(title='Warning', message=txt('Need to manually select model type'))
-            win.destroy()
-        except Exception:
-            print("Cannot open {}".format(p))
-            tk.messagebox.showwarning(title='Warning', message='* Port ' + p + ' cannot be opened')
-        """"
-        serialObject = Communication(p, 115200, 1)
-        waitTime = 3
-        time.sleep(5)
-        
-        result = sendTask(goodPorts, serialObject, ['b', [20, 50], 0], waitTime)
-        try:
-            if result!=-1:
-                goodPorts.update({serialObject: p})
-                goodPortCount += 1
-                logger.info(f"Connected to serial port: {p}")
-                var.model_ = 'Bittle'
-                tk.messagebox.showwarning(title='Warning', message='Need to manually select model')
-                win.destroy()
-            else:
-                if serialObject:
-                    serialObject.Close_Engine()
-                tk.messagebox.showwarning(title='Warning', message='* Port ' + p + ' is not connected to a Petoi device!')
+            tk.messagebox.showwarning(title='Warning', message=txt('Need to manually select the model type (Nybble/Bittle)'))
+
         except Exception as e:
+            
+            tk.messagebox.showwarning(title='Warning', message='* Port ' + p + ' cannot be opened')
             print("Cannot open {}".format(p))
-        """
+            raise e
+       
         
 
         
@@ -744,6 +727,7 @@ goodPortCount = 0
 sync = 0
 lock = threading.Lock()
 returnValue = ''
+timePassed = 0
 
 if __name__ == '__main__':
     try:
