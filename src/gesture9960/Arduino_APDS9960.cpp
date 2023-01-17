@@ -45,7 +45,7 @@ bool APDS9960::begin() {
   // Check ID register
   uint8_t id;
   if (!getID(&id)) return false;
-  if (id!=0xAB) return false;
+  if (id!=0xA8 && id!=0xAB) return false;
     
   // Disable everything
   if (!setENABLE(0x00)) return false;
