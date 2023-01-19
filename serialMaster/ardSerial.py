@@ -166,7 +166,7 @@ def printSerialMessage(port, token, timeout=0):
             print('Elapsed time: ', end='')
             print(threshold, end=' seconds\n', flush=True)
             threshold += 2
-            if threshold > 15:
+            if threshold > 10:
                 return -1
         if 0 < timeout < now - startTime:
             return -1
@@ -258,7 +258,7 @@ def splitTaskForLargeAngles(task):
 
 
 def send(port, task, timeout=0):
-    printH('*** @@@ open port ',port) #debug
+#    printH('*** @@@ open port ',port) #debug
     if isinstance(port, dict):
         p = list(port.keys())
     elif isinstance(port, list):
@@ -550,14 +550,14 @@ def keepCheckingPort(portList, check=True):
         allPorts = copy.deepcopy(currentPorts)
 """
 def keepCheckingPort(portList,cond1,check,updateFunc,):
-    print('***@@@ Checking port started') #debug
+#    print('***@@@ Checking port started') #debug
     allPorts = Communication.Print_Used_Com()
     while cond1():
         currentPorts = Communication.Print_Used_Com()
         time.sleep(0.01)
         if set(currentPorts) - set(allPorts):
             newPort = list(set(currentPorts) - set(allPorts))
-            printH('***@@@ check? ',check)#debug
+#            printH('***@@@ check? ',check)#debug
             if check:
                 time.sleep(0.5)
                 checkPortList(portList, newPort)

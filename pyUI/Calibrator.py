@@ -10,7 +10,7 @@ def txt(key):
 class Calibrator:
     def __init__(self,model,lan):
         self.calibratorReady = False
-#        global ports
+#        global goodPorts
         connectPort(goodPorts)
         self.model = model
         global language
@@ -97,8 +97,8 @@ class Calibrator:
 
             value = DoubleVar()
             sliderBar = Scale(self.winCalib, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
-                              borderwidth=2, relief='flat', width=8, from_=-10 * tickDirection, to=10 * tickDirection,
-                              length=LEN, tickinterval=5, resolution=1, repeatdelay=100, repeatinterval=100,
+                              borderwidth=2, relief='flat', width=8, from_=-25 * tickDirection, to=25 * tickDirection,
+                              length=LEN, tickinterval=10, resolution=1, repeatdelay=100, repeatinterval=100,
                               command=lambda value, idx=i: self.setCalib(idx, value))
             self.calibSliders.append(sliderBar)
             label.grid(row=ROW, column=COL, columnspan=cSPAN, pady=2, sticky=ALIGN)
