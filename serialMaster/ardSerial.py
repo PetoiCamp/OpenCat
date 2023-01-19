@@ -166,11 +166,13 @@ def printSerialMessage(port, token, timeout=0):
             print('Elapsed time: ', end='')
             print(threshold, end=' seconds\n', flush=True)
             threshold += 2
+            if threshold > 15:
+                return -1
         if 0 < timeout < now - startTime:
             return -1
 
 
-def sendTask(goodPorts, port, task, timeout=0):  # task Structure is [token, var=[], time]
+def sendTask(PortList, port, task, timeout=0):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
     global returnValue
     #    global sync
@@ -200,9 +202,9 @@ def sendTask(goodPorts, port, task, timeout=0):  # task Structure is [token, var
         #    if initialized:
         #        printH('thread',portDictionary[port])
         except Exception as e:
-            #        printH('Fail to send to port',goodPorts[port])
-            if port in goodPorts:
-                goodPorts.pop(port)
+            #        printH('Fail to send to port',PortList[port])
+            if port in PortList:
+                PortList.pop(port)
             lastMessage = -1
     else:
         lastMessage = -1
@@ -254,6 +256,7 @@ def splitTaskForLargeAngles(task):
 
 
 def send(port, task, timeout=0):
+    printH('*** @@@ open port ',port) #debug
     if isinstance(port, dict):
         p = list(port.keys())
     elif isinstance(port, list):
@@ -465,7 +468,7 @@ def schedulerToSkill(ports, testSchedule):
     send(ports, ['K', newSkill, 1])
 
 
-def testPort(goodPorts, serialObject, p):
+def testPort(PortList, serialObject, p):
     global goodPortCount
    
     
@@ -481,7 +484,7 @@ def testPort(goodPorts, serialObject, p):
                 waitTime = 3
             else:
                 waitTime = 2
-            result = sendTask(goodPorts, serialObject, ['b', [20, 50], 0], waitTime)
+            result = sendTask(PortList, serialObject, ['b', [20, 50], 0], waitTime)
             print(result)
             if result != -1:
                 printH('Adding', p)
@@ -492,7 +495,7 @@ def testPort(goodPorts, serialObject, p):
                     elif 'Nybble' in r:
                         var.model_ = 'Nybble'
                         break
-                goodPorts.update({serialObject: p})
+                PortList.update({serialObject: p})
                 goodPortCount += 1
             else:
                 serialObject.Close_Engine()
@@ -504,7 +507,7 @@ def testPort(goodPorts, serialObject, p):
 
 
 
-def checkPortList(goodPorts, allPorts):
+def checkPortList(PortList, allPorts):
     threads = list()
     
     for p in reversed(allPorts):  # assuming the last one is the most possible port
@@ -512,7 +515,7 @@ def checkPortList(goodPorts, allPorts):
         #     continue
         serialObject = Communication(p, 115200, 1)
         t = threading.Thread(target=testPort,
-                             args=(goodPorts, serialObject, p.split('/')[-1]))  # remove '/dev/' in the port name
+                             args=(PortList, serialObject, p.split('/')[-1]))  # remove '/dev/' in the port name
         threads.append(t)
         t.start()
     for t in threads:
@@ -542,13 +545,15 @@ def keepCheckingPort(portList, check=True):
         allPorts = copy.deepcopy(currentPorts)
 """
 def keepCheckingPort(portList,cond1,check,updateFunc,):
+    print('***@@@ Checking port started') #debug
     allPorts = Communication.Print_Used_Com()
     while cond1():
         currentPorts = Communication.Print_Used_Com()
         time.sleep(0.01)
         if set(currentPorts) - set(allPorts):
             newPort = list(set(currentPorts) - set(allPorts))
-            if check():
+            printH('***@@@ check? ',check)#debug
+            if check:
                 time.sleep(0.5)
                 checkPortList(portList, newPort)
                 updateFunc()
@@ -591,6 +596,7 @@ def replug(PortList):
     print('Please disconnect and reconnect the device from the COMPUTER side')
     
     window = tk.Tk()
+    window.geometry('+800+500')
     def on_closing():
         window.destroy()
         os._exit(0)
@@ -599,6 +605,7 @@ def replug(PortList):
 
     thres = 10 # time out for the manual plug and unplug
     print('Counting down to manual mode:')
+    
     def bCallback():
         labelC.destroy()
         buttonC.destroy()
@@ -609,6 +616,7 @@ def replug(PortList):
         label.grid(row=1,column=0)
         label['text']="{} s".format(thres)
         countdown(time.time(),copy.deepcopy(Communication.Print_Used_Com()))
+        
     labelC = tk.Label(window, font='sans 14 bold')
     labelC['text']= "Please unplug and replug the port from the computer side"
     labelC.grid(row=0,column=0)
@@ -624,10 +632,10 @@ def replug(PortList):
 #            time.sleep(0.5)
 #            curPorts = copy.deepcopy(Communication.Print_Used_Com())
             print(ap)
-            print(len(ap))
+#            print(len(ap))
             print('---')
             print(curPorts)
-            print(len(curPorts))
+#            print(len(curPorts))
             if len(curPorts) < len(ap):
                 ap  = curPorts
                 start = time.time()
@@ -639,7 +647,7 @@ def replug(PortList):
                 for p in reversed(dif):
                     try:
                         serialObject = Communication(p, 115200, 1)
-                        goodPorts.update({serialObject: p.split('/')[-1]})
+                        PortList.update({serialObject: p.split('/')[-1]})
                         goodPortCount += 1
                         var.model_ = 'Bittle'
                         logger.info(f"Connected to serial port: {p}")
@@ -647,20 +655,21 @@ def replug(PortList):
                     except Exception as e:
                         raise e
                         print("Cannot open {}".format(p))
-                
                 if success:
                     window.destroy()
-                    return
+#                    return
                 else:
                     labelT.destroy()
                     label.destroy()
                     manualSelect(PortList, window)
-                    return
+#                    return
+                return
                     
         if time.time()-start>thres:
             labelT.destroy()
             label.destroy()
             manualSelect(PortList, window)
+
             return
         elif (time.time()-start)%1<0.1:
             print(thres-round(time.time()-start)//1)
@@ -669,6 +678,7 @@ def replug(PortList):
     #tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
     
     window.mainloop()
+
     
 
 def selectList(PortList,ls,win):
@@ -681,11 +691,14 @@ def selectList(PortList,ls,win):
             print(p)
             print(p.split('/')[-1])
             serialObject = Communication(p, 115200, 1)
-            goodPorts.update({serialObject: p.split('/')[-1]})
+            PortList.update({serialObject: p.split('/')[-1]})
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
             var.model_ = 'Bittle' #default value
+            
             tk.messagebox.showwarning(title='Warning', message=txt('Need to manually select the model type (Nybble/Bittle)'))
+            win.destroy()
+
 
         except Exception as e:
             
@@ -697,6 +710,7 @@ def selectList(PortList,ls,win):
 
         
 def manualSelect(PortList, window):
+
     allPorts = Communication.Print_Used_Com()
     window.title('Manual mode')
     l1 = tk.Label(window, font = 'sans 14 bold')

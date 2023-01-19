@@ -368,6 +368,7 @@ class SkillComposer:
         tip(self.portMenu, txt('tipPortMenu'))
 
     def updatePortMenu(self):
+        print('***@@@ update menu function started')#debug
         self.options = list(goodPorts.values())
         menu = self.portMenu['menu']
         menu.delete(0, 'end')
@@ -397,6 +398,7 @@ class SkillComposer:
         for b in buttons:
             b.config(state=stt)
         self.portMenu.config(state=stt)
+        print('***@@@ update menu function ended')#debug
 
     def changePort(self, magicArg):
         global ports
@@ -964,6 +966,7 @@ class SkillComposer:
         if self.totalFrame == 1:
             self.activeFrame = -1
         self.setFrame(0)
+        
     def loadSkillDataTextMul(self,top):
         skillDataString = self.skillText.get('1.0', 'end')
         if len(skillDataString) == 1:
@@ -1524,11 +1527,14 @@ class SkillComposer:
                     self.frameDial.winfo_children()[1].update()
                     goodPorts = {}
                     connectPort(goodPorts)
+                    
+                    printH('***@@@ good ports', goodPorts)
                     #                    self.portMenu.destroy()
                     #                    self.createPortMenu()
 
                     self.keepChecking = True
                     t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
+                    t.daemon = True
                     t.start()
                     send(ports, ['b', [10, 90], 0])
                     if len(goodPorts) > 0:
