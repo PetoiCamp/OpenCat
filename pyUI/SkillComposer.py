@@ -4,7 +4,9 @@
 # Rongzhong Li
 # Petoi LLC
 # May.22nd, 2022
-
+import sys
+sys.path.append('../serialMaster/')
+import var
 import random
 import tkinter.font as tkFont
 import copy
@@ -12,8 +14,8 @@ import threading
 from tkinter.filedialog import asksaveasfile, askopenfilename
 from tkinter.colorchooser import askcolor
 from commonVar import *
-
-
+import re
+from tkinter import ttk
 language = languageList['English']
 def txt(key):
     return language.get(key, textEN[key])
@@ -67,6 +69,12 @@ class SkillComposer:
         global language
         language = lan
         connectPort(goodPorts)
+        start = time.time()
+        while var.model_ == '':
+            if time.time()-start > 5:
+                var.model_ = 'Bittle'
+            time.sleep(0.01)
+        self.model = var.model_
         ports = goodPorts
         self.window = Tk()
         self.sliders = list()
@@ -82,7 +90,7 @@ class SkillComposer:
         print(self.OSname)
         self.window.geometry('+100+10')
         self.window.resizable(False, False)
-
+        
         if self.OSname == 'aqua':
             self.backgroundColor = 'gray'
         else:
@@ -152,7 +160,8 @@ class SkillComposer:
         self.ready = 1
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
-        t = threading.Thread(target=self.keepCheckingPort, args=(goodPorts,))
+        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
+        t.daemon = True
         t.start()
         self.window.mainloop()
 
@@ -246,7 +255,7 @@ class SkillComposer:
             value = DoubleVar()
             sliderBar = Scale(self.frameController, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
                               borderwidth=2, relief='flat', width=8, from_=-180 * tickDirection, to=180 * tickDirection,
-                              length=LEN, tickinterval=90, resolution=1, repeatdelay=100, repeatinterval=300,
+                              length=LEN, tickinterval=90, resolution=1, repeatdelay=100, repeatinterval=100,
                               command=lambda value, idx=i: self.setAngle(idx, value))
             sliderBar.set(0)
             label.grid(row=ROW + 1, column=COL, columnspan=cSPAN, pady=2, sticky='s')
@@ -304,7 +313,6 @@ class SkillComposer:
             value = DoubleVar()
             sliderBar = Scale(self.frameImu, state=stt, fg='blue', bg=clr, variable=value, orient=HORIZONTAL,
                               borderwidth=2, relief='flat', width=10, from_=frm, to=to2, length=125, resolution=1,
-                              repeatdelay=100, repeatinterval=300,
                               command=lambda ang, idx=i: self.set6Axis(idx, ang))  # tickinterval=(to2-frm)//4,
             sliderBar.set(0)
             label.grid(row=i, column=0)
@@ -360,6 +368,7 @@ class SkillComposer:
         tip(self.portMenu, txt('tipPortMenu'))
 
     def updatePortMenu(self):
+        print('***@@@ update menu function started')#debug
         self.options = list(goodPorts.values())
         menu = self.portMenu['menu']
         menu.delete(0, 'end')
@@ -389,6 +398,7 @@ class SkillComposer:
         for b in buttons:
             b.config(state=stt)
         self.portMenu.config(state=stt)
+        print('***@@@ update menu function ended')#debug
 
     def changePort(self, magicArg):
         global ports
@@ -438,7 +448,7 @@ class SkillComposer:
         buttonImp.grid(row=1, column=1, padx=pd)
 
         tip(buttonImp, txt('tipImport'))
-
+        
         buttonRestart = Button(self.frameSkillEditor, text=txt('Restart'), width=self.buttonW, fg='red',
                                command=self.restartSkillEditor)
         buttonRestart.grid(row=1, column=2, padx=pd)
@@ -888,12 +898,151 @@ class SkillComposer:
         if self.totalFrame == 1:
             self.activeFrame = -1
         self.setFrame(0)
+    def loadSkill(self,skillData):
+        
+        print(skillData)
+        self.restartSkillEditor()
+        if skillData[0] < 0:
+            header = 7
+            frameSize = 20
+            loopFrom, loopTo, repeat = skillData[4:7]
+            self.vRepeat.set(repeat)
+            copyFrom = 4
+            self.gaitOrBehavior.set(txt('Behavior'))
+        else:
+            header = 4
+            if skillData[0] == 1:  # posture
+                frameSize = 16
+                copyFrom = 4
+            else:  # gait
+                if self.model == 'Nybble' or 'Bittle':
+                    frameSize = 8
+                    copyFrom = 12
+                else:
+                    frameSize = 12
+                    copyFrom = 8
+            self.gaitOrBehavior.set(txt('Gait'))
+        if (len(skillData) - header) % abs(skillData[0]) != 0 or frameSize != (len(skillData) - header) // abs(
+                skillData[0]):
+            messagebox.showwarning(title='Warning', message='Wrong format!')
+            print('Wrong format!')
+            
+            return
+        
+        for f in range(abs(skillData[0])):
+            if f != 0:
+                self.addFrame(f)
+            frame = self.frameList[f]
+            frame[2][copyFrom:copyFrom + frameSize] = copy.deepcopy(
+                skillData[header + frameSize * f:header + frameSize * (f + 1)])
+            if skillData[3] > 1:
+                frame[2][4:20] = list(map(lambda x: x * 2, frame[2][4:20]))
+                print(frame[2][4:24])
 
+            if skillData[0] < 0:
+                if f == loopFrom or f == loopTo:
+                    self.getWidget(f, cLoop).select()
+                    frame[2][3] = 1
+                else:
+                    frame[2][3] = 0
+                #                    print(self.getWidget(f, cLoop).get())
+                self.getWidget(f, cStep).delete(0, END)
+                if frame[2][20] == 0:
+                    self.getWidget(f, cStep).insert(0, txt('max'))
+                else:
+                    self.getWidget(f, cStep).insert(0, frame[2][20])
+                self.getWidget(f, cDelay).delete(0, END)
+                self.getWidget(f, cDelay).insert(0, frame[2][21] * 50)
+
+                self.getWidget(f, cTrig).delete(0, END)
+                self.getWidget(f, cAngle).delete(0, END)
+                self.getWidget(f, cTrig).insert(0, triggerAxis[frame[2][22]])
+                self.getWidget(f, cAngle).insert(0, frame[2][23])
+
+            else:
+                self.getWidget(f, cStep).delete(0, END)
+                self.getWidget(f, cStep).insert(0, txt('max'))
+            self.activeFrame = f
+        if self.totalFrame == 1:
+            self.activeFrame = -1
+        self.setFrame(0)
+        
+    def loadSkillDataTextMul(self,top):
+        skillDataString = self.skillText.get('1.0', 'end')
+        if len(skillDataString) == 1:
+            messagebox.showwarning(title='Warning', message='Empty input!')
+            print('Empty input!')
+            top.after(1, lambda: top.focus_force())
+            return
+        self.restartSkillEditor()
+        skillNames = re.findall(r"int8_t\ .*\[\]",skillDataString)
+        skillNames = [st[7:-2] for st in skillNames]
+        skills = re.findall(r"\{[-\s\d\W,]+\}",skillDataString)
+        def processing(st):
+            lst = st[1:-1].split(',')
+            if lst[-1] == '' or lst[-1].isspace():
+                lst = lst[:-1]
+            lst = list(map(int, lst))
+            return lst
+        self.skills = list(map(processing, skills))
+        if len(self.skills) ==1:
+            top.destroy()
+            self.loadSkill(self.skills[0])
+        else:
+            assert len(skillNames) == len(self.skills)
+            self.skillDic = dict(zip(skillNames,range(len(skillNames))))
+            self.skillN = ([],[],[])
+            for (n,s) in zip(skillNames,range(len(skillNames))):
+                if self.skills[s][0] < 0:
+                    self.skillN[2].append(n)
+                elif self.skills[s][0] > 1:
+                    self.skillN[1].append(n)
+                else:
+                    self.skillN[0].append(n)
+            print(self.skillN)
+            top.destroy()
+            self.comboTop = Toplevel(self.window)
+            self.comboTop.title(txt("Skill List"))
+            typeLabel = Label(self.comboTop,text = txt("Type of skill"))
+            typeLabel.grid(row=1,column=0)
+            nameLabel = Label(self.comboTop,text = txt("Name of skill"))
+            nameLabel.grid(row=1,column=1)
+            values = []
+            if len(self.skillN[0]):
+                values.append(txt("Posture"))
+            if len(self.skillN[1]):
+                values.append(txt("Gait"))
+            if len(self.skillN[2]):
+                values.append(txt("Behavior"))
+            self.typeComb = ttk.Combobox(self.comboTop,values=values,state='readonly')
+            self.typeComb.grid(row=2, column=0)
+            self.nameComb = ttk.Combobox(self.comboTop,values=[])
+            self.nameComb.grid(row=2, column=1)
+            def selectTy(event):
+                V = self.typeComb.get()
+                self.nameComb.set('')
+                if V==txt("Posture"):
+                    self.nameComb['values'] = self.skillN[0]
+                elif V==txt("Gait"):
+                    self.nameComb['values'] = self.skillN[1]
+                else:
+                    self.nameComb['values'] = self.skillN[2]
+            def select():
+                v = self.nameComb.get()
+                print(v)
+                if v=='':
+                    print("No option selected")
+                    return
+                self.loadSkill(self.skills[self.skillDic[v]])
+            
+            self.typeComb.bind('<<ComboboxSelected>>',selectTy)
+            Button(self.comboTop, text=txt('Cancel'), width=10, command=lambda: self.closePop(self.comboTop)).grid(row=3, column=1)
+            Button(self.comboTop, text=txt('OK'), width=10, command=select).grid(row=3, column=0)
     def popImport(self):
         # Create a Toplevel window
         top = Toplevel(self.window)
         # top.geometry('+20+20')
-
+        
         entryFrame = Frame(top)
         entryFrame.grid(row=1, column=0, columnspan=4, padx=10, pady=10)
         self.skillText = Text(entryFrame, width=120, spacing1=2)
@@ -913,8 +1062,8 @@ class SkillComposer:
         Button(top, text=txt('Clear'), width=10, command=self.clearSkillText).grid(row=0, column=1)
         # Create a Button Widget in the Toplevel Window
         Button(top, text=txt('Cancel'), width=10, command=lambda: self.closePop(top)).grid(row=0, column=2)
-        Button(top, text=txt('Ok'), width=10, command=lambda: self.loadSkillDataText(top)).grid(row=0, column=3)
-
+#        Button(top, text=txt('OK'), width=10, command=lambda: self.loadSkillDataText(top)).grid(row=0, column=3)
+        Button(top, text=txt('OK'), width=10, command=lambda: self.loadSkillDataTextMul(top)).grid(row=0, column=3)
         scrollY = Scrollbar(entryFrame, width=20, orient=VERTICAL)
         scrollY.grid(row=0, column=1, sticky='ns')
         scrollY.config(command=self.skillText.yview)
@@ -1335,7 +1484,7 @@ class SkillComposer:
         for i in range(16):
             self.values[i].set(angles[4 + i])
             self.frameData[4 + i] = angles[4 + i]
-
+    """
     def keepCheckingPort(self, goodPorts):
         allPorts = Communication.Print_Used_Com()
         while self.keepChecking:
@@ -1355,7 +1504,8 @@ class SkillComposer:
                         goodPorts.pop(inv_dict[p.split('/')[-1]])
                 self.updatePortMenu()
             allPorts = copy.deepcopy(currentPorts)
-
+    """
+    
     def dial(self, i):
         if self.ready == 1:
             global ports
@@ -1378,11 +1528,14 @@ class SkillComposer:
                     self.frameDial.winfo_children()[1].update()
                     goodPorts = {}
                     connectPort(goodPorts)
+                    
+                    printH('***@@@ good ports', goodPorts)
                     #                    self.portMenu.destroy()
                     #                    self.createPortMenu()
 
                     self.keepChecking = True
-                    t = threading.Thread(target=self.keepCheckingPort, args=(goodPorts,))
+                    t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
+                    t.daemon = True
                     t.start()
                     send(ports, ['b', [10, 90], 0])
                     if len(goodPorts) > 0:
@@ -1426,8 +1579,8 @@ class SkillComposer:
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
-
-
+            os._exit(0)
+           
 if __name__ == '__main__':
     goodPorts = {}
     try:

@@ -53,9 +53,9 @@ class UI:
         self.OSname = self.window.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
             self.window.iconbitmap(r'./resources/Petoi.ico')
-            self.window.geometry('320x270+100+10')
+            self.window.geometry('320x270+800+400')
         else:
-            self.window.geometry('+100+10')
+            self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
 
         self.myFont = tkFont.Font(
