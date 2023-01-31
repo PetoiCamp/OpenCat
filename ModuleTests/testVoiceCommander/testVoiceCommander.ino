@@ -6,7 +6,7 @@
 // Petoi LLC
 // Jan 12, 2023
 
-#define SOFTWARE_SERIAL //disable this line to use the serial 2 of BiBoard
+#define SOFTWARE_SERIAL  //disable this line to use the serial 2 of BiBoard
 #ifdef SOFTWARE_SERIAL
 #include <SoftwareSerial.h>
 SoftwareSerial Serial2(6, 7);  //(Rx,Tx)
@@ -14,10 +14,11 @@ SoftwareSerial Serial2(6, 7);  //(Rx,Tx)
 
 #define BAUD_RATE 115200
 #define SOFT_BAUD_RATE 9600
+#define MAX_CUSTOMIZED_CMD 10
 
 String customizedCmdList[] = {
-  "first", "second", "third", "4th", "5th", "6th", "7th", "8th", "9th", "10th", "\0"  //define up to ten customized commands.
-};                                                                                    //put "\0" as the last element to end the list
+  "first", "second", "third", "4th", "5th", "6th", "7th", "8th", "9th", "10th"  //define up to ten customized commands.
+};
 int listLength = 0;
 
 void setup() {
@@ -26,8 +27,7 @@ void setup() {
   Serial.setTimeout(5);
   Serial2.begin(SOFT_BAUD_RATE);
   Serial2.setTimeout(5);
-  while (customizedCmdList[listLength] != "\0")
-    listLength++;
+  listLength = min(sizeof(customizedCmdList) / sizeof(customizedCmdList[0]), MAX_CUSTOMIZED_CMD);
   Serial.print("Number of customized commands on the main board: ");
   Serial.println(listLength);
 }
