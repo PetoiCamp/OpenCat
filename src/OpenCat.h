@@ -465,7 +465,7 @@ void initRobot() {
   gestureSetup();
 #endif
 
-  // playMelody(MELODY_NORMAL);
+  playMelody(MELODY_NORMAL);
 
   delay(2000);  //change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN
@@ -488,6 +488,9 @@ void initRobot() {
   servoSetup();  //servo needs to be after configureEEPROM and before imuSetup
 #ifdef GYRO_PIN
   imuSetup();
+#endif
+#ifdef TASK_QUEUE
+  tQueue = new TaskQueue();
 #endif
 #endif  // **
 
