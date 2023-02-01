@@ -1,6 +1,6 @@
 #ifdef VOICE
 #include <SoftwareSerial.h>
-SoftwareSerial mySerial(6, 7);
+SoftwareSerial Serial2(6, 7);
 #endif
 #define SERIAL2_BAUD_RATE 9600
 #define MAX_CUSTOMIZED_CMD 10
@@ -12,8 +12,8 @@ int listLength = 0;
 
 void voiceSetup() {
   PTLF("Init voice");
-  mySerial.begin(SERIAL2_BAUD_RATE);
-  mySerial.setTimeout(5);
+  Serial2.begin(SERIAL2_BAUD_RATE);
+  Serial2.setTimeout(5);
   listLength = min(sizeof(customizedCmdList) / sizeof(customizedCmdList[0]), MAX_CUSTOMIZED_CMD);
   PTLF("Number of customized commands on the main board: ");
   PTL(listLength);
@@ -21,8 +21,8 @@ void voiceSetup() {
 
 void read_voice() {
   // put your main code here, to run repeatedly:
-  if (mySerial.available()) {
-    String temp = mySerial.readStringUntil('\n');
+  if (Serial2.available()) {
+    String temp = Serial2.readStringUntil('\n');
     PTL(temp);
     byte index = (byte)temp[2];  //interpret the 3rd byte as integer
     if (index > 10) {

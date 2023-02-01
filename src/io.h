@@ -64,17 +64,18 @@ void readSignal() {
     read_infrared();      //  newCmdIdx = 1
 #endif
   read_serial();  //  newCmdIdx = 2
+#ifdef VOICE
+  read_voice();
+#endif
+#ifdef VOICE_LD3320
+  read_voice_ld3320();
+#endif
   long current = millis();
   if (newCmdIdx) {
     idleTimer = millis() + IDLE_TIME;
   } else if (token != T_CALIBRATE && current - idleTimer > 0) {
     serialConnectedQ = false;
-#ifdef VOICE
-    read_voice();
-#endif
-#ifdef VOICE_LD3320
-    read_voice_ld3320();
-#endif
+
 #ifdef CAMERA
     read_camera();
 #endif
