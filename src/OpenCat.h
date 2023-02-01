@@ -482,15 +482,15 @@ void initRobot() {
 #elif defined CUB
   PTLF("Cub");
 #endif
+#ifdef TASK_QUEUE
+  tQueue = new TaskQueue();
+#endif
   //----------------------------------
 #else  // ** save parameters to device's static memory
   configureEEPROM();
   servoSetup();  //servo needs to be after configureEEPROM and before imuSetup
 #ifdef GYRO_PIN
   imuSetup();
-#endif
-#ifdef TASK_QUEUE
-  tQueue = new TaskQueue();
 #endif
 #endif  // **
 

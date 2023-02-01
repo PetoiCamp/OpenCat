@@ -8,7 +8,6 @@ public:
   int dly;
   Task(char t, const char* p, int d = 0)
     : tkn{ t }, parameters{ p }, dly{ d } {
-    // PT(tkn);
   };
   ~Task();
 };
@@ -24,7 +23,6 @@ public:
     this->push_back(new Task('k', "vtL", 2000));
     this->push_back(new Task('k', "pee"));
     this->push_back(new Task('m', "0 -30 0 30 0 0"));
-    PTL(this->size());
   }
   void popTask() {
     if (taskInterval == -1 || millis() - taskTimer > taskInterval) {
@@ -42,8 +40,8 @@ public:
       char* destination = (token == T_SKILL || token == T_TILT) ? newCmd : (char*)dataBuffer;
       arrayNCPY(destination, t->parameters, cmdLen);
       destination[cmdLen] = '\0';
-      PT(cmdLen);
-      PTL(destination);
+      // PT(cmdLen);
+      // PTL(destination);
       taskTimer = millis();
       newCmdIdx = 5;
     }
