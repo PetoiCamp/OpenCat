@@ -18,11 +18,6 @@ public:
   TaskQueue(){};
   TaskQueue(const Task* t, int len) {
     PT("Build task queue...");
-    PT(len);
-    // for (int s = 0; s < sizeof(progmemPointer) / MEMORY_ADDRESS_SIZE; s++) {
-    //   SkillPreview *tempAddress = new SkillPreview(s);
-    //   this->push_back(tempAddress);
-    // }
   }
   void createTask() {//this is an example task
     this->push_back(new Task('k', "wkF", 2000));
