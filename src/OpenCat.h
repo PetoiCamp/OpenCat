@@ -213,6 +213,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_INDEXED_SEQUENTIAL_ASC 'm'
 #define T_MELODY 'o'
 #define T_PAUSE 'p'
+#define T_TASK_QUEUE 'q'
 #define T_RAMP 'r'
 #define T_SAVE 's'
 #define T_SOUND 'S'
@@ -386,12 +387,21 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
 #elif defined GESTURE
 #include "gesture.h"
 #elif defined OTHER_MODULES
+#elif defined TASK_QUEUE
 #else
 #define GYRO_PIN 0
 #endif
 
 #ifndef MAIN_SKETCH
 #define GYRO_PIN 0
+#endif
+
+#ifndef GYRO_PIN
+#define TASK_QUEUE
+#endif
+
+#ifdef TASK_QUEUE
+#include "taskQueue.h"
 #endif
 
 #if defined NyBoard_V0_1 || defined NyBoard_V0_2
@@ -455,7 +465,7 @@ void initRobot() {
   gestureSetup();
 #endif
 
-  playMelody(MELODY_NORMAL);
+  // playMelody(MELODY_NORMAL);
 
   delay(2000);  //change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN

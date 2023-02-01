@@ -322,6 +322,13 @@ void reaction() {
           }
           break;
         }
+#ifdef TASK_QUEUE
+      case T_TASK_QUEUE:
+        {
+          tQueue->createTask();
+          break;
+        }
+#endif
 #endif
 
 #ifdef T_SERVO_MICROSECOND
