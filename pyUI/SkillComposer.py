@@ -598,7 +598,7 @@ class SkillComposer:
                 self.getWidget(r, cSet).config(text=tt, font=ft)
 
                 step = self.getWidget(r, cStep).get()
-                self.getWidget(r, cStep).config(values=('1', '2', '4', '8', '12', '16', '32', '48', txt('max')))
+                self.getWidget(r, cStep).config(values=('1', '2', '4', '8', '12', '16', '32', '48', '64', txt('max')))
                 self.getWidget(r, cStep).delete(0, END)
                 if step.isnumeric():
                     self.getWidget(r, cStep).insert(0, step)
@@ -653,7 +653,7 @@ class SkillComposer:
 
         vStep = StringVar()
         Spinbox(singleFrame, width=self.frameItemWidth[cStep],
-                values=('1', '2', '4', '8', '12', '16', '32', '48', txt('max')), textvariable=vStep, wrap=True).grid(
+                values=('1', '2', '4', '8', '12', '16', '32', '48', '64', txt('max')), textvariable=vStep, wrap=True).grid(
             row=0, column=cStep)
 
 
