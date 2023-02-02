@@ -27,7 +27,7 @@ void setup() {
   Serial.setTimeout(5);
   Serial2.begin(SOFT_BAUD_RATE);
   Serial2.setTimeout(5);
-  listLength = min(sizeof(customizedCmdList) / sizeof(customizedCmdList[0]), MAX_CUSTOMIZED_CMD);
+  listLength = min(int(sizeof(customizedCmdList) / sizeof(customizedCmdList[0])), MAX_CUSTOMIZED_CMD);
   Serial.print("Number of customized commands on the main board: ");
   Serial.println(listLength);
 }
