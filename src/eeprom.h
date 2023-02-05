@@ -61,7 +61,7 @@ void saveMelody(int &address, byte melody[], int len ) {
   EEPROM.update(address--, len);
   for (byte i = 0; i < len; i++)
     EEPROM.update(address --, melody[i]);
-  PTL(address);
+  // PTL(address);
 }
 
 inline int loadAngleLimit(byte idx, byte dim) {

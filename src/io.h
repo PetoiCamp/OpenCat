@@ -27,8 +27,8 @@ void read_serial() {
     token = Serial.read();
     delay(1);  //leave enough time for serial read
 #ifdef T_SKILL_DATA
-    if (token == T_SKILL_DATA) {
-      readSerialUntil((char *)dataBuffer, '~');
+    if (token == T_SKILL_DATA || token == T_BEEP_BIN) {
+      cmdLen = readSerialUntil((char *)dataBuffer, '~');
     } else
 #endif
       if (Serial.available() > 0) {

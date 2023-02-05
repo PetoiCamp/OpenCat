@@ -98,7 +98,7 @@ public:
     for (byte s = 0; s < eeprom(NUM_SKILLS); s++) {          //save skill info to on-board EEPROM
       byte len = strlen(skillNameWithType[s]);               //len includes type. the saved value doesn't
       EEPROM.update(SKILLS + skillAddressShift++, len - 1);  //the last char in name denotes skill type, I(nstinct) on external eeprom, N(ewbility) on progmem
-      PT(skillNameWithType[s][len - 1] == 'I' ? "I nstinct\t" : "N ewbility\t");
+      // PT(skillNameWithType[s][len - 1]== 'I' ? "I nstinct\t" : "N ewbility\t");
       for (byte l = 0; l < len; l++) {
         PT(skillNameWithType[s][l]);
         EEPROM.update(SKILLS + skillAddressShift++, skillNameWithType[s][l]);

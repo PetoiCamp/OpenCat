@@ -37,7 +37,7 @@
   3. Uncomment #define MAIN_SKETCH to make it active. Then upload the program for main functions.
 */
 
-// #define MAIN_SKETCH  //the Petoi App only works when this mode is on
+#define MAIN_SKETCH  //the Petoi App only works when this mode is on
 //#define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 //#define DEVELOPER //to print out some verbose debugging data
 //it may increase the code size and crash the bootloader.

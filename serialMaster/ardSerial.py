@@ -103,17 +103,39 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
 #            else:
 #                packType = 'b'
             var = list(map(int, var))
-            
-            in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
+
+            port.Send_data(token.encode())
+            slice = 0
+            print("start")
+            printH("len",len(var))
+            while True:
+                if len(var) - slice >= 20:
+                    buff = var[slice:slice+20]
+                else:
+                    buff = var[slice:-1]
+                    printH("stop",slice)
+                    break
+                print(buff)
+                in_str = struct.pack('b' * len(buff), *buff)
+                port.Send_data(encode(in_str))
+                slice+=20
+#                in_str=""
+#                time.sleep(0.001)
+            print("finish")
+            printH("buff ",buff)
+            printH("len ",len(buff))
+            in_str =struct.pack('b' * len(buff), *buff) +'~'.encode()
+            printH("size",slice+len(buff))
+            port.Send_data(encode(in_str))
 
         elif token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
             in_str = token + " "
             for element in var:
                 in_str = in_str + str(element) + " "
         
-        logger.debug(f"!!!! {in_str}")
-        #print(encode(in_str))
-        port.Send_data(encode(in_str))
+            logger.debug(f"!!!! {in_str}")
+            #print(encode(in_str))
+            port.Send_data(encode(in_str))
 
 
 def serialWriteByte(port, var=None):
@@ -159,7 +181,7 @@ def printSerialMessage(port, token, timeout=0):
                 if response.lower() == token.lower():
                     return [response, allPrints]
                 else:
-#                    print(response, flush=True)
+                    print(response, flush=True)
                     allPrints += response + '\n'
         now = time.time()
         if (now - startTime) > threshold:

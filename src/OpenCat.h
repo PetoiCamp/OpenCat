@@ -294,7 +294,8 @@ char *newCmd = new char[CMD_LEN];
 char *lastCmd = new char[2];
 byte newCmdIdx = 0;
 int cmdLen;
-int8_t *dataBuffer = new int8_t[450];
+int8_t *dataBuffer = new int8_t[467];  //23*20+7=467
+                                       //The max behavior allowed has 23 frames. The max gait (8 DoF) allowed has (467-4)/8=57 frames.
 int8_t yprTilt[3];
 int lastVoltage;
 bool servoOff = true;
@@ -485,6 +486,8 @@ void initRobot() {
 #ifdef TASK_QUEUE
   tQueue = new TaskQueue();
 #endif
+  allCalibratedPWM(currentAng);  //soft boot for servos
+  delay(500);
   //----------------------------------
 #else  // ** save parameters to device's static memory
   configureEEPROM();
@@ -493,9 +496,6 @@ void initRobot() {
   imuSetup();
 #endif
 #endif  // **
-
-  allCalibratedPWM(currentAng);  //soft boot for servos
-  delay(500);
   PTLF("Ready!");
 #ifndef MAIN_SKETCH
   PCA9685CalibrationPrompt();
