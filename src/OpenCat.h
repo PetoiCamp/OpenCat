@@ -280,7 +280,7 @@ float currentAdjust[DOF] = {};
 
 //control related variables
 #define IDLE_TIME 5000
-long idleTimer;
+long idleTimer=0;
 int randomInterval = 2000;
 #define CHECK_BATTERY_PERIOD 10000  //every 10 seconds. 60 mins -> 3600 seconds
 int uptime = -1;
@@ -306,7 +306,7 @@ bool autoSwitch = true;
 bool checkGyro = true;
 bool printGyro = false;
 bool walkingQ = false;
-bool serialConnectedQ = false;
+bool serialDominateQ = false;
 
 byte exceptions = 0;
 byte transformSpeed = 2;
@@ -377,6 +377,12 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
 #undef BINARY_COMMAND
 #endif
 
+#define TASK_QUEUE  //allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. \
+                    // because it takes up memory, it should be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
+#ifdef TASK_QUEUE
+#include "taskQueue.h"
+#endif
+
 #ifdef VOICE
 #include "voice.h"
 #elif defined VOICE_LD3320
@@ -387,8 +393,13 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
 #include "ultrasonic.h"
 #elif defined GESTURE
 #include "gesture.h"
+#elif defined PIR
+#include "pir.h"
+#elif defined DOUBLE_TOUCH
+#include "doubleTouch.h"
+#elif defined DOUBLE_LIGHT
+#include "doubleLight.h"
 #elif defined OTHER_MODULES
-#elif defined TASK_QUEUE
 #else
 #define GYRO_PIN 0
 #endif
@@ -397,13 +408,6 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
 #define GYRO_PIN 0
 #endif
 
-#ifndef GYRO_PIN
-#define TASK_QUEUE
-#endif
-
-#ifdef TASK_QUEUE
-#include "taskQueue.h"
-#endif
 
 #if defined NyBoard_V0_1 || defined NyBoard_V0_2
 #undef VOLTAGE_DETECTION_PIN
@@ -417,6 +421,7 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
 
 #ifdef GYRO_PIN
 #include "imu.h"
+#undef TASK_QUEUE
 #endif
 
 #include "PCA9685servo.h"
@@ -466,7 +471,11 @@ void initRobot() {
   gestureSetup();
 #endif
 
-  playMelody(MELODY_NORMAL);
+#ifdef DOUBLE_LIGHT
+  doubleLightSetup();
+#endif
+
+  // playMelody(MELODY_NORMAL);
 
   delay(2000);  //change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN
@@ -499,5 +508,8 @@ void initRobot() {
   PTLF("Ready!");
 #ifndef MAIN_SKETCH
   PCA9685CalibrationPrompt();
+#endif
+#ifdef DOUBLE_LIGHT
+  delay(500);//use your palm to cover the two light sensors for calibration
 #endif
 }

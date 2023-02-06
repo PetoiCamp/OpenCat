@@ -7,9 +7,8 @@ public:
   const char* parameters;
   int dly;
   Task(char t, const char* p, int d = 0)
-    : tkn{ t }, parameters{ p }, dly{ d } {
-  };
-  ~Task();
+    : tkn{ t }, parameters{ p }, dly{ d } {};
+  ~Task(){};
 };
 
 class TaskQueue : public QList<Task* > {
@@ -18,7 +17,7 @@ public:
   TaskQueue(const Task* t, int len) {
     PT("Build task queue...");
   }
-  void createTask() {//this is an example task
+  void createTask() {  //this is an example task
     this->push_back(new Task('k', "wkF", 2000));
     this->push_back(new Task('k', "vtL", 2000));
     this->push_back(new Task('k', "pee"));
@@ -33,7 +32,9 @@ public:
       // PT(t->parameters);
       // PT('\t');
       // PTL(t->dly);
+      PTL(this->size());
       this->pop_front();
+      PTL(this->size());
       token = t->tkn;
       cmdLen = strlen(t->parameters);
       taskInterval = t->dly;
@@ -44,6 +45,7 @@ public:
       // PTL(destination);
       taskTimer = millis();
       newCmdIdx = 5;
+      delete t;
     }
   }
 };

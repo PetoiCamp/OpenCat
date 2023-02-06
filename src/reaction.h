@@ -250,7 +250,7 @@ void reaction() {
             }
           } while (pch != NULL);
           if (token == T_INDEXED_SIMULTANEOUS_ASC) {
-            transform(targetFrame, 1, 2);
+            transform(targetFrame, 1, 4);
           }
           delete[] pch;
           break;

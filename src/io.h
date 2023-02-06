@@ -22,7 +22,7 @@ int readSerialUntil(char *destination, char terminator) {
 
 void read_serial() {
   if (Serial.available() > 0) {
-    serialConnectedQ = true;
+    serialDominateQ = true;
     newCmdIdx = 2;
     token = Serial.read();
     delay(1);  //leave enough time for serial read
@@ -60,7 +60,7 @@ void read_serial() {
 
 void readSignal() {
 #if defined IR_PIN
-  if (!serialConnectedQ)  //serial connection will disable infrared receiver
+  if (!serialDominateQ)  //serial connection will disable infrared receiver
     read_infrared();      //  newCmdIdx = 1
 #endif
   read_serial();  //  newCmdIdx = 2
@@ -74,7 +74,7 @@ void readSignal() {
   if (newCmdIdx) {
     idleTimer = millis() + IDLE_TIME;
   } else if (token != T_CALIBRATE && current - idleTimer > 0) {
-    serialConnectedQ = false;
+    serialDominateQ = false;
 
 #ifdef CAMERA
     read_camera();
@@ -85,7 +85,15 @@ void readSignal() {
 #ifdef GESTURE
     read_gesture();
 #endif
-
+#ifdef PIR
+    read_PIR();
+#endif
+#ifdef DOUBLE_TOUCH
+    read_doubleTouch();
+#endif
+#ifdef DOUBLE_LIGHT
+    read_doubleLight();
+#endif
 #ifdef RANDOM_MIND
     if (autoSwitch && newCmdIdx == 0)
       randomMind();  //make the robot do random demos
@@ -96,26 +104,26 @@ void readSignal() {
   // randomMind -> 100
 }
 
-#define READING_COUNT 100
-bool soundLightSensorQ = false;
-bool restQ = false;
-int lightLag = 0;
+// #define READING_COUNT 100
+// bool soundLightSensorQ = false;
+// bool restQ = false;
+// int lightLag = 0;
 
-bool sensorConnectedQ(int n) {
-  float mean = 0;
-  float bLag = analogRead(A3);
-  for (int i = 0; i < READING_COUNT; i++) {
-    int a, b;
-    a = analogRead(A2);
-    b = analogRead(A3);
-    mean = mean + ((a - b) * (a - b) - mean) / (i + 1);
+// bool sensorConnectedQ(int n) {
+//   float mean = 0;
+//   float bLag = analogRead(A3);
+//   for (int i = 0; i < READING_COUNT; i++) {
+//     int a, b;
+//     a = analogRead(A2);
+//     b = analogRead(A3);
+//     mean = mean + ((a - b) * (a - b) - mean) / (i + 1);
 
-    if (abs(a - b) > 50 && abs(b - bLag) < 5) {
-      return true;
-    }
+//     if (abs(a - b) > 50 && abs(b - bLag) < 5) {
+//       return true;
+//     }
 
-    bLag = b;
-    delay(1);
-  }
-  return sqrt(mean) > 20 ? true : false;
-}
+//     bLag = b;
+//     delay(1);
+//   }
+//   return sqrt(mean) > 20 ? true : false;
+// }
