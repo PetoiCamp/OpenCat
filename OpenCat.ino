@@ -77,7 +77,7 @@
 
 void setup() {
   Serial.begin(BAUD_RATE);
-  Serial.setTimeout(5);
+  Serial.setTimeout(TIMEOUT);
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();

@@ -196,7 +196,7 @@ void reaction() {
           //          }
           arrayNCPY(targetFrame, currentAng, DOF);
           char *pch;
-          char *input = (token == T_TILT) ? newCmd : (char *)dataBuffer;
+          char *input = (char *)dataBuffer;
           pch = strtok((char *)input, " ,");
           do {  //it supports combining multiple commands at one time
             //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"

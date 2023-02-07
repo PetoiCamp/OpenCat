@@ -1,3 +1,4 @@
+#define SOFTWARE_VERSION "N230207" //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
@@ -11,7 +12,7 @@
 //#define SERVO_SLOW_BOOT
 
 #define I2C_EEPROM  //comment this line out if you don't have an I2C EEPROM in your DIY board.
-
+#define TIMEOUT 5
 //Tutorial: https://bittle.petoi.com/11-tutorial-on-creating-new-skills
 #ifdef NYBBLE
 #include "InstinctNybble.h"
@@ -289,7 +290,7 @@ byte tStep = 0;
 
 char token;
 char lastToken;
-#define CMD_LEN 10  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
+#define CMD_LEN 12  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
 char *newCmd = new char[CMD_LEN];
 char *lastCmd = new char[2];
 byte newCmdIdx = 0;
@@ -476,6 +477,7 @@ void initRobot() {
   newCmdIdx = 2;
 #endif
   PTLF("\n* Start *");
+  PTLF(SOFTWARE_VERSION);
 #ifdef BITTLE
   PTLF("Bittle");
 #elif defined NYBBLE

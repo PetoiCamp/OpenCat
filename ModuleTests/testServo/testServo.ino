@@ -48,7 +48,7 @@ int middleShifts[16] = {0, 50, 0, 0,
                         0, 0, 0, 0,
                         0, 0, 0, 0
                        };
-float mg90s = 180 / 180.0, mg92b =  145 / 180.0;
+float mg90s = 30 / 180.0, mg92b =  30 / 180.0;
 float rangeRatios[] =  {mg92b, mg90s, mg92b, mg92b,
                         mg92b, mg92b, mg92b, mg92b,
                         mg92b, mg92b, mg92b, mg92b,
