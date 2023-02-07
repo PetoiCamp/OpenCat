@@ -56,7 +56,7 @@ void read_doubleLight() {
   // PTL(last);
 
   if (maxL < -50) {
-    tQueue->push_back(new Task('k', "bk", 1000));
+    tQueue->push_back(new Task('k', "bk", 2000));// jigs when entering this case for the 2nd time. ???
     PTL(tQueue->size());
   } else if (maxL < 300) {
     actualOffset = (last + clippedOffset) / 2;

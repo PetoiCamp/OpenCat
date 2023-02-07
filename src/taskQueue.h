@@ -38,7 +38,7 @@ public:
       token = t->tkn;
       cmdLen = strlen(t->parameters);
       taskInterval = t->dly;
-      char* destination = (token == T_SKILL || token == T_TILT) ? newCmd : (char*)dataBuffer;
+      char* destination = (token == T_SKILL) ? newCmd : (char*)dataBuffer;
       arrayNCPY(destination, t->parameters, cmdLen);
       destination[cmdLen] = '\0';
       // PT(cmdLen);

@@ -1,5 +1,45 @@
 # Change Log
 
+## Feb 7, 2023
+* Improve the serial read logics. 
+* Print software version on boot up.
+* Add demos for pir, touch, light modules.
+* Allow sending long (450 bytes or 225 notes) melody over the serial port.
+
+## Feb 1, 2023
+* Add task queue within the Arduino code. A sequence of tasks can be performed without the need of another master computer. 
+* Add demo code for 10 customized voice commands. 
+
+## Jan 19, 2023
+* Allow manually select the serial port when the automatic algorithm fails.
+
+## Jan 12, 2023
+* Add demo code for the voice command module. 
+* SkillComposer: Allow importing multiple skills from InstinctX.h.
+
+## Jan 5, 2023
+* Avoid the servos' shaking when booting up.
+* Add demo code for the gesture module.
+
+## Dec 29, 2022
+* SkillComposer: Avoid freezing when dragging the joint sliders.
+
+## Dec 26, 2022
+* Allow a unplug and replug algorithm to tell the intended serial port.
+* SkillCompser: Read the robot's name when starting up.
+
+## Dec 13, 2022
+* Improve the self-calibration algorithm of PCA9685
+
+## Dec 7, 2022
+* SkillComposer: Show warning forlower Python versions.
+
+## Nov 28, 2022
+* FirmwareUploader: Support BiBoard.
+
+## Nov 10, 2022
+* Create test8266Master.ino that can control the robot's motion in sequence.
+
 ## Oct 26, 2022
 * Move the detailed initializing functions in **OpenCat.ino**'s setup() to OpenCat.h. 
 * Add a simple example to elaborate the integration of customized sensors. You need to enable "#define OTHER_MODULES" to see its effects. 
