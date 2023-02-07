@@ -97,45 +97,44 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             port.Send_data(in_str)
             time.sleep(0.001)
     else:
-        if token == 'L' or token == 'I' or token == 'B' or token == 'C':
+        if token.isupper():# == 'L' or token == 'I' or token == 'B' or token == 'C':
 #            if token == 'C':
 #                packType = 'B'
 #            else:
 #                packType = 'b'
-            var = list(map(int, var))
-
+            message = list(map(int, var))
+            print("start")
+            printH("len",len(message))
             port.Send_data(token.encode())
             slice = 0
-            print("start")
-            printH("len",len(var))
-            while True:
-                if len(var) - slice >= 20:
-                    buff = var[slice:slice+20]
+            while len(message) > slice:
+                if len(message) - slice >= 20:
+                    buff = message[slice:slice+20]
                 else:
-                    buff = var[slice:-1]
-                    printH("stop",slice)
-                    break
+                    buff = message[slice:]
                 print(buff)
                 in_str = struct.pack('b' * len(buff), *buff)
                 port.Send_data(encode(in_str))
                 slice+=20
-#                in_str=""
-#                time.sleep(0.001)
-            print("finish")
+                time.sleep(0.001)
             printH("buff ",buff)
             printH("len ",len(buff))
-            in_str =struct.pack('b' * len(buff), *buff) +'~'.encode()
-            printH("size",slice+len(buff))
-            port.Send_data(encode(in_str))
 
-        elif token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
-            in_str = token + " "
+            port.Send_data(encode('~'.encode()))
+
+        else:#if token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
+            message = token
+            count = 0
             for element in var:
-                in_str = in_str + str(element) + " "
-        
+                message += str(element) + " "
+                count +=1
+                if count == 20 or count == len(var):
+                    port.Send_data(encode(message))
+                    message = ""
+                
             logger.debug(f"!!!! {in_str}")
             #print(encode(in_str))
-            port.Send_data(encode(in_str))
+#            port.Send_data(encode(message))
 
 
 def serialWriteByte(port, var=None):

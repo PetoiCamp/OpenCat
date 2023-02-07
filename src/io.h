@@ -1,4 +1,3 @@
-
 char getUserInputChar() {  //take only the first character, allow "no line ending", "newline", "carriage return", and "both NL & CR"
   while (!Serial.available())
     ;
@@ -10,14 +9,18 @@ char getUserInputChar() {  //take only the first character, allow "no line endin
   return result;
 }
 
-int readSerialUntil(char *destination, char terminator) {
+int readSerialUntil(char *destination, char terminator, bool timeout) {
   int c = 0;
+  long timerWaiting;
   do {
-    if (Serial.available())
+    if (Serial.available()) {
       destination[c++] = Serial.read();
-  } while ((char)destination[c - 1] != terminator);
-  destination[c - 1] = '\0';
-  return c - 1;
+      timerWaiting = millis();
+    }
+  } while (!timeout && (char)destination[c - 1] != terminator || timeout && long(millis() - timerWaiting) < TIMEOUT);
+  c = (destination[c - 1] == terminator) ? c - 1 : c;
+  destination[c] = '\0';
+  return c;
 }
 
 void read_serial() {
@@ -26,35 +29,38 @@ void read_serial() {
     newCmdIdx = 2;
     token = Serial.read();
     delay(1);  //leave enough time for serial read
-#ifdef T_SKILL_DATA
-    if (token == T_SKILL_DATA || token == T_BEEP_BIN) {
-      cmdLen = readSerialUntil((char *)dataBuffer, '~');
-    } else
-#endif
-      if (Serial.available() > 0) {
-      String cmdBuffer;  //may overflow after many iterations. I use this method only to support "no line ending" in the serial monitor
-      if (token == T_COLOR || token == T_INDEXED_SIMULTANEOUS_BIN || token == T_INDEXED_SEQUENTIAL_BIN
-#ifdef BINARY_COMMAND
-          || token == T_LISTED_BIN || token == T_BEEP_BIN
-#endif
-      ) {
-        cmdBuffer = Serial.readStringUntil('~');  //'~' ASCII code = 126; may introduce bug when the angle is 126
-      } else
+    // char terminator = (token == T_SKILL_DATA || token == T_BEEP_BIN || token == T_COLOR || token == T_INDEXED_SIMULTANEOUS_BIN || token == T_INDEXED_SEQUENTIAL_BIN || token == T_LISTED_BIN)? '~': '\n';
 
-        cmdBuffer = Serial.readStringUntil('\n');
-      cmdLen = cmdBuffer.length();
-      char *destination = (token == T_SKILL || token == T_TILT) ? newCmd : (char *)dataBuffer;
-      //      for (int i = 0; i < cmdLen; i++)
-      //        destination[i] = cmdBuffer[i];
-      arrayNCPY(destination, cmdBuffer.c_str(), cmdLen);
-      destination[cmdLen] = '\0';
+    char *destination = (token == T_SKILL) ? newCmd : (char *)dataBuffer;
+    char terminator;
+    bool timeout;
+    if (token >= 'a') {  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
+                         //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
+                         //so it needs a timeout for the no line ending case
+      terminator = '\n';
+      timeout = true;
+
+    } else {  //binary encoding for long data commands
+      terminator = '~';
+      timeout = false;
+    }
+
+    cmdLen = (Serial.available() > 0) ? readSerialUntil((char *)destination, terminator, timeout) : 0;  //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
+
+    // if (token == T_SKILL) {
+    //   //      for (int i = 0; i < cmdLen; i++)
+    //   //        destination[i] = cmdBuffer[i];
+    //   arrayNCPY(newCmd, (char *)dataBuffer, cmdLen);
+    //   newCmd[cmdLen] = '\0';
+    //   PT(newCmd);
+    //   PTL(strlen(newCmd));
+    // }
 
 #ifdef DEVELOPER
-      PTF("Mem:");
-      PTL(freeMemory());
+    PTF("Mem:");
+    PTL(freeMemory());
 #endif
-    }
-    //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
+    // PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
   }
 }
 
