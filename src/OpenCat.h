@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N230207" //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N230208"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
@@ -12,7 +12,8 @@
 //#define SERVO_SLOW_BOOT
 
 #define I2C_EEPROM  //comment this line out if you don't have an I2C EEPROM in your DIY board.
-#define TIMEOUT 5
+#define SERIAL_TIMEOUT_SHORT 5
+#define SERIAL_TIMEOUT_LONG 50
 //Tutorial: https://bittle.petoi.com/11-tutorial-on-creating-new-skills
 #ifdef NYBBLE
 #include "InstinctNybble.h"
@@ -128,8 +129,8 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define LOW_VOLTAGE 650
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
-#define NEOPIXEL_PIN 10  //the code for NeoPixels have to be shrinked to fit in the board
-#define NUMPIXELS 7
+// #define NEOPIXEL_PIN 10  //the code for NeoPixels have to be shrinked to fit in the board
+// #define NUMPIXELS 7
 
 #elif defined NyBoard_V1_1
 byte pwm_pin[] = { 12, 11, 4, 3,
@@ -152,8 +153,8 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define DEVICE_ADDRESS 0x54
 #define BAUD_RATE 115200
 #define LED_PIN 3
-#define NEOPIXEL_PIN 10  //the code for NeoPixels have to be shrinked to fit in the board
-#define NUMPIXELS 1
+// #define NEOPIXEL_PIN 10  //the code for NeoPixels have to be shrinked to fit in the board
+// #define NUMPIXELS 1
 #endif
 
 #ifdef NYBBLE
@@ -281,7 +282,7 @@ float currentAdjust[DOF] = {};
 
 //control related variables
 #define IDLE_TIME 5000
-long idleTimer=0;
+long idleTimer = 0;
 int randomInterval = 2000;
 #define CHECK_BATTERY_PERIOD 10000  //every 10 seconds. 60 mins -> 3600 seconds
 int uptime = -1;
@@ -434,6 +435,17 @@ void initRobot() {
   //----------------------------------
 #ifdef MAIN_SKETCH  // **
   PTL('k');
+
+  PTLF("\n* Start *");
+  PTLF(SOFTWARE_VERSION);
+#ifdef BITTLE
+  PTLF("Bittle");
+#elif defined NYBBLE
+  PTLF("Nybble");
+#elif defined CUB
+  PTLF("Cub");
+#endif
+  playMelody(MELODY_NORMAL);
 #ifdef GYRO_PIN
   imuSetup();
 #endif
@@ -476,24 +488,14 @@ void initRobot() {
   doubleLightSetup();
 #endif
 
-  // playMelody(MELODY_NORMAL);
-
-  delay(2000);  //change the delay if the app doesn't recognize the Petoi device.
+  // delay(2000);  //change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN
   for (byte r = 0; r < 3; r++)
     read_IMU();                                                             //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST;  //put the robot's side on the table to enter calibration posture for attaching legs
   newCmdIdx = 2;
 #endif
-  PTLF("\n* Start *");
-  PTLF(SOFTWARE_VERSION);
-#ifdef BITTLE
-  PTLF("Bittle");
-#elif defined NYBBLE
-  PTLF("Nybble");
-#elif defined CUB
-  PTLF("Cub");
-#endif
+
 #ifdef TASK_QUEUE
   tQueue = new TaskQueue();
 #endif
@@ -512,6 +514,6 @@ void initRobot() {
   PCA9685CalibrationPrompt();
 #endif
 #ifdef DOUBLE_LIGHT
-  delay(500);//use your palm to cover the two light sensors for calibration
+  delay(500);  //use your palm to cover the two light sensors for calibration
 #endif
 }

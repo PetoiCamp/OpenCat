@@ -145,7 +145,7 @@ if __name__ == '__main__':
             
             # turn off the random behavior
             ['z',0],
-            
+
             # - 'kbalance' indicates the command to control Bittle to stand normally
             # - 1 indicates the postponed time after finishing the command, in seconds
             # - the skill data is stored locally on the robot

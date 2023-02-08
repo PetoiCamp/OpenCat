@@ -9,52 +9,35 @@ char getUserInputChar() {  //take only the first character, allow "no line endin
   return result;
 }
 
-int readSerialUntil(char *destination, char terminator, bool timeout) {
-  int c = 0;
-  long timerWaiting;
-  do {
-    if (Serial.available()) {
-      destination[c++] = Serial.read();
-      timerWaiting = millis();
-    }
-  } while (!timeout && (char)destination[c - 1] != terminator || timeout && long(millis() - timerWaiting) < TIMEOUT);
-  c = (destination[c - 1] == terminator) ? c - 1 : c;
-  destination[c] = '\0';
-  return c;
-}
-
 void read_serial() {
   if (Serial.available() > 0) {
     serialDominateQ = true;
     newCmdIdx = 2;
     token = Serial.read();
     delay(1);  //leave enough time for serial read
-    // char terminator = (token == T_SKILL_DATA || token == T_BEEP_BIN || token == T_COLOR || token == T_INDEXED_SIMULTANEOUS_BIN || token == T_INDEXED_SEQUENTIAL_BIN || token == T_LISTED_BIN)? '~': '\n';
 
     char *destination = (token == T_SKILL) ? newCmd : (char *)dataBuffer;
     char terminator;
-    bool timeout;
+    int timeout = SERIAL_TIMEOUT_LONG;
     if (token >= 'a') {  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
                          //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
                          //so it needs a timeout for the no line ending case
       terminator = '\n';
-      timeout = true;
-
-    } else {  //binary encoding for long data commands
-      terminator = '~';
-      timeout = false;
+    } else {             //binary encoding for long data commands
+      terminator = '~';  //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
+      if (token != T_SKILL_DATA && token != T_BEEP_BIN)
+        timeout = SERIAL_TIMEOUT_SHORT;
     }
-
-    cmdLen = (Serial.available() > 0) ? readSerialUntil((char *)destination, terminator, timeout) : 0;  //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
-
-    // if (token == T_SKILL) {
-    //   //      for (int i = 0; i < cmdLen; i++)
-    //   //        destination[i] = cmdBuffer[i];
-    //   arrayNCPY(newCmd, (char *)dataBuffer, cmdLen);
-    //   newCmd[cmdLen] = '\0';
-    //   PT(newCmd);
-    //   PTL(strlen(newCmd));
-    // }
+    cmdLen = 0;
+    long timerWaiting = 0;
+    do {
+      if (Serial.available()) {
+        destination[cmdLen++] = Serial.read();
+        timerWaiting = millis();
+      }
+    } while ((char)destination[cmdLen - 1] != terminator && long(millis() - timerWaiting) < timeout);
+    cmdLen = (destination[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
+    destination[cmdLen] = '\0';
 
 #ifdef DEVELOPER
     PTF("Mem:");
@@ -67,7 +50,7 @@ void read_serial() {
 void readSignal() {
 #if defined IR_PIN
   if (!serialDominateQ)  //serial connection will disable infrared receiver
-    read_infrared();      //  newCmdIdx = 1
+    read_infrared();     //  newCmdIdx = 1
 #endif
   read_serial();  //  newCmdIdx = 2
 #ifdef VOICE
