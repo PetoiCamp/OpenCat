@@ -9,41 +9,60 @@ char getUserInputChar() {  //take only the first character, allow "no line endin
   return result;
 }
 
+void resetCmd() {
+  if (strcmp(newCmd, "rc")) {
+    delete[] lastCmd;
+    lastCmd = new char(strlen(newCmd) + 1);
+    strcpy(lastCmd, newCmd);
+  }
+  newCmdIdx = 0;
+  lastToken = token;
+  if (token != T_SKILL && token != T_CALIBRATE)
+    token = '\0';
+  newCmd[0] = '\0';
+  cmdLen = 0;
+}
+
 void read_serial() {
   if (Serial.available() > 0) {
     serialDominateQ = true;
-    newCmdIdx = 2;
     token = Serial.read();
     delay(1);  //leave enough time for serial read
 
-    char *destination = (token == T_SKILL) ? newCmd : (char *)dataBuffer;
-    char terminator;
-    int timeout = SERIAL_TIMEOUT_LONG;
-    if (token >= 'a') {  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
-                         //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
-                         //so it needs a timeout for the no line ending case
-      terminator = '\n';
-    } else {             //binary encoding for long data commands
-      terminator = '~';  //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
-      if (token != T_SKILL_DATA && token != T_BEEP_BIN)
-        timeout = SERIAL_TIMEOUT_SHORT;
-    }
-    cmdLen = 0;
+    bufferPtr = (token == T_SKILL || token == T_INDEXED_SIMULTANEOUS_BIN) ? newCmd : (char *)dataBuffer;                           // save in a independent memory to avoid breaking the current running skill
+    char terminator = (token < 'a') ? '~' : '\n';                                                                                  //capitalized tokens use binary encoding for long data commands
+                                                                                                                                   //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
+    int timeout = (token == T_SKILL_DATA || token == T_BEEP_BIN || token == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT_SHORT;  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
+                                                                                                                                   //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
+                                                                                                                                   //so it needs a timeout for the no line ending case
     long timerWaiting = 0;
     do {
       if (Serial.available()) {
-        destination[cmdLen++] = Serial.read();
+        if (cmdLen >= CMD_LEN && (token == T_SKILL || token == T_INDEXED_SIMULTANEOUS_BIN)) {  //} || token == T_INDEXED_SIMULTANEOUS_ASC)) {
+          do {
+            Serial.read();
+          } while (Serial.available());  //overflow! clear the serial buffer to avoid damage to the running program
+          // PTLF("OVF");                                  //when it overflows, the head value of dataBuffer will be changed. why???
+          strcpy(bufferPtr, "vtF");
+          cmdLen = 7;
+          break;
+        }
+        bufferPtr[cmdLen++] = Serial.read();
         timerWaiting = millis();
       }
-    } while ((char)destination[cmdLen - 1] != terminator && long(millis() - timerWaiting) < timeout);
-    cmdLen = (destination[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
-    destination[cmdLen] = '\0';
+      if (long(millis() - timerWaiting) > timeout) {
+        break;
+      }
+    } while ((char)bufferPtr[cmdLen - 1] != terminator);
+    cmdLen = (bufferPtr[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
+    bufferPtr[cmdLen] = '\0';
+    newCmdIdx = 2;
 
 #ifdef DEVELOPER
     PTF("Mem:");
     PTL(freeMemory());
 #endif
-    // PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
+    // PTL("lastT:" + String(lastToken) + Z"\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
   }
 }
 

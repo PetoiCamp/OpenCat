@@ -13,7 +13,7 @@
 
 #define I2C_EEPROM  //comment this line out if you don't have an I2C EEPROM in your DIY board.
 #define SERIAL_TIMEOUT_SHORT 5
-#define SERIAL_TIMEOUT_LONG 50
+#define SERIAL_TIMEOUT_LONG 100
 //Tutorial: https://bittle.petoi.com/11-tutorial-on-creating-new-skills
 #ifdef NYBBLE
 #include "InstinctNybble.h"
@@ -208,7 +208,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_CALIBRATE 'c'
 #define T_REST 'd'
 #define T_GYRO 'g'
-#define T_HELP 'h'
+#define T_AUTO_HEAD_DURING_WALKING 'h'
 #define T_INDEXED_SIMULTANEOUS_ASC 'i'
 #define T_JOINTS 'j'
 #define T_SKILL 'k'
@@ -280,6 +280,8 @@ int currentAng[DOF] = { -30, -80, -45, 0,
 #endif
 float currentAdjust[DOF] = {};
 
+#define HEAD_GROUP_LEN 4  //used for controlling head pan, tilt, tail, and other joints independent from walking
+int currentHead[HEAD_GROUP_LEN];
 //control related variables
 #define IDLE_TIME 5000
 long idleTimer = 0;
@@ -291,13 +293,15 @@ byte tStep = 0;
 
 char token;
 char lastToken;
-#define CMD_LEN 12  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
-char *newCmd = new char[CMD_LEN];
+#define CMD_LEN 10  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
+char *newCmd = new char[CMD_LEN + 1];
 char *lastCmd = new char[2];
 byte newCmdIdx = 0;
 int cmdLen;
-int8_t *dataBuffer = new int8_t[467];  //23*20+7=467
-                                       //The max behavior allowed has 23 frames. The max gait (8 DoF) allowed has (467-4)/8=57 frames.
+int8_t *dataBuffer = new int8_t[448];//68 + 1];  //23*20+7=467, +1 for '\0'.
+                                           //The max behavior allowed has 23 frames. The max gait (8 DoF) allowed has (468-4)/8=58 frames.
+                                           //so 468 + 1 = 469 is the most efficient
+char *bufferPtr;
 int8_t yprTilt[3];
 int lastVoltage;
 bool servoOff = true;
@@ -308,6 +312,7 @@ bool autoSwitch = true;
 bool checkGyro = true;
 bool printGyro = false;
 bool walkingQ = false;
+bool autoHeadDuringWalkingQ = true;
 bool serialDominateQ = false;
 
 byte exceptions = 0;

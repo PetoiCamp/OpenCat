@@ -298,6 +298,10 @@ public:
       mirror();
     frame = 0;
     transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
+#ifdef NYBBLE
+    for (byte i = 0; i < HEAD_GROUP_LEN; i++)
+      currentHead[i] = currentAng[i];
+#endif
     //      delay(10);
   }
 
@@ -395,15 +399,15 @@ public:
       if (jointIndex == 4)
         jointIndex = 8;
 #endif
-      //          PT(jointIndex); PT('\t');
       float duty;
-      if (jointIndex < firstMotionJoint && abs(period) > 1)
-        duty = (jointIndex != 1 ? offsetLR : 0)  //look left or right
-               + 10 * sin(frame * (jointIndex + 2) * M_PI / abs(period));
-      else
+      if (abs(period) > 1 && jointIndex < firstMotionJoint || abs(period) == 1 && jointIndex < 4 && !autoHeadDuringWalkingQ) {
+        if (autoHeadDuringWalkingQ && jointIndex < 4) {
+          duty = (jointIndex != 1 ? offsetLR : 0)  //look left or right
+                 + 10 * sin(frame * (jointIndex + 2) * M_PI / abs(period));
+        } else
+          duty = currentHead[jointIndex];
+      } else
         duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint] * angleDataRatio;
-
-      //          PT(duty); PT('\t');
       calibratedPWM(jointIndex, duty
 #ifdef GYRO_PIN
                                   + (checkGyro && !exceptions ? (!(frame % IMU_SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
@@ -411,7 +415,6 @@ public:
       );
       jointIndex++;
     }
-    //        PTL();
   }
 };
 

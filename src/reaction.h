@@ -49,24 +49,6 @@ bool lowBattery() {
 }
 #endif
 
-void resetCmd() {
-  //  PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
-  if (strcmp(newCmd, "rc") && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_INDEXED_SEQUENTIAL_BIN
-#ifdef BINARY_COMMAND
-      && token != T_LISTED_BIN && token != T_SKILL_DATA
-#endif
-  ) {
-    delete[] lastCmd;
-    lastCmd = new char(strlen(newCmd) + 1);
-    strcpy(lastCmd, newCmd);
-  }
-  newCmdIdx = 0;
-  lastToken = token;
-  if (token != T_SKILL && token != T_CALIBRATE)
-    token = '\0';
-  //  PTL("******");
-}
-
 void reaction() {
   if (newCmdIdx) {
     //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
@@ -137,6 +119,11 @@ void reaction() {
 #endif
           break;
         }
+      case T_AUTO_HEAD_DURING_WALKING:
+        {
+          autoHeadDuringWalkingQ = !autoHeadDuringWalkingQ;
+          break;
+        }
       case T_PAUSE:
         {
           tStep = !tStep;             //tStep can be -1
@@ -196,8 +183,7 @@ void reaction() {
           //          }
           arrayNCPY(targetFrame, currentAng, DOF);
           char *pch;
-          char *input = (char *)dataBuffer;
-          pch = strtok((char *)input, " ,");
+          pch = strtok((char *)bufferPtr, " ,");
           do {  //it supports combining multiple commands at one time
             //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
             //the combined commands should be less than four. string len <=30 to be exact.
@@ -209,6 +195,10 @@ void reaction() {
               inLen++;
             }
             targetFrame[target[0]] = target[1];
+            // if (target[0] < 4 && lastToken == T_SKILL) {
+            //   currentHead[target[0]] = target[1];
+            //   autoHeadDuringWalkingQ = false;
+            // }
             int angleStep = 0;
             if (token == T_CALIBRATE) {
               checkGyro = false;
@@ -241,15 +231,14 @@ void reaction() {
             else if (token == T_TILT) {
               yprTilt[target[0]] = target[1];
             } else if (token == T_MEOW) {
-
               meow(random() % 3 + 1, (random() % 4 + 2) * 5);
-
             } else if (token == T_BEEP) {
               if (target[1])
                 beep(target[0], 1000 / target[1], 50);
             }
           } while (pch != NULL);
           if (token == T_INDEXED_SIMULTANEOUS_ASC) {
+            //  if (autoHeadDuringWalkingQ||lastToken!=T_SKILL)
             transform(targetFrame, 1, 4);
           }
           delete[] pch;
@@ -266,7 +255,11 @@ void reaction() {
           //          }
           arrayNCPY(targetFrame, currentAng, DOF);
           for (int i = 0; i < cmdLen; i += 2) {
-            targetFrame[dataBuffer[i]] = dataBuffer[i + 1];
+            targetFrame[bufferPtr[i]] = bufferPtr[i + 1];
+            if (bufferPtr[i] < 4 && lastToken == T_SKILL) {
+              currentHead[bufferPtr[i]] = bufferPtr[i + 1];
+              autoHeadDuringWalkingQ = false;
+            }
             if (token == T_INDEXED_SEQUENTIAL_BIN) {
               transform(targetFrame, 1, 2);
               //              delay(10);
@@ -274,7 +267,8 @@ void reaction() {
           }
           if (token == T_INDEXED_SIMULTANEOUS_BIN) {
             PTL(token);  //make real-time motion instructions more timely
-            transform(targetFrame, 1, 4);
+            if (autoHeadDuringWalkingQ || lastToken != T_SKILL)
+              transform(targetFrame, 1, 4);
           }
           break;
         }
@@ -357,7 +351,7 @@ void reaction() {
       if (token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN)
         PTL(token);  //postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
-      if (lastToken == T_SKILL && (lowerToken == T_GYRO || token == T_JOINTS || token == T_PAUSE || token == T_TILT
+      if (lastToken == T_SKILL && (lowerToken == T_GYRO || token == T_JOINTS || token == T_PAUSE || token == T_TILT || token == T_AUTO_HEAD_DURING_WALKING || token == T_INDEXED_SIMULTANEOUS_BIN  //|| token == T_INDEXED_SIMULTANEOUS_ASC
 #ifdef T_PRINT_GYRO
                                    || lowerToken == T_PRINT_GYRO
 #endif

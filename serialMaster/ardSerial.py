@@ -103,8 +103,6 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
 #            else:
 #                packType = 'b'
             message = list(map(int, var))
-            print("start")
-            printH("len",len(message))
             port.Send_data(token.encode())
             slice = 0
             while len(message) > slice:
@@ -112,13 +110,13 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                     buff = message[slice:slice+20]
                 else:
                     buff = message[slice:]
-                print(buff)
+                if token == 'B':
+                    for l in range(len(buff)//2):
+                        buff[l*2+1]*=1 #change 1 to 8 to save time for tests
                 in_str = struct.pack('b' * len(buff), *buff)
                 port.Send_data(encode(in_str))
                 slice+=20
-                time.sleep(0.001)
-            printH("buff ",buff)
-            printH("len ",len(buff))
+#                time.sleep(0.001)
 
             port.Send_data(encode('~'.encode()))
 
@@ -131,6 +129,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                 if count == 20 or count == len(var):
                     port.Send_data(encode(message))
                     message = ""
+#                    time.sleep(0.001)
                 
             logger.debug(f"!!!! {in_str}")
             #print(encode(in_str))

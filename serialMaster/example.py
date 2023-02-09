@@ -141,10 +141,10 @@ if __name__ == '__main__':
         testSchedule = [
                         
             # turn off the gyroscope
-            ['g',0],
+            ['g',0.1],
             
             # turn off the random behavior
-            ['z',0],
+            ['z',0.1],
 
             # - 'kbalance' indicates the command to control Bittle to stand normally
             # - 1 indicates the postponed time after finishing the command, in seconds
@@ -207,7 +207,7 @@ if __name__ == '__main__':
             #               the origin, rather than additive), the unit is degree
             # - 5 indicates the postponed time after finishing the command, in seconds
             ['L', [20, 0, 0, 0, 0, 0, 0, 0, 5, 0, 45, 45, 80, 80, 36, 36], 1],
-
+            ['h',0],
             # - u calls a 'meow' sound
             ['u',0],
 
@@ -219,18 +219,16 @@ if __name__ == '__main__':
             # - the second number in the pair indicates the duration, corresponding to 1/duration second
             # - 1 indicates the postponed time after completing the pronunciation, in seconds
 
-            ['b',[0, 1, 14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4,
-                 21, 8, 21, 8, 19, 8, 19, 8, 18, 8, 18, 8, 16, 4, 21, 8, 21, 8, 19, 8, 19, 8, 18, 8, 18, 8, 16, 4,
-                 14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4,
-            ],1],
+            ['b',[14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4, 21, 8, 21, 8, 19, 8, 19, 8, 18, 8, 18, 8, 16, 4, 21, 8, 21, 8, 19, 8, 19, 8, 18, 8, 18, 8, 16, 4,  14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4,],0],# will make the next skill break if it has 0
 
             # - 'K' indicates the skill data to send to Bittle in realtime
             # they are sent to the robot on the go and executed locally on the robot
             # no overhead of communication and waiting for both sides.
+            ['K',wkF,2],
             ['kvtF', 2],
             ['K',sit, 1],
             ['kck', 1],
-#            # 'T' calls the last temp skill data of 'K' received from the serial port
+            # 'T' calls the last temp skill data of 'K' received from the serial port
             ['T', 2],
             ['K', vt, 2],
             ['ksit', 1],
@@ -240,6 +238,8 @@ if __name__ == '__main__':
             # large angles out of -125~125 are also supported
             ['I', [8, -140, 0, 40, 9, -140, 10, 50, 11, 50], 1],
             ['L', [20, 0, 0, 0, 0, 0, 0, 0,-55,-55, 45, 45, 130, 130, 36, 36], 1],
+
+
 
             # Using this format, multiple tone commands can be encrypted in binary
             # the music melody is played.
@@ -256,10 +256,10 @@ if __name__ == '__main__':
             # if the robot has our RGB LED ultrasonic sensor connected
             # 'C' is for color
             #    [R, G, B, enable, effect]
-#            ['C',[127,  0,  0, E_RGB_ALL,   E_EFFECT_NONE],     2],
-#            ['C',[  0,127,  0, E_RGB_RIGHT, E_EFFECT_BREATHING],2],
-#            ['C',[  0,  0,127, E_RGB_LEFT,  E_EFFECT_ROTATE],   2],
-#            ['C',[127,127,127, E_RGB_ALL,   E_EFFECT_BREATHING],2],
+            ['C',[127,  0,  0, E_RGB_ALL,   E_EFFECT_NONE],     1],
+            ['C',[  0,127,  0, E_RGB_RIGHT, E_EFFECT_BREATHING],1],
+            ['C',[  0,  0,127, E_RGB_LEFT,  E_EFFECT_ROTATE],   1],
+            ['C',[127,127,127, E_RGB_ALL,   E_EFFECT_BREATHING],1],
             
             ['d', 0],
         ]
@@ -273,6 +273,13 @@ if __name__ == '__main__':
         for task in testSchedule:  # execute the tasks in the testSchedule
             print(task)
             send(goodPorts, task)
+        send(goodPorts, ['kbalance',0.5])
+        send(goodPorts, ['kwkF',0])
+        for i in range (3): # move head while walking
+            for a in range(0,180,5): # allow controlling the head while walking
+                send(goodPorts,['I',[0,a-90,1,a/2-45,2,-a/4],0.01])
+            for a in range(0,180,5):
+                send(goodPorts,['I',[0,-(a-90)],0.01])
         
 #        schedulerToSkill(goodPorts, testSchedule) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots.
         closeAllSerial(goodPorts)

@@ -1,5 +1,9 @@
 # Change Log
 
+## Feb 10, 2023
+* Allow controlling head group while walking.
+* Handle serial overflow into newCmd array. 
+
 ## Feb 7, 2023
 * Improve the serial read logics. 
 * Print software version on boot up.
