@@ -549,9 +549,11 @@ def keepCheckingPort(portList, check=True):
 
         allPorts = copy.deepcopy(currentPorts)
 """
-def keepCheckingPort(portList,cond1,check,updateFunc,):
+def keepCheckingPort(portList,cond1=None,check=True,updateFunc = lambda:None):
 #    print('***@@@ Checking port started') #debug
     allPorts = Communication.Print_Used_Com()
+    if cond1 is None:
+        cond1 = lambda: len(portList) > 0
     while cond1():
         currentPorts = Communication.Print_Used_Com()
         time.sleep(0.01)

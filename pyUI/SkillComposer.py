@@ -814,7 +814,7 @@ class SkillComposer:
         file = askopenfilename()
         if file:
             print(file)
-            with open(file, 'r') as f:
+            with open(file, 'r', encoding="utf-8") as f:
                 self.clearSkillText()
                 self.skillText.insert('1.0', f.read())
         top.after(1, lambda: top.focus_force())
@@ -982,7 +982,7 @@ class SkillComposer:
             lst = st[1:-1].split(',')
             if lst[-1] == '' or lst[-1].isspace():
                 lst = lst[:-1]
-            lst = list(map(int, lst))
+            lst = list(map(int, [l.strip() for l in lst]))
             return lst
         self.skills = list(map(processing, skills))
         if len(self.skills) ==1:
