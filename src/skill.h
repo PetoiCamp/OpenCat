@@ -137,7 +137,7 @@ public:
 
   void assignSkillAddressToOnboardEeprom() {
     int skillAddressShift = 0;
-    PTLF("Load skills");
+    PTLF("Skill");
     for (byte s = 0; s < sizeof(progmemPointer) / 2; s++) {  //save skill info to on-board EEPROM, load skills to SkillList
       //        PTL(s);
       byte nameLen = EEPROM.read(SKILLS + skillAddressShift++);  //without last type character
@@ -165,14 +165,17 @@ public:
 
   int lookupAddressByName(const char* skillName) {
     int skillAddressShift = 0;
-    for (byte s = 0; s < eeprom(NUM_SKILLS); s++) {  //save skill info to on-board EEPROM, load skills to SkillList
+    byte nSkills = eeprom(NUM_SKILLS);
+    byte randSkillIdx = strcmp(skillName, "x") ? nSkills : random(nSkills);
+    for (byte s = 0; s < nSkills; s++) {  //save skill info to on-board EEPROM, load skills to SkillList
       byte nameLen = EEPROM.read(SKILLS + skillAddressShift++);
       char* readName = new char[nameLen + 1];
       for (byte l = 0; l < nameLen; l++) {
         readName[l] = EEPROM.read(SKILLS + skillAddressShift++);
       }
       readName[nameLen] = '\0';
-      if (!strcmp(readName, skillName)                                                   //gait type + F or L
+      if (s == randSkillIdx                                                              //random skill
+          || !strcmp(readName, skillName)                                                //gait type + F or L
           || readName[nameLen - 1] == 'L' && !strncmp(readName, skillName, nameLen - 1)  //gait type + R
       ) {
         delete[] readName;
@@ -466,7 +469,7 @@ void writeConst() {
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
   saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
   saveMelody(melodyAddress, melodyLowBattery, sizeof(melodyLowBattery));
-  saveMelody(melodyAddress, melody1, sizeof(melody1));
+  // saveMelody(melodyAddress, melody1, sizeof(melody1));
 #ifndef AUTO_INIT
   playMelody(MELODY_INIT);
 #endif

@@ -213,20 +213,19 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_JOINTS 'j'
 #define T_SKILL 'k'
 #define T_INDEXED_SEQUENTIAL_ASC 'm'
-#define T_MELODY 'o'
+// #define T_MELODY 'o'
 #define T_PAUSE 'p'
-#define T_TASK_QUEUE 'q'
-#define T_RAMP 'r'
+// #define T_RAMP 'r'
 #define T_SAVE 's'
 #define T_SOUND 'S'
-#define T_TILT 't'
-#define T_MEOW 'u'
-#define T_PRINT_GYRO 'v'  //print Gyro data
-//#define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
-//#define T_WORD        'w'
-//#define T_XLEG        'x'
-//#define T_ACCELERATE  '.'
-//#define T_DECELERATE  ','
+// #define T_TILT 't'
+// #define T_MEOW 'u'
+// #define T_PRINT_GYRO 'v'  //print Gyro data
+// #define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
+// #define T_WORD        'w'
+// #define T_XLEG        'x'
+// #define T_ACCELERATE  '.'
+// #define T_DECELERATE  ','
 #define T_RANDOM_MIND 'z'
 
 #define T_COLOR 'C'
@@ -239,8 +238,8 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_BEEP_BIN 'B'
 #define T_SKILL_DATA 'K'
 #define T_LISTED_BIN 'L'
-#define T_SERVO_MICROSECOND 'W'  //PWM width modulation
-#define T_TEMP 'T'               //call the last skill data received from the serial port
+// #define T_SERVO_MICROSECOND 'W'  //PWM width modulation
+#define T_TEMP 'T'  //call the last skill data received from the serial port
 #endif
 
 float degPerRad = 180.0 / M_PI;
@@ -298,9 +297,15 @@ char *newCmd = new char[CMD_LEN + 1];
 char *lastCmd = new char[2];
 byte newCmdIdx = 0;
 int cmdLen;
-int8_t *dataBuffer = new int8_t[448];//68 + 1];  //23*20+7=467, +1 for '\0'.
-                                           //The max behavior allowed has 23 frames. The max gait (8 DoF) allowed has (468-4)/8=58 frames.
-                                           //so 468 + 1 = 469 is the most efficient
+#define BUFF_LEN 467//452
+int8_t *dataBuffer = new int8_t[BUFF_LEN + 1];
+//22*20+7=447, +1 for '\0'.
+//The max behavior allowed has 22 frames. The max gait (8 DoF) allowed has (448-4)/8=55.5 frames.
+//so 56*8 + 4 = 452 is the most efficient
+
+//468: 23*20+7=467, +1 for '\0'.
+//The max behavior allowed has 23 frames. The max gait (8 DoF) allowed has (468-4)/8=58 frames.
+//so 468 is the most efficient
 char *bufferPtr;
 int8_t yprTilt[3];
 int lastVoltage;
@@ -388,6 +393,7 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
                     // because it takes up memory, it should be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
 #ifdef TASK_QUEUE
 #include "taskQueue.h"
+#define T_TASK_QUEUE
 #endif
 
 #ifdef VOICE
@@ -454,6 +460,14 @@ void initRobot() {
 #ifdef GYRO_PIN
   imuSetup();
 #endif
+  servoSetup();
+  skill.assignSkillAddressToOnboardEeprom();
+#ifdef RANDOM_MIND
+  for (byte i = 0; i < randomMindListLength; i++) {
+    randomBase += choiceWeight[i];
+  }
+#endif
+
 #ifdef IR_PIN
   irrecv.enableIRIn();  // Start the receiver
   gait.reserve(4);
@@ -466,16 +480,6 @@ void initRobot() {
   //  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
   //  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
 #endif
-
-  servoSetup();
-  skill.assignSkillAddressToOnboardEeprom();
-#ifdef RANDOM_MIND
-  for (byte i = 0; i < randomMindListLength; i++) {
-    randomBase += choiceWeight[i];
-  }
-#endif
-  randomSeed(analogRead(A2));  //use the fluctuation of voltage caused by servos as entropy pool
-
 #ifdef VOICE
   voiceSetup();
 #endif
@@ -488,24 +492,27 @@ void initRobot() {
 #ifdef GESTURE
   gestureSetup();
 #endif
-
 #ifdef DOUBLE_LIGHT
   doubleLightSetup();
 #endif
-
-  // delay(2000);  //change the delay if the app doesn't recognize the Petoi device.
 #ifdef GYRO_PIN
   for (byte r = 0; r < 3; r++)
     read_IMU();                                                             //ypr is slow when starting up. leave enough time between IMU initialization and this reading
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST;  //put the robot's side on the table to enter calibration posture for attaching legs
   newCmdIdx = 2;
+  int rndSeed = ypr[2] * 10000;
+#else
+  int rndSeed = analogRead(A2);
 #endif
+  randomSeed(rndSeed);  //use the fluctuation of voltage caused by servos as entropy pool
 
 #ifdef TASK_QUEUE
   tQueue = new TaskQueue();
 #endif
   allCalibratedPWM(currentAng);  //soft boot for servos
   delay(500);
+
+
   //----------------------------------
 #else  // ** save parameters to device's static memory
   configureEEPROM();

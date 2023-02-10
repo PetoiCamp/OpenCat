@@ -239,7 +239,7 @@ void calibratePCA9685() {
   }
 }
 void servoSetup() {
-  PTF("Init servos: ");
+  PTF("Servo:");
   for (byte i = 0; i < DOF; i++) {
     servoCalib[i] = eeprom(CALIB, i);
   }
@@ -247,8 +247,8 @@ void servoSetup() {
   initValue = EEPROMReadInt(PCA9685_FREQ);
   if (initValue < F_MIN || initValue > F_MAX)
     initValue = 25000;
-  PT(float(initValue) / 1000);
-  PTLF("MHz");
+  PTL(float(initValue) / 1000);
+  // PTF("MHz");
   pwm.setup(DOF, long(initValue) * 1000);
   pwm.shutServos();
 }

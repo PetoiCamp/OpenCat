@@ -1,10 +1,14 @@
 void dealWithExceptions() {
   if (checkGyro && token != T_CALIBRATE && exceptions) {  //the gyro reaction switch can be toggled on/off by the 'g' token
-    //  soundFallOver();
-    //  for (int m = 0; m < 2; m++)
-    //    meow(30 - m * 12, 42 - m * 12, 20);
-    //  beep(15, 100, 100, 2);
+//  soundFallOver();
+//  for (int m = 0; m < 2; m++)
+//    meow(30 - m * 12, 42 - m * 12, 20);
+//  beep(15, 100, 100, 2);
+#ifdef T_MEOW
     meow();
+#else
+    beep(20, 50, 25, 5);
+#endif
     token = T_SKILL;
     strcpy(newCmd, "rc");
     newCmdIdx = -1;
@@ -53,9 +57,12 @@ void reaction() {
   if (newCmdIdx) {
     //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
 #ifdef MAIN_SKETCH
-    if (newCmdIdx < 5 && token != T_BEEP && token != T_MEOW && token != T_TILT
+    if (newCmdIdx < 5 && token != T_BEEP
+#ifdef T_MEOW
+        && token != T_MEOW
+#endif
 #ifdef BINARY_COMMAND
-        && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN && token != T_COLOR
+        && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN
 #endif
     )
       beep(15 + newCmdIdx, 5);  //ToDo: check the muted sound when newCmdIdx = -1
@@ -137,11 +144,13 @@ void reaction() {
           printTable(currentAng);
           break;
         }
+#ifdef T_MELODY
       case T_MELODY:
         {
           playMelody(MELODY_1);
           break;
         }
+#endif
 #ifdef ULTRASONIC
       case T_COLOR:
         {
@@ -173,8 +182,12 @@ void reaction() {
 #ifdef T_SERVO_MICROSECOND
       case T_SERVO_MICROSECOND:  //send pulse with unit of microsecond to a servo
 #endif
+#ifdef T_TILT
       case T_TILT:  //tilt the robot, format: t axis angle. 0:yaw, 1:pitch, 2:roll
+#endif
+#ifdef T_MEOW
       case T_MEOW:  //meow
+#endif
       case T_BEEP:  //beep(tone, duration): tone 0 is pause. the duration corresponds to 1/duration second
         {
           int targetFrame[DOF];
@@ -199,7 +212,6 @@ void reaction() {
             //   currentHead[target[0]] = target[1];
             //   autoHeadDuringWalkingQ = false;
             // }
-            int angleStep = 0;
             if (token == T_CALIBRATE) {
               checkGyro = false;
               if (lastToken != T_CALIBRATE) {
@@ -228,11 +240,18 @@ void reaction() {
               pwm.writeMicroseconds(eeprom(PWM_PIN, target[0]), target[1]);
             }
 #endif
+#ifdef T_TILT
             else if (token == T_TILT) {
               yprTilt[target[0]] = target[1];
-            } else if (token == T_MEOW) {
+            }
+#endif
+
+#ifdef T_MEOW
+            else if (token == T_MEOW) {
               meow(random() % 3 + 1, (random() % 4 + 2) * 5);
-            } else if (token == T_BEEP) {
+            }
+#endif
+            else if (token == T_BEEP) {
               if (target[1])
                 beep(target[0], 1000 / target[1], 50);
             }
@@ -310,8 +329,9 @@ void reaction() {
 #endif
       case T_SKILL:
         {
-          if (strcmp(lastCmd, newCmd)  //won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
-              || skill.period <= 1) {  // for repeating behaviors. if it's set < 1, won't repeat the last behavior
+          if (!strcmp("x", newCmd)        // x for random skill
+              || strcmp(lastCmd, newCmd)  // won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
+              || skill.period <= 1) {     // for repeating behaviors. if it's set < 1, won't repeat the last behavior
             skill.loadFrame(newCmd);
           }
           break;
@@ -351,7 +371,10 @@ void reaction() {
       if (token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN)
         PTL(token);  //postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
-      if (lastToken == T_SKILL && (lowerToken == T_GYRO || token == T_JOINTS || token == T_PAUSE || token == T_TILT || token == T_AUTO_HEAD_DURING_WALKING || token == T_INDEXED_SIMULTANEOUS_BIN  //|| token == T_INDEXED_SIMULTANEOUS_ASC
+      if (lastToken == T_SKILL && (lowerToken == T_GYRO || token == T_JOINTS || token == T_PAUSE || token == T_AUTO_HEAD_DURING_WALKING || token == T_INDEXED_SIMULTANEOUS_BIN  //|| token == T_INDEXED_SIMULTANEOUS_ASC
+#ifdef T_TILT
+                                   || token == T_TILT
+#endif
 #ifdef T_PRINT_GYRO
                                    || lowerToken == T_PRINT_GYRO
 #endif

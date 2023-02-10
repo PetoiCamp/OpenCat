@@ -2,7 +2,9 @@
 
 ## Feb 10, 2023
 * Allow controlling head group while walking.
-* Handle serial overflow into newCmd array. 
+* Solve serial overflow.
+* Add random skill command: kx. It can call a random skill in the preset skill list. 
+* Remove some unused tokens to save space.
 
 ## Feb 7, 2023
 * Improve the serial read logics. 

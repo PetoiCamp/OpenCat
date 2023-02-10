@@ -35,28 +35,26 @@ void read_serial() {
     int timeout = (token == T_SKILL_DATA || token == T_BEEP_BIN || token == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT_SHORT;  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
                                                                                                                                    //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
                                                                                                                                    //so it needs a timeout for the no line ending case
-    long timerWaiting = 0;
+    long lastTime = 0;
     do {
       if (Serial.available()) {
-        if (cmdLen >= CMD_LEN && (token == T_SKILL || token == T_INDEXED_SIMULTANEOUS_BIN)) {  //} || token == T_INDEXED_SIMULTANEOUS_ASC)) {
-          do {
-            Serial.read();
-          } while (Serial.available());  //overflow! clear the serial buffer to avoid damage to the running program
-          // PTLF("OVF");                                  //when it overflows, the head value of dataBuffer will be changed. why???
-          strcpy(bufferPtr, "vtF");
+        if (cmdLen >= CMD_LEN && bufferPtr == newCmd || cmdLen >= BUFF_LEN && bufferPtr == (char *)dataBuffer) {  //} || token == T_INDEXED_SIMULTANEOUS_ASC)) {
+          PTLF("OVF");                                                                                            //when it overflows, the head value of dataBuffer will be changed. why???
+          do { Serial.read(); } while (Serial.available());
+          PTL(token);
+          token = T_SKILL;
+          strcpy(newCmd, "vtF");
           cmdLen = 7;
           break;
         }
         bufferPtr[cmdLen++] = Serial.read();
-        timerWaiting = millis();
+        lastTime = millis();
       }
-      if (long(millis() - timerWaiting) > timeout) {
-        break;
-      }
-    } while ((char)bufferPtr[cmdLen - 1] != terminator);
+    } while ((char)bufferPtr[cmdLen - 1] != terminator && long(millis() - lastTime) < timeout);
     cmdLen = (bufferPtr[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
     bufferPtr[cmdLen] = '\0';
     newCmdIdx = 2;
+    PTL(cmdLen);
 
 #ifdef DEVELOPER
     PTF("Mem:");

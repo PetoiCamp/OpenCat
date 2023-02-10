@@ -6,7 +6,7 @@ SoftwareSerial Serial2(6, 7);
 #define MAX_CUSTOMIZED_CMD 10
 
 String customizedCmdList[] = {
-  "kbalance", "ksit", "d", "m0 80 0 -80 0 0", "khi", "krc", "kvtF", "kck", "kjy", "kstr"//define up to 10 customized commands.
+  "kbalance", "d", "krc", "ksit", "m0 80 0 -80 0 0", "khi", "kvtF", "kck", "kjy", "kstr"  //define up to 10 customized commands.
 };
 int listLength = 0;
 

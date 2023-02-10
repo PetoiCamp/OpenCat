@@ -204,11 +204,11 @@ void readEnvironment() {
 //This function will write a 2-byte integer to the EEPROM at the specified address and address + 1
 
 void imuSetup() {
-  wdt_enable(WDTO_2S);
+  wdt_enable(WDTO_4S);
   do {
     delay(100);
     // initialize device
-    PTLF("Init IMU");
+    PTLF("IMU");
     mpu.initialize();
     //    pinMode(GYRO_PIN, INPUT);
     // verify connection
@@ -290,7 +290,7 @@ void imuSetup() {
     // 1 = initial memory load failed
     // 2 = DMP configuration updates failed
     // (if it's going to break, usually the code will be 1)
-    PTF("DMP failed (code ");
+    PTF("DMP failed (");
     PT(devStatus);
     PTL(')');
   }

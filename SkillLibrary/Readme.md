@@ -16,12 +16,15 @@ You are welcome to share your skills by sending merge requests to this folder.
 
 
 ```
-# Name: Model-ShortSkillName
-# Creator: XXX
-# Country: XXX
-# Date: Sep 9, 2022
-# Note: Make Nybble do push-ups with one hand. More fine movements are added.
+# Name(Model-ShortSkillName)
+Note: XXXXXXX
+Model: XXXXXX
+Creator: XXX
+Country: XXX
+Date: Sep 9, 2022
 # Demo Video link
+# Token: X
+# Data
 {
   skill data array
   .....
