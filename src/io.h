@@ -29,7 +29,7 @@ void read_serial() {
     token = Serial.read();
     delay(1);  //leave enough time for serial read
 
-    bufferPtr = (token == T_SKILL || token == T_INDEXED_SIMULTANEOUS_BIN) ? newCmd : (char *)dataBuffer;                           // save in a independent memory to avoid breaking the current running skill
+    bufferPtr = (token == T_SKILL || token == T_INDEXED_SIMULTANEOUS_BIN) ? (int8_t*)newCmd : dataBuffer;                          // save in a independent memory to avoid breaking the current running skill
     char terminator = (token < 'a') ? '~' : '\n';                                                                                  //capitalized tokens use binary encoding for long data commands
                                                                                                                                    //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
     int timeout = (token == T_SKILL_DATA || token == T_BEEP_BIN || token == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT_SHORT;  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
@@ -38,12 +38,12 @@ void read_serial() {
     long lastTime = 0;
     do {
       if (Serial.available()) {
-        if (cmdLen >= CMD_LEN && bufferPtr == newCmd || cmdLen >= BUFF_LEN && bufferPtr == (char *)dataBuffer) {  //} || token == T_INDEXED_SIMULTANEOUS_ASC)) {
-          PTLF("OVF");                                                                                            //when it overflows, the head value of dataBuffer will be changed. why???
+        if (cmdLen > CMD_LEN && bufferPtr == (int8_t*)newCmd || cmdLen >= BUFF_LEN && bufferPtr == dataBuffer) {  //} || token == T_INDEXED_SIMULTANEOUS_ASC)) {
+          PTLF("OVF");                                                                                             //when it overflows, the head value of dataBuffer will be changed. why???
           do { Serial.read(); } while (Serial.available());
           PTL(token);
           token = T_SKILL;
-          strcpy(newCmd, "vtF");
+          strcpy(newCmd, "balance");
           cmdLen = 7;
           break;
         }
@@ -54,7 +54,7 @@ void read_serial() {
     cmdLen = (bufferPtr[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
     bufferPtr[cmdLen] = '\0';
     newCmdIdx = 2;
-    PTL(cmdLen);
+    // PTL(cmdLen);
 
 #ifdef DEVELOPER
     PTF("Mem:");

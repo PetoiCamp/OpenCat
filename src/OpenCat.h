@@ -306,7 +306,7 @@ int8_t *dataBuffer = new int8_t[BUFF_LEN + 1];
 //468: 23*20+7=467, +1 for '\0'.
 //The max behavior allowed has 23 frames. The max gait (8 DoF) allowed has (468-4)/8=58 frames.
 //so 468 is the most efficient
-char *bufferPtr;
+int8_t *bufferPtr;
 int8_t yprTilt[3];
 int lastVoltage;
 bool servoOff = true;

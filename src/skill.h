@@ -163,10 +163,10 @@ public:
     //  PTLF("Load finished!");
   }
 
-  int lookupAddressByName(const char* skillName) {
+  int lookupAddressByName(const char* key) {
     int skillAddressShift = 0;
     byte nSkills = eeprom(NUM_SKILLS);
-    byte randSkillIdx = strcmp(skillName, "x") ? nSkills : random(nSkills);
+    byte randSkillIdx = strcmp(key, "x") ? nSkills : random(nSkills);
     for (byte s = 0; s < nSkills; s++) {  //save skill info to on-board EEPROM, load skills to SkillList
       byte nameLen = EEPROM.read(SKILLS + skillAddressShift++);
       char* readName = new char[nameLen + 1];
@@ -174,9 +174,9 @@ public:
         readName[l] = EEPROM.read(SKILLS + skillAddressShift++);
       }
       readName[nameLen] = '\0';
-      if (s == randSkillIdx                                                              //random skill
-          || !strcmp(readName, skillName)                                                //gait type + F or L
-          || readName[nameLen - 1] == 'L' && !strncmp(readName, skillName, nameLen - 1)  //gait type + R
+      if (s == randSkillIdx                                                        //random skill
+          || !strcmp(readName, key)                                                //gait type + F or L
+          || readName[nameLen - 1] == 'L' && !strncmp(readName, key, nameLen - 1)  //gait type + R
       ) {
         delete[] readName;
         period = EEPROM.read(SKILLS + skillAddressShift + 1);
@@ -407,10 +407,12 @@ public:
         if (autoHeadDuringWalkingQ && jointIndex < 4) {
           duty = (jointIndex != 1 ? offsetLR : 0)  //look left or right
                  + 10 * sin(frame * (jointIndex + 2) * M_PI / abs(period));
-        } else
+        } else {
           duty = currentHead[jointIndex];
+        }
       } else
         duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint] * angleDataRatio;
+      // duty = currentAng[jointIndex] + max(-15,min(15,(currentHead[jointIndex]-currentAng[jointIndex])));
       calibratedPWM(jointIndex, duty
 #ifdef GYRO_PIN
                                   + (checkGyro && !exceptions ? (!(frame % IMU_SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)

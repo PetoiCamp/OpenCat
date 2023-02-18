@@ -154,11 +154,11 @@ void reaction() {
 #ifdef ULTRASONIC
       case T_COLOR:
         {
-          long color = ((long)(dataBuffer[0]) << 16) + ((long)(dataBuffer[1]) << 8) + (long)(dataBuffer[2]);
-          if (dataBuffer[4] == -1)  //no special effect
-            mRUS04.SetRgbColor(E_RGB_INDEX(dataBuffer[3]), color);
+          long color = ((long)(bufferPtr[0]) << 16) + ((long)(bufferPtr[1]) << 8) + (long)(bufferPtr[2]);
+          if (bufferPtr[4] == -1)  //no special effect
+            mRUS04.SetRgbColor(E_RGB_INDEX(bufferPtr[3]), color);
           else
-            mRUS04.SetRgbEffect(E_RGB_INDEX(dataBuffer[3]), color, dataBuffer[4]);
+            mRUS04.SetRgbEffect(E_RGB_INDEX(bufferPtr[3]), color, bufferPtr[4]);
           break;
         }
 #endif
@@ -257,7 +257,8 @@ void reaction() {
             }
           } while (pch != NULL);
           if (token == T_INDEXED_SIMULTANEOUS_ASC) {
-            //  if (autoHeadDuringWalkingQ||lastToken!=T_SKILL)
+            // PTL(token);  //make real-time motion instructions more timely
+            // if (autoHeadDuringWalkingQ || lastToken != T_SKILL)
             transform(targetFrame, 1, 4);
           }
           delete[] pch;
@@ -294,15 +295,15 @@ void reaction() {
 #ifdef BINARY_COMMAND
       case T_LISTED_BIN:
         {
-          PTL(token);                                //make real-time motion instructions more timely
-                                                     //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
-          transform(dataBuffer, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
+          PTL(token);                               //make real-time motion instructions more timely
+                                                    //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
+          transform(bufferPtr, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
           break;
         }
       case T_BEEP_BIN:
         {
           for (byte b = 0; b < cmdLen / 2; b++)
-            beep(dataBuffer[2 * b], 1000 / dataBuffer[2 * b + 1]);
+            beep(bufferPtr[2 * b], 1000 / bufferPtr[2 * b + 1]);
           break;
         }
 #ifdef T_TEMP
@@ -319,8 +320,8 @@ void reaction() {
       case T_SKILL_DATA:
         {  //takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
           unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + random() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF) - 500);
-          EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);                 //randomize the address of K data to protect the EEPROM
-          skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, dataBuffer);  //must be before the loading to set the period
+          EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);                //randomize the address of K data to protect the EEPROM
+          skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, bufferPtr);  //must be before the loading to set the period
           skill.loadFrameByDataBuffer();
           token = T_SKILL;
           break;
@@ -371,7 +372,7 @@ void reaction() {
       if (token != T_INDEXED_SIMULTANEOUS_BIN && token != T_LISTED_BIN)
         PTL(token);  //postures, gaits, and other tokens can confirm completion by sending the token back
       char lowerToken = tolower(token);
-      if (lastToken == T_SKILL && (lowerToken == T_GYRO || token == T_JOINTS || token == T_PAUSE || token == T_AUTO_HEAD_DURING_WALKING || token == T_INDEXED_SIMULTANEOUS_BIN  //|| token == T_INDEXED_SIMULTANEOUS_ASC
+      if (lastToken == T_SKILL && (lowerToken == T_GYRO || token == T_JOINTS || token == T_PAUSE || token == T_AUTO_HEAD_DURING_WALKING || skill.period >= 1 && (token == T_INDEXED_SIMULTANEOUS_BIN)  // || token == T_INDEXED_SIMULTANEOUS_ASC)
 #ifdef T_TILT
                                    || token == T_TILT
 #endif

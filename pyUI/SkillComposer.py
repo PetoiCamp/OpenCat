@@ -771,7 +771,7 @@ class SkillComposer:
         self.updateSliders(self.frameData)
         self.changeButtonState(f)
 
-        if len(indexedList) > 16:
+        if len(indexedList) > 10:
             send(ports, ['L', self.frameData[4:20], 0.05])
         elif len(indexedList):
             send(ports, ['I', indexedList, 0.05])
@@ -814,7 +814,7 @@ class SkillComposer:
         file = askopenfilename()
         if file:
             print(file)
-            with open(file, 'r') as f:
+            with open(file, 'r',encoding="utf-8") as f:
                 self.clearSkillText()
                 self.skillText.insert('1.0', f.read())
         top.after(1, lambda: top.focus_force())
@@ -1373,7 +1373,11 @@ class SkillComposer:
                     if self.binderValue[i].get():
                         self.frameData[4 + i] += diff * self.binderValue[i].get() * self.binderValue[idx].get()
                         indexedList += [i, self.frameData[4 + i]]
-                send(ports, ['I', indexedList, 0.05])
+                        
+                if len(indexedList) > 10:
+                    send(ports, ['L', self.frameData[4:20], 0.05])
+                elif len(indexedList):
+                    send(ports, ['I', indexedList, 0.05])
 
             self.indicateEdit()
             self.updateSliders(self.frameData)

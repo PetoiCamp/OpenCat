@@ -112,7 +112,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                     buff = message[slice:]
                 if token == 'B':
                     for l in range(len(buff)//2):
-                        buff[l*2+1]*=1 #change 1 to 8 to save time for tests
+                        buff[l*2+1]*=8 #change 1 to 8 to save time for tests
                 in_str = struct.pack('b' * len(buff), *buff)
                 port.Send_data(encode(in_str))
                 slice+=20
@@ -129,6 +129,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                 if count == 20 or count == len(var):
                     port.Send_data(encode(message))
                     message = ""
+                    count = 0
 #                    time.sleep(0.001)
                 
             logger.debug(f"!!!! {in_str}")
@@ -285,6 +286,7 @@ def send(port, task, timeout=0):
         p = port
     queue = splitTaskForLargeAngles(task)
     for task in queue:
+        printH("task",task)
         if len(port) > 1:
             returnResult = sendTaskParallel(p, task, timeout)
         elif len(port) == 1:

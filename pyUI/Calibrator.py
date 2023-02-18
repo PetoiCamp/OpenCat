@@ -119,7 +119,8 @@ class Calibrator:
             result = send(goodPorts, ['c', 0])
             if result != -1:
                 offsets = result[1]
-                #                print(offsets)
+                printH('re',result)
+                printH('of',offsets)
                 idx = offsets.find(',')
                 l1 = offsets[:idx].split()[-1]
                 offsets = ''.join(offsets[idx + 1:].split()).split(',')[:15]

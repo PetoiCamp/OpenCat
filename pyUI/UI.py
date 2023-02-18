@@ -62,7 +62,7 @@ class UI:
             family='Times New Roman', size=20, weight='bold')
         self.window.title(txt('uiTitle'))
         self.createMenu()
-        bw = 18
+        bw = 20
         self.modelLabel = Label(self.window, text=model, font=self.myFont)
         self.modelLabel.grid(row=0, column=0, pady=10)
         for i in range(len(apps)):
