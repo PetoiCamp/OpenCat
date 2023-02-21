@@ -151,54 +151,54 @@ if __name__ == '__main__':
             # - the skill data is stored locally on the robot
 
             ['kbalance', 1],
-#
-#            # - m indicates the command to control the rotation of the joint servo
-#            # - 0 indicates the index number of joint servo
-#            # - -50 indicates the rotation angle (this angle refers to the origin, rather than additive) the unit is degree
-#            # - 0.5 indicates the postponed time after finishing the command, in seconds. It can be a float number.
-#            ['m', [0, -50], 0.5],
-#
-#            # Using this format, multiple joint servo rotation commands can be sent at one time,
-#            # and these joint servo rotation commands are executed SEQUENTIALLY,
-#            # not at the same time.
-#            # The meaning of this example is: the joint servo with index number 0 is first
-#            # rotated to the 45 degree position, and then rotated to the -45 degree position, and so on.
-#            # After these motion commands are completed, the next command will
-#            # be executed after a 2-second delay.
-#            ['m', [8, -5, 8, 10, 8, -5, 8, 10, 8, -5, 8, 10], 1],
-#
-#            # Using this format, multiple joint servo rotation commands can be issued at one time,
-#            # and these joint servo rotation commands are executed AT THE SAME TIME.
-#            # The meaning of this example is: the joint servos with index numbers 8, 9 are
-#            # rotated to the -15, -20 degree position at the same time.
-#            # After these motion commands are completed, the next command will
-#            # be executed after a 2-second delay.
-#            ['i', [8, -15, 9, -20], 1],
-#
-#            # - d indicates the command to put the robot down and shut down the servos
-#            # - 2 indicates the postponed time after finishing the command, in seconds
-#            ['d', 1],
-#
-#            # - c indicates the command to enter calibration mode
-#            # - 2 indicates the postponed time after finishing the command, in seconds
-#            # After these motion commands are completed, the next command will
-#            # be executed after a 2-second delay.
-#            ['c', 1],
-#
-#            # - c indicates the command to enter calibration mode
-#            # - 0 indicates the index number of joint servo
-#            # - -9 indicates the rotation angle, the unit is degree
-#            # - 2 indicates the postponed time after finishing the command, in seconds
-#            ['c', [0, -9], 1],
-#            ['a', 0],
+
+            # - m indicates the command to control the rotation of the joint servo
+            # - 0 indicates the index number of joint servo
+            # - -50 indicates the rotation angle (this angle refers to the origin, rather than additive) the unit is degree
+            # - 0.5 indicates the postponed time after finishing the command, in seconds. It can be a float number.
+            ['m', [0, -50], 0.5],
+
+            # Using this format, multiple joint servo rotation commands can be sent at one time,
+            # and these joint servo rotation commands are executed SEQUENTIALLY,
+            # not at the same time.
+            # The meaning of this example is: the joint servo with index number 0 is first
+            # rotated to the 45 degree position, and then rotated to the -45 degree position, and so on.
+            # After these motion commands are completed, the next command will
+            # be executed after a 2-second delay.
+            ['m', [8, -5, 8, 10, 8, -5, 8, 10, 8, -5, 8, 10], 1],
+
+            # Using this format, multiple joint servo rotation commands can be issued at one time,
+            # and these joint servo rotation commands are executed AT THE SAME TIME.
+            # The meaning of this example is: the joint servos with index numbers 8, 9 are
+            # rotated to the -15, -20 degree position at the same time.
+            # After these motion commands are completed, the next command will
+            # be executed after a 2-second delay.
+            ['i', [8, -15, 9, -20], 1],
+
+            # - d indicates the command to put the robot down and shut down the servos
+            # - 2 indicates the postponed time after finishing the command, in seconds
+            ['d', 1],
+
+            # - c indicates the command to enter calibration mode
+            # - 2 indicates the postponed time after finishing the command, in seconds
+            # After these motion commands are completed, the next command will
+            # be executed after a 2-second delay.
+            ['c', 1],
+
+            # - c indicates the command to enter calibration mode
+            # - 0 indicates the index number of joint servo
+            # - -9 indicates the rotation angle, the unit is degree
+            # - 2 indicates the postponed time after finishing the command, in seconds
+            ['c', [0, -9], 1],
+            ['a', 0],
 
             # - I indicates the command to rotate multiple joint servos at the same time
             # - 8, 9, 10, 11, 0 indicate the index numbers of joint servos
             # - 50, 50, 50, 50, 0 indicate the rotation angle (this angle refers to the origin,
             #                     rather than additive), the unit is degree
             # - 3 indicates the postponed time after finishing the command, in seconds
-            ['I', [8, -20, 0, 0, 9, -20, 10, 20, 11, 20, 14, 80, 15, 80], 3],
-            ['I', [8, 20, 0, 40, 9,  20, 10, 50, 11, 50, 14, 60, 15, 60], 3],
+            ['I', [8, -20, 0, 0, 9, -20, 10, 20, 11, 20, 14, 80, 15, 80], 1],
+            ['I', [8, 20, 0, 40, 9,  20, 10, 50, 11, 50, 14, 60, 15, 60], 1],
 
             # - L indicates the command to control all joint servos to rotate at the same time
             #     (currently the command supports 16 degrees of freedom, that is, 16 servos)
@@ -207,7 +207,7 @@ if __name__ == '__main__':
             #               the origin, rather than additive), the unit is degree
             # - 5 indicates the postponed time after finishing the command, in seconds
             ['L', [20, 0, 0, 0, 0, 0, 0, 0, 5, 0, 45, 45, 80, 80, 36, 36], 3],
-            ['h',0],
+
             # - u calls a 'meow' sound
             ['u',0],
 
@@ -225,11 +225,16 @@ if __name__ == '__main__':
             # they are sent to the robot on the go and executed locally on the robot
             # no overhead of communication and waiting for both sides.
             ['K',wkF,2],
+            ['g',2],
+            ['g',2],
+            ['I',[0,80,1,60],0],
             ['kvtF', 2],
             ['K',sit, 1],
+            ['I',0],
             ['kck', 1],
             # 'T' calls the last temp skill data of 'K' received from the serial port
             ['T', 2],
+
             ['K', vt, 2],
             ['ksit', 1],
             ['T', 2],
@@ -262,8 +267,8 @@ if __name__ == '__main__':
         ]
         goodPorts = {}
         connectPort(goodPorts)
-#        t=threading.Thread(target = keepCheckingPort, args = (goodPorts,))
-#        t.start()
+        t=threading.Thread(target = keepCheckingPort, args = (goodPorts,))
+        t.start()
         parallel = False
 #        if len(goodPorts)>0:
         time.sleep(2);
@@ -274,9 +279,18 @@ if __name__ == '__main__':
         send(goodPorts, ['kwkF',0])
         for i in range (3): # move head while walking
             for a in range(0,180,5): # allow controlling the head while walking
-                send(goodPorts,['I',[0,a-90,1,a/2-45,2,-a/4],0.01])
+                send(goodPorts,['i',[0,a-90,1,a//2-45],0.01])
+            for a in range(0,180,5):
+                send(goodPorts,['i',[0,-(a-90)],0.01])
+        send(goodPorts, ['i',0])
+        send(goodPorts, ['kwkF',2])
+        for i in range (3): # move head while walking
+            for a in range(0,180,5): # allow controlling the head while walking
+                send(goodPorts,['I',[0,a-90,1,a//2-45],0.01])
             for a in range(0,180,5):
                 send(goodPorts,['I',[0,-(a-90)],0.01])
+        send(goodPorts, ['I',0])
+        send(goodPorts, ['kwkF',2])
         
 #        schedulerToSkill(goodPorts, testSchedule) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots.
         closeAllSerial(goodPorts)

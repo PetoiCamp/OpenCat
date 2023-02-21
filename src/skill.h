@@ -303,7 +303,7 @@ public:
     transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
 #ifdef NYBBLE
     for (byte i = 0; i < HEAD_GROUP_LEN; i++)
-      currentHead[i] = currentAng[i];
+      targetHead[i] = currentAng[i];
 #endif
     //      delay(10);
   }
@@ -333,7 +333,13 @@ public:
     }
     PTL();
   }
-
+  void convertTargetToPosture(int *targetFrame) {
+    arrayNCPY(dutyAngles, targetFrame, DOF);
+    period = 1;
+    firstMotionJoint = 0;
+    frameSize = DOF;
+    frame = 0;
+  }
   void perform() {
     if (period < 0) {  //behaviors
       int8_t repeat = loopCycle[2] >= 0 && loopCycle[2] < 2 ? 0 : loopCycle[2] - 1;
@@ -403,16 +409,15 @@ public:
         jointIndex = 8;
 #endif
       float duty;
-      if (abs(period) > 1 && jointIndex < firstMotionJoint || abs(period) == 1 && jointIndex < 4 && !autoHeadDuringWalkingQ) {
-        if (autoHeadDuringWalkingQ && jointIndex < 4) {
+      if (abs(period) > 1 && jointIndex < firstMotionJoint || abs(period) == 1 && jointIndex < 4 && manualHeadQ) {
+        if (!manualHeadQ && jointIndex < 4) {
           duty = (jointIndex != 1 ? offsetLR : 0)  //look left or right
                  + 10 * sin(frame * (jointIndex + 2) * M_PI / abs(period));
         } else {
-          duty = currentHead[jointIndex];
+          duty = currentAng[jointIndex] + max(-10, min(10, (targetHead[jointIndex] - currentAng[jointIndex]))) - currentAdjust[jointIndex];
         }
       } else
         duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint] * angleDataRatio;
-      // duty = currentAng[jointIndex] + max(-15,min(15,(currentHead[jointIndex]-currentAng[jointIndex])));
       calibratedPWM(jointIndex, duty
 #ifdef GYRO_PIN
                                   + (checkGyro && !exceptions ? (!(frame % IMU_SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)

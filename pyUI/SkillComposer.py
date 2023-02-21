@@ -1294,6 +1294,7 @@ class SkillComposer:
             print(file.name)
             with open(file.name, 'w') as f:
                 f.write(fileData)
+        send(ports, ['i',0])
         res = send(ports, ['K', flat_list, 0], 0)
         print(res)
 

@@ -27,30 +27,30 @@ void read_serial() {
   if (Serial.available() > 0) {
     serialDominateQ = true;
     token = Serial.read();
+    lowerToken = tolower(token);
     delay(1);  //leave enough time for serial read
 
-    bufferPtr = (token == T_SKILL || token == T_INDEXED_SIMULTANEOUS_BIN) ? (int8_t*)newCmd : dataBuffer;                          // save in a independent memory to avoid breaking the current running skill
-    char terminator = (token < 'a') ? '~' : '\n';                                                                                  //capitalized tokens use binary encoding for long data commands
-                                                                                                                                   //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
-    int timeout = (token == T_SKILL_DATA || token == T_BEEP_BIN || token == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT_SHORT;  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
-                                                                                                                                   //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
-                                                                                                                                   //so it needs a timeout for the no line ending case
+    bufferPtr = (token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) ? (int8_t*)newCmd : dataBuffer;  // save in a independent memory to avoid breaking the current running skill
+    char terminator = (token < 'a') ? '~' : '\n';                                                                                                         //capitalized tokens use binary encoding for long data commands
+                                                                                                                                                          //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
+    int serialTimeout = (token == T_SKILL_DATA || lowerToken == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT_SHORT;                                     //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
+                                                                                                                                                          //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
+                                                                                                                                                          //so it needs a timeout for the no line ending case
     long lastTime = 0;
     do {
       if (Serial.available()) {
-        if (cmdLen > CMD_LEN && bufferPtr == (int8_t*)newCmd || cmdLen >= BUFF_LEN && bufferPtr == dataBuffer) {  //} || token == T_INDEXED_SIMULTANEOUS_ASC)) {
-          PTLF("OVF");                                                                                             //when it overflows, the head value of dataBuffer will be changed. why???
+        if (cmdLen > CMD_LEN && bufferPtr == (int8_t*)newCmd || cmdLen > BUFF_LEN && bufferPtr == dataBuffer) {  //} || token == T_INDEXED_SIMULTANEOUS_ASC)) {
+          PTLF("OVF");                                                                                           //when it overflows, the head value of dataBuffer will be changed. why???
           do { Serial.read(); } while (Serial.available());
           PTL(token);
           token = T_SKILL;
           strcpy(newCmd, "balance");
-          cmdLen = 7;
           break;
         }
         bufferPtr[cmdLen++] = Serial.read();
         lastTime = millis();
       }
-    } while ((char)bufferPtr[cmdLen - 1] != terminator && long(millis() - lastTime) < timeout);
+    } while ((char)bufferPtr[cmdLen - 1] != terminator && long(millis() - lastTime) < serialTimeout);
     cmdLen = (bufferPtr[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
     bufferPtr[cmdLen] = '\0';
     newCmdIdx = 2;

@@ -102,21 +102,22 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
 #                packType = 'B'
 #            else:
 #                packType = 'b'
-            message = list(map(int, var))
             port.Send_data(token.encode())
-            slice = 0
-            while len(message) > slice:
-                if len(message) - slice >= 20:
-                    buff = message[slice:slice+20]
-                else:
-                    buff = message[slice:]
-                if token == 'B':
-                    for l in range(len(buff)//2):
-                        buff[l*2+1]*=8 #change 1 to 8 to save time for tests
-                in_str = struct.pack('b' * len(buff), *buff)
-                port.Send_data(encode(in_str))
-                slice+=20
-#                time.sleep(0.001)
+            if len(var)>0:
+                message = list(map(int, var))
+                slice = 0
+                while len(message) > slice:
+                    if len(message) - slice >= 20:
+                        buff = message[slice:slice+20]
+                    else:
+                        buff = message[slice:]
+                    if token == 'B':
+                        for l in range(len(buff)//2):
+                            buff[l*2+1]*=8 #change 1 to 8 to save time for tests
+                    in_str = struct.pack('b' * len(buff), *buff)
+                    port.Send_data(encode(in_str))
+                    slice+=20
+    #                time.sleep(0.001)
 
             port.Send_data(encode('~'.encode()))
 
@@ -124,14 +125,14 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             message = token
             count = 0
             for element in var:
-                message += str(element) + " "
+                message += str(round(element)) + " "
                 count +=1
                 if count == 20 or count == len(var):
                     port.Send_data(encode(message))
                     message = ""
                     count = 0
 #                    time.sleep(0.001)
-                
+            port.Send_data(encode('\n'))
             logger.debug(f"!!!! {in_str}")
             #print(encode(in_str))
 #            port.Send_data(encode(message))
@@ -253,7 +254,7 @@ def sendTaskParallel(ports, task, timeout=0):
 def splitTaskForLargeAngles(task):
     token = task[0]
     queue = list()
-    if token == 'L' or token == 'I':
+    if len(task)>2 and (token == 'L' or token == 'I'):
         var = task[1]
         indexedList = list()
         if token == 'L':

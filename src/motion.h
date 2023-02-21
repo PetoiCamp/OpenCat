@@ -131,17 +131,19 @@ template<typename T> void transform(T *target, byte angleDataRatio = 1, float sp
   } else {
     int *diff = new int[DOF - offset], maxDiff = 0;
     for (byte i = offset; i < DOF; i++) {
-      // if (!autoHeadDuringWalkingQ && i < HEAD_GROUP_LEN)
-      //   continue;
+      if (manualHeadQ && i < HEAD_GROUP_LEN && token == T_SKILL)  // the head motion will be handled by skill.perform()
+        continue;
       diff[i - offset] = currentAng[i] - target[i - offset] * angleDataRatio;
       maxDiff = max(maxDiff, abs(diff[i - offset]));
     }
-
-    int steps = int(round(maxDiff / 1.0 /*degreeStep*/ / speedRatio));  //default speed is 1 degree per step
-
+    // if (maxDiff == 0) {
+    //   delete[] diff;
+    //   return;
+    // }
+    int steps = speedRatio > 0 ? int(round(maxDiff / 1.0 /*degreeStep*/ / speedRatio)) : 0;  //default speed is 1 degree per step
     for (int s = 0; s <= steps; s++) {
       for (byte i = offset; i < DOF; i++) {
-        if (!autoHeadDuringWalkingQ && i < HEAD_GROUP_LEN)
+        if (manualHeadQ && i < HEAD_GROUP_LEN && token == T_SKILL)
           continue;
         float dutyAng = (target[i - offset] * angleDataRatio + (steps == 0 ? 0 : (1 + cos(M_PI * s / steps)) / 2 * diff[i - offset]));
         calibratedPWM(i, dutyAng);

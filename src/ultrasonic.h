@@ -64,7 +64,7 @@ void read_ultrasonic() {
       mRUS04.SetRgbColor(E_RGB_ALL, colors[max(min(distance / 7, 5), 0)]);
       token = T_LISTED_BIN;
       int mid[] = {0,   0,   0,   0,   0,   0,   0,   0,  30,  30, -30, -30,  30,  30, -30, -30,};
-      int allParameter[] = { currentAng[0] * 2 / 3 - distance / 2, -10 + currentAng[1] * 2 / 3 + distance / 2, (distance * 3  - 50)*(random() % 50 < 1 ? random() % 2 - 1 : 1), 0,
+      int allParameter[] = { currentAng[0] * 2 / 3 - distance / 2, -10 + currentAng[1] * 2 / 3 + distance / 2, (distance * 3  - 50)*(random() % 50 < 1 ? int(random() % 2 - 1) : 1), 0,
                              0, 0, 0, 0,
                              mid[8] - 15 + distance / 2 , mid[9] - 15 + distance / 2, mid[10] - 30 + distance, mid[11] - 30 + distance,
                              mid[12] + 35 - distance, mid[13] + 35 - distance, mid[14] + 40 - distance, mid[15] + 40 - distance

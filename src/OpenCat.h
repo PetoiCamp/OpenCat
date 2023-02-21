@@ -208,10 +208,10 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_CALIBRATE 'c'
 #define T_REST 'd'
 #define T_GYRO 'g'
-#define T_AUTO_HEAD_DURING_WALKING 'h'
 #define T_INDEXED_SIMULTANEOUS_ASC 'i'
 #define T_JOINTS 'j'
 #define T_SKILL 'k'
+#define T_SKILL_DATA 'K'
 #define T_INDEXED_SEQUENTIAL_ASC 'm'
 // #define T_MELODY 'o'
 #define T_PAUSE 'p'
@@ -220,8 +220,8 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_SOUND 'S'
 // #define T_TILT 't'
 // #define T_MEOW 'u'
-// #define T_PRINT_GYRO 'v'  //print Gyro data
-// #define T_VERBOSELY_PRINT_GYRO  'V' //verbosely print Gyro data
+#define T_PRINT_GYRO 'v'            //print Gyro data
+#define T_VERBOSELY_PRINT_GYRO 'V'  //verbosely print Gyro data
 // #define T_WORD        'w'
 // #define T_XLEG        'x'
 // #define T_ACCELERATE  '.'
@@ -236,7 +236,6 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 
 #ifdef BINARY_COMMAND
 #define T_BEEP_BIN 'B'
-#define T_SKILL_DATA 'K'
 #define T_LISTED_BIN 'L'
 // #define T_SERVO_MICROSECOND 'W'  //PWM width modulation
 #define T_TEMP 'T'  //call the last skill data received from the serial port
@@ -279,8 +278,6 @@ int currentAng[DOF] = { -30, -80, -45, 0,
 #endif
 float currentAdjust[DOF] = {};
 
-#define HEAD_GROUP_LEN 4  //used for controlling head pan, tilt, tail, and other joints independent from walking
-int currentHead[HEAD_GROUP_LEN];
 //control related variables
 #define IDLE_TIME 5000
 long idleTimer = 0;
@@ -291,13 +288,14 @@ int frame = 0;
 byte tStep = 0;
 
 char token;
+char lowerToken;
 char lastToken;
-#define CMD_LEN 10  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
+#define CMD_LEN 16  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
 char *newCmd = new char[CMD_LEN + 1];
 char *lastCmd = new char[2];
 byte newCmdIdx = 0;
 int cmdLen;
-#define BUFF_LEN 467//452
+#define BUFF_LEN 467  //452
 int8_t *dataBuffer = new int8_t[BUFF_LEN + 1];
 //22*20+7=447, +1 for '\0'.
 //The max behavior allowed has 22 frames. The max gait (8 DoF) allowed has (448-4)/8=55.5 frames.
@@ -317,8 +315,11 @@ bool autoSwitch = true;
 bool checkGyro = true;
 bool printGyro = false;
 bool walkingQ = false;
-bool autoHeadDuringWalkingQ = true;
 bool serialDominateQ = false;
+bool manualHeadQ = false;
+bool nonHeadJointQ = false;
+#define HEAD_GROUP_LEN 4  //used for controlling head pan, tilt, tail, and other joints independent from walking
+int targetHead[HEAD_GROUP_LEN];
 
 byte exceptions = 0;
 byte transformSpeed = 2;
@@ -328,6 +329,12 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #define PTL(s) Serial.println(s)
 #define PTF(s) Serial.print(F(s))  // trade flash memory for dynamic memory with F() function
 #define PTLF(s) Serial.println(F(s))
+#define PTH(head, value) \
+  { \
+    Serial.print(head); \
+    Serial.print('\t'); \
+    Serial.println(value); \
+  }
 
 #ifdef DEVELOPER
 #include "MemoryFree/MemoryFree.h"  //http://playground.arduino.cc/Code/AvailableMemory
@@ -338,7 +345,6 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 template<typename T> int8_t sign(T val) {
   return (T(0) < val) - (val < T(0));
 }
-
 
 void printRange(int r0 = 0, int r1 = 0) {
   if (r1 == 0)
@@ -368,9 +374,9 @@ template<typename T> void printTable(T *list) {
   printList(list, DOF);
 }
 
-template<typename T> void arrayNCPY(T *destination, const T *source, int len) {  //deep copy regardless of '\0'
+template<typename T, typename T1> void arrayNCPY(T *destination, const T1 *source, int len) {  //deep copy regardless of '\0'
   for (int i = 0; i < len; i++)
-    destination[i] = source[i];
+    destination[i] = min((T1)125, max((T1)-125, source[i]));
 }
 
 #include "sound.h"
@@ -393,7 +399,7 @@ template<typename T> void arrayNCPY(T *destination, const T *source, int len) { 
                     // because it takes up memory, it should be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
 #ifdef TASK_QUEUE
 #include "taskQueue.h"
-#define T_TASK_QUEUE
+#define T_TASK_QUEUE 'q'
 #endif
 
 #ifdef VOICE

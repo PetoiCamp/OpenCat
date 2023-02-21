@@ -36,13 +36,14 @@ public:
       this->pop_front();
       PTL(this->size());
       token = t->tkn;
+      lowerToken = tolower(token);
+      bufferPtr = (token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) ? (int8_t*)newCmd : dataBuffer;
       cmdLen = strlen(t->parameters);
       taskInterval = t->dly;
-      char* destination = (token == T_SKILL) ? newCmd : (char*)dataBuffer;
-      arrayNCPY(destination, t->parameters, cmdLen);
-      destination[cmdLen] = '\0';
+      arrayNCPY(bufferPtr, t->parameters, cmdLen);
+      bufferPtr[cmdLen] = '\0';
       // PT(cmdLen);
-      // PTL(destination);
+      // PTL(bufferPtr);
       taskTimer = millis();
       newCmdIdx = 5;
       delete t;

@@ -37,7 +37,6 @@ void read_gesture() {
   if (APDS.gestureAvailable()) {
     // a gesture was detected, read and print to Serial Monitor
     int gesture = APDS.readGesture();
-
     newCmdIdx = 5;
     switch (gesture) {
       case GESTURE_UP:
@@ -54,14 +53,20 @@ void read_gesture() {
 
       case GESTURE_LEFT:
         Serial.println("← Detected LEFT gesture");
-        token = T_INDEXED_SEQUENTIAL_ASC;
-        strcpy((char*)dataBuffer, "0 -50 0 0");
+        token = T_INDEXED_SEQUENTIAL_BIN;
+        char m[] = { 0, -50, 0, 0 };
+        cmdLen = 4;
+        strcpy((char*)newCmd, m);
         break;
 
       case GESTURE_RIGHT:
         Serial.println("→ Detected RIGHT gesture");
-        token = T_BEEP;
-        strcpy((char*)dataBuffer, "12 8 14 8 16 8 17 8 19 4");
+        token = T_BEEP_BIN;
+        char n[] = { 12, 8, 14, 8, 16, 8, 17, 8, 19, 4 };
+        cmdLen = 10;
+
+        strcpy((char*)dataBuffer, n);
+        bufferPtr == dataBuffer;
         break;
 
       default:
