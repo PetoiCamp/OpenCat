@@ -167,6 +167,8 @@ public:
     int skillAddressShift = 0;
     byte nSkills = eeprom(NUM_SKILLS);
     byte randSkillIdx = strcmp(key, "x") ? nSkills : random(nSkills);
+    byte keyLen = strlen(key);
+    char lr = key[keyLen - 1];
     for (byte s = 0; s < nSkills; s++) {  //save skill info to on-board EEPROM, load skills to SkillList
       byte nameLen = EEPROM.read(SKILLS + skillAddressShift++);
       char* readName = new char[nameLen + 1];
@@ -174,9 +176,10 @@ public:
         readName[l] = EEPROM.read(SKILLS + skillAddressShift++);
       }
       readName[nameLen] = '\0';
-      if (s == randSkillIdx                                                        //random skill
-          || !strcmp(readName, key)                                                //gait type + F or L
-          || readName[nameLen - 1] == 'L' && !strncmp(readName, key, nameLen - 1)  //gait type + R
+      if (s == randSkillIdx          //random skill
+          || !strcmp(readName, key)  //exact match: gait type + F or L, behavior
+          // || readName[nameLen - 1] == 'L' && !strncmp(readName, key, nameLen - 1)  //gait type + R
+          || !strncmp(readName, key, keyLen - 1) && (lr == 'L' || lr == 'R' || lr == 'X')  // L, R or X
       ) {
         delete[] readName;
         period = EEPROM.read(SKILLS + skillAddressShift + 1);
@@ -297,7 +300,7 @@ public:
       protectiveShift = 0;
     for (byte i = 0; i < DOF; i++)
       dutyAngles[i] += protectiveShift;
-    if (offsetLR < 0 || period <= 1 && offsetLR == 0 && random(100) % 2 && token != T_CALIBRATE)
+    if (lr == 'R' || (lr == 'X' || lr != 'L') && random(100) % 2)
       mirror();
     frame = 0;
     transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
@@ -333,7 +336,7 @@ public:
     }
     PTL();
   }
-  void convertTargetToPosture(int *targetFrame) {
+  void convertTargetToPosture(int* targetFrame) {
     arrayNCPY(dutyAngles, targetFrame, DOF);
     period = 1;
     firstMotionJoint = 0;
