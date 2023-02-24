@@ -21,7 +21,7 @@
 
 void gestureSetup() {
   if (!APDS.begin()) {
-    Serial.println("Error initializing APDS-9960 sensor!");
+    PTLF("Error initializing APDS-9960 sensor!");
   }
   // for setGestureSensitivity(..) a value between 1 and 100 is required.
   // Higher values make the gesture recognition more sensitive but less accurate
@@ -30,7 +30,7 @@ void gestureSetup() {
   // Default is 80
   //APDS.setGestureSensitivity(80);
 
-  Serial.println("Detecting gestures ...");
+  PTLF("Detecting gestures ...");
 }
 
 void read_gesture() {
@@ -38,37 +38,38 @@ void read_gesture() {
     // a gesture was detected, read and print to Serial Monitor
     int gesture = APDS.readGesture();
     newCmdIdx = 5;
+    PTF("Detected ");
     switch (gesture) {
       case GESTURE_UP:
-        Serial.println("↑ Detected UP gesture");
-        token = T_SKILL;
-        strcpy(newCmd, "hi");
-        break;
+        {
+          PTLF("UP\t↑");
+          tQueue->push_back(new Task('k', "vtF", 2000));
+          tQueue->push_back(new Task('k', "up"));
+          break;
+        }
 
       case GESTURE_DOWN:
-        Serial.println("↓ Detected DOWN gesture");
-        token = T_SKILL;
-        strcpy(newCmd, "sit");
-        break;
+        {
+          PTLF("DOWN\t↓");
+          token = T_SKILL;
+          strcpy(newCmd, "sit");
+          break;
+        }
 
       case GESTURE_LEFT:
-        Serial.println("← Detected LEFT gesture");
-        token = T_INDEXED_SEQUENTIAL_BIN;
-        char m[] = { 0, -50, 0, 0 };
-        cmdLen = 4;
-        strcpy((char*)newCmd, m);
-        break;
-
+        {
+          PTLF("LEFT\t←");
+          char move[] = { 0, -50, 0, 0, 0, 60, '~' };
+          tQueue->push_back(new Task(T_INDEXED_SEQUENTIAL_BIN, move, 1000));
+          break;
+        }
       case GESTURE_RIGHT:
-        Serial.println("→ Detected RIGHT gesture");
-        token = T_BEEP_BIN;
-        char n[] = { 12, 8, 14, 8, 16, 8, 17, 8, 19, 4 };
-        cmdLen = 10;
-
-        strcpy((char*)dataBuffer, n);
-        bufferPtr == dataBuffer;
-        break;
-
+        {
+          PTLF("RIGHT\t→");
+          char melody12345[] = { 12, 8, 14, 8, 16, 8, 17, 8, 19, 4, '~' };  //paraLength gets 11 rather than 10 after the first entry. why???
+          tQueue->push_back(new Task(T_BEEP_BIN, melody12345, 1000));
+          break;
+        }
       default:
         // ignore
         break;

@@ -31,7 +31,7 @@ void printEEPROM() {
   for (int i = 0; i < 1024; i++) {
     if (!(i % 16)) {
       PT(i / 16);
-      PT(":\t");
+      PTF(":\t");
       delay(6);
     }
     PT(eeprom(i));

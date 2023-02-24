@@ -1,5 +1,5 @@
 #define BITTLE
-//number of skills: 49
+//number of skills: 51
 
 const int8_t bdF[] PROGMEM = { 
 15, 0, 0, 1,
@@ -456,6 +456,9 @@ const int8_t sit[] PROGMEM = {
 const int8_t str[] PROGMEM = { 
 1, 0, 20, 1,
     0,  30,   0,   0,  -5,  -5,   0,   0, -75, -75,  30,  30,  60,  60,   0,   0,};
+const int8_t up[] PROGMEM = { 
+1, 0, 0, 1,
+    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,};
 const int8_t zero[] PROGMEM = { 
 1, 0, 0, 1,
     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,};
@@ -571,6 +574,19 @@ const int8_t ff[] PROGMEM = {
   -80,   0,   0,   0,   0,   0,   0,   0,  12,  12, -22, -22,  -3,  -3,  31,  31,	48, 0, 0, 0,
    10, -80, -45,   0,  -3,  -3,   3,   3,  70,  70,  70,  70, -55, -55, -55, -55,	32, 0, 0, 0,
     0, -80, -45,   0,  -3,  -3,   3,   3,  30,  30,  30,  30,  30,  30,  30,  30,	 8, 0, 0, 0,
+};
+const int8_t fiv[] PROGMEM = { 
+-9, 0, 0, 1,
+ 0, 0, 0, 
+    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,	 8, 0, 0, 0,
+   18,   0,   0,   0,   0,   0,   0,   0,  10,  24,  42,  28,  75,  46,  15,  38,	12, 0, 0, 0,
+   26,   0,   0,   0,   0,   0,   0,   0,  21,  33,  28,  12,  49,  17,  15,  54,	16, 0, 0, 0,
+   26,   0,   0,   0,   0,   0,   0,   0,  21,  33,  28,   7,  49,  17,  22,  39,	 8, 0, 0, 0,
+   32, -21,  21,   0,   0,   0,  42,  42,  30,  21,  62,  25,  72,  69, -23,  16,	16, 4, 0, 0,
+   15, -21,  21,   0,   0,   0,  42,  42,-125,  21,  62,  25,  28,  69, -23,  16,	16, 2, 0, 0,
+   23, -21,  21,   0,   0,   0,  42,  42,-109,  24,  62,  25,  59,  64, -23,  19,	12,20, 0, 0,
+    0,   0, -45,   0,  -5,  -5,  20,  20,  45,  38, 105, 105,  45,  45, -45, -45,	 8, 0, 0, 0,
+    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,	 8, 0, 0, 0,
 };
 const int8_t hds[] PROGMEM = { 
 -8, 0, 0, 1,
@@ -742,15 +758,15 @@ const int8_t ts[] PROGMEM = {
    30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,	32, 0, 0, 0,
    75,  75,  75,  75,  75,  75,  75,  75,  75,  75,  75,  75, -55, -55, -55, -55,	32, 0, 0, 0,
 };
-  const char* skillNameWithType[]={"bdFI","bkI","bkLI","crFI","crLI","hlwI","jpFI","pcFI","phFI","phLI","trFI","trLI","vtFI","vtLI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","zeroN","angI","bfI","ckI","clupI","cmhI","dgI","fdI","ffI","hdsI","hgI","hiI","jmpI","jyI","kcI","ndI","pdI","peeI","puI","pu1I","rcI","rlI","shI","snfI","tsI",};
+  const char* skillNameWithType[]={"bdFI","bkI","bkLI","crFI","crLI","hlwI","jpFI","pcFI","phFI","phLI","trFI","trLI","vtFI","vtLI","wkFI","wkLI","balanceI","buttUpI","calibI","droppedI","liftedI","restI","sitI","strI","upI","zeroN","angI","bfI","ckI","clupI","cmhI","dgI","fdI","ffI","fivI","hdsI","hgI","hiI","jmpI","jyI","kcI","ndI","pdI","peeI","puI","pu1I","rcI","rlI","shI","snfI","tsI",};
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
-  const int8_t* progmemPointer[] = {bdF, bk, bkL, crF, crL, hlw, jpF, pcF, phF, phL, trF, trL, vtF, vtL, wkF, wkL, balance, buttUp, calib, dropped, lifted, rest, sit, str, zero, ang, bf, ck, clup, cmh, dg, fd, ff, hds, hg, hi, jmp, jy, kc, nd, pd, pee, pu, pu1, rc, rl, sh, snf, ts, };
+  const int8_t* progmemPointer[] = {bdF, bk, bkL, crF, crL, hlw, jpF, pcF, phF, phL, trF, trL, vtF, vtL, wkF, wkL, balance, buttUp, calib, dropped, lifted, rest, sit, str, up, zero, ang, bf, ck, clup, cmh, dg, fd, ff, fiv, hds, hg, hi, jmp, jy, kc, nd, pd, pee, pu, pu1, rc, rl, sh, snf, ts, };
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses
   const int8_t* progmemPointer[] = {zero, };
 #endif
-//the total byte of instincts is 7188
+//the total byte of instincts is 7395
 //the maximal array size is 317 bytes of wkF. 
 //Make sure to leave enough memory for SRAM to work properly. Any single skill should be smaller than 400 bytes for safety.

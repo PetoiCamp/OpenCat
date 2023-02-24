@@ -154,11 +154,11 @@ int16_t imuOffset[9] = { 0, 0, 0,
 
 
 void print6Axis() {
-  Serial.print(ypr[0], 5);
+  PT_FMT(ypr[0], 5);
   PT('\t');
-  Serial.print(ypr[1], 5);
+  PT_FMT(ypr[1], 5);
   PT('\t');
-  Serial.print(ypr[2], 5);
+  PT_FMT(ypr[2], 5);
   //  PT("\t");
   //  PT(aaWorld.x);
   //  PT("\t");

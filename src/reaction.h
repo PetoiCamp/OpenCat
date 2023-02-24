@@ -53,10 +53,10 @@ bool lowBattery() {
 }
 #endif
 
+
 void reaction() {
   if (newCmdIdx) {
     lowerToken = tolower(token);
-    //    PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
 #ifdef MAIN_SKETCH
     if (newCmdIdx < 5 && lowerToken != T_BEEP
 #ifdef T_MEOW
@@ -272,7 +272,7 @@ void reaction() {
 #endif
               else if (token == T_BEEP) {
                 if (target[1])
-                  beep(target[0], 1000 / target[1], 50);
+                  beep(target[0], 1000 / target[1]);
               }
             } while (pch != NULL);
             PTL(token);
@@ -307,7 +307,6 @@ void reaction() {
                 nonHeadJointQ = true;
               if (token == T_INDEXED_SEQUENTIAL_BIN) {
                 transform(targetFrame, 1, 2);
-                //              delay(10);
               }
             }
             PTL(token);
@@ -365,11 +364,11 @@ void reaction() {
           break;
         }
 
-      case T_TASK_QUEUE:
-        {
-          tQueue->createTask();
-          break;
-        }
+      // case T_TASK_QUEUE:
+      //   {
+      //     tQueue->createTask();
+      //     break;
+      //   }
 
 #endif
       case T_REST:
@@ -417,7 +416,7 @@ void reaction() {
 
       strcpy(newCmd, lastCmd);
     } else {
-      //      strcpy(newCmd, "balance");
+      //      strcpy(newCmd, "up");
       strcpy(newCmd, "");
       arrayNCPY(skill.dutyAngles, skill.dutyAngles + (abs(skill.period) - 1) * skill.frameSize, DOF);
       skill.period = 1;

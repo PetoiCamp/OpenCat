@@ -56,17 +56,20 @@ void read_doubleLight() {
   // PTL(last);
 
   if (maxL < -50) {
-    tQueue->push_back(new Task('k', "bk", 2000));// jigs when entering this case for the 2nd time. ???
+    tQueue->push_back(new Task('k', "bk", 2000));  // jigs when entering this case for the 2nd time. ???
+    tQueue->push_back(new Task('k', "up"));   // jigs when entering this case for the 2nd time. ???
     PTL(tQueue->size());
   } else if (maxL < 300) {
     actualOffset = (last + clippedOffset) / 2;
     actualOffset = max(min(actualOffset, 90), -90);
-    token = T_INDEXED_SIMULTANEOUS_ASC;
-    char temp[7] = "0 ";
-    strcat(temp, String(actualOffset).c_str());
-    strcpy((char*)dataBuffer, temp);
+    token = T_INDEXED_SIMULTANEOUS_BIN;
+    dataBuffer[0] = 0;
+    dataBuffer[1] = actualOffset;
+    bufferPtr = dataBuffer;
     last = actualOffset;
+    cmdLen = 2;
     newCmdIdx = 5;
+    PTL(actualOffset);
   } else if (maxL > 300 && abs(offset) > 30) {
     tQueue->push_back(new Task('k', (offset > 0 ? "vtR" : "vtL"), 1000));
   }

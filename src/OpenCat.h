@@ -290,13 +290,13 @@ byte tStep = 0;
 char token;
 char lowerToken;
 char lastToken;
-#define CMD_LEN 16  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
-char *newCmd = new char[CMD_LEN + 1];
-char *lastCmd = new char[2];
 byte newCmdIdx = 0;
 int cmdLen;
 #define BUFF_LEN 467  //452
 int8_t *dataBuffer = new int8_t[BUFF_LEN + 1];
+#define CMD_LEN 12  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
+char *newCmd = new char[CMD_LEN + 1];
+char *lastCmd = new char[2];
 //22*20+7=447, +1 for '\0'.
 //The max behavior allowed has 22 frames. The max gait (8 DoF) allowed has (448-4)/8=55.5 frames.
 //so 56*8 + 4 = 452 is the most efficient
@@ -304,6 +304,7 @@ int8_t *dataBuffer = new int8_t[BUFF_LEN + 1];
 //468: 23*20+7=467, +1 for '\0'.
 //The max behavior allowed has 23 frames. The max gait (8 DoF) allowed has (468-4)/8=58 frames.
 //so 468 is the most efficient
+
 int8_t *bufferPtr;
 int8_t yprTilt[3];
 int lastVoltage;
@@ -325,7 +326,8 @@ byte exceptions = 0;
 byte transformSpeed = 2;
 float protectiveShift;  //reduce the wearing of the potentiometer
 
-#define PT(s) Serial.print(s)  // abbreviate print commands
+#define PT(s) Serial.print(s)                      // abbreviate print commands
+#define PT_FMT(s, format) Serial.print(s, format)  // abbreviate print commands
 #define PTL(s) Serial.println(s)
 #define PTF(s) Serial.print(F(s))  // trade flash memory for dynamic memory with F() function
 #define PTLF(s) Serial.println(F(s))
@@ -336,8 +338,21 @@ float protectiveShift;  //reduce the wearing of the potentiometer
     Serial.println(value); \
   }
 
-#ifdef DEVELOPER
+void printCmd() {
+  PTF("lastT:");
+  PT(lastToken);
+  PTF("\tT:");
+  PT(token);
+  PTF("\tLastCmd:");
+  PT(lastCmd);
+  PT('\t');
+  PT(cmdLen);
+  PTF("\tCmd:");
+  PTL(newCmd);
+}
 #include "MemoryFree/MemoryFree.h"  //http://playground.arduino.cc/Code/AvailableMemory
+#ifdef DEVELOPER
+// #include "MemoryFree/MemoryFree.h"  //http://playground.arduino.cc/Code/AvailableMemory
 #endif
 #include <EEPROM.h>
 
@@ -346,6 +361,12 @@ template<typename T> int8_t sign(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
+int strlenUntil(const char *s, char terminator) {
+  int l = 0;
+  while (s[l++] != terminator)
+    ;
+  return l - 1;
+}
 void printRange(int r0 = 0, int r1 = 0) {
   if (r1 == 0)
     for (byte i = 0; i < r0; i++) {
@@ -369,14 +390,25 @@ template<typename T> void printList(T *arr, byte len = DOF) {
   }
   PTL(temp);
 }
+template<typename T> void printListWithoutString(T *arr, byte len = DOF) {
+  for (byte i = 0; i < len; i++) {
+    PT((T)(arr[i]));
+    PT('\t');
+  }
+  PTL();
+}
 template<typename T> void printTable(T *list) {
   printRange(0, DOF);
   printList(list, DOF);
 }
 
+// template<typename T, typename T1> void arrayNCPY(T *destination, const T1 *source, int len) {  //deep copy regardless of '\0'
+//   for (int i = 0; i < len; i++)
+//     destination[i] = min((T1)125, max((T1)-125, source[i]));
+// }
 template<typename T, typename T1> void arrayNCPY(T *destination, const T1 *source, int len) {  //deep copy regardless of '\0'
   for (int i = 0; i < len; i++)
-    destination[i] = min((T1)125, max((T1)-125, source[i]));
+    destination[i] = source[i];
 }
 
 #include "sound.h"
@@ -517,7 +549,7 @@ void initRobot() {
 #endif
   allCalibratedPWM(currentAng);  //soft boot for servos
   delay(500);
-
+  lastCmd[0] = '\0';
 
   //----------------------------------
 #else  // ** save parameters to device's static memory
@@ -531,7 +563,8 @@ void initRobot() {
 #ifndef MAIN_SKETCH
   PCA9685CalibrationPrompt();
 #endif
-#ifdef DOUBLE_LIGHT
-  delay(500);  //use your palm to cover the two light sensors for calibration
+#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH
+  skill.loadFrame("rest");  //required by double light
+  delay(500);               //use your palm to cover the two light sensors for calibration
 #endif
 }

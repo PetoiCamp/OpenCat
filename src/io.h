@@ -10,7 +10,7 @@ char getUserInputChar() {  //take only the first character, allow "no line endin
 }
 
 void resetCmd() {
-  if (strcmp(newCmd, "rc")) {
+  if (token == T_SKILL && strcmp(newCmd, "rc")) {
     delete[] lastCmd;
     lastCmd = new char(strlen(newCmd) + 1);
     strcpy(lastCmd, newCmd);
@@ -44,7 +44,7 @@ void read_serial() {
           do { Serial.read(); } while (Serial.available());
           PTL(token);
           token = T_SKILL;
-          strcpy(newCmd, "balance");
+          strcpy(newCmd, "up");
           break;
         }
         bufferPtr[cmdLen++] = Serial.read();
@@ -81,7 +81,6 @@ void readSignal() {
     idleTimer = millis() + IDLE_TIME;
   } else if (token != T_CALIBRATE && current - idleTimer > 0) {
     serialDominateQ = false;
-
 #ifdef CAMERA
     read_camera();
 #endif

@@ -1,6 +1,6 @@
 const char mind0[] PROGMEM = "iRand";
 const char mind1[] PROGMEM = "ksit";
-const char mind2[] PROGMEM = "kbalance";
+const char mind2[] PROGMEM = "kup";
 const char mind3[] PROGMEM = "kpee";
 const char mind4[] PROGMEM = "kpu";
 const char mind5[] PROGMEM = "khi";

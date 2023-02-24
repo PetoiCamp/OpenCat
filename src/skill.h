@@ -327,28 +327,38 @@ public:
   }
 
   void info() {
-    PTL("period:" + String(period) + ",\texpected(pitch,roll):(" + expectedRollPitch[0] + "," + expectedRollPitch[1] + ")");
+    PTF("period:");
+    PT(period);
+    PT(",\texpected(pitch,roll):(");
+    PT(expectedRollPitch[0]);
+    PT(",");
+    PT(expectedRollPitch[1]);
+    PTL(")");
     for (int k = 0; k < abs(period); k++) {
       for (int col = 0; col < frameSize; col++) {
-        PT(String((int8_t)dutyAngles[k * frameSize + col]) + ",\t");
+        PT((int8_t)dutyAngles[k * frameSize + col]);
+        PT(",\t");
       }
       PTL();
     }
     PTL();
   }
+
   void convertTargetToPosture(int* targetFrame) {
+    // info();
     arrayNCPY(dutyAngles, targetFrame, DOF);
     period = 1;
     firstMotionJoint = 0;
     frameSize = DOF;
     frame = 0;
+    // info();
   }
   void perform() {
     if (period < 0) {  //behaviors
       int8_t repeat = loopCycle[2] >= 0 && loopCycle[2] < 2 ? 0 : loopCycle[2] - 1;
       for (byte c = 0; c < abs(period); c++) {  //the last two in the row are transition speed and delay
-        //          PT("step "); PTL(c);
-        //          printList(dutyAngles + c * frameSize);
+                                                //          PT("step "); PTL(c);
+                                                //          printList(dutyAngles + c * frameSize);
 
         transform(dutyAngles + c * frameSize, angleDataRatio, dutyAngles[DOF + c * frameSize] / 4.0);
 
