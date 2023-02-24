@@ -43,10 +43,9 @@ void read_voice() {
         // strcpy(newCmd, raw.c_str() + 3);
         shift = 3;
       }
-      if (shift > 0) {
+      if (shift > 0)
         tQueue->push_back(new Task(token, raw.c_str() + shift, 2000));
-        tQueue->push_back(new Task('p', ""));
-      }
+      tQueue->push_back(new Task('p', ""));
     }
   }
 }

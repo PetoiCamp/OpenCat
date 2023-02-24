@@ -26,10 +26,12 @@ public:
     PT(dly);
     PT('\t');
     PTL(paraLength);
-    if (tkn < 'a')
-      printList(parameters, paraLength);
-    else
-      PTL(parameters);
+    if (paraLength) {
+      if (tkn < 'a')
+        printList(parameters, paraLength);
+      else
+        PTL(parameters);
+    }
   }
 };
 
@@ -50,7 +52,6 @@ public:
       cmdLen = t->paraLength;
       taskInterval = t->dly;
       if (cmdLen) {
-        PTL(cmdLen);
         bufferPtr = (token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) ? (int8_t*)newCmd : dataBuffer;
         arrayNCPY(bufferPtr, t->parameters, cmdLen);
         bufferPtr[cmdLen] = '\0';
