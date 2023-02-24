@@ -37,7 +37,6 @@ void read_gesture() {
   if (APDS.gestureAvailable()) {
     // a gesture was detected, read and print to Serial Monitor
     int gesture = APDS.readGesture();
-    newCmdIdx = 5;
     PTF("Detected ");
     switch (gesture) {
       case GESTURE_UP:

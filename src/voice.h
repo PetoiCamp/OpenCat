@@ -23,14 +23,13 @@ void read_voice() {
   // put your main code here, to run repeatedly:
   if (Serial2.available()) {
     String raw = Serial2.readStringUntil('\n');
-    PTL(raw);
+    // PTL(raw);
     byte index = (byte)raw[2];  //interpret the 3rd byte as integer
     int shift = -1;
     if (index > 10) {
       if (index < 21) {  //11 ~ 20 are customized commands, and their indexes should be shifted by 11
         index -= 11;
         PT(index);
-        PT(' ');
         if (index < listLength) {
           raw = customizedCmdList[index];
           token = raw[0];
@@ -44,10 +43,10 @@ void read_voice() {
         // strcpy(newCmd, raw.c_str() + 3);
         shift = 3;
       }
-      if (shift > 0)
+      if (shift > 0) {
         tQueue->push_back(new Task(token, raw.c_str() + shift, 2000));
-      tQueue->push_back(new Task('k', "up"));
-      newCmdIdx = 5;
+        tQueue->push_back(new Task('p', ""));
+      }
     }
   }
 }

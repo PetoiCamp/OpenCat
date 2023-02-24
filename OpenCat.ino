@@ -58,7 +58,7 @@
 // #define TASK_QUEUE  //allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. \
                     // because it takes up memory, it will be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
 // #define ULTRASONIC      //for Nybble's ultrasonic sensor
-// #define VOICE  //Petoi Grove voice module
+#define VOICE  //Petoi Grove voice module
 // #define VOICE_LD3320    //for LD3320 module
 // #define PIR             //for PIR (Passive Infrared) sensor
 // #define DOUBLE_TOUCH  //for double touch sensor
