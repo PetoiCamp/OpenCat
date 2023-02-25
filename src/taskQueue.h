@@ -7,7 +7,7 @@ public:
   char* parameters;
   int paraLength;
   int dly;
-  Task(char t, const char* p, int d = 0)
+  template<typename T> Task(char t, T* p, int d = 0)
     : tkn{ t }, dly{ d } {
     paraLength = (tkn < 'a') ? strlenUntil(p, '~') : strlen(p);
     if (paraLength) {

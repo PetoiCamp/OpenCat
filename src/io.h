@@ -23,6 +23,19 @@ void resetCmd() {
   cmdLen = 0;
 }
 
+void printCmd() {
+  PTF("lastT:");
+  PT(lastToken);
+  PTF("\tT:");
+  PT(token);
+  PTF("\tLastCmd:");
+  PT(lastCmd);
+  PT('\t');
+  PT(cmdLen);
+  PTF("\tCmd:");
+  PTL(newCmd);
+}
+
 void read_serial() {
   if (Serial.available() > 0) {
     serialDominateQ = true;

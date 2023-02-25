@@ -25,7 +25,7 @@ const char* const voiceTable[] PROGMEM = {voice1, voice2, voice3, voice4,
 
 void voiceLD3320Setup()
 {
-  Serial.println("Init LD3320 voice");// ld3320
+  PTL("Init LD3320 voice");// ld3320
   E_WORK_MODE asr_mode = LOOP_MODE;      // 0：循环识别模式  1：口令模式，以第一个词条为口令  2、按键模式，按下开始识别
   ld3320_reset();
   ld3320_config_mode(asr_mode);  // 循环模式
@@ -57,8 +57,8 @@ void read_voice_ld3320()
     unsigned char result;
     result = ld3320_get_result();
     if (result != 0xFF) {
-      Serial.print("asr result is:");
-      Serial.println(result);   //返回识别结果，即识别到的词条编号
+      PT("asr result is:");
+      PTL(result);   //返回识别结果，即识别到的词条编号
       for (byte v = 0; v < sizeof(voiceTable) / 2; v++) {
         if (result == v) {
           char *ptr;

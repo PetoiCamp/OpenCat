@@ -50,8 +50,7 @@ void read_gesture() {
       case GESTURE_DOWN:
         {
           PTLF("DOWN\t↓");
-          token = T_SKILL;
-          strcpy(newCmd, "sit");
+          tQueue->push_back(new Task('k', "sit"));
           break;
         }
 

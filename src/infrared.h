@@ -85,7 +85,7 @@ String translateIR() // takes action based on IR code received
     case 0xFF4AB5: /*PTLF(" 8");  */          return (F(K61));
     case 0xFF52AD: /*PTLF(" 9");  */          return (F(K62));
 
-    case 0xFFFFFFFF: return ""; //Serial.println(" REPEAT");
+    case 0xFFFFFFFF: return ""; //PTL(" REPEAT");
 #else
   uint8_t trimmed = (results.value >> 8);
   switch (trimmed) {
@@ -120,12 +120,12 @@ String translateIR() // takes action based on IR code received
 
     case 0x12: return("ts"); //for factory use
 
-    case 0xFF: return ""; //Serial.println(" REPEAT");
+    case 0xFF: return ""; //PTL(" REPEAT");
 #endif
     default: {
-        //Serial.println(results.value, HEX);
+        //PTL(results.value, HEX);
       }
-      return "";                      //Serial.println("null");
+      return "";                      //PTL("null");
   }// End Case
   //delay(100); // Do not get immediate repeat //no need because the main loop is slow
 

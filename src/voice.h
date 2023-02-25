@@ -6,7 +6,7 @@ SoftwareSerial Serial2(6, 7);
 #define MAX_CUSTOMIZED_CMD 10
 
 String customizedCmdList[] = {
-  "kup", "d", "krc",  // "ksit", "m0 80 0 40", "khi", "kvtF", "kck", "kjy", "kstr"  //define up to 10 customized commands.
+  "kup", "d", "krc", //"ksit", "m0 80 0 40", "khi", "kvtF", "kck", "kjy", "kstr"  //define up to 10 customized commands.
 };
 int listLength = 0;
 
@@ -38,7 +38,7 @@ void read_voice() {
           PTLF("_?");
         }
       } else if (index < 61) {  //21 ~ 60 are preset commands, and their indexes should be shifted by 21.
-                                //But we don't need to use their indexes.
+        //But we don't need to use their indexes.
         token = T_SKILL;
         // strcpy(newCmd, raw.c_str() + 3);
         shift = 3;

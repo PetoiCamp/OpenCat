@@ -53,7 +53,6 @@ bool lowBattery() {
 }
 #endif
 
-
 void reaction() {
   if (newCmdIdx) {
     lowerToken = tolower(token);
