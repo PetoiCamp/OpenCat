@@ -1,6 +1,5 @@
 #define LIGHT1 A3
 #define LIGHT2 A2
-#define BUZZER 5
 #define READING_COUNT 30
 
 #define MAX_READING 1024
