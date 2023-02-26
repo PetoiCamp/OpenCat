@@ -5,17 +5,17 @@ SoftwareSerial Serial2(6, 7);
 #define SERIAL2_BAUD_RATE 9600
 #define MAX_CUSTOMIZED_CMD 10
 
-const char voice1[] PROGMEM = "krc";  //翻身	roll back up
+const char voice1[] PROGMEM = "kdg";  //刨地	dig
 // const char voice2[] PROGMEM = "c";     //立正	attention
-const char voice2[] PROGMEM = "khg";   //抱抱	hug
-const char voice3[] PROGMEM = "khu";   //举手	hands up
-const char voice4[] PROGMEM = "khds";  //倒立	handstand
-const char voice5[] PROGMEM = "ksnf";  //闻一下	sniff
-const char voice6[] PROGMEM = "khsk";  //握手	handshake
-const char voice7[] PROGMEM = "kgdb";  //好孩子	Good boy
-const char voice8[] PROGMEM = "ktbl";  //变桌子	Be table
-const char voice9[] PROGMEM = "kbx";   //打拳	boxing
-const char voice10[] PROGMEM = "p";    //停停	stop
+const char voice2[] PROGMEM = "khg";    //抱抱	hug
+const char voice3[] PROGMEM = "khu";    //举手	hands up
+const char voice4[] PROGMEM = "khds";   //倒立	handstand
+const char voice5[] PROGMEM = "ksnf";   //闻一下	sniff
+const char voice6[] PROGMEM = "khsk";   //握手	handshake
+const char voice7[] PROGMEM = "kgdb";   //好孩子	Good boy
+const char voice8[] PROGMEM = "ktbl";   //变桌子	Be table
+const char voice9[] PROGMEM = "kbx";    //打拳	boxing
+const char voice10[] PROGMEM = "kang";  //生气 angry
 const char *const voiceTable[] PROGMEM = {
   voice1,
   voice2,
@@ -53,6 +53,7 @@ void read_voice() {
         PT(index);
         if (index < listLength) {
           raw = strcpy_P(newCmd, (char *)pgm_read_word(&(voiceTable[index])));
+          PTL(newCmd);
           token = raw[0];
           shift = 1;
         } else {

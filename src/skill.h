@@ -43,7 +43,7 @@ public:
           PTLF("I2C EEPROM overflow! Delete some skills!\n");
           EEPROMOverflow = true;
 #ifdef BUZZER
-          beep(10, 100, 50, 2);
+          beep(10, 100, 100, 5);
 #endif
           return;
         }
