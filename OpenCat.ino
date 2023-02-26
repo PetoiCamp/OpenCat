@@ -37,14 +37,14 @@
   3. Uncomment #define MAIN_SKETCH to make it active. Then upload the program for main functions.
 */
 
-// #define MAIN_SKETCH  //the Petoi App only works when this mode is on
+#define MAIN_SKETCH  //the Petoi App only works when this mode is on
 // #define AUTO_INIT //automatically select 'Y' for the reset joint and IMU prompts
 // #define DEVELOPER //to print out some verbose debugging data
 // it may increase the code size and crash the bootloader.
 // make sure you know ISP and how to reset the bootloader!!!
 
-// #define BITTLE  //Petoi 9 DOF robot dog: 1x on head + 8x on leg
-#define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
+#define BITTLE  //Petoi 9 DOF robot dog: 1x on head + 8x on leg
+// #define NYBBLE  //Petoi 11 DOF robot cat: 2x on head + 1x on tail + 8x on leg
 
 // #define NyBoard_V0_1
 // #define NyBoard_V0_2
@@ -54,10 +54,10 @@
 
 // you can also activate the following modes (they will disable the gyro to save programming space)
 // allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
-#define RANDOM_MIND     //advanced random behaviors. use token 'z' to activate/deactivate
+// #define RANDOM_MIND     //advanced random behaviors. use token 'z' to activate/deactivate
 // #define TASK_QUEUE  //allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. \
                     // because it takes up memory, it will be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
-#define ULTRASONIC      //for Nybble's ultrasonic sensor
+// #define ULTRASONIC      //for Nybble's ultrasonic sensor
 // #define VOICE  //Petoi Grove voice module
 // #define VOICE_LD3320    //for LD3320 module
 // #define PIR             //for PIR (Passive Infrared) sensor
