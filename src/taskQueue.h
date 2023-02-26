@@ -52,7 +52,8 @@ public:
       cmdLen = t->paraLength;
       taskInterval = t->dly;
       if (cmdLen) {
-        bufferPtr = (token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) ? (int8_t*)newCmd : dataBuffer;
+        bufferPtr = //(token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) ? (int8_t*)newCmd : 
+        (int8_t*)dataBuffer;
         arrayNCPY(bufferPtr, t->parameters, cmdLen);
         bufferPtr[cmdLen] = '\0';
       }

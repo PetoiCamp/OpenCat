@@ -10,11 +10,6 @@
     PTL(value); \
   }
 
-#ifdef DEVELOPER
-#include "MemoryFree/MemoryFree.h"  //http://playground.arduino.cc/Code/AvailableMemory
-#endif
-#include <EEPROM.h>
-
 //short tools
 template<typename T> int8_t sign(T val) {
   return (T(0) < val) - (val < T(0));

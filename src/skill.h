@@ -11,6 +11,7 @@ public:
   int8_t offsetLR;
   int8_t period;  //the period of a skill. 1 for posture, >1 for gait, <-1 for behavior
   float transformSpeed;
+  byte skillHeader;
   byte frameSize;
   int expectedRollPitch[2];  //expected body orientation (roll, pitch)
   byte angleDataRatio;       //divide large angles by 1 or 2. if the max angle of skill is >128, all the angles will be divided by 2
@@ -194,7 +195,7 @@ public:
   }
 
   int dataLen(int8_t p) {
-    byte skillHeader = p > 0 ? 4 : 7;
+    skillHeader = p > 0 ? 4 : 7;
     frameSize = p > 1 ? WALKING_DOF :  //gait
                   p == 1 ? DOF
                          :  //posture
@@ -236,7 +237,19 @@ public:
     }
     //      dataBuffer[tail] = '\0';
   }
-
+  void inplaceShift() {
+    int angleLen = abs(period) * frameSize;                 // need one extra byte for terminator '~'
+    int shiftRequiredByNewCmd = CMD_LEN - skillHeader + 1;  // required shift to store CMD_LEN + 1 chars. it can hold a command with CMD_LEN chars. the additioanl byte is required by '\0'.
+    spaceAfterStoringData = BUFF_LEN - angleLen - 1;        // the bytes before the dutyAngles. The allowed command's bytes needs to -1
+    // PTH("request", shiftRequiredByNewCmd);
+    // PTH("aloShft", BUFF_LEN - (skillHeader + angleLen));
+    if (CMD_LEN > spaceAfterStoringData)
+      PTF("LMT");
+    PTL(spaceAfterStoringData);
+    for (int i = 0; i <= angleLen; i++)
+      dataBuffer[BUFF_LEN - i] = dataBuffer[skillHeader + angleLen - i];
+    dutyAngles = (int8_t*)dataBuffer + BUFF_LEN - angleLen;
+  }
   void formatSkill() {
     transformSpeed = 2;
     for (int i = 0; i < 2; i++) {
@@ -244,17 +257,18 @@ public:
       yprTilt[2 - i] = 0;
     }
     angleDataRatio = dataBuffer[3];
-    byte skillHeader = 4;
+    byte baseHeader = 4;
     if (period < 0) {
       for (byte i = 0; i < 3; i++)
-        loopCycle[i] = dataBuffer[skillHeader++];
+        loopCycle[i] = dataBuffer[baseHeader + i];
     }
 
 #ifdef POSTURE_WALKING_FACTOR
     postureOrWalkingFactor = (period == 1 ? 1 : POSTURE_WALKING_FACTOR);
 #endif
     firstMotionJoint = (period <= 1) ? 0 : DOF - WALKING_DOF;
-    dutyAngles = dataBuffer + skillHeader;
+    // dutyAngles = dataBuffer + skillHeader;
+    inplaceShift();
 #ifdef DEVELOPER
     info();
 #endif

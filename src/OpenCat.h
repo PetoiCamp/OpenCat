@@ -293,10 +293,11 @@ char lastToken;
 byte newCmdIdx = 0;
 int cmdLen;
 #define BUFF_LEN 467  //452
-int8_t *dataBuffer = new int8_t[BUFF_LEN + 1];
-#define CMD_LEN 12  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
-char *newCmd = new char[CMD_LEN + 1];
+char *dataBuffer = new char[BUFF_LEN + 1];
+#define CMD_LEN 10  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
+// char *newCmd = new char[CMD_LEN + 1];
 char *lastCmd = new char[2];
+int spaceAfterStoringData;
 //22*20+7=447, +1 for '\0'.
 //The max behavior allowed has 22 frames. The max gait (8 DoF) allowed has (448-4)/8=55.5 frames.
 //so 56*8 + 4 = 452 is the most efficient
@@ -326,6 +327,12 @@ byte exceptions = 0;
 byte transformSpeed = 2;
 float protectiveShift;  //reduce the wearing of the potentiometer
 
+#include "MemoryFree/MemoryFree.h"  //http://playground.arduino.cc/Code/AvailableMemory
+#ifdef DEVELOPER
+// #include "MemoryFree/MemoryFree.h"  //http://playground.arduino.cc/Code/AvailableMemory
+#endif
+#include <EEPROM.h>
+
 #include "tools.h"
 #include <avr/wdt.h>  // https://create.arduino.cc/projecthub/rafitc/what-is-watchdog-timer-fffe20
 #include "eeprom.h"
@@ -345,6 +352,12 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #undef BINARY_COMMAND
 #endif
 
+#if defined NyBoard_V0_1 || defined NyBoard_V0_2
+#undef VOLTAGE_DETECTION_PIN
+#undef T_SERVO_MICROSECOND
+#undef T_RAMP
+#endif
+
 #define TASK_QUEUE  //allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. \
                     // because it takes up memory, it should be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
 #ifdef TASK_QUEUE
@@ -352,6 +365,10 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #define T_TASK_QUEUE 'q'
 #endif
 
+#ifndef MAIN_SKETCH
+#define GYRO_PIN 0
+
+#else
 #ifdef VOICE
 #include "voice.h"
 #elif defined VOICE_LD3320
@@ -373,14 +390,6 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #define GYRO_PIN 0
 #endif
 
-#ifndef MAIN_SKETCH
-#define GYRO_PIN 0
-#endif
-
-#if defined NyBoard_V0_1 || defined NyBoard_V0_2
-#undef VOLTAGE_DETECTION_PIN
-#undef T_SERVO_MICROSECOND
-#undef T_RAMP
 #endif
 
 #include "io.h"
