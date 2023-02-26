@@ -1,5 +1,5 @@
-#define LIGHT1 A3
-#define LIGHT2 A2
+#define LIGHT1 A2
+#define LIGHT2 A3
 #define READING_COUNT 30
 
 #define MAX_READING 1024
@@ -56,15 +56,14 @@ void read_doubleLight() {
 
   if (maxL < -50) {
     tQueue->push_back(new Task('k', "bk", 2000));  // jigs when entering this case for the 2nd time. ???
-    tQueue->push_back(new Task('k', "up"));   // jigs when entering this case for the 2nd time. ???
+    tQueue->push_back(new Task('k', "up"));        // jigs when entering this case for the 2nd time. ???
     PTL(tQueue->size());
   } else if (maxL < 300) {
     actualOffset = (last + clippedOffset) / 2;
     actualOffset = max(min(actualOffset, 90), -90);
     token = T_INDEXED_SIMULTANEOUS_BIN;
-    dataBuffer[0] = 0;
-    dataBuffer[1] = actualOffset;
-    bufferPtr = dataBuffer;
+    newCmd[0] = 0;
+    newCmd[1] = actualOffset;
     last = actualOffset;
     cmdLen = 2;
     newCmdIdx = 5;

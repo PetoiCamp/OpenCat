@@ -115,12 +115,11 @@ void read_camera() {
       cmdLen = DOF;
       token = T_LISTED_BIN;
       for (byte i = 0; i < cmdLen; i++)
-        dataBuffer[i] = (int8_t)min(max(allParameter[i], -125), 125);
-      dataBuffer[cmdLen] = '\0';
-      bufferPtr = dataBuffer;
+        newCmd[i] = (int8_t)min(max(allParameter[i], -125), 125);
+      newCmd[cmdLen] = '\0';
       transformSpeed = 16;
       newCmdIdx = 6;
-      //      printList(dataBuffer);
+      //      printList(newCmd);
       //    }
     }
   } else if (millis() - noResultTime > 2000) {  // if no object is detected for 2 seconds, switch object

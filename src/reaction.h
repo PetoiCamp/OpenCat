@@ -10,7 +10,7 @@ void dealWithExceptions() {
     beep(20, 50, 25, 5);
 #endif
     token = T_SKILL;
-    strcpy(dataBuffer, "rc");
+    strcpy(newCmd, "rc");
     newCmdIdx = -1;
   }
 }
@@ -154,11 +154,11 @@ void reaction() {
 #ifdef ULTRASONIC
       case T_COLOR:
         {
-          long color = ((long)(dataBuffer[0]) << 16) + ((long)(dataBuffer[1]) << 8) + (long)(dataBuffer[2]);
-          if (dataBuffer[4] == -1)  //no special effect
-            mRUS04.SetRgbColor(E_RGB_INDEX(dataBuffer[3]), color);
+          long color = ((long)(newCmd[0]) << 16) + ((long)(newCmd[1]) << 8) + (long)(newCmd[2]);
+          if (newCmd[4] == -1)  //no special effect
+            mRUS04.SetRgbColor(E_RGB_INDEX(newCmd[3]), color);
           else
-            mRUS04.SetRgbEffect(E_RGB_INDEX(dataBuffer[3]), color, dataBuffer[4]);
+            mRUS04.SetRgbEffect(E_RGB_INDEX(newCmd[3]), color, newCmd[4]);
           break;
         }
 #endif
@@ -211,7 +211,7 @@ void reaction() {
             //          }
             arrayNCPY(targetFrame, currentAng, DOF);
             char *pch;
-            pch = strtok((char *)dataBuffer, " ,");
+            pch = strtok(newCmd, " ,");
             nonHeadJointQ = false;
             do {  //it supports combining multiple commands at one time
               //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
@@ -235,8 +235,8 @@ void reaction() {
                 checkGyro = false;
                 if (lastToken != T_CALIBRATE) {
                   setServoP(P_HARD);
-                  strcpy(dataBuffer, "calib");
-                  skill.loadFrame(dataBuffer);
+                  strcpy(newCmd, "calib");
+                  skill.loadFrame(newCmd);
                 }
                 if (inLen == 2) {
                   //                if (target[1] >= 1001) { // Using 1001 for incremental calibration. 1001 is adding 1 degree, 1002 is adding 2 and 1009 is adding 9 degrees
@@ -298,9 +298,9 @@ void reaction() {
             arrayNCPY(targetFrame, currentAng, DOF);
 
             for (int i = 0; i < cmdLen; i += 2) {
-              targetFrame[dataBuffer[i]] = dataBuffer[i + 1];
-              if (dataBuffer[i] < 4) {
-                targetHead[dataBuffer[i]] = dataBuffer[i + 1];
+              targetFrame[newCmd[i]] = newCmd[i + 1];
+              if (newCmd[i] < 4) {
+                targetHead[newCmd[i]] = newCmd[i + 1];
                 manualHeadQ = true;
               } else
                 nonHeadJointQ = true;
@@ -321,13 +321,13 @@ void reaction() {
         {
           PTL(token);                                //make real-time motion instructions more timely
                                                      //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
-          transform(dataBuffer, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
+          transform(newCmd, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
           break;
         }
       case T_BEEP_BIN:
         {
           for (byte b = 0; b < cmdLen / 2; b++)
-            beep(dataBuffer[2 * b], 1000 / dataBuffer[2 * b + 1]);
+            beep(newCmd[2 * b], 1000 / newCmd[2 * b + 1]);
           break;
         }
 #ifdef T_TEMP
@@ -345,7 +345,7 @@ void reaction() {
         {  //takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
           unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + random() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF) - 500);
           EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);                           //randomize the address of K data to protect the EEPROM
-          skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, (int8_t *)dataBuffer);  //must be before the loading to set the period
+          skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, (int8_t *)newCmd);  //must be before the loading to set the period
           skill.loadFrameByDataBuffer();
           token = T_SKILL;
           break;
@@ -355,15 +355,15 @@ void reaction() {
 
       case T_SKILL:
         {
-          if (!strcmp("x", dataBuffer)        // x for random skill
-              || strcmp(lastCmd, dataBuffer)  // won't transform for the same gait. it's better to compare skill->skillName and dataBuffer. but need more logics for non skill cmd in between
+          if (!strcmp("x", newCmd)        // x for random skill
+              || strcmp(lastCmd, newCmd)  // won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
               || skill.period <= 1) {         // for repeating behaviors. if it's set < 1, won't repeat the last behavior
-            if (strcmp(dataBuffer, "rc")) {
+            if (strcmp(newCmd, "rc")) {
               delete[] lastCmd;
               lastCmd = new char(cmdLen + 1);
-              strcpy(lastCmd, dataBuffer);
+              strcpy(lastCmd, newCmd);
             }
-            skill.loadFrame(dataBuffer);
+            skill.loadFrame(newCmd);
             // skill.info();
             // PTH("mem",freeMemory());
           }
@@ -379,8 +379,8 @@ void reaction() {
 #endif
       case T_REST:
         {
-          strcpy(dataBuffer, "rest");
-          skill.loadFrame(dataBuffer);
+          strcpy(newCmd, "rest");
+          skill.loadFrame(newCmd);
           pwm.shutServos();
           checkGyro = false;
           PTL(T_GYRO);
@@ -419,20 +419,20 @@ void reaction() {
     if (exceptions && lastCmd[strlen(lastCmd) - 1] < 'L' && skill.lookupAddressByName(lastCmd) > 0) {  //lastToken == T_SKILL && lastSkill->period > 0) {
       // if the last command is not a behavior and not a turning gait. case wkF, wkL, wkR, rlL, rlR
 
-      strcpy(dataBuffer, lastCmd);
+      strcpy(newCmd, lastCmd);
     } else {
-      //      strcpy(dataBuffer, "up");
-      strcpy(dataBuffer, "");
+      //      strcpy(newCmd, "up");
+      strcpy(newCmd, "");
       arrayNCPY(skill.dutyAngles, skill.dutyAngles + (abs(skill.period) - 1) * skill.frameSize, DOF);
       skill.period = 1;
       frame = 0;
     }
     for (int i = 0; i < DOF; i++)
       currentAdjust[i] = 0;
-    if (strcmp(dataBuffer, ""))
-      skill.loadFrame(dataBuffer);
+    if (strcmp(newCmd, ""))
+      skill.loadFrame(newCmd);
     PTL(token);  //behavior can confirm completion by sending the token back
-    //      PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(dataBuffer));
+    //      PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
   }
 #endif
 }

@@ -69,16 +69,15 @@ void allRandom() {
 
   token = tokenSet[random() % 2];
   lowerToken = tolower(token);
-  bufferPtr = (token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) ? (int8_t *)newCmd : dataBuffer;
   cmdLen = sizeof(jointSet);  //random() % 2 + 2;
   for (byte r = 0; r < cmdLen; r++) {
     byte j = random() % sizeof(jointSet);
-    bufferPtr[r * 2] = jointSet[j];
-    bufferPtr[r * 2 + 1] = (int8_t)min(max(currentAng[jointSet[j]] - currentAdjust[jointSet[j]] + random() % rangeSet[j] - rangeSet[j] / 2, -90), 90);
-    //    PT(jointSet[j]); PT('\t'); PTL(int(bufferPtr[r * 2 + 1]));
+    newCmd[r * 2] = jointSet[j];
+    newCmd[r * 2 + 1] = (int8_t)min(max(currentAng[jointSet[j]] - currentAdjust[jointSet[j]] + random() % rangeSet[j] - rangeSet[j] / 2, -90), 90);
+    //    PT(jointSet[j]); PT('\t'); PTL(int(newCmd[r * 2 + 1]));
   }
   cmdLen *= 2;
-  bufferPtr[cmdLen] = '\0';
+  newCmd[cmdLen] = '\0';
 }
 void randomMind() {
   long current = millis();
@@ -95,14 +94,13 @@ void randomMind() {
       allRandom();
 #endif
     } else {
-      strcpy_P((char *)bufferPtr, (char *)pgm_read_word(&mindList[randomChoice]));
-      token = bufferPtr[0];
+      strcpy_P((char *)newCmd, (char *)pgm_read_word(&mindList[randomChoice]));
+      token = newCmd[0];
       lowerToken = tolower(token);
-      bufferPtr = (token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) ? (int8_t *)newCmd : dataBuffer;
       if (token == T_SKILL)
-        strcpy(newCmd, (char *)bufferPtr + 1);  // this is duable only because newCmd+1 is after newCmd!
+        strcpy(newCmd, (char *)newCmd + 1);  // this is duable only because newCmd+1 is after newCmd!
       else
-        strcpy((char *)bufferPtr, (char *)bufferPtr + 1);  // this is duable only because bufferPtr+1 is after bufferPtr!
+        strcpy((char *)newCmd, (char *)newCmd + 1);  // this is duable only because newCmd+1 is after newCmd!
       //      PTL(newCmd);
     }
     newCmdIdx = 100;

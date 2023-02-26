@@ -10,19 +10,19 @@ char getUserInputChar() {  //take only the first character, allow "no line endin
 }
 
 void resetCmd() {
-  // if (token == T_SKILL && strcmp(dataBuffer, "rc")) {
+  // if (token == T_SKILL && strcmp(newCmd, "rc")) {
   //   delete[] lastCmd;
   //   lastCmd = new char(cmdLen + 1);
-  //   // strcpy(lastCmd, dataBuffer);
+  //   // strcpy(lastCmd, newCmd);
   //   PT(cmdLen);
-  //   PT(strlen(dataBuffer));
-  //   PTL(dataBuffer);
+  //   PT(strlen(newCmd));
+  //   PTL(newCmd);
   // }
   newCmdIdx = 0;
   lastToken = token;
   if (token != T_SKILL && token != T_CALIBRATE)
     token = '\0';
-  dataBuffer[0] = '\0';
+  newCmd[0] = '\0';
   cmdLen = 0;
 }
 
@@ -36,7 +36,7 @@ void printCmd() {
   PT('\t');
   PT(cmdLen);
   PTF("\tCmd:");
-  PTL(dataBuffer);
+  PTL(newCmd);
 }
 
 void read_serial() {
@@ -46,8 +46,6 @@ void read_serial() {
     lowerToken = tolower(token);
     delay(1);  //leave enough time for serial read
 
-    // bufferPtr =                                                                                                        //(token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) ? (int8_t*)newCmd :
-    //   (int8_t*)dataBuffer;                                                                                                      // save in a independent memory to avoid breaking the current running skill
     char terminator = (token < 'a') ? '~' : '\n';                                                                      //capitalized tokens use binary encoding for long data commands
                                                                                                                        //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
     int serialTimeout = (token == T_SKILL_DATA || lowerToken == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT_SHORT;  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
@@ -57,21 +55,20 @@ void read_serial() {
     do {
       if (Serial.available()) {
         if ((token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) && cmdLen > spaceAfterStoringData || cmdLen > BUFF_LEN
-            // && bufferPtr == (int8_t*)newCmd || cmdLen > BUFF_LEN && bufferPtr == dataBuffer
-        ) {             //} || token == T_INDEXED_SIMULTANEOUS_ASC)) {
-          PTLF("OVF");  //when it overflows, the head value of dataBuffer will be changed. why???
+        ) {
+          PTLF("OVF");  //when it overflows, the head value of newCmd will be changed. why???
           do { Serial.read(); } while (Serial.available());
           PTL(token);
           token = T_SKILL;
-          strcpy(dataBuffer, "up");
+          strcpy(newCmd, "up");
           break;
         }
-        dataBuffer[cmdLen++] = Serial.read();
+        newCmd[cmdLen++] = Serial.read();
         lastTime = millis();
       }
-    } while ((char)dataBuffer[cmdLen - 1] != terminator && long(millis() - lastTime) < serialTimeout);
-    cmdLen = (dataBuffer[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
-    dataBuffer[cmdLen] = token < 'a' ? '~' : '\0';
+    } while (newCmd[cmdLen - 1] != terminator && long(millis() - lastTime) < serialTimeout);
+    cmdLen = (newCmd[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
+    newCmd[cmdLen] = token < 'a' ? '~' : '\0';
     newCmdIdx = 2;
     // PTL(cmdLen);
 
@@ -79,7 +76,6 @@ void read_serial() {
     PTF("Mem:");
     PTL(freeMemory());
 #endif
-    // PTL("lastT:" + String(lastToken) + Z"\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
   }
 }
 #ifdef MAIN_SKETCH

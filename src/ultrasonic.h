@@ -47,9 +47,9 @@ void read_ultrasonic() {
                          };
       cmdLen = 6;
       //      for (byte i = 0; i < cmdLen; i++)
-      //        dataBuffer[i] = (int8_t)allRand[i];
-      arrayNCPY(dataBuffer, allRand, cmdLen);
-      dataBuffer[cmdLen] = '\0';
+      //        newCmd[i] = (int8_t)allRand[i];
+      arrayNCPY(newCmd, allRand, cmdLen);
+      newCmd[cmdLen] = '\0';
       newCmdIdx = 6;
     }
     else if (distance < 6) {
@@ -72,8 +72,8 @@ void read_ultrasonic() {
       //      printList(allParameter);
       cmdLen = 16;
       for (byte i = 0; i < cmdLen; i++)
-        dataBuffer[i] = (int8_t)min(max(allParameter[i], -128), 127);
-      dataBuffer[cmdLen] = '\0';
+        newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
+      newCmd[cmdLen] = '\0';
       newCmdIdx = 6;
       randomInterval = 5000;
     }

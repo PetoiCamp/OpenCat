@@ -28,8 +28,8 @@ public:
     //      jointIndex = 0;
   }
 
-  void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t* dataBuffer) {
-    period = dataBuffer[0];  //automatically cast to char*
+  void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t* newCmd) {
+    period = newCmd[0];  //automatically cast to char*
     int len = dataLen(period) + 1;
     int writtenToEE = 0;
     while (len > 0) {
@@ -47,7 +47,7 @@ public:
 #endif
           return;
         }
-        Wire.write((byte)dataBuffer[writtenToEE++]);
+        Wire.write((byte)newCmd[writtenToEE++]);
         writtenToWire++;
         eeAddress++;
       } while ((--len > 0) && (eeAddress % PAGE_LIMIT) && (writtenToWire < WIRE_LIMIT));  //be careful with the chained conditions
@@ -205,12 +205,12 @@ public:
   }
 
   void loadDataFromProgmem(unsigned int pgmAddress) {
-    //      dataBuffer = new int8_t [bufferLen + 1];
-    //      dataBuffer[0] = pgm_read_byte(pgmAddress++);
+    //      newCmd = new int8_t [bufferLen + 1];
+    //      newCmd[0] = pgm_read_byte(pgmAddress++);
     int bufferLen = dataLen(period);
     for (int i = 0; i < bufferLen; i++)
-      dataBuffer[i] = pgm_read_byte(pgmAddress++);
-    //      dataBuffer[bufferLen] = '\0';
+      newCmd[i] = pgm_read_byte(pgmAddress++);
+    //      newCmd[bufferLen] = '\0';
   }
 
   void loadDataFromI2cEeprom(unsigned int eeAddress) {
@@ -219,7 +219,7 @@ public:
     Wire.write((int)((eeAddress)&0xFF));  // LSB
     Wire.endTransmission();
     Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)1);
-    period = dataBuffer[0] = Wire.read();
+    period = newCmd[0] = Wire.read();
     int bufferLen = dataLen(period);
     //      int tail = bufferLen;
     int readFromEE = 0;
@@ -229,13 +229,13 @@ public:
       Wire.requestFrom((uint8_t)DEVICE_ADDRESS, (uint8_t)min(WIRE_BUFFER, bufferLen));
       readToWire = 0;
       do {
-        if (Wire.available()) dataBuffer[1 + readFromEE++] = Wire.read();
+        if (Wire.available()) newCmd[1 + readFromEE++] = Wire.read();
         /*PT( (int8_t)dutyAngles[readFromEE - 1]);
             PT('\t')*/
       } while (--bufferLen > 0 && ++readToWire < WIRE_BUFFER);
       //PTL();
     }
-    //      dataBuffer[tail] = '\0';
+    //      newCmd[tail] = '\0';
   }
   void inplaceShift() {
     int angleLen = abs(period) * frameSize;                 // need one extra byte for terminator '~'
@@ -243,31 +243,31 @@ public:
     spaceAfterStoringData = BUFF_LEN - angleLen - 1;        // the bytes before the dutyAngles. The allowed command's bytes needs to -1
     // PTH("request", shiftRequiredByNewCmd);
     // PTH("aloShft", BUFF_LEN - (skillHeader + angleLen));
-    if (CMD_LEN > spaceAfterStoringData)
-      PTF("LMT");
-    PTL(spaceAfterStoringData);
+    // if (CMD_LEN > spaceAfterStoringData)
+    //   PTF("LMT");
+    // PTL(spaceAfterStoringData);
     for (int i = 0; i <= angleLen; i++)
-      dataBuffer[BUFF_LEN - i] = dataBuffer[skillHeader + angleLen - i];
-    dutyAngles = (int8_t*)dataBuffer + BUFF_LEN - angleLen;
+      newCmd[BUFF_LEN - i] = newCmd[skillHeader + angleLen - i];
+    dutyAngles = (int8_t*)newCmd + BUFF_LEN - angleLen;
   }
   void formatSkill() {
     transformSpeed = 2;
     for (int i = 0; i < 2; i++) {
-      expectedRollPitch[i] = (int8_t)dataBuffer[1 + i];
+      expectedRollPitch[i] = (int8_t)newCmd[1 + i];
       yprTilt[2 - i] = 0;
     }
-    angleDataRatio = dataBuffer[3];
+    angleDataRatio = newCmd[3];
     byte baseHeader = 4;
     if (period < 0) {
       for (byte i = 0; i < 3; i++)
-        loopCycle[i] = dataBuffer[baseHeader + i];
+        loopCycle[i] = newCmd[baseHeader + i];
     }
 
 #ifdef POSTURE_WALKING_FACTOR
     postureOrWalkingFactor = (period == 1 ? 1 : POSTURE_WALKING_FACTOR);
 #endif
     firstMotionJoint = (period <= 1) ? 0 : DOF - WALKING_DOF;
-    // dutyAngles = dataBuffer + skillHeader;
+    // dutyAngles = newCmd + skillHeader;
     inplaceShift();
 #ifdef DEVELOPER
     info();
@@ -284,7 +284,7 @@ public:
   //    }
 
   void loadFrameByDataBuffer() {
-    //      period = dataBuffer[0];
+    //      period = newCmd[0];
     //      dataLen(period);
     formatSkill();
     frame = 0;
@@ -296,9 +296,9 @@ public:
     offsetLR = (lr == 'L' ? 25 : (lr == 'R' ? -25 : 0));
     int onBoardEepromAddress = lookupAddressByName(skillName);
     if (onBoardEepromAddress == -1)
-      return;  //won't delete the dataBuffer if the new key is wrong.
-    //      if (dataBuffer != NULL)
-    //        delete [] dataBuffer;
+      return;  //won't delete the newCmd if the new key is wrong.
+    //      if (newCmd != NULL)
+    //        delete [] newCmd;
     char skillType = EEPROM.read(onBoardEepromAddress);  //load data by onboard EEPROM address
     unsigned int dataArrayAddress = EEPROMReadInt(onBoardEepromAddress + 2);
 #ifdef I2C_EEPROM

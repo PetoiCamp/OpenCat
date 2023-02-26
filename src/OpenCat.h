@@ -293,11 +293,11 @@ char lastToken;
 byte newCmdIdx = 0;
 int cmdLen;
 #define BUFF_LEN 467  //452
-char *dataBuffer = new char[BUFF_LEN + 1];
+char *newCmd = new char[BUFF_LEN + 1];
 #define CMD_LEN 10  //the last char will be '\0' so only CMD_LEN-1 elements are allowed
 // char *newCmd = new char[CMD_LEN + 1];
 char *lastCmd = new char[2];
-int spaceAfterStoringData;
+int spaceAfterStoringData = BUFF_LEN;
 //22*20+7=447, +1 for '\0'.
 //The max behavior allowed has 22 frames. The max gait (8 DoF) allowed has (448-4)/8=55.5 frames.
 //so 56*8 + 4 = 452 is the most efficient
@@ -306,7 +306,6 @@ int spaceAfterStoringData;
 //The max behavior allowed has 23 frames. The max gait (8 DoF) allowed has (468-4)/8=58 frames.
 //so 468 is the most efficient
 
-int8_t *bufferPtr;
 int8_t yprTilt[3];
 int lastVoltage;
 bool servoOff = true;
