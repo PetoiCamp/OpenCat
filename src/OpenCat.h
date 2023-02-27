@@ -357,6 +357,11 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #undef T_RAMP
 #endif
 
+#ifndef MAIN_SKETCH
+#define GYRO_PIN 0
+
+#else
+
 #define TASK_QUEUE  //allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. \
                     // because it takes up memory, it should be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
 #ifdef TASK_QUEUE
@@ -364,10 +369,6 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #define T_TASK_QUEUE 'q'
 #endif
 
-#ifndef MAIN_SKETCH
-#define GYRO_PIN 0
-
-#else
 #ifdef VOICE
 #include "voice.h"
 #elif defined VOICE_LD3320

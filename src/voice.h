@@ -19,7 +19,7 @@ SoftwareSerial Serial2(6, 7);
 // 下列行为是程序中预设的，您可以用技能创作坊设计新技能并导入到 InstinctX.h
 // 支持其他的串口指令，比如活动关节和旋律
 
-// const char voice1[] PROGMEM = "b14,8,14,8,21,8,21,8,23,8,23,8,21,4,19,8,19,8,18,8,18,8,16,8,16,8,14,4";  //小星星 twinkle star
+// const char voice1[] PROGMEM = "b14,8,14,8,21,8,21,8,23,8,23,8,21,4";  //小星星 twinkle star
 // const char voice2[] PROGMEM = "m0 80 0 -80 0 0";                                                         //动头 move head
 // const char voice3[] PROGMEM = "scrh";                                                                    //挠痒痒 scratch
 const char voice1[] PROGMEM = "kdg";                                                                     //刨地	dig

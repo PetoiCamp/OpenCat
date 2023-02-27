@@ -296,11 +296,10 @@ void reaction() {
             //            targetFrame[i] = currentAng[i];
             //          }
             arrayNCPY(targetFrame, currentAng, DOF);
-
             for (int i = 0; i < cmdLen; i += 2) {
-              targetFrame[newCmd[i]] = newCmd[i + 1];
+              targetFrame[newCmd[i]] = (int8_t)newCmd[i + 1];
               if (newCmd[i] < 4) {
-                targetHead[newCmd[i]] = newCmd[i + 1];
+                targetHead[newCmd[i]] = (int8_t)newCmd[i + 1];
                 manualHeadQ = true;
               } else
                 nonHeadJointQ = true;
@@ -319,9 +318,9 @@ void reaction() {
 #ifdef BINARY_COMMAND
       case T_LISTED_BIN:
         {
-          PTL(token);                                //make real-time motion instructions more timely
-                                                     //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
-          transform(newCmd, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
+          PTL(token);                                      //make real-time motion instructions more timely
+                                                           //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
+          transform((int8_t *)newCmd, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
           break;
         }
       case T_BEEP_BIN:
@@ -344,7 +343,7 @@ void reaction() {
       case T_SKILL_DATA:
         {  //takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
           unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + random() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF) - 500);
-          EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);                           //randomize the address of K data to protect the EEPROM
+          EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);                       //randomize the address of K data to protect the EEPROM
           skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, (int8_t *)newCmd);  //must be before the loading to set the period
           skill.loadFrameByDataBuffer();
           token = T_SKILL;
@@ -357,7 +356,7 @@ void reaction() {
         {
           if (!strcmp("x", newCmd)        // x for random skill
               || strcmp(lastCmd, newCmd)  // won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
-              || skill.period <= 1) {         // for repeating behaviors. if it's set < 1, won't repeat the last behavior
+              || skill.period <= 1) {     // for repeating behaviors. if it's set < 1, won't repeat the last behavior
             if (strcmp(newCmd, "rc")) {
               delete[] lastCmd;
               lastCmd = new char[cmdLen + 1];

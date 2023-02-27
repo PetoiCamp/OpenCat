@@ -201,10 +201,8 @@ if __name__ == '__main__':
             ['I', [8, 20, 0, 40, 9,  20, 10, 50, 11, 50, 14, 60, 15, 60], 1],
 
             # - L indicates the command to control all joint servos to rotate at the same time
-            #     (currently the command supports 16 degrees of freedom, that is, 16 servos)
-            # - 20,0,0,0,0,0,0,0,45,45,45,45,36,36,36,36 indicate the rotation
-            #               angle of each joint servo corresponding to 0-15 (this angle refers to
-            #               the origin, rather than additive), the unit is degree
+            # (currently the command supports 16 degrees of freedom, that is, 16 servos)
+            # - 20,0,0,0,0,0,0,0,45,45,45,45,36,36,36,36 indicate the rotation angle of each joint servo corresponding to 0-15 (this angle refers to the origin, rather than additive), the unit is degree
             # - 5 indicates the postponed time after finishing the command, in seconds
             ['L', [20, 0, 0, 0, 0, 0, 0, 0, 5, 0, 45, 45, 80, 80, 36, 36], 3],
 
@@ -240,8 +238,8 @@ if __name__ == '__main__':
             ['K', ck, 1],  # compare it with the previous 'kck' command
 
             # large angles out of -125~125 are also supported
-            ['I', [8, -140, 0, 40, 9, -140, 10, 50, 11, 50], 1],
-            ['L', [20, 0, 0, 0, 0, 0, 0, 0,-55,-55, 45, 45, 130, 130, 36, 36], 1],
+            ['I', [8, -140, 0, 10, 9, -140, 10, 50, 11, 50], 1],
+            ['L', [-10, 0, 0, 0, 0, 0, 0, 0,-55,-55, 45, 45, 130, 130, 36, 36], 1],
 
 
 
@@ -253,7 +251,7 @@ if __name__ == '__main__':
 
             # may be cut off by multithreading. haven't fixed it.
             ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1,      20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1], 0],
-            
+
             # if the robot has our RGB LED ultrasonic sensor connected
             # 'C' is for color
             #    [R, G, B, enable, effect]
@@ -261,7 +259,7 @@ if __name__ == '__main__':
             ['C',[  0,127,  0, E_RGB_RIGHT, E_EFFECT_BREATHING],1],
             ['C',[  0,  0,127, E_RGB_LEFT,  E_EFFECT_ROTATE],   1],
             ['C',[127,127,127, E_RGB_ALL,   E_EFFECT_BREATHING],1],
-            
+
             ['d', 0],
         ]
         goodPorts = {}

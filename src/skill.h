@@ -29,7 +29,7 @@ public:
   }
 
   void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t* newCmd) {
-    period = newCmd[0];  //automatically cast to char*
+    period = (int8_t)newCmd[0];  //automatically cast to char*
     int len = dataLen(period) + 1;
     int writtenToEE = 0;
     while (len > 0) {
@@ -60,7 +60,7 @@ public:
   }
 #ifndef MAIN_SKETCH
   void copyDataFromPgmToI2cEeprom(unsigned int& eeAddress, unsigned int pgmAddress) {
-    period = pgm_read_byte(pgmAddress);  //automatically cast to char*
+    period = (int8_t)pgm_read_byte(pgmAddress);  //automatically cast to char*
     int len = dataLen(period) + 1;
     int writtenToEE = 0;
     while (len > 0) {
@@ -339,7 +339,7 @@ public:
       }
     }
   }
-
+#define PRINT_SKILL_DATA
   void info() {
     PTF("period:");
     PT(period);
@@ -347,7 +347,16 @@ public:
     PT(expectedRollPitch[0]);
     PT(",");
     PT(expectedRollPitch[1]);
-    PTL(")");
+    PT(")\t");
+    PTF("angleRatio: ");
+    PT(angleDataRatio);
+    if (period < 0) {
+      PT("loop frame: ");
+      for (byte i = 0; i < 3; i++)
+        PT(String((byte)loopCycle[i]) + ", ");
+      PTL();
+    }
+#ifdef PRINT_SKILL_DATA
     for (int k = 0; k < abs(period); k++) {
       for (int col = 0; col < frameSize; col++) {
         PT((int8_t)dutyAngles[k * frameSize + col]);
@@ -355,6 +364,7 @@ public:
       }
       PTL();
     }
+#endif
     PTL();
   }
 
