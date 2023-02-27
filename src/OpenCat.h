@@ -291,7 +291,7 @@ char token;
 char lowerToken;
 char lastToken;
 byte newCmdIdx = 0;
-int cmdLen;
+int cmdLen = 0;
 #define BUFF_LEN 467  //452
 char *newCmd = new char[BUFF_LEN + 1];
 #define CMD_LEN 10  //the last char will be '\0' so only CMD_LEN-1 elements are allowed

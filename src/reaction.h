@@ -360,7 +360,7 @@ void reaction() {
               || skill.period <= 1) {         // for repeating behaviors. if it's set < 1, won't repeat the last behavior
             if (strcmp(newCmd, "rc")) {
               delete[] lastCmd;
-              lastCmd = new char(cmdLen + 1);
+              lastCmd = new char[cmdLen + 1];
               strcpy(lastCmd, newCmd);
             }
             skill.loadFrame(newCmd);

@@ -53,7 +53,7 @@ public:
       } while ((--len > 0) && (eeAddress % PAGE_LIMIT) && (writtenToWire < WIRE_LIMIT));  //be careful with the chained conditions
       //self-increment may not work as expected
       Wire.endTransmission();
-      delay(10);  // needs 5ms for page write
+      delay(6);  // needs 5ms for page write
       //PTL("\nwrote " + String(writtenToWire) + " bytes.");
     }
     //PTLF("finish copying to I2C EEPROM");
@@ -84,7 +84,7 @@ public:
       } while ((--len > 0) && (eeAddress % PAGE_LIMIT) && (writtenToWire < WIRE_LIMIT));  //be careful with the chained conditions
       //self-increment may not work as expected
       Wire.endTransmission();
-      delay(10);  // needs 5ms for page write
+      delay(6);  // needs 5ms for page write
       //PTL("\nwrote " + String(writtenToWire) + " bytes.");
     }
     //PTLF("finish copying to I2C EEPROM");
@@ -322,7 +322,7 @@ public:
     for (byte i = 0; i < HEAD_GROUP_LEN; i++)
       targetHead[i] = currentAng[i];
 #endif
-    //      delay(10);
+    //      delay(6);
   }
 
   void mirror() {
@@ -524,7 +524,7 @@ void writeConst() {
       EEPROM.update(ADAPT_PARAM + i * 2 + j, (int8_t)round(adaptiveParameterArray[i][j]));
       EEPROMWriteInt(ANGLE_LIMIT + i * 4 + j * 2, angleLimit[i][j]);
     }
-    delay(10);
+    delay(6);
   }
   //PTL();
 }
