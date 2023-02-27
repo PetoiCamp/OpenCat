@@ -56,6 +56,7 @@ bool lowBattery() {
 void reaction() {
   if (newCmdIdx) {
     lowerToken = tolower(token);
+    cmdLen = (token < 'a') ? strlenUntil(newCmd, '~') : strlen(newCmd);
 #ifdef MAIN_SKETCH
     if (newCmdIdx < 5 && lowerToken != T_BEEP
 #ifdef T_MEOW
