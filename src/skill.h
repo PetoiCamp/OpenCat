@@ -349,7 +349,7 @@ public:
     PT(expectedRollPitch[1]);
     PT(")\t");
     PTF("angleRatio: ");
-    PT(angleDataRatio);
+    PTL(angleDataRatio);
     if (period < 0) {
       PT("loop frame: ");
       for (byte i = 0; i < 3; i++)
