@@ -180,7 +180,7 @@ public:
       if (s == randSkillIdx          //random skill
           || !strcmp(readName, key)  //exact match: gait type + F or L, behavior
           // || readName[nameLen - 1] == 'L' && !strncmp(readName, key, nameLen - 1)  //gait type + R
-          || !strncmp(readName, key, keyLen - 1) && (lr == 'L' || lr == 'R' || lr == 'X')  // L, R or X
+          || readName[nameLen - 1] != 'F' && !strncmp(readName, key, keyLen - 1) && (lr == 'L' || lr == 'R' || lr == 'X')  // L, R or X
       ) {
         delete[] readName;
         period = EEPROM.read(SKILLS + skillAddressShift + 1);
