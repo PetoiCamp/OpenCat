@@ -310,12 +310,13 @@ public:
 #endif
       loadDataFromProgmem(dataArrayAddress);
     formatSkill();
-    if (strcmp(skillName, "calib") && period == 1)
+    if (strcmp(lastCmd, "calib") && period == 1)
       protectiveShift = random() % 100 / 10.0 - 5;
     else
       protectiveShift = 0;
     for (byte i = 0; i < DOF; i++)
       dutyAngles[i] += protectiveShift;
+    // info();
     if (lr == 'R' || (lr == 'X' || lr != 'L') && random(100) % 2)
       mirror();
     frame = 0;

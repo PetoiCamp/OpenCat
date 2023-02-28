@@ -236,8 +236,8 @@ void reaction() {
                 checkGyro = false;
                 if (lastToken != T_CALIBRATE) {
                   setServoP(P_HARD);
-                  strcpy(newCmd, "calib");
-                  skill.loadFrame(newCmd);
+                  strcpy(lastCmd, "calib");
+                  skill.loadFrame(lastCmd);  //ensure it's correctly compared in load skill for protective shifts.
                 }
                 if (inLen == 2) {
                   //                if (target[1] >= 1001) { // Using 1001 for incremental calibration. 1001 is adding 1 degree, 1002 is adding 2 and 1009 is adding 9 degrees
@@ -250,8 +250,8 @@ void reaction() {
                 int duty = EEPROMReadInt(ZERO_POSITIONS + target[0] * 2) + float(servoCalib[target[0]]) * eeprom(ROTATION_DIRECTION, target[0]);
                 pwm.writeAngle(target[0], duty);
                 printTable(servoCalib);
-                //              PT(token);
-                //              printList(target, 2);
+                PT(token);
+                printList(target, 2);
               } else if (token == T_INDEXED_SEQUENTIAL_ASC) {
                 transform(targetFrame, 1, 2);
               }
@@ -275,8 +275,8 @@ void reaction() {
                   beep(target[0], 1000 / target[1]);
               }
             } while (pch != NULL);
-            PTL(token);
             if ((token == T_INDEXED_SIMULTANEOUS_ASC || token == T_INDEXED_SIMULTANEOUS_ASC) && (nonHeadJointQ || lastToken != T_SKILL)) {
+              PTL(token);
               transform(targetFrame, 1, 4);  // if (token == T_INDEXED_SEQUENTIAL_ASC) it will be useless
               skill.convertTargetToPosture(targetFrame);
             }
@@ -308,8 +308,8 @@ void reaction() {
                 transform(targetFrame, 1, 2);
               }
             }
-            PTL(token);
             if (nonHeadJointQ || lastToken != T_SKILL) {
+              PTL(token);
               transform(targetFrame, 1, 4);  // if (token == T_INDEXED_SEQUENTIAL_BIN) it will be useless
               skill.convertTargetToPosture(targetFrame);
             }
@@ -344,7 +344,7 @@ void reaction() {
       case T_SKILL_DATA:
         {  //takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
           // unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + random() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF)) - 500;
-          // EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);  //randomize the address of K data to protect the EEPROM. unnecessary when the address is fixed. 
+          // EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);  //randomize the address of K data to protect the EEPROM. unnecessary when the address is fixed.
           unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF);
           skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, (int8_t *)newCmd);  //must be before the loading to set the period
           skill.loadFrameByDataBuffer();
@@ -360,8 +360,6 @@ void reaction() {
               || strcmp(lastCmd, newCmd)  // won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
               || skill.period <= 1) {     // for repeating behaviors. if it's set < 1, won't repeat the last behavior
             if (strcmp(newCmd, "rc")) {
-              delete[] lastCmd;
-              lastCmd = new char[cmdLen + 1];
               strcpy(lastCmd, newCmd);
             }
             skill.loadFrame(newCmd);
