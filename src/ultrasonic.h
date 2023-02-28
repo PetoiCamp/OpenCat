@@ -49,7 +49,7 @@ void read_ultrasonic() {
       //      for (byte i = 0; i < cmdLen; i++)
       //        newCmd[i] = (int8_t)allRand[i];
       arrayNCPY(newCmd, allRand, cmdLen);
-      newCmd[cmdLen] = '\0';
+      newCmd[cmdLen] = '~';
       newCmdIdx = 6;
     }
     else if (distance < 6) {
@@ -73,7 +73,7 @@ void read_ultrasonic() {
       cmdLen = 16;
       for (byte i = 0; i < cmdLen; i++)
         newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
-      newCmd[cmdLen] = '\0';
+      newCmd[cmdLen] = '~';
       newCmdIdx = 6;
       randomInterval = 5000;
     }

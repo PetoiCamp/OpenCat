@@ -116,7 +116,7 @@ void read_camera() {
       token = T_LISTED_BIN;
       for (byte i = 0; i < cmdLen; i++)
         newCmd[i] = (int8_t)min(max(allParameter[i], -125), 125);
-      newCmd[cmdLen] = '\0';
+      newCmd[cmdLen] = '~';
       transformSpeed = 16;
       newCmdIdx = 6;
       //      printList(newCmd);

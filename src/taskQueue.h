@@ -13,7 +13,7 @@ public:
     if (paraLength) {
       parameters = new char[paraLength + 1];
       arrayNCPY(parameters, p, paraLength);
-      parameters[paraLength] = '\0';
+      parameters[paraLength] = token < 'a' ? '~' : '\0';
     }
   };
   ~Task() {
@@ -53,7 +53,7 @@ public:
       taskInterval = t->dly;
       if (cmdLen) {
         arrayNCPY(newCmd, t->parameters, cmdLen);
-        newCmd[cmdLen] = '\0';
+        newCmd[cmdLen] = token < 'a' ? '~' : '\0';
       }
       taskTimer = millis();
       newCmdIdx = 5;

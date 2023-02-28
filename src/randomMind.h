@@ -62,9 +62,9 @@ void allRandom() {
     2,
   };  // 8, 9,  12, 13, 14, 15};
   byte rangeSet[] = {
-    60,
-    60,
-    180,
+    30,
+    30,
+    30,
   };  // 10, 10, 20, 20, 10, 10};
 
   token = tokenSet[random() % 2];
@@ -77,7 +77,7 @@ void allRandom() {
     //    PT(jointSet[j]); PT('\t'); PTL(int(newCmd[r * 2 + 1]));
   }
   cmdLen *= 2;
-  newCmd[cmdLen] = '\0';
+  newCmd[cmdLen] = '~';
 }
 void randomMind() {
   long current = millis();
