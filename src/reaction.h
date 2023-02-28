@@ -343,8 +343,9 @@ void reaction() {
 #ifdef T_SKILL_DATA
       case T_SKILL_DATA:
         {  //takes in the skill array from the serial port, load it as a regular skill object and run it locally without continuous communication with the master
-          unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + random() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF) - 500);
-          EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);                       //randomize the address of K data to protect the EEPROM
+          // unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF) + random() % (EEPROM_SIZE - EEPROMReadInt(SERIAL_BUFF)) - 500;
+          // EEPROMWriteInt(SERIAL_BUFF_RAND, i2cEepromAddress);  //randomize the address of K data to protect the EEPROM. unnecessary when the address is fixed. 
+          unsigned int i2cEepromAddress = EEPROMReadInt(SERIAL_BUFF);
           skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, (int8_t *)newCmd);  //must be before the loading to set the period
           skill.loadFrameByDataBuffer();
           token = T_SKILL;

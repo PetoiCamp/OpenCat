@@ -1,7 +1,7 @@
 #define WIRE_BUFFER 30  //Arduino wire allows a 32-byte buffer, with 2 bytes for address.
 #define WIRE_LIMIT 16   //That leaves 30 bytes for data. Use 16 to balance each writes
 #define PAGE_LIMIT 32   //AT24C32D 32-byte Page Write Mode. Partial Page Writes Allowed
-#define EEPROM_SIZE (65536 / 8)
+#define EEPROM_SIZE (65535 / 8)
 bool EEPROMOverflow = false;
 
 class Skill {
@@ -28,9 +28,17 @@ public:
     //      jointIndex = 0;
   }
 
-  void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t* newCmd) {
-    period = (int8_t)newCmd[0];  //automatically cast to char*
+  void copyDataFromBufferToI2cEeprom(unsigned int eeAddress, int8_t* newCmd) {  // eeAddress should not be changed out of this function
+    period = (int8_t)newCmd[0];                                                 //automatically cast to char*
     int len = dataLen(period) + 1;
+    if (eeAddress + len >= EEPROM_SIZE) {
+      PTLF("OVF! Won't save!");
+      EEPROMOverflow = true;
+#ifdef BUZZER
+      beep(10, 100, 100, 5);
+#endif
+      return;
+    }
     int writtenToEE = 0;
     while (len > 0) {
       Wire.beginTransmission(DEVICE_ADDRESS);
@@ -38,15 +46,7 @@ public:
       Wire.write((int)((eeAddress)&0xFF));  // LSB
       byte writtenToWire = 0;
       do {
-        if (eeAddress == EEPROM_SIZE) {
-          PTL();
-          PTLF("I2C EEPROM overflow! Delete some skills!\n");
-          EEPROMOverflow = true;
-#ifdef BUZZER
-          beep(10, 100, 100, 5);
-#endif
-          return;
-        }
+
         Wire.write((byte)newCmd[writtenToEE++]);
         writtenToWire++;
         eeAddress++;
@@ -59,9 +59,17 @@ public:
     //PTLF("finish copying to I2C EEPROM");
   }
 #ifndef MAIN_SKETCH
-  void copyDataFromPgmToI2cEeprom(unsigned int& eeAddress, unsigned int pgmAddress) {
-    period = (int8_t)pgm_read_byte(pgmAddress);  //automatically cast to char*
+  void copyDataFromPgmToI2cEeprom(unsigned int& eeAddress, unsigned int pgmAddress) {  // eeAddress should be updated after this function
+    period = (int8_t)pgm_read_byte(pgmAddress);                                        //automatically cast to char*
     int len = dataLen(period) + 1;
+    if (eeAddress + len >= EEPROM_SIZE) {
+      PTLF("OVF! Delete some skills!");
+      EEPROMOverflow = true;
+#ifdef BUZZER
+      beep(10, 100, 100, 5);
+#endif
+      return;
+    }
     int writtenToEE = 0;
     while (len > 0) {
       Wire.beginTransmission(DEVICE_ADDRESS);
@@ -69,15 +77,7 @@ public:
       Wire.write((int)((eeAddress)&0xFF));  // LSB
       byte writtenToWire = 0;
       do {
-        if (eeAddress == EEPROM_SIZE) {
-          PTL();
-          PTLF("I2C EEPROM overflow! Delete some skills!\n");
-          EEPROMOverflow = true;
-#ifdef BUZZER
-          beep(10, 100, 50, 2);
-#endif
-          return;
-        }
+
         Wire.write((byte)pgm_read_byte(pgmAddress + writtenToEE++));
         writtenToWire++;
         eeAddress++;
@@ -93,10 +93,11 @@ public:
   void saveSkillInfoFromProgmemToOnboardEeprom() {
     int skillAddressShift = 0;
     unsigned int i2cEepromAddress = INITIAL_SKILL_DATA_ADDRESS;  //won't hurt if unused
-
+    unsigned int theLastEEaddress;
     PTLF("Save skills");
     EEPROM.update(NUM_SKILLS, sizeof(skillNameWithType) / 2);
-    for (byte s = 0; s < eeprom(NUM_SKILLS); s++) {          //save skill info to on-board EEPROM
+    for (byte s = 0; s < eeprom(NUM_SKILLS); s++) {  //save skill info to on-board EEPROM
+      theLastEEaddress = i2cEepromAddress;
       byte len = strlen(skillNameWithType[s]);               //len includes type. the saved value doesn't
       EEPROM.update(SKILLS + skillAddressShift++, len - 1);  //the last char in name denotes skill type, I(nstinct) on external eeprom, N(ewbility) on progmem
       // PT(skillNameWithType[s][len - 1]== 'I' ? "I nstinct\t" : "N ewbility\t");
@@ -120,7 +121,9 @@ public:
 #endif
       skillAddressShift += 2;  // one int (2 bytes) for address
     }
-    EEPROMWriteInt(SERIAL_BUFF, (unsigned int)i2cEepromAddress);  //SERIAL_BUFF saves the I2C EEPROM tail address for saving a buffer received from the serial port
+    // EEPROMWriteInt(SERIAL_BUFF, (unsigned int)i2cEepromAddress);  //save the I2C EEPROM tail address for saving a 'K' skill received from the serial port.
+    //However, it will cause segfault when 'T' is called for the first time, because it has never been set by a 'K'. The following solution is used.
+    EEPROMWriteInt(SERIAL_BUFF, theLastEEaddress);  //save the address of the last skill (named "zz") that is only used when calling token 'T' for the first time. the future 'K' command will overwrite it.
     PTL();
 #ifdef I2C_EEPROM
     {
@@ -262,7 +265,6 @@ public:
       for (byte i = 0; i < 3; i++)
         loopCycle[i] = newCmd[baseHeader + i];
     }
-
 #ifdef POSTURE_WALKING_FACTOR
     postureOrWalkingFactor = (period == 1 ? 1 : POSTURE_WALKING_FACTOR);
 #endif
@@ -341,17 +343,17 @@ public:
   }
 #define PRINT_SKILL_DATA
   void info() {
-    PTF("period:");
+    PTF("prd:");
     PT(period);
-    PT(",\texpected(pitch,roll):(");
+    PT(",\texpct(pitch,roll):");
     PT(expectedRollPitch[0]);
     PT(",");
     PT(expectedRollPitch[1]);
-    PT(")\t");
-    PTF("angleRatio: ");
+    PT("\t");
+    PTF("ratio: ");
     PTL(angleDataRatio);
     if (period < 0) {
-      PT("loop frame: ");
+      PT("loop: ");
       for (byte i = 0; i < 3; i++)
         PT(String((byte)loopCycle[i]) + ", ");
       PTL();
@@ -360,7 +362,7 @@ public:
     for (int k = 0; k < abs(period); k++) {
       for (int col = 0; col < frameSize; col++) {
         PT((int8_t)dutyAngles[k * frameSize + col]);
-        PT(",\t");
+        PT("\t");
       }
       PTL();
     }

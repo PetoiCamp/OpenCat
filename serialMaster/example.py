@@ -8,6 +8,11 @@ from ardSerial import *
 sit = [
 1, 0, -30, 1,
     0,   0, -45,   0,  -5,  -5,  20,  20,  45,  45, 105, 105,  45,  45, -45, -45]
+    
+ts = [-2, 0, 0, 1,
+ 0, 1, 2,
+   30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,  30,    32, 0, 0, 0,
+   75,  75,  75,  75,  75,  75,  75,  75,  75,  75,  75,  75, -55, -55, -55, -55,    32, 0, 0, 0,]
 ck = [
     -3, 0, 5, 1,
     0, 1, 2,
@@ -152,115 +157,118 @@ if __name__ == '__main__':
 
             ['kbalance', 1],
 
-            # - m indicates the command to control the rotation of the joint servo
-            # - 0 indicates the index number of joint servo
-            # - -50 indicates the rotation angle (this angle refers to the origin, rather than additive) the unit is degree
-            # - 0.5 indicates the postponed time after finishing the command, in seconds. It can be a float number.
-            ['m', [0, -50], 0.5],
-
-            # Using this format, multiple joint servo rotation commands can be sent at one time,
-            # and these joint servo rotation commands are executed SEQUENTIALLY,
-            # not at the same time.
-            # The meaning of this example is: the joint servo with index number 0 is first
-            # rotated to the 45 degree position, and then rotated to the -45 degree position, and so on.
-            # After these motion commands are completed, the next command will
-            # be executed after a 2-second delay.
-            ['m', [8, -5, 8, 10, 8, -5, 8, 10, 8, -5, 8, 10], 1],
-
-            # Using this format, multiple joint servo rotation commands can be issued at one time,
-            # and these joint servo rotation commands are executed AT THE SAME TIME.
-            # The meaning of this example is: the joint servos with index numbers 8, 9 are
-            # rotated to the -15, -20 degree position at the same time.
-            # After these motion commands are completed, the next command will
-            # be executed after a 2-second delay.
-            ['i', [8, -15, 9, -20], 1],
-
-            # - d indicates the command to put the robot down and shut down the servos
-            # - 2 indicates the postponed time after finishing the command, in seconds
-            ['d', 1],
-
-            # - c indicates the command to enter calibration mode
-            # - 2 indicates the postponed time after finishing the command, in seconds
-            # After these motion commands are completed, the next command will
-            # be executed after a 2-second delay.
-            ['c', 1],
-
-            # - c indicates the command to enter calibration mode
-            # - 0 indicates the index number of joint servo
-            # - -9 indicates the rotation angle, the unit is degree
-            # - 2 indicates the postponed time after finishing the command, in seconds
-            ['c', [0, -9], 1],
-            ['a', 0],
-
-            # - I indicates the command to rotate multiple joint servos at the same time
-            # - 8, 9, 10, 11, 0 indicate the index numbers of joint servos
-            # - 50, 50, 50, 50, 0 indicate the rotation angle (this angle refers to the origin,
-            #                     rather than additive), the unit is degree
-            # - 3 indicates the postponed time after finishing the command, in seconds
-            ['I', [8, -20, 0, 0, 9, -20, 10, 20, 11, 20, 14, 80, 15, 80], 1],
-            ['I', [8, 20, 0, 40, 9,  20, 10, 50, 11, 50, 14, 60, 15, 60], 1],
-
-            # - L indicates the command to control all joint servos to rotate at the same time
-            # (currently the command supports 16 degrees of freedom, that is, 16 servos)
-            # - 20,0,0,0,0,0,0,0,45,45,45,45,36,36,36,36 indicate the rotation angle of each joint servo corresponding to 0-15 (this angle refers to the origin, rather than additive), the unit is degree
-            # - 5 indicates the postponed time after finishing the command, in seconds
-            ['L', [20, 0, 0, 0, 0, 0, 0, 0, 5, 0, 45, 45, 80, 80, 36, 36], 3],
-
-            # - u calls a 'meow' sound
-            ['u',0],
-
-            # - o calls a built-in melody
-            ['o',0],
-
-            # - b indicates the command to control the buzzer to beep, encrypted in ASCII
-            # - the first number in the pair indicates the music tone
-            # - the second number in the pair indicates the duration, corresponding to 1/duration second
-            # - 1 indicates the postponed time after completing the pronunciation, in seconds
-
-            ['b',[14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4, 21, 8, 21, 8, 19, 8, 19, 8, 18, 8, 18, 8, 16, 4, 21, 8, 21, 8, 19, 8, 19, 8, 18, 8, 18, 8, 16, 4,  14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4,],0],# will make the next skill break if it has 0
+#            # - m indicates the command to control the rotation of the joint servo
+#            # - 0 indicates the index number of joint servo
+#            # - -50 indicates the rotation angle (this angle refers to the origin, rather than additive) the unit is degree
+#            # - 0.5 indicates the postponed time after finishing the command, in seconds. It can be a float number.
+#            ['m', [0, -50], 0.5],
+#
+#            # Using this format, multiple joint servo rotation commands can be sent at one time,
+#            # and these joint servo rotation commands are executed SEQUENTIALLY,
+#            # not at the same time.
+#            # The meaning of this example is: the joint servo with index number 0 is first
+#            # rotated to the 45 degree position, and then rotated to the -45 degree position, and so on.
+#            # After these motion commands are completed, the next command will
+#            # be executed after a 2-second delay.
+#            ['m', [8, -5, 8, 10, 8, -5, 8, 10, 8, -5, 8, 10], 1],
+#
+#            # Using this format, multiple joint servo rotation commands can be issued at one time,
+#            # and these joint servo rotation commands are executed AT THE SAME TIME.
+#            # The meaning of this example is: the joint servos with index numbers 8, 9 are
+#            # rotated to the -15, -20 degree position at the same time.
+#            # After these motion commands are completed, the next command will
+#            # be executed after a 2-second delay.
+#            ['i', [8, -15, 9, -20], 1],
+#
+#            # - d indicates the command to put the robot down and shut down the servos
+#            # - 2 indicates the postponed time after finishing the command, in seconds
+#            ['d', 1],
+#
+#            # - c indicates the command to enter calibration mode
+#            # - 2 indicates the postponed time after finishing the command, in seconds
+#            # After these motion commands are completed, the next command will
+#            # be executed after a 2-second delay.
+#            ['c', 1],
+#
+#            # - c indicates the command to enter calibration mode
+#            # - 0 indicates the index number of joint servo
+#            # - -9 indicates the rotation angle, the unit is degree
+#            # - 2 indicates the postponed time after finishing the command, in seconds
+#            ['c', [0, -9], 1],
+#            ['a', 0],
+#
+#            # - I indicates the command to rotate multiple joint servos at the same time
+#            # - 8, 9, 10, 11, 0 indicate the index numbers of joint servos
+#            # - 50, 50, 50, 50, 0 indicate the rotation angle (this angle refers to the origin,
+#            #                     rather than additive), the unit is degree
+#            # - 3 indicates the postponed time after finishing the command, in seconds
+#            ['I', [8, -20, 0, 0, 9, -20, 10, 20, 11, 20, 14, 80, 15, 80], 1],
+#            ['I', [8, 20, 0, 40, 9,  20, 10, 50, 11, 50, 14, 60, 15, 60], 1],
+#
+#            # - L indicates the command to control all joint servos to rotate at the same time
+#            # (currently the command supports 16 degrees of freedom, that is, 16 servos)
+#            # - 20,0,0,0,0,0,0,0,45,45,45,45,36,36,36,36 indicate the rotation angle of each joint servo corresponding to 0-15 (this angle refers to the origin, rather than additive), the unit is degree
+#            # - 5 indicates the postponed time after finishing the command, in seconds
+#            ['L', [20, 0, 0, 0, 0, 0, 0, 0, 5, 0, 45, 45, 80, 80, 36, 36], 3],
+#
+#            # - u calls a 'meow' sound
+#            ['u',0],
+#
+#            # - o calls a built-in melody
+#            ['o',0],
+#
+#            # - b indicates the command to control the buzzer to beep, encrypted in ASCII
+#            # - the first number in the pair indicates the music tone
+#            # - the second number in the pair indicates the duration, corresponding to 1/duration second
+#            # - 1 indicates the postponed time after completing the pronunciation, in seconds
+#
+#            ['b',[14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4, 21, 8, 21, 8, 19, 8, 19, 8, 18, 8, 18, 8, 16, 4, 21, 8, 21, 8, 19, 8, 19, 8, 18, 8, 18, 8, 16, 4,  14, 8, 14, 8, 21, 8, 21, 8, 23, 8, 23, 8, 21, 4, 19, 8, 19, 8, 18, 8, 18, 8, 16, 8, 16, 8, 14, 4,],0],# will make the next skill break if it has 0
 
             # - 'K' indicates the skill data to send to Bittle in realtime
             # they are sent to the robot on the go and executed locally on the robot
             # no overhead of communication and waiting for both sides.
+            ['K', ts, 1],
             ['K',wkF,3],
-            ['g',3],
-            ['I',[0,80,1,60],0],
-            ['kvtF', 2],
-            ['K',sit, 1],
-            ['I',0],
-            ['kck', 1],
-            # 'T' calls the last temp skill data of 'K' received from the serial port
-            ['T', 2],
+            ['kbdF',2],
+            ['T',1],
+#            ['g',3],
+#            ['I',[0,80,1,60],0],
+#            ['kvtF', 2],
+#            ['K',sit, 1],
+#            ['I',0],
+#            ['kck', 1],
+#            # 'T' calls the last temp skill data of 'K' received from the serial port
+#            ['T', 2],
+#
+#            ['K', vt, 2],
+#            ['ksit', 1],
+#            ['T', 2],
+#            ['K', ck, 1],  # compare it with the previous 'kck' command
 
-            ['K', vt, 2],
-            ['ksit', 1],
-            ['T', 2],
-            ['K', ck, 1],  # compare it with the previous 'kck' command
-
-            # large angles out of -125~125 are also supported
-            ['I', [8, -140, 0, 10, 9, -140, 10, 50, 11, 50], 1],
-            ['L', [-10, 0, 0, 0, 0, 0, 0, 0,-55,-55, 45, 45, 130, 130, 36, 36], 1],
-
-
-
-            # Using this format, multiple tone commands can be encrypted in binary
-            # the music melody is played.
-            # - '20', '22', '24', '15', '20' indicate the music tones
-            # - '4', '4', '4', '4', '4' indicates 3 second/lengths of duration
-            # - 2 indicates the postponed time after the music melody is played, in seconds
-
-            # may be cut off by multithreading. haven't fixed it.
-            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1,      20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1], 0],
-
-            # if the robot has our RGB LED ultrasonic sensor connected
-            # 'C' is for color
-            #    [R, G, B, enable, effect]
-            ['C',[127,  0,  0, E_RGB_ALL,   E_EFFECT_NONE],     1],
-            ['C',[  0,127,  0, E_RGB_RIGHT, E_EFFECT_BREATHING],1],
-            ['C',[  0,  0,127, E_RGB_LEFT,  E_EFFECT_ROTATE],   1],
-            ['C',[127,127,127, E_RGB_ALL,   E_EFFECT_BREATHING],1],
-
-            ['d', 0],
+#            # large angles out of -125~125 are also supported
+#            ['I', [8, -140, 0, 10, 9, -140, 10, 50, 11, 50], 1],
+#            ['L', [-10, 0, 0, 0, 0, 0, 0, 0,-55,-55, 45, 45, 130, 130, 36, 36], 1],
+#
+#
+#
+#            # Using this format, multiple tone commands can be encrypted in binary
+#            # the music melody is played.
+#            # - '20', '22', '24', '15', '20' indicate the music tones
+#            # - '4', '4', '4', '4', '4' indicates 3 second/lengths of duration
+#            # - 2 indicates the postponed time after the music melody is played, in seconds
+#
+#            # may be cut off by multithreading. haven't fixed it.
+#            ['B',[20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1,      20, 4, 22, 4, 24, 4, 15, 4, 20, 4, 22, 8, 24, 1, 22, 4, 20, 4, 22, 4, 27, 4, 27, 4, 27, 4, 27, 2, 20, 4, 19, 4, 20, 4, 20, 4, 20, 4, 20, 4, 20, 2, 19, 4, 20, 4, 19, 4, 20, 4, 19, 4, 17, 4, 15, 2, 15, 4, 15, 4, 17, 4, 17, 4, 17, 4, 17, 4, 17, 2, 15, 4, 12, 4, 15, 4, 12, 4, 15, 4, 22, 4, 20, 2, -1, 4, 15, 4, 24, 4, 24, 4, 24, 4, 25, 4, 27, 4, 20, 4, 20, 4, 24, 4, 22, 1, 22, 1, -1, 2, 15, 4, 15, 4, 15, 2, 15, 4, 15, 4, 17, 4, 15, 4, 12, 4, 15, 4, -1, 4, 7, 4, 8, 4, 8, 4, 12, 2, 12, 4, 13, 4, 12, 4, 8, 4, 8, 4, 10, 4, 12, 1, -1, 4, 12, 4, 10, 4, 8, 4, 8, 4, 8, 2, 7, 4, -1, 4, 8, 4, 8, 4, 8, 4, 8, 4, 3, 4, 3, 4, 12, 2, 8, 4, 8, 4, 3, 4, 13, 2, 13, 4, 13, 4, 13, 4, 5, 4, 8, 4, 8, 4, 10, 1, 10, 1], 0],
+#
+#            # if the robot has our RGB LED ultrasonic sensor connected
+#            # 'C' is for color
+#            #    [R, G, B, enable, effect]
+#            ['C',[127,  0,  0, E_RGB_ALL,   E_EFFECT_NONE],     1],
+#            ['C',[  0,127,  0, E_RGB_RIGHT, E_EFFECT_BREATHING],1],
+#            ['C',[  0,  0,127, E_RGB_LEFT,  E_EFFECT_ROTATE],   1],
+#            ['C',[127,127,127, E_RGB_ALL,   E_EFFECT_BREATHING],1],
+#
+#            ['d', 0],
         ]
         goodPorts = {}
         connectPort(goodPorts)
@@ -272,22 +280,22 @@ if __name__ == '__main__':
         for task in testSchedule:  # execute the tasks in the testSchedule
             print(task)
             send(goodPorts, task)
-        send(goodPorts, ['kbalance',0.5])
-        send(goodPorts, ['kwkF',0])
-        for i in range (3): # move head while walking
-            for a in range(0,180,5): # allow controlling the head while walking
-                send(goodPorts,['i',[0,a-90,1,a//2-45,2,a-90],0.01])
-            for a in range(0,180,5):
-                send(goodPorts,['i',[0,-(a-90),1,-(a//2-45),2,90-a],0.01])
-        send(goodPorts, ['i',0])
-        send(goodPorts, ['kwkF',2])
-        for i in range (3): # move head while walking
-            for a in range(0,180,5): # allow controlling the head while walking
-                send(goodPorts,['I',[0,a-90,1,a//2-45,2,a-90],0.01])
-            for a in range(0,180,5):
-                send(goodPorts,['I',[0,-(a-90),1,-(a//2-45),2,90-a],0.01])
-        send(goodPorts, ['I',0])
-        send(goodPorts, ['kwkF',2])
+#        send(goodPorts, ['kbalance',0.5])
+#        send(goodPorts, ['kwkF',0])
+#        for i in range (3): # move head while walking
+#            for a in range(0,180,5): # allow controlling the head while walking
+#                send(goodPorts,['i',[0,a-90,1,a//2-45,2,a-90],0.01])
+#            for a in range(0,180,5):
+#                send(goodPorts,['i',[0,-(a-90),1,-(a//2-45),2,90-a],0.01])
+#        send(goodPorts, ['i',0])
+#        send(goodPorts, ['kwkF',2])
+#        for i in range (3): # move head while walking
+#            for a in range(0,180,5): # allow controlling the head while walking
+#                send(goodPorts,['I',[0,a-90,1,a//2-45,2,a-90],0.01])
+#            for a in range(0,180,5):
+#                send(goodPorts,['I',[0,-(a-90),1,-(a//2-45),2,90-a],0.01])
+#        send(goodPorts, ['I',0])
+#        send(goodPorts, ['kwkF',2])
         
 #        schedulerToSkill(goodPorts, testSchedule) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots.
         closeAllSerial(goodPorts)
