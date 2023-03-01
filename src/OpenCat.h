@@ -12,7 +12,7 @@
 //#define SERVO_SLOW_BOOT
 
 #define I2C_EEPROM  //comment this line out if you don't have an I2C EEPROM in your DIY board.
-#define SERIAL_TIMEOUT 5
+#define SERIAL_TIMEOUT 50
 //Tutorial: https://bittle.petoi.com/11-tutorial-on-creating-new-skills
 #ifdef NYBBLE
 #include "InstinctNybble.h"

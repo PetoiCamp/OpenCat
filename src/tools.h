@@ -15,12 +15,6 @@ template<typename T> int8_t sign(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
-int strlenUntil(const char *s, char terminator) {
-  int l = 0;
-  while (s[l++] != terminator)
-    ;
-  return l - 1;
-}
 void printRange(int r0 = 0, int r1 = 0) {
   if (r1 == 0)
     for (byte i = 0; i < r0; i++) {
@@ -34,6 +28,7 @@ void printRange(int r0 = 0, int r1 = 0) {
     }
   PTL();
 }
+
 template<typename T> void printList(T *arr, byte len = DOF) {
   String temp = "";
   for (byte i = 0; i < len; i++) {
@@ -44,6 +39,18 @@ template<typename T> void printList(T *arr, byte len = DOF) {
   }
   PTL(temp);
 }
+
+template<typename T> void printTable(T *list) {
+  printRange(0, DOF);
+  printList(list, DOF);
+}
+
+int strlenUntil(const char *s, char terminator) {
+  int l = 0;
+  while (s[l++] != terminator)
+    ;
+  return l - 1;
+}
 template<typename T> void printListWithoutString(T *arr, byte len = DOF) {
   for (byte i = 0; i < len; i++) {
     PT((T)(arr[i]));
@@ -51,9 +58,16 @@ template<typename T> void printListWithoutString(T *arr, byte len = DOF) {
   }
   PTL();
 }
-template<typename T> void printTable(T *list) {
-  printRange(0, DOF);
-  printList(list, DOF);
+template<typename T> void printCmdByType(char t, T *data, int len) {
+  // PT(t);
+  // int l = (t < 'a') ? strlenUntil(data, '~') : strlen((char *)data);
+  // PTL(l);
+  if (len > 0) {
+    if (t < 'a')
+      printListWithoutString((int8_t *)data, len);
+    else
+      PTL((char *)data);
+  }
 }
 
 // template<typename T, typename T1> void arrayNCPY(T *destination, const T1 *source, int len) {  //deep copy regardless of '\0'
@@ -63,4 +77,15 @@ template<typename T> void printTable(T *list) {
 template<typename T, typename T1> void arrayNCPY(T *destination, const T1 *source, int len) {  //deep copy regardless of '\0'
   for (int i = 0; i < len; i++)
     destination[i] = source[i];
+}
+
+template<typename T> void getExtreme(T *arr, T *extreme, int len = DOF) {
+  extreme[0] = 128;   //min
+  extreme[1] = -127;  // max
+  for (int i = 0; i < len; i++) {
+    if (arr[i] < extreme[0])
+      extreme[0] = arr[i];
+    if (arr[i] > extreme[1])
+      extreme[1] = arr[i];
+  }
 }

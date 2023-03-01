@@ -372,13 +372,19 @@ public:
   }
 
   void convertTargetToPosture(int* targetFrame) {
-    // info();
+    int extreme[2];
+    getExtreme(targetFrame, extreme);
+    if (extreme[0] < -125 || extreme[1] > 125) {
+      angleDataRatio = 2;
+      for (int i = 0; i < DOF; i++)
+        targetFrame[i] /= 2;
+    } else
+      angleDataRatio = 1;
     arrayNCPY(dutyAngles, targetFrame, DOF);
     period = 1;
     firstMotionJoint = 0;
     frameSize = DOF;
     frame = 0;
-    // info();
   }
   void perform() {
     if (period < 0) {  //behaviors

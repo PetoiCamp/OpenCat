@@ -10,28 +10,18 @@ public:
   template<typename T> Task(char t, T* p, int d = 0)
     : tkn{ t }, dly{ d } {
     paraLength = (tkn < 'a') ? strlenUntil(p, '~') : strlen(p);
-    if (paraLength) {
-      parameters = new char[paraLength + 1];
-      arrayNCPY(parameters, p, paraLength);
-      parameters[paraLength] = token < 'a' ? '~' : '\0';
-    }
+    // if (paraLength) {
+    parameters = new char[paraLength + 1];
+    arrayNCPY(parameters, p, paraLength);
+    parameters[paraLength] = token < 'a' ? '~' : '\0';
+    // }
   };
   ~Task() {
-    if (paraLength)
-      delete[] parameters;
+    // if (paraLength)
+    delete[] parameters;
   };
   void info() {
-    PT(tkn);
-    PT('\t');
-    PT(dly);
-    PT('\t');
-    PTL(paraLength);
-    if (paraLength) {
-      if (tkn < 'a')
-        printList(parameters, paraLength);
-      else
-        PTL(parameters);
-    }
+    printCmdByType(tkn, parameters, paraLength);
   }
 };
 
@@ -47,14 +37,15 @@ public:
   void popTask() {
     if (taskInterval == -1 || millis() - taskTimer > taskInterval) {
       Task* t = this->front();
+      // t->info();
       token = t->tkn;
       lowerToken = tolower(token);
       cmdLen = t->paraLength;
       taskInterval = t->dly;
-      if (cmdLen) {
-        arrayNCPY(newCmd, t->parameters, cmdLen);
-        newCmd[cmdLen] = token < 'a' ? '~' : '\0';
-      }
+      // if (cmdLen) {
+      arrayNCPY(newCmd, t->parameters, cmdLen);
+      newCmd[cmdLen] = token < 'a' ? '~' : '\0';
+      // }
       taskTimer = millis();
       newCmdIdx = 5;
       delete t;

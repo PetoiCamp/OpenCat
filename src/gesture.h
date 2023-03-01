@@ -32,7 +32,8 @@ void gestureSetup() {
 
   PTLF("Detecting gestures ...");
 }
-
+char melody54321[] = { 19, 64, 17, 64, 16, 64, 14, 64, 12, 32, '~' };
+char melody12345[] = { 12, 64, 14, 64, 16, 64, 17, 64, 19, 32, '~' };
 void read_gesture() {
   if (APDS.gestureAvailable()) {
     // a gesture was detected, read and print to Serial Monitor
@@ -42,7 +43,8 @@ void read_gesture() {
       case GESTURE_UP:
         {
           PTLF("UP\t↑");
-          tQueue->push_back(new Task('k', "vtF", 2000));
+          tQueue->push_back(new Task('k', "fiv", 2000));
+          tQueue->push_back(new Task(T_BEEP_BIN, melody12345, 0));
           tQueue->push_back(new Task('k', "up"));
           break;
         }
@@ -50,22 +52,27 @@ void read_gesture() {
       case GESTURE_DOWN:
         {
           PTLF("DOWN\t↓");
+          tQueue->push_back(new Task('i', ""));
+          tQueue->push_back(new Task(T_BEEP_BIN, melody54321, 0));
           tQueue->push_back(new Task('k', "sit"));
+
           break;
         }
 
       case GESTURE_LEFT:
         {
           PTLF("LEFT\t←");
-          char move[] = { 0, -50, 0, 0, 0, 60, '~' };
+          char move[] = { 0, -70, 0, -65, '~' };
+          tQueue->push_back(new Task(T_BEEP_BIN, melody54321, 0));
           tQueue->push_back(new Task(T_INDEXED_SEQUENTIAL_BIN, move, 1000));
           break;
         }
       case GESTURE_RIGHT:
         {
           PTLF("RIGHT\t→");
-          char melody12345[] = { 12, 8, 14, 8, 16, 8, 17, 8, 19, 4, '~' };  //paraLength gets 11 rather than 10 after the first entry. why???
-          tQueue->push_back(new Task(T_BEEP_BIN, melody12345, 1000));
+          char move[] = { 0, 70, 0, 65, '~' };
+          tQueue->push_back(new Task(T_BEEP_BIN, melody12345, 0));
+          tQueue->push_back(new Task(T_INDEXED_SEQUENTIAL_BIN, move, 0));
           break;
         }
       default:

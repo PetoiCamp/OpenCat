@@ -102,7 +102,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
 #                packType = 'B'
 #            else:
 #                packType = 'b'
-            port.Send_data(token.encode())
+#            port.Send_data(token.encode())
             if len(var)>0:
                 message = list(map(int, var))
                 slice = 0
@@ -115,6 +115,8 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                         for l in range(len(buff)//2):
                             buff[l*2+1]*=8 #change 1 to 8 to save time for tests
                     in_str = struct.pack('b' * len(buff), *buff)
+                    if slice == 0:
+                        in_str = token.encode()+in_str
                     port.Send_data(encode(in_str))
                     slice+=20
     #                time.sleep(0.001)
@@ -122,16 +124,14 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             port.Send_data(encode('~'.encode()))
 
         else:#if token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
-            message = token
+            message = ""+token
             count = 0
             for element in var:
-                message += str(round(element)) + " "
+                message +=  (str(round(element))+" ")
                 count +=1
-                if count == 20 or count == len(var):
+                if count % 20 ==0 or count == len(var):
                     port.Send_data(encode(message))
                     message = ""
-                    count = 0
-#                    time.sleep(0.001)
             port.Send_data(encode('\n'))
             logger.debug(f"!!!! {in_str}")
             #print(encode(in_str))
@@ -267,7 +267,7 @@ def splitTaskForLargeAngles(task):
             if len(var):
                 queue.append(['L', var, task[-1]])
             if len(indexedList):
-                queue[0][-1] = 0
+                queue[0][-1] = 0.01
                 queue.append(['i', indexedList, task[-1]])
         #                print(queue)
         elif token == 'I':
