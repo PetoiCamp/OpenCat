@@ -12,8 +12,7 @@
 //#define SERVO_SLOW_BOOT
 
 #define I2C_EEPROM  //comment this line out if you don't have an I2C EEPROM in your DIY board.
-#define SERIAL_TIMEOUT_SHORT 5
-#define SERIAL_TIMEOUT_LONG 100
+#define SERIAL_TIMEOUT 5
 //Tutorial: https://bittle.petoi.com/11-tutorial-on-creating-new-skills
 #ifdef NYBBLE
 #include "InstinctNybble.h"
@@ -295,7 +294,7 @@ int cmdLen = 0;
 #define CMD_LEN 10    //the last char will be '\0' so only CMD_LEN-1 elements are allowed
 #define BUFF_LEN 467  //452
 char *newCmd = new char[BUFF_LEN + 1];
-char *lastCmd = new char[10];
+char *lastCmd = new char[CMD_LEN + 1];  //the last char must be '\0' for safe so CMD_LEN+1 elements are required
 int spaceAfterStoringData = BUFF_LEN;
 //22*20+7=447, +1 for '\0'.
 //The max behavior allowed has 22 frames. The max gait (8 DoF) allowed has (448-4)/8=55.5 frames.
