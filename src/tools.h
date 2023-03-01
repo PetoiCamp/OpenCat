@@ -45,7 +45,7 @@ template<typename T> void printTable(T *list) {
   printList(list, DOF);
 }
 
-int strlenUntil(const char *s, char terminator) {
+template<typename T> int strlenUntil(T *s, char terminator) {
   int l = 0;
   while (s[l++] != terminator)
     ;
