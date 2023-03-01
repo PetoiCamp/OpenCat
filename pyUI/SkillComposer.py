@@ -163,6 +163,12 @@ class SkillComposer:
         t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
         t.daemon = True
         t.start()
+        res = send(goodPorts, ['g', 0])
+        printH("gyro status:",res )
+        if res[0] == 'G':
+            res = send(goodPorts, ['g', 0])
+            printH("gyro status:",res )
+        
         self.window.mainloop()
 
     def createMenu(self):
@@ -334,7 +340,8 @@ class SkillComposer:
                 dialState = NORMAL
             else:
                 dialState = DISABLED
-
+            if i == 2:
+                dialState = DISABLED
             if i == 0:
                 wth = self.connectW
                 if len(goodPorts) > 0:
@@ -394,7 +401,7 @@ class SkillComposer:
             menu.add_command(label=string, command=lambda p=string: self.port.set(p))
         self.port.set(self.options[0])
 
-        buttons = self.frameDial.winfo_children()[2:5]
+        buttons = [self.frameDial.winfo_children()[i] for i in [2,4]]
         for b in buttons:
             b.config(state=stt)
         self.portMenu.config(state=stt)
@@ -402,7 +409,7 @@ class SkillComposer:
 
     def changePort(self, magicArg):
         global ports
-        buttons = self.frameDial.winfo_children()[2:5]
+        buttons = [self.frameDial.winfo_children()[i] for i in [2,4]]
         for b in buttons:
             if len(goodPorts) == 0:
                 b.config(state=DISABLED)
