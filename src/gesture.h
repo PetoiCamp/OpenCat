@@ -32,8 +32,10 @@ void gestureSetup() {
 
   PTLF("Detecting gestures ...");
 }
-char melody54321[] = { 19, 64, 17, 64, 16, 64, 14, 64, 12, 32, '~' };
-char melody12345[] = { 12, 64, 14, 64, 16, 64, 17, 64, 19, 32, '~' };
+int8_t melody54321[] = { 19, 64, 17, 64, 16, 64, 14, 64, 12, 32, '~' };
+int8_t melody12345[] = { 12, 64, 14, 64, 16, 64, 17, 64, 19, 32, '~' };
+int8_t melody67345[] = { 21, 16, 23, 32, 16, 64, 17, 64, 19, 64, '~' };
+int8_t melody32654[] = { 16, 64, 14, 16, 21, 64, 19, 32, 17, 16, '~' };
 void read_gesture() {
   if (APDS.gestureAvailable()) {
     // a gesture was detected, read and print to Serial Monitor
@@ -43,8 +45,8 @@ void read_gesture() {
       case GESTURE_UP:
         {
           PTLF("UP\t↑");
-          tQueue->push_back(new Task('k', "fiv", 2000));
           tQueue->push_back(new Task(T_BEEP_BIN, melody12345, 0));
+          tQueue->push_back(new Task('k', "fiv", 2000));
           tQueue->push_back(new Task('k', "up"));
           break;
         }
@@ -62,16 +64,16 @@ void read_gesture() {
       case GESTURE_LEFT:
         {
           PTLF("LEFT\t←");
-          char move[] = { 0, -70, 0, -65, '~' };
-          tQueue->push_back(new Task(T_BEEP_BIN, melody54321, 0));
+          int8_t move[] = { 0, -70, 0, -65, '~' };
+          tQueue->push_back(new Task(T_BEEP_BIN, melody32654, 0));
           tQueue->push_back(new Task(T_INDEXED_SEQUENTIAL_BIN, move, 1000));
           break;
         }
       case GESTURE_RIGHT:
         {
           PTLF("RIGHT\t→");
-          char move[] = { 0, 70, 0, 65, '~' };
-          tQueue->push_back(new Task(T_BEEP_BIN, melody12345, 0));
+          int8_t move[] = { 0, 70, 0, 65, '~' };
+          tQueue->push_back(new Task(T_BEEP_BIN, melody67345, 0));
           tQueue->push_back(new Task(T_INDEXED_SEQUENTIAL_BIN, move, 0));
           break;
         }
