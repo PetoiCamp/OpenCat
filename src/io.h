@@ -44,7 +44,6 @@ void read_serial() {
     do {
       if (Serial.available()) {
         do {
-          newCmd[cmdLen++] = Serial.read();
           if ((token == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC) && cmdLen > spaceAfterStoringData || cmdLen > BUFF_LEN) {
             do { Serial.read(); } while (Serial.available());
             PTLF("OVF");
@@ -54,6 +53,7 @@ void read_serial() {
             strcpy(newCmd, "up");
             break;
           }
+          newCmd[cmdLen++] = Serial.read();
         } while (Serial.available());
         lastSerialTime = millis();
       }
