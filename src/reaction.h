@@ -277,7 +277,7 @@ void reaction() {
               }
             } while (pch != NULL);
             if ((token == T_INDEXED_SIMULTANEOUS_ASC || token == T_INDEXED_SIMULTANEOUS_ASC) && (nonHeadJointQ || lastToken != T_SKILL)) {
-              PTL(token);
+              // PTL(token);
               transform(targetFrame, 1, 4);  // if (token == T_INDEXED_SEQUENTIAL_ASC) it will be useless
               skill.convertTargetToPosture(targetFrame);
             }
@@ -310,7 +310,7 @@ void reaction() {
               }
             }
             if (nonHeadJointQ || lastToken != T_SKILL) {
-              PTL(token);
+              // PTL(token);
               transform(targetFrame, 1, 4);  // if (token == T_INDEXED_SEQUENTIAL_BIN) it will be useless
               skill.convertTargetToPosture(targetFrame);
             }
@@ -320,7 +320,7 @@ void reaction() {
 #ifdef BINARY_COMMAND
       case T_LISTED_BIN:
         {
-          PTL(token);                                      //make real-time motion instructions more timely
+          // PTL(token);                                      //make real-time motion instructions more timely
                                                            //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
           transform((int8_t *)newCmd, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
           break;
