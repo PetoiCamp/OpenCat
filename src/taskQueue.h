@@ -9,7 +9,7 @@ public:
   int dly;
   template<typename T> Task(char t, T* p, int d = 0)
     : tkn{ t }, dly{ d } {
-    paraLength = (tkn < 'a') ? strlenUntil(p, '~') : strlen(p);
+    paraLength = (tkn < 'a') ? strlenUntil(p, '~') : strlen((char*)p);
     // if (paraLength) {
     parameters = new char[paraLength + 1];
     arrayNCPY(parameters, p, paraLength);
