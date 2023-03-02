@@ -7,11 +7,13 @@ bool currentTouchState[2];
 void read_doubleTouch() {
   for (byte i = 0; i < 2; i++)
     currentTouchState[i] = digitalRead(touchIn[i]);
-  // PT(previousTouchState[0]);
-  // PT(currentTouchState[0]);
-  // PT('\t');
-  // PT(previousTouchState[1]);
-  // PTL(currentTouchState[1]);
+  if (currentTouchState[0] || currentTouchState[1]) {
+    PT(previousTouchState[0]);
+    PT(currentTouchState[0]);
+    PT('\t');
+    PT(previousTouchState[1]);
+    PTL(currentTouchState[1]);
+  }
   if (currentTouchState[0] != previousTouchState[0] || currentTouchState[1] != previousTouchState[1]) {
     delay(100);  // read again for concurrent touches
     for (byte i = 0; i < 2; i++)

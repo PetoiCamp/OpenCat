@@ -25,8 +25,8 @@ SoftwareSerial mySerial(RX_PIN, TX_PIN);
 #endif
 
 MuVisionSensor *Mu;
-MuVisionSensor Mu0(MU_ADDRESS);
-MuVisionSensor Mu1(ALT_MU_ADDRESS);
+
+
 
 int xCoord, yCoord;              //the x y returned by the sensor
 int xDiff, yDiff;                //the scaled distance from the center of the frame
@@ -38,25 +38,38 @@ long noResultTime = 0;
 MuVisionType object[] = { VISION_BODY_DETECT, VISION_BALL_DETECT };
 String objectName[] = { "body", "ball" };
 int objectIdx = 0;
-
+bool firstConnection = true;
 void cameraSetup() {
   // put your setup code here, to run once:
-  uint8_t err = 0;
+  uint8_t err;
   // initialized MU on the I2C port
-  err = Mu0.begin(&Wire);
+  do {
+    MuVisionSensor *Mu0 = new MuVisionSensor(MU_ADDRESS);
+    err = Mu0->begin(&Wire);
 
-  if (err == MU_OK) {
-    PTLF("MU initialized");
-    Mu = &Mu0;
-  } else {
-    PTLF("fail to initialize");
-    err = Mu1.begin(&Wire);
     if (err == MU_OK) {
-      PTLF("MU initialized");
-      Mu = &Mu1;
+      PTLF("MU initialized at 0x50");
+      Mu = Mu0;
+    } else {
+      if (firstConnection) {
+        firstConnection = false;
+        PTLF("Failed to initialize the camera!");
+        PTLF("Set the four dial switches on the camera as v ^ v v (the second switch dialed up to I2C)");
+        PTLF("Then connect the camera to the I2C Grove socket with SDA and SCL pins!");
+        PTLF("The battery should be turned on to drive the servos");
+      }
+      delete Mu0;
+      MuVisionSensor *Mu1 = new MuVisionSensor(ALT_MU_ADDRESS);
+      err = Mu1->begin(&Wire);
+      if (err == MU_OK) {
+        PTLF("MU initialized at 0x60");
+        Mu = Mu1;
+      } else {
+        delete Mu1;
+      }
     }
     delay(1000);
-  }
+  } while (err != MU_OK);
   //  shutServos();
   //  counter = 0;
   //  motion.loadBySkillName("rest");
