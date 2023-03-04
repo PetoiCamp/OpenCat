@@ -46,6 +46,8 @@ def encode(in_str, encoding='utf-8'):
     else:
         return in_str.encode(encoding)
 
+delayBetweenSlice = 0.001
+
 def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b I K L o within Python
     # print("Num Token "); print(token);print(" var ");print(var);print("\n\n");
     logger.debug(f'serialWriteNumToByte, token={token}, var={var}')
@@ -93,9 +95,9 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             in_str = struct.pack('b' * (frameSize),
                                  *var[skillHeader + f * frameSize:skillHeader + (f + 1) * frameSize])  # + '~'.encode()
             if f == abs(period) - 1:
-                in_str = in_str + '~'.encode()
+                in_str += '~'.encode()
             port.Send_data(in_str)
-            time.sleep(0.001)
+            time.sleep(delayBetweenSlice)
     else:
         if token.isupper():# == 'L' or token == 'I' or token == 'B' or token == 'C':
 #            if token == 'C':
@@ -114,14 +116,18 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                     if token == 'B':
                         for l in range(len(buff)//2):
                             buff[l*2+1]*=8 #change 1 to 8 to save time for tests
+                            print(buff[l*2],end=",")
+                            print(buff[l*2+1],end=",")
                     in_str = struct.pack('b' * len(buff), *buff)
                     if slice == 0:
                         in_str = token.encode()+in_str
+                    if slice == len(message):
+                        in_str += '~'.encode()
                     port.Send_data(encode(in_str))
                     slice+=20
-    #                time.sleep(0.001)
+                    time.sleep(delayBetweenSlice)
 
-            port.Send_data(encode('~'.encode()))
+#            port.Send_data(encode('~'.encode()))
 
         else:#if token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
             message = ""+token
@@ -130,9 +136,13 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                 message +=  (str(round(element))+" ")
                 count +=1
                 if count % 20 ==0 or count == len(var):
-                    port.Send_data(encode(message))
+                    in_str=encode(message)
+                    if count ==len(var):
+                        in_str +='\n'.encode()
+                    port.Send_data(in_str)
                     message = ""
-            port.Send_data(encode('\n'))
+                    time.sleep(delayBetweenSlice)
+#            port.Send_data(encode('\n'))
             logger.debug(f"!!!! {in_str}")
             #print(encode(in_str))
 #            port.Send_data(encode(message))
@@ -159,6 +169,7 @@ def serialWriteByte(port, var=None):
         in_str = token
     logger.debug(f"!!!!!!! {in_str}")
     port.Send_data(encode(in_str))
+    time.sleep(0.01)
 
 
 def printSerialMessage(port, token, timeout=0):

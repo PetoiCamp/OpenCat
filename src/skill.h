@@ -251,6 +251,7 @@ public:
     // PTL(spaceAfterStoringData);
     for (int i = 0; i <= angleLen; i++)
       newCmd[BUFF_LEN - i] = newCmd[skillHeader + angleLen - i];
+    newCmd[BUFF_LEN] = '~';
     dutyAngles = (int8_t*)newCmd + BUFF_LEN - angleLen;
   }
   void formatSkill() {
@@ -298,11 +299,11 @@ public:
     offsetLR = (lr == 'L' ? 25 : (lr == 'R' ? -25 : 0));
     int onBoardEepromAddress = lookupAddressByName(skillName);
     if (onBoardEepromAddress == -1)
-      return;  //won't delete the newCmd if the new key is wrong.
-    //      if (newCmd != NULL)
-    //        delete [] newCmd;
+      return; 
     char skillType = EEPROM.read(onBoardEepromAddress);  //load data by onboard EEPROM address
     unsigned int dataArrayAddress = EEPROMReadInt(onBoardEepromAddress + 2);
+    char tempName[CMD_LEN+1];
+    strcpy(tempName,skillName); 
 #ifdef I2C_EEPROM
     if (skillType == 'I')  //copy instinct data array from external i2c eeprom
       loadDataFromI2cEeprom(dataArrayAddress);
@@ -310,7 +311,8 @@ public:
 #endif
       loadDataFromProgmem(dataArrayAddress);
     formatSkill();
-    if (strcmp(lastCmd, "calib") && period == 1)
+    strcpy(newCmd,tempName);
+    if (strcmp(newCmd, "calib") && period == 1)
       protectiveShift = random() % 100 / 10.0 - 5;
     else
       protectiveShift = 0;

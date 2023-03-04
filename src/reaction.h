@@ -56,8 +56,6 @@ bool lowBattery() {
 void reaction() {
   if (newCmdIdx) {
     lowerToken = tolower(token);
-    if (!cmdLen)
-      cmdLen = (token < 'a') ? strlenUntil(newCmd, '~') : strlen(newCmd);
 #ifdef MAIN_SKETCH
     if (newCmdIdx < 5 && lowerToken != T_BEEP
 #ifdef T_MEOW
@@ -208,10 +206,10 @@ void reaction() {
             manualHeadQ = false;
           else {
             int targetFrame[DOF];
-            //          for (int i = 0; i < DOF; i += 1) {
-            //            targetFrame[i] = currentAng[i];
-            //          }
-            arrayNCPY(targetFrame, currentAng, DOF);
+            for (int i = 0; i < DOF; i++) {
+              targetFrame[i] = currentAng[i] - currentAdjust[i];
+            }
+            // arrayNCPY(targetFrame, currentAng, DOF);
             char *pch;
             pch = strtok(newCmd, " ,");
             nonHeadJointQ = false;
@@ -219,26 +217,26 @@ void reaction() {
               //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
               //the combined commands should be less than four. string len <=30 to be exact.
               int target[2] = {};
-              byte inLen = 0;
+              int inLen = 0;
               for (byte b = 0; b < 2 && pch != NULL; b++) {
                 target[b] = atoi(pch);
                 pch = strtok(NULL, " ,\t");
                 inLen++;
               }
-              targetFrame[target[0]] = target[1];
-
-              if (token == T_INDEXED_SIMULTANEOUS_ASC || token == T_INDEXED_SEQUENTIAL_ASC) {
+              if ((token == T_INDEXED_SEQUENTIAL_ASC || token == T_INDEXED_SIMULTANEOUS_ASC) && target[0] >= 0 && target[0] < DOF) {
+                targetFrame[target[0]] = target[1];
                 if (target[0] < 4) {
                   targetHead[target[0]] = target[1];
                   manualHeadQ = true;
-                } else nonHeadJointQ = true;
+                } else
+                  nonHeadJointQ = true;
               }
               if (token == T_CALIBRATE) {
                 checkGyro = false;
                 if (lastToken != T_CALIBRATE) {
                   setServoP(P_HARD);
-                  strcpy(lastCmd, "calib");
-                  skill.loadFrame(lastCmd);  //ensure it's correctly compared in load skill for protective shifts.
+                  strcpy(newCmd, "calib");
+                  skill.loadFrame(newCmd);  //ensure it's correctly compared in load skill for protective shifts.
                 }
                 if (inLen == 2) {
                   //                if (target[1] >= 1001) { // Using 1001 for incremental calibration. 1001 is adding 1 degree, 1002 is adding 2 and 1009 is adding 9 degrees
@@ -294,17 +292,19 @@ void reaction() {
             manualHeadQ = false;
           else {
             int targetFrame[DOF];
-            //          for (int i = 0; i < DOF; i++) {
-            //            targetFrame[i] = currentAng[i];
-            //          }
-            arrayNCPY(targetFrame, currentAng, DOF);
+            for (int i = 0; i < DOF; i++) {
+              targetFrame[i] = currentAng[i] - currentAdjust[i];
+            }
+            // arrayNCPY(targetFrame, currentAng, DOF);
             for (int i = 0; i < cmdLen; i += 2) {
-              targetFrame[newCmd[i]] = (int8_t)newCmd[i + 1];
-              if (newCmd[i] < 4) {
-                targetHead[newCmd[i]] = (int8_t)newCmd[i + 1];
-                manualHeadQ = true;
-              } else
-                nonHeadJointQ = true;
+              if (newCmd[i] >= 0 && newCmd[i] < DOF) {
+                targetFrame[newCmd[i]] = (int8_t)newCmd[i + 1];
+                if (newCmd[i] < 4) {
+                  targetHead[newCmd[i]] = (int8_t)newCmd[i + 1];
+                  manualHeadQ = true;
+                } else
+                  nonHeadJointQ = true;
+              }
               if (token == T_INDEXED_SEQUENTIAL_BIN) {
                 transform(targetFrame, 1, 2);
               }
@@ -321,7 +321,7 @@ void reaction() {
       case T_LISTED_BIN:
         {
           // PTL(token);                                      //make real-time motion instructions more timely
-                                                           //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
+          //list of all 16 joint: angle0, angle2,... angle15 (binary encoding)
           transform((int8_t *)newCmd, 1, transformSpeed);  //need to add angleDataRatio if the angles are large
           break;
         }
@@ -334,10 +334,11 @@ void reaction() {
 #ifdef T_TEMP
       case T_TEMP:
         {  //call the last skill data received from the serial port
-          skill.loadDataFromI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF_RAND));
+          skill.loadDataFromI2cEeprom((unsigned int)EEPROMReadInt(SERIAL_BUFF));
           skill.loadFrameByDataBuffer();
           PTL(token);
           token = T_SKILL;
+          strcpy(newCmd, "tmp");
           break;
         }
 #endif
@@ -350,6 +351,7 @@ void reaction() {
           skill.copyDataFromBufferToI2cEeprom(i2cEepromAddress, (int8_t *)newCmd);  //must be before the loading to set the period
           skill.loadFrameByDataBuffer();
           token = T_SKILL;
+          strcpy(newCmd, "tmp");
           break;
         }
 #endif
@@ -360,9 +362,7 @@ void reaction() {
           if (!strcmp("x", newCmd)        // x for random skill
               || strcmp(lastCmd, newCmd)  // won't transform for the same gait. it's better to compare skill->skillName and newCmd. but need more logics for non skill cmd in between
               || skill.period <= 1) {     // for repeating behaviors. if it's set < 1, won't repeat the last behavior
-            if (strcmp(newCmd, "rc")) {
-              strcpy(lastCmd, newCmd);
-            }
+
             skill.loadFrame(newCmd);
             // skill.info();
             // PTH("mem",freeMemory());
@@ -383,9 +383,12 @@ void reaction() {
           skill.loadFrame(newCmd);
           pwm.shutServos();
           checkGyro = false;
+          manualHeadQ = false;
           PTL(T_GYRO);
           break;
         }
+      default:
+        break;
     }
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);  //postures, gaits, and other tokens can confirm completion by sending the token back
