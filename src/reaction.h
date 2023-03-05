@@ -1,5 +1,5 @@
 void dealWithExceptions() {
-  if (checkGyro && token != T_CALIBRATE && exceptions) {  //the gyro reaction switch can be toggled on/off by the 'g' token
+  if (token != T_CALIBRATE && token != T_REST && exceptions) {  //the gyro reaction switch can be toggled on/off by the 'g' token
 //  soundFallOver();
 //  for (int m = 0; m < 2; m++)
 //    meow(30 - m * 12, 42 - m * 12, 20);
@@ -100,6 +100,7 @@ void reaction() {
 #ifdef GYRO_PIN
           if (token == T_GYRO) {
             checkGyro = !checkGyro;
+            imuSkip = checkGyro ? IMU_SKIP : IMU_SKIP_MORE;
             token = checkGyro ? 'G' : 'g';  //G for activated gyro
           }
 #ifdef T_PRINT_GYRO

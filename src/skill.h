@@ -183,7 +183,7 @@ public:
       if (s == randSkillIdx          //random skill
           || !strcmp(readName, key)  //exact match: gait type + F or L, behavior
           // || readName[nameLen - 1] == 'L' && !strncmp(readName, key, nameLen - 1)  //gait type + R
-          || readName[nameLen - 1] != 'F' && !strncmp(readName, key, keyLen - 1) && (lr == 'L' || lr == 'R' || lr == 'X')  // L, R or X
+          || readName[nameLen - 1] != 'F' && strcmp(readName, "bk") && !strncmp(readName, key, keyLen - 1) && (lr == 'L' || lr == 'R' || lr == 'X')  // L, R or X
       ) {
         delete[] readName;
         period = EEPROM.read(SKILLS + skillAddressShift + 1);
@@ -411,7 +411,7 @@ public:
             //              PT(currentYpr);
             //              PT('\t');
             //              PTL(triggerAngle);
-            if ((180 - fabs(currentYpr) > 2)                                                                                           //IMU_SKIP the angle when the reading jumps from 180 to -180
+            if ((180 - fabs(currentYpr) > 2)                                                                                           //skip the angle when the reading jumps from 180 to -180
                 && (triggerAxis * currentYpr > triggerAxis * triggerAngle && triggerAxis * previousYpr < triggerAxis * triggerAngle))  //the sign of triggerAxis will deterine whether the current angle should be larger or smaller than the trigger angle
               break;
             previousYpr = currentYpr;
@@ -428,7 +428,7 @@ public:
     } else {          //postures and gaits
 #if defined GYRO_PIN  //&& !defined RANDOM_MIND
       // if (imuUpdated)
-      if (!(frame % IMU_SKIP)) {
+      if (!(frame % imuSkip)) {
         for (byte i = 0; i < 2; i++) {
           RollPitchDeviation[i] = ypr[2 - i] - expectedRollPitch[i];                                                                          //all in degrees
           RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i]) - levelTolerance[i]), float(0)) + yprTilt[2 - i];  //filter out small angles
@@ -473,7 +473,7 @@ public:
         duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint] * angleDataRatio;
       calibratedPWM(jointIndex, duty
 #if defined GYRO_PIN  //&& !defined RANDOM_MIND
-                                  + (checkGyro && !exceptions ? (!(frame % IMU_SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
+                                  + (!exceptions ? (!(frame % imuSkip) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
 #endif
       );
       jointIndex++;

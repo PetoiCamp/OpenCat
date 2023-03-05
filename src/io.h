@@ -29,7 +29,7 @@ void resetCmd() {
   }
   newCmdIdx = 0;
   lastToken = token;
-  if (token != T_SKILL && token != T_CALIBRATE)
+  if (token != T_SKILL && token != T_CALIBRATE && token != T_REST)
     token = '\0';
   newCmd[0] = '\0';
   cmdLen = 0;
