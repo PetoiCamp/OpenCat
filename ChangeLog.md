@@ -57,7 +57,7 @@ When sending joint instructions, the rules are:
 |:--------------:|------------------------------|-------------------------------|
 |Gait			       |move in perform() => gait  	  |move in tranform() => convert to a new posture	|
 |Posture         |move in perform() => posture  |move in tranform() => convert to a new posture	|
-|Non-skill       |move in perform() => lastToken|move in tranform() => convert to a new posture => lastToken|
+|Non-skill       |move in transform() => lastToken|move in tranform() => convert to a new posture => lastToken|
 
 * Allow explicitly assigning directions of skills. Only the neutral and the leftward skills are stored in the skill table with the suffix -F (only for gaits), -L, or no capitalized letter in the key. Previously all skills are called with random directions, except the gaits. 
 
