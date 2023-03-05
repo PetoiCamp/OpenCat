@@ -1,10 +1,83 @@
 # Change Log
 
+## Mar6, 2023
+* Recover the skillName stored in **newCmd** array because the newCmd's memory is altered when formatting new skill data. 
+* Fix the segfault caused by different string terminators: '\0', '\n', or '\~'.
+* Fix the casting between int, char, and int8_t in the template function arrayNCPY().
+* When turning a joint instruction into a new posture, allow large joint angles to be stored into an int8_t array. 
+* Fix the positive feedback when gyro data is combined into targetAngles.
+* SkillComposer: Disable the Gyro and Random buttons.
+* ardSerial: Simplify the slicing algorithm when sending long commands.
+* Differentiate the serial timeout for long commands over Bluetooth.
+* Simplify some skills to save memory. 
+* Safer auto-connection algorithm when trying to connect to a camera that's not connected to any alternative addresses. 
+* Mobile app: Find the optimal delay between the mobile app's package slices to avoid overflow or timeout on the mainboard. 
+* Add a token 'S' to toggle on/off the boot-up melody. 
+* Add a macro to inverse the gyro's rotation directions.
+* Allow the robot to detect the falling-over event and recover even in turbo mode. 
+* Desktop App: Add traditional Chinese and German translations. 
+
+
+## Mar 1, 2023
+* Combine the **newCmd** array used for receiving different kinds(ASCII/Binary, long/short) of serial commands. 
+* Simplify the token cases into upper/lower letters for Binary/ASCII encodings.
+* Shift the skill angle data to the end of the **newCmd** array. It allows new incoming messages to be stored at the beginning of the **newCmd** array while keeping the skill angles unchanged so that the previous skill can resume after finishing the current non-skill command. 
+* It now supports much longer commands and skills, such as a behavior with **23** frames (23 * 20 + 7 = 467 bytes), a gait with (467-4)/8 = **57** frames or a long melody with 467/2 = **233** notes. On BiBoard, it supports a behavior with **125** frames (125 * 20 + 7 = 2507 bytes), a gait with (2507-4)/8 = **312** frames or a long melody with 2507/2 = **1253** notes.
+* Overflow protection when the incoming message is longer than the size of **newCmd** to avoid a crash. 
+* Redesign the voice commands table and their encodings. 
+* Add an alias skill "up" for "balance" to save memory and convenience. 
+* Move the keys of the customized voice commands to PROGMEM.
+* Add new skills:
+
+| New Skill Name | Serial Code |
+|-----------|:------|
+|hug      	|khg    |
+|handstand  |khdsd  |
+|hands up   |khu 	  |
+|handshake	|khsk  	|
+|sniff		  |ksnf	  |
+|dig	    	|kdg	  |
+|scratch    |kscrh  |
+|be table 	|ktbl	  |
+|boxing	  	|kbx	  |
+|kick		    |kkc	  |
+|come here	|kcmh	  |
+|high five	|kfiv	  |
+|jump		    |kjmp	  |
+
+* With so many new skills saved to the I2C EEPROM, fix the overflow (wrapped overwriting) when a long 'K' skill data is written to the nearly full memory.
+* 'T' token is used to extract the last transferred skill data. Fixed the segfault when a newly configured board has never received a 'K' command but is required to read from an unknown memory. 
+
+## Feb 25, 2023
+* Unbind the free joints' motion during walking and keep balancing reaction after the i,I,m,M commands. The free joints are unrelated to walking and balancing. By default, they move by trigonometric functions synced with the legs' pace. If a command requires specific joint movement, it will be unbound and taken over by the higher-level controller. Using the token 'i' or 'I' without more argument will re-bind them to the legs' motion.
+
+When sending joint instructions, the rules are:
+
+|     |All are free joints (head, tail, etc.) |Contain joints related to walking|
+|:--------------:|------------------------------|-------------------------------|
+|Gait			       |move in perform() => gait  	  |move in tranform() => convert to a new posture	|
+|Posture         |move in perform() => posture  |move in tranform() => convert to a new posture	|
+|Non-skill       |move in perform() => lastToken|move in tranform() => convert to a new posture => lastToken|
+
+* Allow explicitly assigning directions of skills. Only the neutral and the leftward skills are stored in the skill table with the suffix -F (only for gaits), -L, or no capitalized letter in the key. Previously all skills are called with random directions, except the gaits. 
+
+Let Name be the skill's name. The new rules are:
+
+|       | Match?              |Mirror it?   |
+|-------|:-------------------:|:-----------:|
+|gaitF  |All characters       |N            |
+|nameL  |All characters       |N            |
+|nameR  |the first n-1 chars  |Mirror nameL |
+|name		|All characters       |Random	      |
+|nameX  |All characters 	    |Random       |
+
+* Debug the creation, pop, and deletion of TaskQueue for safer and more efficient memory management. Optimize the corresponding examples for light, touch, pir, gesture, camera, and voice sensors.
+
 ## Feb 10, 2023
 * Allow controlling head group while walking.
 * Solve serial overflow.
 * Add random skill command: kx. It can call a random skill in the preset skill list. 
-* Remove some unused tokens to save space.
+* Add macros to disable some unused tokens to save space.
 
 ## Feb 7, 2023
 * Improve the serial read logics. 
