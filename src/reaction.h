@@ -135,7 +135,9 @@ void reaction() {
         {
           tStep = !tStep;             //tStep can be -1
           token = tStep ? 'p' : 'P';  //P for pause activated
-          if (!tStep)
+          if (tStep)
+            token = T_SKILL;
+          else
             pwm.shutServos();
           break;
         }
@@ -148,6 +150,13 @@ void reaction() {
       case T_MELODY:
         {
           playMelody(MELODY_1);
+          break;
+        }
+#endif
+#ifdef T_BOOTUP_SOUND_SWITCH
+      case T_BOOTUP_SOUND_SWITCH:  //toggle on/off the bootup melody
+        {
+          EEPROM.update(BOOTUP_SOUND_STATE, !eeprom(BOOTUP_SOUND_STATE));
           break;
         }
 #endif
@@ -206,13 +215,13 @@ void reaction() {
             manualHeadQ = false;
           else {
             int targetFrame[DOF];
+            nonHeadJointQ = false;
             for (int i = 0; i < DOF; i++) {
               targetFrame[i] = currentAng[i] - currentAdjust[i];
             }
             // arrayNCPY(targetFrame, currentAng, DOF);
             char *pch;
             pch = strtok(newCmd, " ,");
-            nonHeadJointQ = false;
             do {  //it supports combining multiple commands at one time
               //for example: "m8 40 m8 -35 m 0 50" can be written as "m8 40 8 -35 0 50"
               //the combined commands should be less than four. string len <=30 to be exact.
@@ -292,6 +301,7 @@ void reaction() {
             manualHeadQ = false;
           else {
             int targetFrame[DOF];
+            nonHeadJointQ = false;
             for (int i = 0; i < DOF; i++) {
               targetFrame[i] = currentAng[i] - currentAdjust[i];
             }

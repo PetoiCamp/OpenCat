@@ -193,7 +193,7 @@ public:
       delete[] readName;
       skillAddressShift += 4;  //1 byte type, 1 byte period, 1 int address
     }
-    PT('?');   //key not found
+    PT('?');  //key not found
     PTL(key);
     return -1;
   }
@@ -425,8 +425,8 @@ public:
             repeat--;
         }
       }
-    } else {  //postures and gaits
-#ifdef GYRO_PIN
+    } else {          //postures and gaits
+#if defined GYRO_PIN  //&& !defined RANDOM_MIND
       // if (imuUpdated)
       if (!(frame % IMU_SKIP)) {
         for (byte i = 0; i < 2; i++) {
@@ -461,12 +461,18 @@ public:
           duty = (jointIndex != 1 ? offsetLR : 0)  //look left or right
                  + 10 * sin(frame * (jointIndex + 2) * M_PI / abs(period));
         } else {
-          duty = currentAng[jointIndex] + max(-10, min(10, (targetHead[jointIndex] - currentAng[jointIndex]))) - currentAdjust[jointIndex];
+          duty =
+#ifdef DAMPED_MOTION
+            currentAng[jointIndex] + max(-10, min(10, (targetHead[jointIndex] - currentAng[jointIndex])))
+#else
+            targetHead[jointIndex]
+#endif
+            - currentAdjust[jointIndex];
         }
       } else
         duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint] * angleDataRatio;
       calibratedPWM(jointIndex, duty
-#ifdef GYRO_PIN
+#if defined GYRO_PIN  //&& !defined RANDOM_MIND
                                   + (checkGyro && !exceptions ? (!(frame % IMU_SKIP) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
 #endif
       );
@@ -518,13 +524,13 @@ int testEEPROM(char* skillData) {
 #ifndef MAIN_SKETCH
 void writeConst() {
   //  flushEEPROM();
-  beep(20);
   int melodyAddress = MELODY_NORMAL;
   saveMelody(melodyAddress, melodyNormalBoot, sizeof(melodyNormalBoot));
   saveMelody(melodyAddress, melodyInit, sizeof(melodyInit));
   saveMelody(melodyAddress, melodyLowBattery, sizeof(melodyLowBattery));
   // saveMelody(melodyAddress, melody1, sizeof(melody1));
-#ifndef AUTO_INIT
+  EEPROM.update(BOOTUP_SOUND_STATE, 1);  //always turn on the boot up sound after reset
+#if !defined AUTO_INIT
   playMelody(MELODY_INIT);
 #endif
 #ifndef AUTO_INIT
@@ -539,7 +545,11 @@ void writeConst() {
       EEPROM.update(CALIB + i, servoCalib[i]);
     EEPROM.update(PWM_PIN + i, pwm_pin[i]);
     EEPROM.update(MID_SHIFT + i, middleShift[i]);
-    EEPROM.update(ROTATION_DIRECTION + i, rotationDirection[i]);
+    EEPROM.update(ROTATION_DIRECTION + i, rotationDirection[i]
+#ifdef INVERSE_SERVO_DIRECTION
+                                            * -1
+#endif
+    );
     for (byte j = 0; j < 2; j++) {
       EEPROM.update(ADAPT_PARAM + i * 2 + j, (int8_t)round(adaptiveParameterArray[i][j]));
       EEPROMWriteInt(ANGLE_LIMIT + i * 4 + j * 2, angleLimit[i][j]);

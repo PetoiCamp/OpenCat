@@ -94,6 +94,8 @@ int angleLimit[][2] = {
   { -70, 65 },
 };
 #endif
+
+// #define INVERSE_SERVO_DIRECTION
 int8_t rotationDirection[] = { 1, -1, 1, 1,
                                1, -1, 1, -1,
                                1, -1, -1, 1,
@@ -194,6 +196,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define NUM_SKILLS 277                // 1 bytes
 #define SERIAL_BUFF 278               // 2 bytes
 #define SERIAL_BUFF_RAND 280          // 2 bytes
+#define BOOTUP_SOUND_STATE 282        // 1 byte
 #define SKILLS 320                    // 1 byte for skill name length, followed by the char array for skill name
 // then followed by i(nstinct) on progmem, or n(ewbility) on progmem
 
@@ -217,7 +220,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_PAUSE 'p'
 // #define T_RAMP 'r'
 #define T_SAVE 's'
-#define T_SOUND 'S'
+#define T_BOOTUP_SOUND_SWITCH 'S'  //toggle the bootup sound on/off
 // #define T_TILT 't'
 // #define T_MEOW 'u'
 #define T_PRINT_GYRO 'v'            //print Gyro data
@@ -321,7 +324,9 @@ bool serialDominateQ = false;
 bool manualHeadQ = false;
 bool nonHeadJointQ = false;
 #define HEAD_GROUP_LEN 4  //used for controlling head pan, tilt, tail, and other joints independent from walking
+// #define DAMPED_MOTION
 int targetHead[HEAD_GROUP_LEN];
+
 
 byte exceptions = 0;
 byte transformSpeed = 2;
@@ -407,6 +412,7 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 
 void initRobot() {
   //----------------------------------
+  beep(20);
 #ifdef MAIN_SKETCH  // **
   PTL('k');
   PTLF("\n* Start *");
@@ -418,7 +424,12 @@ void initRobot() {
 #elif defined CUB
   PTLF("Cub");
 #endif
-  playMelody(MELODY_NORMAL);
+
+#ifdef T_BOOTUP_SOUND_SWITCH
+  if (eeprom(BOOTUP_SOUND_STATE))
+#endif
+    playMelody(MELODY_NORMAL);
+
 #ifdef GYRO_PIN
   imuSetup();
 #endif

@@ -54,7 +54,7 @@
 
 // you can also activate the following modes (they will disable the gyro to save programming space)
 // allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
-#define RANDOM_MIND  //advanced random behaviors. use token 'z' to activate/deactivate
+// #define RANDOM_MIND  //advanced random behaviors. use token 'z' to activate/deactivate
 // #define TASK_QUEUE  //allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. \
                     // because it takes up memory, it will be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
 // #define ULTRASONIC      //for Nybble's ultrasonic sensor
@@ -77,12 +77,13 @@
 
 // #define OTHER_MODULES  //uncomment this line to disable the gyroscope code to save programming resources for other modules.
 
-
 #include "src/OpenCat.h"
 
 void setup() {
   Serial.begin(BAUD_RATE);
   Serial.setTimeout(SERIAL_TIMEOUT);
+  // while (Serial.available() && Serial.read());  // empty buffer
+
   // join I2C bus (I2Cdev library doesn't do this automatically)
   //#if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
   Wire.begin();
