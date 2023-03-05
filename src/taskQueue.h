@@ -39,7 +39,6 @@ public:
       Task* t = this->front();
       // t->info();
       token = t->tkn;
-      lowerToken = tolower(token);
       cmdLen = t->paraLength;
       taskInterval = t->dly;
       // if (cmdLen) {

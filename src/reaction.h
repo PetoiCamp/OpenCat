@@ -249,8 +249,8 @@ void reaction() {
                 int duty = EEPROMReadInt(ZERO_POSITIONS + target[0] * 2) + float(servoCalib[target[0]]) * eeprom(ROTATION_DIRECTION, target[0]);
                 pwm.writeAngle(target[0], duty);
                 printTable(servoCalib);
-                PT(token);
-                printList(target, 2);
+                // PT(token);
+                // printList(target, 2);
               } else if (token == T_INDEXED_SEQUENTIAL_ASC) {
                 transform(targetFrame, 1, 2);
               }
@@ -421,11 +421,9 @@ void reaction() {
   if (skill.period < 0) {
     if (exceptions && lastCmd[strlen(lastCmd) - 1] < 'L' && skill.lookupAddressByName(lastCmd) > 0) {  //lastToken == T_SKILL && lastSkill->period > 0) {
       // if the last command is not a behavior and not a turning gait. case wkF, wkL, wkR, rlL, rlR
-
       strcpy(newCmd, lastCmd);
     } else {
-      //      strcpy(newCmd, "up");
-      strcpy(newCmd, "");
+      newCmd[0] = '\0';
       arrayNCPY(skill.dutyAngles, skill.dutyAngles + (abs(skill.period) - 1) * skill.frameSize, DOF);
       skill.period = 1;
       frame = 0;

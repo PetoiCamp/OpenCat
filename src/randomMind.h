@@ -1,55 +1,50 @@
 const char mind0[] PROGMEM = "iRand";
-const char mind1[] PROGMEM = "ksit";
-const char mind2[] PROGMEM = "kup";
-const char mind3[] PROGMEM = "kpee";
-const char mind4[] PROGMEM = "kpu";
-const char mind5[] PROGMEM = "khi";
-const char mind6[] PROGMEM = "kck";
-const char mind7[] PROGMEM = "kjy";
-const char mind8[] PROGMEM = "kvtF";
-const char mind9[] PROGMEM = "kvtL";
-const char mind10[] PROGMEM = "kvtR";
-const char mind11[] PROGMEM = "o ";
-const char mind12[] PROGMEM = "u ";
-const char mind13[] PROGMEM = "kstr";
-const char mind14[] PROGMEM = "kwkF";
-const char mind15[] PROGMEM = "kwkL";
-const char mind16[] PROGMEM = "kwkR";
-const char mind17[] PROGMEM = "kpu1";
-const char mind18[] PROGMEM = "kwkF";
-const char mind19[] PROGMEM = "kbk";
-const char mind20[] PROGMEM = "i ";
+const char mind1[] PROGMEM = "i";
+const char mind2[] PROGMEM = "ksit";
+const char mind3[] PROGMEM = "kstr";
+const char mind4[] PROGMEM = "khi";
+const char mind5[] PROGMEM = "kck";
+const char mind6[] PROGMEM = "kchr";
+const char mind7[] PROGMEM = "ksnf";
+const char mind8[] PROGMEM = "kscrh";
+const char mind9[] PROGMEM = "kpee";
+const char mind10[] PROGMEM = "kpu";
+const char mind11[] PROGMEM = "kcmh";
+const char mind12[] PROGMEM = "kvtF";
 
 const char *const mindList[] PROGMEM = {
+#ifdef ALL_RANDOM
   mind0,
-  mind20,
   mind1,
+#endif
+  mind2,
+  mind3,
   mind4,
   mind5,
-  mind12,
-  mind13,
-#ifdef BITTLE
-  mind3,
   mind6,
   mind7,
   mind8,
   mind9,
   mind10,
-  mind17,
-  mind18,
-  mind19,
-#endif
+  mind11,
+  mind12,
 };
 byte choiceWeight[] = {
 #ifdef ALL_RANDOM
-  30, 20,
-#else
+  30,
+  20,
+#endif
   10,
-#endif
-  5, 1, 2, 2, 1,
-#ifdef BITTLE
-  1, 3, 2, 1, 1, 1, 1, 1, 1
-#endif
+  5,
+  3,
+  3,
+  3,
+  3,
+  2,
+  2,
+  2,
+  2,
+  2,
 };
 
 byte randomMindListLength = sizeof(mindList) / 2;
@@ -68,7 +63,6 @@ void allRandom() {
   };  // 10, 10, 20, 20, 10, 10};
 
   token = tokenSet[random() % 2];
-  lowerToken = tolower(token);
   cmdLen = sizeof(jointSet);  //random() % 2 + 2;
   for (byte r = 0; r < cmdLen; r++) {
     byte j = random() % sizeof(jointSet);
@@ -77,7 +71,7 @@ void allRandom() {
     //    PT(jointSet[j]); PT('\t'); PTL(int(newCmd[r * 2 + 1]));
   }
   cmdLen *= 2;
-  newCmd[cmdLen] = '~';
+  // newCmd[cmdLen] = '~';
 }
 void randomMind() {
   long current = millis();
@@ -96,7 +90,7 @@ void randomMind() {
     } else {
       strcpy_P((char *)newCmd, (char *)pgm_read_word(&mindList[randomChoice]));
       token = newCmd[0];
-      lowerToken = tolower(token);
+
       if (token == T_SKILL)
         strcpy(newCmd, (char *)newCmd + 1);  // this is duable only because newCmd+1 is after newCmd!
       else

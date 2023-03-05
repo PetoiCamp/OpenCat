@@ -86,18 +86,8 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             printH('rescaled:\n',var)
             
         var = list(map(int, var))
+        in_str = token.encode() + struct.pack('b' * len(var), *var) + '~'.encode()
 
-        in_str = token.encode() + struct.pack('b' * skillHeader, *var[0:skillHeader])  # +'~'.encode()
-        port.Send_data(in_str)
-        time.sleep(0.001)
-
-        for f in range(abs(period)):
-            in_str = struct.pack('b' * (frameSize),
-                                 *var[skillHeader + f * frameSize:skillHeader + (f + 1) * frameSize])  # + '~'.encode()
-            if f == abs(period) - 1:
-                in_str += '~'.encode()
-            port.Send_data(in_str)
-            time.sleep(delayBetweenSlice)
     else:
         if token.isupper():# == 'L' or token == 'I' or token == 'B' or token == 'C':
 #            if token == 'C':
@@ -107,43 +97,30 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
 #            port.Send_data(token.encode())
             if len(var)>0:
                 message = list(map(int, var))
-                slice = 0
-                while len(message) > slice:
-                    if len(message) - slice >= 20:
-                        buff = message[slice:slice+20]
-                    else:
-                        buff = message[slice:]
-                    if token == 'B':
-                        for l in range(len(buff)//2):
-                            buff[l*2+1]*=8 #change 1 to 8 to save time for tests
-                            print(buff[l*2],end=",")
-                            print(buff[l*2+1],end=",")
-                    in_str = struct.pack('b' * len(buff), *buff)
-                    if slice == 0:
-                        in_str = token.encode()+in_str
-                    if slice == len(message):
-                        in_str += '~'.encode()
-                    port.Send_data(encode(in_str))
-                    slice+=20
-                    time.sleep(delayBetweenSlice)
-
-#            port.Send_data(encode('~'.encode()))
+                if token == 'B':
+                    for l in range(len(message)//2):
+                        message[l*2+1]*=8 #change 1 to 8 to save time for tests
+                        print(message[l*2],end=",")
+                        print(message[l*2+1],end=",")
+            in_str = struct.pack('b' * len(message), *message)
+            in_str = token.encode() + in_str + '~'.encode()
 
         else:#if token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
-            message = ""+token
-            count = 0
+            message = ""
             for element in var:
                 message +=  (str(round(element))+" ")
-                count +=1
-                if count % 20 ==0 or count == len(var):
-                    in_str=encode(message)
-                    if count ==len(var):
-                        in_str +='\n'.encode()
-                    port.Send_data(in_str)
-                    message = ""
-                    time.sleep(delayBetweenSlice)
-#            port.Send_data(encode('\n'))
-            logger.debug(f"!!!! {in_str}")
+            in_str = token.encode()+encode(message) +'\n'.encode()
+
+    slice = 0
+    printH("send len ",len(in_str))
+    while len(in_str) > slice:
+        if len(in_str) - slice >= 20:
+            port.Send_data(in_str[slice:slice+20])
+        else:
+            port.Send_data(in_str[slice:])
+        slice+=20
+        time.sleep(delayBetweenSlice)
+    logger.debug(f"!!!! {in_str}")
             #print(encode(in_str))
 #            port.Send_data(encode(message))
 
@@ -158,6 +135,7 @@ def serialWriteByte(port, var=None):
         in_str = ""
         for element in var:
             in_str = in_str + element + " "
+        in_str += '\n'
     elif token == 'L' or token == 'I':
         if len(var[0]) > 1:
             var.insert(1, var[0][1:])
@@ -166,7 +144,7 @@ def serialWriteByte(port, var=None):
     elif token == 'w' or token == 'k':
         in_str = var[0] + '\n'
     else:
-        in_str = token
+        in_str = token + '\n'
     logger.debug(f"!!!!!!! {in_str}")
     port.Send_data(encode(in_str))
     time.sleep(0.01)

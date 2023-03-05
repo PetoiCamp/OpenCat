@@ -193,7 +193,8 @@ public:
       delete[] readName;
       skillAddressShift += 4;  //1 byte type, 1 byte period, 1 int address
     }
-    PTLF("?");  //key not found
+    PT('?');   //key not found
+    PTL(key);
     return -1;
   }
 
@@ -298,38 +299,36 @@ public:
     char lr = skillName[strlen(skillName) - 1];
     offsetLR = (lr == 'L' ? 25 : (lr == 'R' ? -25 : 0));
     int onBoardEepromAddress = lookupAddressByName(skillName);
-    if (onBoardEepromAddress == -1)
-      return; 
-    char skillType = EEPROM.read(onBoardEepromAddress);  //load data by onboard EEPROM address
-    unsigned int dataArrayAddress = EEPROMReadInt(onBoardEepromAddress + 2);
-    char tempName[CMD_LEN+1];
-    strcpy(tempName,skillName); 
+    if (onBoardEepromAddress != -1) {
+      char skillType = EEPROM.read(onBoardEepromAddress);  //load data by onboard EEPROM address
+      unsigned int dataArrayAddress = EEPROMReadInt(onBoardEepromAddress + 2);
+      char tempName[CMD_LEN + 1];
+      strcpy(tempName, skillName);
 #ifdef I2C_EEPROM
-    if (skillType == 'I')  //copy instinct data array from external i2c eeprom
-      loadDataFromI2cEeprom(dataArrayAddress);
-    else  //copy newbility data array from progmem
+      if (skillType == 'I')  //copy instinct data array from external i2c eeprom
+        loadDataFromI2cEeprom(dataArrayAddress);
+      else  //copy newbility data array from progmem
 #endif
-      loadDataFromProgmem(dataArrayAddress);
-    formatSkill();
-    strcpy(newCmd,tempName);
-    if (strcmp(newCmd, "calib") && period == 1)
-      protectiveShift = random() % 100 / 10.0 - 5;
-    else
-      protectiveShift = 0;
-    for (byte i = 0; i < DOF; i++)
-      dutyAngles[i] += protectiveShift;
-    // info();
-    if (lr == 'R' || (lr == 'X' || lr != 'L') && random(100) % 2)
-      mirror();
-    frame = 0;
-    transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
+        loadDataFromProgmem(dataArrayAddress);
+      formatSkill();
+      strcpy(newCmd, tempName);
+      if (strcmp(newCmd, "calib") && period == 1)
+        protectiveShift = random() % 100 / 10.0 - 5;
+      else
+        protectiveShift = 0;
+      for (byte i = 0; i < DOF; i++)
+        dutyAngles[i] += protectiveShift;
+      // info();
+      if (lr == 'R' || (lr == 'X' || lr != 'L') && random(100) % 2)
+        mirror();
+      frame = 0;
+      transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
 #ifdef NYBBLE
-    for (byte i = 0; i < HEAD_GROUP_LEN; i++)
-      targetHead[i] = currentAng[i];
+      for (byte i = 0; i < HEAD_GROUP_LEN; i++)
+        targetHead[i] = currentAng[i];
 #endif
-    //      delay(6);
+    }
   }
-
   void mirror() {
     expectedRollPitch[0] = -expectedRollPitch[0];
     for (int k = 0; k < abs(period); k++) {

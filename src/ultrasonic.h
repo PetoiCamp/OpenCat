@@ -14,7 +14,7 @@ int ultraInterval = 1000;
 int distance;
 void read_ultrasonic() {
   if  (millis() - ultraTimer > ultraInterval)
-  { //|| token == 'k' && millis() - ultraTimer > 3000) {
+  { //|| token == T_SKILL && millis() - ultraTimer > 3000) {
     ultraTimer = millis();
     ultraInterval = 0;
     randomInterval = 1000;
@@ -54,7 +54,7 @@ void read_ultrasonic() {
     }
     else if (distance < 6) {
       mRUS04.SetRgbColor(E_RGB_ALL, RGB_RED);
-      token = 'k';
+      token = T_SKILL;
       strcpy(newCmd, "sit");
       newCmdIdx = 6;
     }
