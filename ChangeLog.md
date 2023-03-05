@@ -13,7 +13,7 @@
 * Safer auto-connection algorithm when trying to connect to a camera that's not connected to any alternative addresses. 
 * Mobile app: Find the optimal delay between the mobile app's package slices to avoid overflow or timeout on the mainboard. 
 * Add a token 'S' to toggle on/off the boot-up melody. 
-* Add a macro to inverse the gyro's rotation directions.
+* Add a macro to inverse the servo's rotation directions.
 * Allow the robot to detect the falling-over event and recover even in turbo mode. 
 * Desktop App: Add traditional Chinese and German translations. 
 
