@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N230301"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N230305"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
