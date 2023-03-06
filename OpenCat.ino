@@ -62,7 +62,7 @@
 // #define VOICE_LD3320    //for LD3320 module
 // #define PIR             //for PIR (Passive Infrared) sensor
 // #define DOUBLE_TOUCH  //for double touch sensor
-#define DOUBLE_LIGHT  //for double light sensor
+// #define DOUBLE_LIGHT  //for double light sensor
 // #define GESTURE  //for Gesture module
 // #define CAMERA          //for BallTracking using Mu Vision camera
 // You need to install https://github.com/mu-opensource/MuVisionSensor3 as a zip library in Arduino IDE.

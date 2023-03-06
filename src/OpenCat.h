@@ -485,7 +485,10 @@ void initRobot() {
   allCalibratedPWM(currentAng);  //soft boot for servos
   delay(500);
   lastCmd[0] = '\0';
-
+#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH
+  skill.loadFrame("rest");  //required by double light
+  delay(500);               //use your palm to cover the two light sensors for calibration
+#endif
   //----------------------------------
 #else  // ** save parameters to device's static memory
   configureEEPROM();
@@ -497,9 +500,5 @@ void initRobot() {
   PTLF("Ready!");
 #ifndef MAIN_SKETCH
   PCA9685CalibrationPrompt();
-#endif
-#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH
-  skill.loadFrame("rest");  //required by double light
-  delay(500);               //use your palm to cover the two light sensors for calibration
 #endif
 }
