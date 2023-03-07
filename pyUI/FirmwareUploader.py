@@ -59,8 +59,10 @@ class Uploader:
         self.strProduct = StringVar()
         global language
         language = lan
-        self.BittleModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera']))
-        self.NybbleModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic']))
+        self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera']))
+        self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic']))
+        self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'Voice']))
+        self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
 
@@ -209,10 +211,15 @@ class Uploader:
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
         if self.strProduct.get() == 'Bittle':
-            cbModeList = self.BittleModes
+            if 'NyBoard' in self.strBoardVersion.get():
+                cbModeList = self.BittleNyBoardModes
+            else:
+                cbModeList = self.BittleBiBoardModes
         elif self.strProduct.get() == 'Nybble':
-            cbModeList = self.NybbleModes
-            
+            if 'NyBoard' in self.strBoardVersion.get():
+                cbModeList = self.NybbleNyBoardModes
+            else:
+                cbModeList = self.NybbleBiBoardModes
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', width=regularW, font=12)
         # 为 Combobox 设置默认项
         self.cbMode.set(txt(self.lastSetting[4]))
@@ -280,24 +287,34 @@ class Uploader:
     def setActiveOption(self):
         if self.cbBoardVersion.get() in BiBoard_version_list:
             stt = DISABLED
-            self.strMode.set(txt('Standard'))
+            # self.strMode.set(txt('Standard'))
             self.strSoftwareVersion.set('2.0')
         else:
             stt = NORMAL
             # self.strMode.set(txt(self.lastSetting[4]))
             # self.strSoftwareVersion.set(self.lastSetting[2])
-        self.cbMode.config(state=stt)
+        # self.cbMode.config(state=stt)
         self.cbSoftwareVersion.config(state=stt)
 
     def chooseBoardVersion(self, event):
         self.setActiveOption()
+        self.updateMode()
 
     def chooseProduct(self, event):
+        self.updateMode()
+
+    def updateMode(self):
 #        print("self.strProduct is " + self.strProduct.get())
         if self.strProduct.get() == 'Bittle':
-            modeList = self.BittleModes
+            if 'NyBoard' in self.strBoardVersion.get():
+                modeList = self.BittleNyBoardModes
+            else:
+                modeList = self.BittleBiBoardModes
         elif self.strProduct.get() == 'Nybble':
-            modeList = self.NybbleModes
+            if 'NyBoard' in self.strBoardVersion.get():
+                modeList = self.NybbleNyBoardModes
+            else:
+                modeList = self.NybbleBiBoardModes
         self.cbMode['values'] = modeList
 
         if self.strMode.get() not in modeList:
@@ -369,7 +386,6 @@ class Uploader:
             promptList = [promptJointCalib,promptIMU]
         
         progress = 0
-        prompt = None
         retMsg = False
         while True:
             time.sleep(0.01)
@@ -404,9 +420,7 @@ class Uploader:
                         progress+=1
                         
                     elif x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
-                        if prompt == None:
-                            prompt = promptIMU
-                        self.strStatus.set(prompt['result'])
+                        self.strStatus.set(promptIMU['result'])
                         self.statusBar.update()
                         break
 
@@ -446,7 +460,12 @@ class Uploader:
             messagebox.showwarning(txt('titleWarning'), txt('msgFileDir'))
             self.force_focus()  # 强制主界面获取focus
             return False
-        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + strBoardVersion + '/'
+
+        # NyBoard_V1_X software version are all the same
+        if "NyBoard_V1" in strBoardVersion:
+            pathBoardVersion = "NyBoard_V1"
+
+        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + pathBoardVersion + '/'
 
         port = self.strPort.get()
         print(self.strPort.get())
@@ -454,8 +473,6 @@ class Uploader:
             messagebox.showwarning(txt('titleWarning'), txt('msgPort'))
             self.force_focus()  # 强制主界面获取focus
             return False
-
-
 
         if strBoardVersion in NyBoard_version_list:
             fnWriteI = path + 'WriteInstinct.ino.hex'
@@ -474,18 +491,31 @@ class Uploader:
                 # t.start()
                 if self.OSname == 'win32':
                     avrdudePath = './resources/avrdudeWin/'
+                elif self.OSname == 'x11':     # Linux
+                    avrdudePath = '/usr/bin/'
+                    path = pathlib.Path(avrdudePath + 'avrdude')
+                    if not path.exists():
+                        messagebox.showwarning(txt('titleWarning'), txt('msgNoneAvrdude'))
+                        self.force_focus()  # 强制主界面获取focus
+                        return False
+                    # avrdudeconfPath = '/etc/avrdude/'      # Fedora / CentOS
+                    avrdudeconfPath = '/etc/'            # Debian / Ubuntu
                 else:
                     avrdudePath = './resources/avrdudeMac/'
                 print()
                 try:
-                    check_call(avrdudePath+'avrdude -C'+avrdudePath+'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+                    if self.OSname == 'x11':     # Linuxself.OSname == 'x11':     # Linux
+                        check_call(avrdudePath + 'avrdude -C' + avrdudeconfPath + 'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+                                (port, filename[s]), shell=self.shellOption)
+                    else:
+                        check_call(avrdudePath+'avrdude -C'+avrdudePath+'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
                                 (port, filename[s]), shell=self.shellOption)
                 # self.inProgress = False
                 except:
                     status = txt(uploadStage[s]) + txt('failed to upload')
                     self.strStatus.set(status)
                     self.statusBar.update()
-                    return
+                    return False
                 else:
                     status = txt(uploadStage[s]) + txt('is successully uploaded')
                 
@@ -497,10 +527,14 @@ class Uploader:
                     messagebox.showinfo(title=None, message=txt('parameterFinish'))
 
         elif strBoardVersion in BiBoard_version_list:
-            fnBootLoader = path + 'OpenCatEsp32Standard.ino.bootloader.bin'
-            fnPartitions = path + 'OpenCatEsp32Standard.ino.partitions.bin'
+            # fnBootLoader = path + 'OpenCatEsp32Standard.ino.bootloader.bin'
+            fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
+            # fnPartitions = path + 'OpenCatEsp32Standard.ino.partitions.bin'
+            fnPartitions = path + 'OpenCatEsp32' + strMode + '.ino.partitions.bin'
             fnBootApp = path + 'boot_app0.bin'
-            fnMainFunc = path + 'OpenCatEsp32Standard.ino.bin '
+            # fnMainFunc = path + 'OpenCatEsp32Standard.ino.bin '
+            fnMainFunc = path + 'OpenCatEsp32' + strMode + '.ino.bin '
+
             filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
             print(filename)
             self.strStatus.set(txt('Uploading') + txt('Main function') + '...' )
@@ -517,7 +551,7 @@ class Uploader:
                 status = txt('Main function') + txt('failed to upload')
                 self.strStatus.set(status)
                 self.statusBar.update()
-                return
+                return False
             else:
                 status = txt('Main function') + txt('is successully uploaded')
                 
