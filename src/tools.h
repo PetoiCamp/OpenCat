@@ -32,7 +32,7 @@ void printRange(int r0 = 0, int r1 = 0) {
 template<typename T> void printList(T *arr, byte len = DOF) {
   String temp = "";
   for (byte i = 0; i < len; i++) {
-    temp += String(int(arr[i]));
+    temp += String(T(arr[i]));
     temp += ",\t";
     //PT((T)(arr[i]));
     //PT('\t');
@@ -87,5 +87,18 @@ template<typename T> void getExtreme(T *arr, T *extreme, int len = DOF) {
       extreme[0] = arr[i];
     if (arr[i] > extreme[1])
       extreme[1] = arr[i];
+  }
+}
+
+long loopTimer;
+byte fps=0;
+void FPS() {
+  if (millis() - loopTimer < 1000)
+    fps++;
+  else {
+    PT("FPS:\t");
+    PTL(fps);
+    fps = 0;
+    loopTimer = millis();
   }
 }
