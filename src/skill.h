@@ -428,7 +428,7 @@ public:
     } else {          //postures and gaits
 #if defined GYRO_PIN  //&& !defined RANDOM_MIND
       // if (imuUpdated)
-      if (!(frame % imuSkip)) {
+      if (gyroBalanceQ && !(frame % imuSkip)) {
         for (byte i = 0; i < 2; i++) {
           RollPitchDeviation[i] = ypr[2 - i] - expectedRollPitch[i];                                                                          //all in degrees
           RollPitchDeviation[i] = sign(ypr[2 - i]) * max(float(fabs(RollPitchDeviation[i]) - levelTolerance[i]), float(0)) + yprTilt[2 - i];  //filter out small angles
@@ -467,13 +467,15 @@ public:
 #else
             targetHead[jointIndex]
 #endif
-            - currentAdjust[jointIndex];
+            - gyroBalanceQ * currentAdjust[jointIndex]
+
+            ;
         }
       } else
         duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint] * angleDataRatio;
       calibratedPWM(jointIndex, duty
 #if defined GYRO_PIN  //&& !defined RANDOM_MIND
-                                  + (!exceptions ? (!(frame % imuSkip) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
+                                  + gyroBalanceQ * (!exceptions ? (!(frame % imuSkip) ? adjust(jointIndex) : currentAdjust[jointIndex]) : 0)
 #endif
       );
       jointIndex++;

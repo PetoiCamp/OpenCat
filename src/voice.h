@@ -10,7 +10,7 @@ SoftwareSerial Serial2(6, 7);
 // Speak one of the recorded voice commands to trigger the reaction
 // Speak "clear the learning data" to delete all the recordings at once. (you cannot delete a specific recording)
 // The reactions below are already defined in the program. You may use SkillComposer to design new skills then import them into InstinctX.h
-// Other serial commands are also supported, such as joint movements and melody 
+// Other serial commands are also supported, such as joint movements and melody
 
 // 说”开始学习“开始录音，最多10条
 // 说”结束学习“停止录入
@@ -22,16 +22,16 @@ SoftwareSerial Serial2(6, 7);
 // const char voice1[] PROGMEM = "b14,8,14,8,21,8,21,8,23,8,23,8,21,4";  //小星星 twinkle star
 // const char voice2[] PROGMEM = "m0 80 0 -80 0 0";                                                         //动头 move head
 // const char voice3[] PROGMEM = "scrh";                                                                    //挠痒痒 scratch
-const char voice1[] PROGMEM = "kdg";                                                                     //刨地	dig
-const char voice2[] PROGMEM = "khg";                                                                     //抱抱	hug
-const char voice3[] PROGMEM = "khu";                                                                     //举手	hands up
-const char voice4[] PROGMEM = "khds";                                                                    //倒立	handstand
-const char voice5[] PROGMEM = "ksnf";                                                                    //闻一下	sniff
-const char voice6[] PROGMEM = "khsk";                                                                    //握手	handshake
-const char voice7[] PROGMEM = "kgdb";                                                                    //好孩子	Good boy
-const char voice8[] PROGMEM = "ktbl";                                                                    //变桌子	Be table
-const char voice9[] PROGMEM = "kbx";                                                                     //打拳	boxing
-const char voice10[] PROGMEM = "kang";                                                                   //生气 angry
+const char voice1[] PROGMEM = "kdg";    //刨地	dig
+const char voice2[] PROGMEM = "khg";    //抱抱	hug
+const char voice3[] PROGMEM = "khu";    //举手	hands up
+const char voice4[] PROGMEM = "khds";   //倒立	handstand
+const char voice5[] PROGMEM = "ksnf";   //闻一下	sniff
+const char voice6[] PROGMEM = "khsk";   //握手	handshake
+const char voice7[] PROGMEM = "kgdb";   //好孩子	Good boy
+const char voice8[] PROGMEM = "ktbl";   //变桌子	Be table
+const char voice9[] PROGMEM = "kbx";    //打拳	boxing
+const char voice10[] PROGMEM = "kang";  //生气 angry
 const char *const voiceTable[] PROGMEM = {
   voice1,
   voice2,
@@ -82,6 +82,7 @@ void read_voice() {
       }
       if (shift > 0)
         tQueue->push_back(new Task(token, raw.c_str() + shift, 2000));
+      tQueue->push_back(new Task('k', "up"));
       tQueue->push_back(new Task('p', ""));
     }
   }
