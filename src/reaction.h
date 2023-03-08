@@ -29,7 +29,11 @@ bool lowBattery() {
       PTF("Low power:");
       PT(voltage / 99);
       PTL('V');
-      playMelody(MELODY_LOW_BATTERY);
+
+#ifdef T_BOOTUP_SOUND_SWITCH
+      if (eeprom(BOOTUP_SOUND_STATE))
+#endif
+        playMelody(MELODY_LOW_BATTERY);
       //    int8_t bStep = 1;
       //    for (byte brightness = 1; brightness > 0; brightness += bStep) {
       //#ifdef NEOPIXEL_PIN
@@ -68,7 +72,7 @@ void reaction() {
       beep(15 + newCmdIdx, 5);  //ToDo: check the muted sound when newCmdIdx = -1
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
       setServoP(P_SOFT);
-      checkGyro = true;
+      gyroBalanceQ = true;
       PTL('G');
     }
     if (token != T_PAUSE && !tStep) {
@@ -80,7 +84,8 @@ void reaction() {
 #ifdef MAIN_SKETCH
 
 #ifdef GYRO_PIN
-      case T_GYRO:
+      case T_GYRO_FINENESS:
+      case T_GYRO_BALANCE:
 #ifdef T_PRINT_GYRO
       case T_PRINT_GYRO:
 #endif
@@ -98,10 +103,13 @@ void reaction() {
         {
 
 #ifdef GYRO_PIN
-          if (token == T_GYRO) {
-            checkGyro = !checkGyro;
-            imuSkip = checkGyro ? IMU_SKIP : IMU_SKIP_MORE;
-            token = checkGyro ? 'G' : 'g';  //G for activated gyro
+          if (token == T_GYRO_FINENESS) {
+            fineAdjust = !fineAdjust;
+            imuSkip = fineAdjust ? IMU_SKIP : IMU_SKIP_MORE;
+            token = fineAdjust ? 'G' : 'g';  //G for activated gyro
+          } else if (token == T_GYRO_BALANCE) {
+            gyroBalanceQ = !gyroBalanceQ;
+            token = lastToken;
           }
 #ifdef T_PRINT_GYRO
           else if (token == T_PRINT_GYRO) {
@@ -121,7 +129,8 @@ void reaction() {
             if (token == T_RANDOM_MIND) {
             autoSwitch = !autoSwitch;
             token = autoSwitch ? 'Z' : 'z';  //Z for active random mind
-          } else
+          }
+          else
 #endif
 #ifdef T_RAMP
             if (token == T_RAMP) {  //reverse the adjustment direction
@@ -211,6 +220,9 @@ void reaction() {
       case T_MEOW:  //meow
 #endif
       case T_BEEP:  //beep(tone, duration): tone 0 is pause. the duration corresponds to 1/duration second
+#ifdef T_TUNER
+      case T_TUNER:
+#endif
         {
           if (token == T_INDEXED_SIMULTANEOUS_ASC && cmdLen == 0)
             manualHeadQ = false;
@@ -242,7 +254,7 @@ void reaction() {
                   nonHeadJointQ = true;
               }
               if (token == T_CALIBRATE) {
-                checkGyro = false;
+                gyroBalanceQ = false;
                 if (lastToken != T_CALIBRATE) {
                   setServoP(P_HARD);
                   strcpy(newCmd, "calib");
@@ -283,7 +295,24 @@ void reaction() {
                 if (target[1])
                   beep(target[0], 1000 / target[1]);
               }
+
+#ifdef T_TUNER
+              else if (token == T_TUNER) {
+                *par[target[0]] = target[1];
+                PT(target[0]);
+                PT('\t');
+                PTL(target[1]);
+              }
+#endif
             } while (pch != NULL);
+#ifdef T_TUNER
+            if (token == T_TUNER)
+              for (byte p = 0; p < 6; p++) {
+                PT(*par[p]);
+                PT('\t');
+              }
+#endif
+
             if ((token == T_INDEXED_SIMULTANEOUS_ASC || token == T_INDEXED_SIMULTANEOUS_ASC) && (nonHeadJointQ || lastToken != T_SKILL)) {
               // PTL(token);
               transform(targetFrame, 1, 4);  // if (token == T_INDEXED_SEQUENTIAL_ASC) it will be useless
@@ -393,9 +422,9 @@ void reaction() {
           strcpy(newCmd, "rest");
           skill.loadFrame(newCmd);
           pwm.shutServos();
-          checkGyro = false;
+          fineAdjust = false;
           manualHeadQ = false;
-          PTL(T_GYRO);
+          PTL('g');
           break;
         }
       default:
@@ -404,7 +433,7 @@ void reaction() {
     if (token != T_SKILL || skill.period > 0) {
       PTL(token);  //postures, gaits, and other tokens can confirm completion by sending the token back
       if (lastToken == T_SKILL
-          && (token == T_JOINTS || token == T_PAUSE || lowerToken == T_GYRO || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC
+          && (token == T_JOINTS || token == T_PAUSE || lowerToken == T_GYRO_FINENESS || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SEQUENTIAL_ASC
 #ifdef T_PRINT_GYRO
               || lowerToken == T_PRINT_GYRO
 #endif

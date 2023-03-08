@@ -206,43 +206,49 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 //the above constants from onboard EEPROM to I2C EEPROM
 
 //token list
-#define T_ABORT 'a'
-#define T_BEEP 'b'
-#define T_CALIBRATE 'c'
+#define T_ABORT 'a'      //abort the calibration values
+#define T_BEEP 'b'       //b note1 duration1 note2 duration2 ... e.g. b12 8 14 8 16 8 17 8 19 4
+#define T_CALIBRATE 'c'  //send the robot to calibration posture for attaching legs and fine-tuning the joint offsets. \
+                         //c jointIndex1 offset1 jointIndex2 offset2 ... e.g. c0 7 1 -4 2 3 8 5
 #define T_REST 'd'
-#define T_GYRO 'g'
-#define T_INDEXED_SIMULTANEOUS_ASC 'i'
-#define T_JOINTS 'j'
+#define T_GYRO_FINENESS 'g'             //adjust the finess of gyroscope adjustment to accelerate motion
+#define T_GYRO_BALANCE 'G'              //toggle on/off the gyro adjustment
+#define T_INDEXED_SIMULTANEOUS_ASC 'i'  //i jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. i0 70 8 -20 9 -20 \
+                                        //a single 'i' will free the head joints if it were previously manually controlled.
+#define T_JOINTS 'j'                    //print the joint angles
 #define T_SKILL 'k'
 #define T_SKILL_DATA 'K'
-#define T_INDEXED_SEQUENTIAL_ASC 'm'
+#define T_INDEXED_SEQUENTIAL_ASC 'm'  //m jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. m0 70 0 -70 8 -20 9 -20
 // #define T_MELODY 'o'
 #define T_PAUSE 'p'
 // #define T_RAMP 'r'
-#define T_SAVE 's'
-#define T_BOOTUP_SOUND_SWITCH 'S'  //toggle the bootup sound on/off
+#define T_SAVE 's'                 //save the calibration values
+#define T_BOOTUP_SOUND_SWITCH 'S'  //toggle the melody on/off
 // #define T_TILT 't'
 // #define T_MEOW 'u'
-#define T_PRINT_GYRO 'v'            //print Gyro data
-#define T_VERBOSELY_PRINT_GYRO 'V'  //verbosely print Gyro data
+#define T_PRINT_GYRO 'v'            //print the Gyro data once
+#define T_VERBOSELY_PRINT_GYRO 'V'  //toggle verbosely print Gyro data
 // #define T_WORD        'w'
 // #define T_XLEG        'x'
 // #define T_ACCELERATE  '.'
 // #define T_DECELERATE  ','
-#define T_RANDOM_MIND 'z'
+#define T_RANDOM_MIND 'z'  //toggle random behaviors in the RANDOM_MIND mode
 
-#define T_COLOR 'C'
-#define T_INDEXED_SIMULTANEOUS_BIN 'I'
-#define T_INDEXED_SEQUENTIAL_BIN 'M'
+#define T_COLOR 'C'                     //change the eye colors of the RGB ultrasonic sensor
+#define T_INDEXED_SIMULTANEOUS_BIN 'I'  //I jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. I0 70 8 -20 9 -20
+#define T_INDEXED_SEQUENTIAL_BIN 'M'    //M jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. M0 70 0 -70 8 -20 9 -20
 
 #define BINARY_COMMAND  //disable the binary commands to save space for the simple random demo
 
 #ifdef BINARY_COMMAND
-#define T_BEEP_BIN 'B'
+#define T_BEEP_BIN 'B'  //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4
 #define T_LISTED_BIN 'L'
 // #define T_SERVO_MICROSECOND 'W'  //PWM width modulation
-#define T_TEMP 'T'  //call the last skill data received from the serial port
+#define T_TEMP 'T'  //call the last 'K' skill data received from the serial port
 #endif
+
+// #define T_TUNER '}'
+
 
 float degPerRad = 180.0 / M_PI;
 float radPerDeg = M_PI / 180.0;
@@ -289,6 +295,7 @@ int randomInterval = 2000;
 int uptime = -1;
 int frame = 0;
 byte tStep = 0;
+int **par = new int *[7];
 
 char token;
 char lowerToken;
@@ -317,7 +324,8 @@ bool servoOff = true;
 #ifdef RANDOM_MIND
 bool autoSwitch = true;
 #endif
-bool checkGyro = true;
+bool fineAdjust = true;
+bool gyroBalanceQ = true;
 bool printGyro = false;
 bool walkingQ = false;
 bool serialDominateQ = false;

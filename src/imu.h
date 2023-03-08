@@ -195,7 +195,7 @@ bool read_IMU() {
 }
 
 void readEnvironment() {
-  if (!(frame % imuSkip))
+  if (gyroBalanceQ && !(frame % imuSkip))
     read_IMU();
 }
 

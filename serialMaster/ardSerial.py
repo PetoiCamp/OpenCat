@@ -355,27 +355,18 @@ balanceNybble = [
 buttUpNybble = [
     1, 0, 15, 1,
     20, 40, 0, 0, 5, 5, 3, 3, 90, 90, -45, -45, -60, -60, -5, -5, ]
-calibNybble = [
-    1, 0, 0, 1,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
 droppedNybble = [
     1, 0, 75, 1,
     0, 30, 0, 0, -5, -5, 15, 15, -75, -75, -60, -60, 60, 60, 30, 30, ]
 liftedNybble = [
     1, 0, -75, 1,
     0, -70, 0, 0, 0, 0, 0, 0, 55, 55, 20, 20, 45, 45, 0, 0, ]
-luNybble = [
-    1, -30, 15, 1,
-    -45, 60, -60, 0, 5, 5, 3, 3, -60, 70, -45, -35, 15, -60, 10, -65, ]
 restNybble = [
     1, 0, 0, 1,
     -30, -80, -45, 0, -3, -3, 3, 3, 60, 60, -60, -60, -45, -45, 45, 45, ]
 sitNybble = [
     1, 0, -20, 1,
     10, -20, -60, 0, -5, -5, 20, 20, 30, 30, -90, -90, 60, 60, 45, 45, ]
-sleepNybble = [
-    1, 0, 0, 1,
-    -10, -100, 0, 0, -5, -5, 3, 3, 80, 80, -80, -80, -55, -55, 55, 55, ]
 strNybble = [
     1, 0, 15, 1,
     10, 70, -30, 0, -5, -5, 0, 0, -75, -75, -45, -45, 60, 60, -45, -45, ]
@@ -386,7 +377,6 @@ zeroNybble = [
 postureTableBittle = {
     "balance": balance,
     "buttUp": buttUp,
-    "calib": calib,
     "dropped": dropped,
     "lifted": lifted,
     "rest": rest,
@@ -398,26 +388,22 @@ postureTableBittle = {
 postureTableNybble = {
     "balance": balanceNybble,
     "buttUp": buttUpNybble,
-    "calib": calibNybble,
     "dropped": droppedNybble,
     "lifted": liftedNybble,
-    "lu": luNybble,
     "rest": restNybble,
     "sit": sitNybble,
-    "sleep": sleepNybble,
     "str": strNybble,
     "zero": zeroNybble
 }
 postureTableDoF16 = {
     "balance": balance,
-    "buttUp": buttUp,
-    "calib": calib,
-    "dropped": dropped,
-    "lifted": lifted,
     "rest": rest,
+    "zero": zero,
     "sit": sit,
     "str": stretch,
-    "zero": zero
+    "dropped": dropped,
+    "buttUp": buttUp,
+    "lifted": lifted,
 }
 
 postureDict = {

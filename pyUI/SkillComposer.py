@@ -163,10 +163,10 @@ class SkillComposer:
         t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
         t.daemon = True
         t.start()
-        res = send(goodPorts, ['g', 0])
+        res = send(goodPorts, ['G', 0])
         printH("gyro status:",res )
         if res[0] == 'G':
-            res = send(goodPorts, ['g', 0])
+            res = send(goodPorts, ['G', 0])
             printH("gyro status:",res )
         
         self.window.mainloop()
@@ -1482,9 +1482,10 @@ class SkillComposer:
             self.indicateEdit()
             for i in range(6):
                 self.values[16 + i].set(0)
+            send(ports,['i',0])
             send(ports, ['k' + pose, 0])
-            if pose == 'rest':
-                send(ports, ['d', 0])
+#            if pose == 'rest':
+#                send(ports, ['d', 0])
 
     def setStep(self):
         self.frameData[20] = self.getWidget(self.activeFrame, cStep).get()
