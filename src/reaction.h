@@ -30,9 +30,7 @@ bool lowBattery() {
       PT(voltage / 99);
       PTL('V');
 
-#ifdef T_BOOTUP_SOUND_SWITCH
       if (eeprom(BOOTUP_SOUND_STATE))
-#endif
         playMelody(MELODY_LOW_BATTERY);
       //    int8_t bStep = 1;
       //    for (byte brightness = 1; brightness > 0; brightness += bStep) {
@@ -70,8 +68,13 @@ void reaction() {
 #endif
     )
       beep(15 + newCmdIdx, 5);  //ToDo: check the muted sound when newCmdIdx = -1
-    if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
+    if (hardServoQ && (lowerToken == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SIMULTANEOUS_ASC)) {
+#ifdef T_SERVO_MICROSECOND
       setServoP(P_SOFT);
+      hardServoQ = false;
+#endif
+    }
+    if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
       gyroBalanceQ = true;
       PTL('G');
     }
@@ -106,10 +109,10 @@ void reaction() {
           if (token == T_GYRO_FINENESS) {
             fineAdjust = !fineAdjust;
             imuSkip = fineAdjust ? IMU_SKIP : IMU_SKIP_MORE;
-            token = fineAdjust ? 'G' : 'g';  //G for activated gyro
+            token = fineAdjust ? 'G' : 'g';  //G for fine adjust
           } else if (token == T_GYRO_BALANCE) {
             gyroBalanceQ = !gyroBalanceQ;
-            token = lastToken;
+            token = gyroBalanceQ ? 'G' : 'g';  //G for activated balance
           }
 #ifdef T_PRINT_GYRO
           else if (token == T_PRINT_GYRO) {
@@ -159,13 +162,6 @@ void reaction() {
       case T_MELODY:
         {
           playMelody(MELODY_1);
-          break;
-        }
-#endif
-#ifdef T_BOOTUP_SOUND_SWITCH
-      case T_BOOTUP_SOUND_SWITCH:  //toggle on/off the bootup melody
-        {
-          EEPROM.update(BOOTUP_SOUND_STATE, !eeprom(BOOTUP_SOUND_STATE));
           break;
         }
 #endif
@@ -229,7 +225,7 @@ void reaction() {
             int targetFrame[DOF];
             nonHeadJointQ = false;
             for (int i = 0; i < DOF; i++) {
-              targetFrame[i] = currentAng[i] - currentAdjust[i];
+              targetFrame[i] = currentAng[i] - (gyroBalanceQ ? currentAdjust[i] : 0);
             }
             // arrayNCPY(targetFrame, currentAng, DOF);
             char *pch;
@@ -256,6 +252,7 @@ void reaction() {
                 gyroBalanceQ = false;
                 if (lastToken != T_CALIBRATE) {
                   setServoP(P_HARD);
+                  hardServoQ = true;
                   strcpy(newCmd, "calib");
                   skill.loadFrame(newCmd);  //ensure it's correctly compared in load skill for protective shifts.
                 }
@@ -332,7 +329,7 @@ void reaction() {
             int targetFrame[DOF];
             nonHeadJointQ = false;
             for (int i = 0; i < DOF; i++) {
-              targetFrame[i] = currentAng[i] - currentAdjust[i];
+              targetFrame[i] = currentAng[i] - (gyroBalanceQ ? currentAdjust[i] : 0);
             }
             // arrayNCPY(targetFrame, currentAng, DOF);
             for (int i = 0; i < cmdLen; i += 2) {
@@ -366,8 +363,12 @@ void reaction() {
         }
       case T_BEEP_BIN:
         {
-          for (byte b = 0; b < cmdLen / 2; b++)
-            beep(newCmd[2 * b], 1000 / newCmd[2 * b + 1]);
+          if (cmdLen == 0)  //toggle the melody on/off
+            EEPROM.update(BOOTUP_SOUND_STATE, !eeprom(BOOTUP_SOUND_STATE));
+          else {
+            for (byte b = 0; b < cmdLen / 2; b++)
+              beep(newCmd[2 * b], 1000 / newCmd[2 * b + 1]);
+          }
           break;
         }
 #ifdef T_TEMP

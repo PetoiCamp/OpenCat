@@ -177,7 +177,7 @@ def printSerialMessage(port, token, timeout=0):
             print('Elapsed time: ', end='')
             print(threshold, end=' seconds\n', flush=True)
             threshold += 2
-            if threshold > 10:
+            if threshold > 5:
                 return -1
         if 0 < timeout < now - startTime:
             return -1

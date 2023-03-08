@@ -222,8 +222,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 // #define T_MELODY 'o'
 #define T_PAUSE 'p'
 // #define T_RAMP 'r'
-#define T_SAVE 's'                 //save the calibration values
-#define T_BOOTUP_SOUND_SWITCH 'S'  //toggle the melody on/off
+#define T_SAVE 's'  //save the calibration values
 // #define T_TILT 't'
 // #define T_MEOW 'u'
 #define T_PRINT_GYRO 'v'            //print the Gyro data once
@@ -241,8 +240,9 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define BINARY_COMMAND  //disable the binary commands to save space for the simple random demo
 
 #ifdef BINARY_COMMAND
-#define T_BEEP_BIN 'B'  //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4
-#define T_LISTED_BIN 'L'
+#define T_BEEP_BIN 'B'    //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4 \
+                          //a single B will toggle the melody on/off
+#define T_LISTED_BIN 'L'  //a list of the DOFx joint angles: angle0 angle1 angle2 ... angle15
 // #define T_SERVO_MICROSECOND 'W'  //PWM width modulation
 #define T_TEMP 'T'  //call the last 'K' skill data received from the serial port
 #endif
@@ -331,6 +331,7 @@ bool walkingQ = false;
 bool serialDominateQ = false;
 bool manualHeadQ = false;
 bool nonHeadJointQ = false;
+bool hardServoQ = true;
 #define HEAD_GROUP_LEN 4  //used for controlling head pan, tilt, tail, and other joints independent from walking
 // #define DAMPED_MOTION
 int targetHead[HEAD_GROUP_LEN];
@@ -377,7 +378,7 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #else
 
 #define TASK_QUEUE  //allow executing a sequence of tasks, if you enabled the other modules, the task queue will be automatically enabled. \
-                    // because it takes up memory, it should be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
+  // because it takes up memory, it should be disabled if the GYRO is enabled. See "#undef TASK_QUEUE" under ifdef GYRO
 #ifdef TASK_QUEUE
 #include "taskQueue.h"
 #define T_TASK_QUEUE 'q'
@@ -433,9 +434,7 @@ void initRobot() {
   PTLF("Cub");
 #endif
 
-#ifdef T_BOOTUP_SOUND_SWITCH
   if (eeprom(BOOTUP_SOUND_STATE))
-#endif
     playMelody(MELODY_NORMAL);
 
 #ifdef GYRO_PIN

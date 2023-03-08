@@ -24,7 +24,7 @@ def rgbtohex(r, g, b):
     return f'#{r:02x}{g:02x}{b:02x}'
 
 sixAxisNames = ['Yaw', 'Pitch', 'Roll', 'Spinal', 'Height', 'Sideway']
-dialTable = {'Connect': 'Connected', 'Servo': 'p', 'Gyro': 'g', 'Random': 'z'}
+dialTable = {'Connect': 'Connected', 'Servo': 'p', 'Gyro': 'G', 'Random': 'z'}
 tipDial = ['tipConnect', 'tipServo', 'tipGyro', 'tipRandom']
 labelSkillEditorHeader = ['Repeat', 'Set', 'Step', 'Trig', 'Angle', 'Delay', 'Note', 'Del', 'Add']
 tipSkillEditor = ['tipRepeat', 'tipSet', 'tipStep',  'tipTrig', 'tipTrigAngle','tipDelay', 'tipNote', 'tipDel', 'tipAdd', ]
@@ -163,9 +163,10 @@ class SkillComposer:
         t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
         t.daemon = True
         t.start()
+        time.sleep(2)
         res = send(goodPorts, ['G', 0])
         printH("gyro status:",res )
-        if res[0] == 'G':
+        if res != -1 and res[0] == 'G':
             res = send(goodPorts, ['G', 0])
             printH("gyro status:",res )
         
@@ -340,8 +341,8 @@ class SkillComposer:
                 dialState = NORMAL
             else:
                 dialState = DISABLED
-            if i == 2:
-                dialState = DISABLED
+#            if i == 2:#disable gyro
+#                dialState = DISABLED
             if i == 0:
                 wth = self.connectW
                 if len(goodPorts) > 0:
@@ -401,7 +402,7 @@ class SkillComposer:
             menu.add_command(label=string, command=lambda p=string: self.port.set(p))
         self.port.set(self.options[0])
 
-        buttons = [self.frameDial.winfo_children()[i] for i in [2,4]]
+        buttons = [self.frameDial.winfo_children()[i] for i in [2,3,4]]# [2,4] by skipping 3 was used to disable the gyro
         for b in buttons:
             b.config(state=stt)
         self.portMenu.config(state=stt)
@@ -409,7 +410,7 @@ class SkillComposer:
 
     def changePort(self, magicArg):
         global ports
-        buttons = [self.frameDial.winfo_children()[i] for i in [2,4]]
+        buttons = [self.frameDial.winfo_children()[i] for i in [2,3,4]]# [2,4] by skipping 3 was used to disable the gyro
         for b in buttons:
             if len(goodPorts) == 0:
                 b.config(state=DISABLED)
