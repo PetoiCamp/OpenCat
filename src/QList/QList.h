@@ -151,6 +151,8 @@ T QList<T>::front()
   if (start != NULL)
     return start->item;
   //TODO: Catch error when list is empty
+  else
+    return NULL;
 }
 
 //Get item from back
@@ -160,6 +162,8 @@ T QList<T>::back()
   if (end != NULL)
     return end->item;
   //TODO: Catch error when list is empty
+  else
+      return NULL;
 }
 
 // Get size
@@ -223,6 +227,7 @@ T QList<T>::get(unsigned int index)
       tmp = tmp->next;
   }
   //TODO: Catch error when index is out of range
+  return NULL;
 }
 
 template<class T>
@@ -237,6 +242,7 @@ T& QList<T>::at(unsigned int index)
       tmp = tmp->next;
   }
   //TODO: Catch error when index is out of range
+  return NULL;
 }
 
 // Get length
@@ -269,6 +275,7 @@ T& QList<T>::operator[](unsigned int index)
       tmp = tmp->next;
   }
   //TODO: Catch error when index is out of range
+  return NULL;
 }
 
 
@@ -284,6 +291,7 @@ const T& QList<T>::operator[](unsigned int index) const
       tmp = tmp->next;
   }
   //TODO: Catch error when index is out of range
+  return NULL;
 }
 
 #endif
