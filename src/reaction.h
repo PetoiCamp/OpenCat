@@ -1,5 +1,5 @@
 void dealWithExceptions() {
-  if (token != T_CALIBRATE && token != T_REST && exceptions) {  //the gyro reaction switch can be toggled on/off by the 'g' token
+  if (gyroBalanceQ && exceptions) {  //the gyro reaction switch can be toggled on/off by the 'g' token
 //  soundFallOver();
 //  for (int m = 0; m < 2; m++)
 //    meow(30 - m * 12, 42 - m * 12, 20);
@@ -129,8 +129,7 @@ void reaction() {
             if (token == T_RANDOM_MIND) {
             autoSwitch = !autoSwitch;
             token = autoSwitch ? 'Z' : 'z';  //Z for active random mind
-          }
-          else
+          } else
 #endif
 #ifdef T_RAMP
             if (token == T_RAMP) {  //reverse the adjustment direction
@@ -422,7 +421,7 @@ void reaction() {
           strcpy(newCmd, "rest");
           skill.loadFrame(newCmd);
           pwm.shutServos();
-          fineAdjust = false;
+          gyroBalanceQ = false;
           manualHeadQ = false;
           PTL('g');
           break;

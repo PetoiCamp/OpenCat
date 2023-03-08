@@ -467,9 +467,7 @@ public:
 #else
             targetHead[jointIndex]
 #endif
-            - gyroBalanceQ * currentAdjust[jointIndex]
-
-            ;
+            - gyroBalanceQ * currentAdjust[jointIndex];
         }
       } else
         duty = dutyAngles[frame * frameSize + jointIndex - firstMotionJoint] * angleDataRatio;
