@@ -77,8 +77,8 @@ void read_voice() {
         }
       } else if (index < 61) {  //21 ~ 60 are preset commands, and their indexes should be shifted by 21.
                                 //But we don't need to use their indexes.
-        token = T_SKILL;
-        shift = 3;
+        token = raw[3];//T_SKILL;
+        shift = 4;//3;
       }
       if (shift > 0)
         tQueue->push_back(new Task(token, raw.c_str() + shift, 2000));
