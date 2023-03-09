@@ -60,7 +60,7 @@ void read_voice() {
   // put your main code here, to run repeatedly:
   if (Serial2.available()) {
     String raw = Serial2.readStringUntil('\n');
-    // PTL(raw);
+    PTL(raw);
     byte index = (byte)raw[2];  //interpret the 3rd byte as integer
     int shift = -1;
     if (index > 10) {
@@ -77,13 +77,15 @@ void read_voice() {
         }
       } else if (index < 61) {  //21 ~ 60 are preset commands, and their indexes should be shifted by 21.
                                 //But we don't need to use their indexes.
-        token = raw[3];//T_SKILL;
-        shift = 4;//3;
+        token = raw[3];         //T_SKILL;
+        shift = 4;              //3;
       }
-      if (shift > 0)
-        tQueue->push_back(new Task(token, raw.c_str() + shift, 2000));
-      tQueue->push_back(new Task('k', "up"));
-      tQueue->push_back(new Task('p', ""));
+      const char *cmd = raw.c_str() + shift;
+      tQueue->push_back(new Task(token, shift > 0 ? cmd : "", 2000));
+      char end = cmd[strlen(cmd) - 1];
+      if (!strcmp(cmd, "bk") || !strcmp(cmd, "x") || end >= 'A' && end <= 'Z' || end == 'x') {
+        tQueue->push_back(new Task('k', "up"));
+      }
     }
   }
 }
