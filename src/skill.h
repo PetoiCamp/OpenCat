@@ -175,22 +175,29 @@ public:
     char lr = key[keyLen - 1];
     for (byte s = 0; s < nSkills; s++) {  //save skill info to on-board EEPROM, load skills to SkillList
       byte nameLen = EEPROM.read(SKILLS + skillAddressShift++);
-      char* readName = new char[nameLen + 1];
+      // char* readName = new char[nameLen + 1];
+      char readName[CMD_LEN+1];
       for (byte l = 0; l < nameLen; l++) {
         readName[l] = EEPROM.read(SKILLS + skillAddressShift++);
       }
       readName[nameLen] = '\0';
+#ifndef GYRO_PIN
+      if (s == randSkillIdx && (!strcmp(readName, "bf") || !strcmp(readName, "ff") || !strcmp(readName, "rc") || !strcmp(readName, "rl") || !strcmp(readName, "jmp"))) {  //forbid violent motions in random mode
+        randSkillIdx++;
+        continue;
+      }
+#endif
       if (s == randSkillIdx          //random skill
           || !strcmp(readName, key)  //exact match: gait type + F or L, behavior
           // || readName[nameLen - 1] == 'L' && !strncmp(readName, key, nameLen - 1)  //gait type + R
           || readName[nameLen - 1] != 'F' && strcmp(readName, "bk") && !strncmp(readName, key, keyLen - 1) && (lr == 'L' || lr == 'R' || lr == 'X')  // L, R or X
       ) {
-        delete[] readName;
+        // delete[] readName;
         period = EEPROM.read(SKILLS + skillAddressShift + 1);
         int bufferLen = dataLen(period);
         return SKILLS + skillAddressShift;
       }
-      delete[] readName;
+      // delete[] readName;
       skillAddressShift += 4;  //1 byte type, 1 byte period, 1 int address
     }
     PT('?');  //key not found

@@ -68,8 +68,8 @@ void read_voice() {
     while (newCmd[c++] != '~')
       ;
     newCmd[c - 1] = '\0';
-    Serial.print('X');
-    Serial.println(newCmd);
+    // Serial.print('X');
+    // Serial.println(newCmd);
     Serial2.print('X');
     Serial2.println(newCmd);
     while (Serial2.available() && Serial2.read())
@@ -79,7 +79,7 @@ void read_voice() {
 
   if (Serial2.available()) {
     String raw = Serial2.readStringUntil('\n');
-    PTL(raw);
+    // PTL(raw);
     byte index = (byte)raw[2];  //interpret the 3rd byte as integer
     int shift = -1;
     if (index > 10) {
