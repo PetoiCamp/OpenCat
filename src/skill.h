@@ -176,7 +176,7 @@ public:
     for (byte s = 0; s < nSkills; s++) {  //save skill info to on-board EEPROM, load skills to SkillList
       byte nameLen = EEPROM.read(SKILLS + skillAddressShift++);
       // char* readName = new char[nameLen + 1];
-      char readName[CMD_LEN+1];
+      char readName[CMD_LEN + 1];
       for (byte l = 0; l < nameLen; l++) {
         readName[l] = EEPROM.read(SKILLS + skillAddressShift++);
       }
