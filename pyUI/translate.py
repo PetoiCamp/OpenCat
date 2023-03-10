@@ -1,3 +1,6 @@
+versionNum = '1.0.2'
+dateStr = '2023-03-08'
+
 textEN = {
     'lan':'English',
     'lanOption':'English',
@@ -59,6 +62,7 @@ textEN = {
     'Servo':'Servo',
     'Gyro':'Gyro',
     'Random':'Random',
+    'Send':'Send',
     'Postures':'Preset Postures',
     'Skill Editor':'Skill Editor',
     'Play':'Play',
@@ -122,19 +126,23 @@ textEN = {
     'Need to manually select the model type (Nybble/Bittle)':'Need to manually select the model type (Nybble/Bittle)',
     'msgFileDir': 'Please choose the release folder!',
     'msgPort': 'Please choose the correct serial port!',
+
+    'msgNoneAvrdude': '''There is no avrdude. Please install avrdude at first! For details, please refer to :
+    https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+
     'titleVersion': 'Version information',
-    'msgVersion': '''Version: 1.0.0
-    Firmware upload tool for OpenCat
-    Copyright © 2018-2022
-    All rights reserved
-    Petoi LLC
-    https://www.petoi.com\n
-    ''',
+
+    'msgVersion': 'Version: ' + versionNum + '\n'+
+    '''Firmware upload tool for OpenCat
+    Copyright © 2018-2023
+    All rights reserved Petoi LLC
+    https://www.petoi.com\n''' + dateStr,
+
     'reset joints?': 'Reset joint offsets? (Y/N)',
     'reseting joints': 'Reset joint offsets...',
     'joints reset': 'Reset joint offsets complete!',
     
-    'update instincts?':'Update Instinct? (Y/n)',
+    'update instincts?':'Update Instinct? (Y/N)',
     'updating instincts':'Updating Instincts......',
     'instincts updated': 'Instincts updated',
     
@@ -254,6 +262,7 @@ textCN = {
     'Pause':'暂停',
     'Gyro':'陀螺仪',
     'Random':'随机行为',
+    'Send':'发送',
     'Postures':'预设姿态',
     'Skill Editor':'技能编辑器',
     'Play':'播放',
@@ -309,16 +318,21 @@ textCN = {
     'titleWarning': "警告",
     'msgFileDir': '请选择release文件夹!',
     'msgPort': '请选择正确的串口!',
+
+    'msgNoneAvrdude': '''没有找到可执行程序文件 avrdude。请先安装 avrdude！详细说明请参考：
+    https://docs.petoi.com/v/chinese/zhuo-mian-ying-yong/gu-jian-shang-zai#linux-xi-tong-zhong-an-zhuang-avrdude''',
+
     'Uploading': '上传',
     'is successully uploaded':' 上传成功！',
     'failed to upload':' 上传失败！',
     'titleVersion': '版本信息',
-    'msgVersion': '''版本：1.0.0
-    OpenCat固件上传工具
-    版权所有 © 2018-2022
+
+    'msgVersion': '版本：' + versionNum + '\n'+
+    '''OpenCat固件上传工具
+    版权所有 © 2018-2023
     派拓艺（深圳）科技有限责任公司
-    https://www.petoi.com\n
-    ''',
+    https://www.petoi.com\n''' + dateStr,
+
     'reset joints?': '舵机校准参数清零? (Y/N)',
     'reseting joints': '校准参数清零中...',
     'joints reset': '校准参数清零完成！',
@@ -443,6 +457,7 @@ textCN_TW = {
     'Pause':'暫停',
     'Gyro':'陀螺儀',
     'Random':'随機行為',
+    'Send':'發送',
     'Postures':'預設姿態',
     'Skill Editor':'技能编輯器',
     'Play':'播放',
@@ -498,16 +513,21 @@ textCN_TW = {
     'titleWarning': '警告',
     'msgFileDir': '請選擇release文件夾!',
     'msgPort': '請選擇正確的端口!',
+
+    'msgNoneAvrdude': '''沒有找到可執行程式文件 avrdude。請先安裝 avrdude！詳細說明請參考：
+    https://docs.petoi.com/v/chinese/zhuo-mian-ying-yong/gu-jian-shang-zai#linux-xi-tong-zhong-an-zhuang-avrdude''',
+
     'Uploading': '上傳',
     'is successully uploaded':' 上傳成功！',
     'failed to upload':' 上傳失敗！',
     'titleVersion': '版本信息',
-    'msgVersion': '''版本：1.0.0
-    OpenCat固件上傳工具
-    版權所有 © 2018-2022
+
+    'msgVersion': '版本：' + versionNum + '\n'+
+    '''OpenCat固件上傳工具
+    版權所有 © 2018-2023
     派拓藝（深圳）科技有限责任公司
-    https://www.petoi.com\n
-    ''',
+    https://www.petoi.com\n''' + dateStr,
+
     'reset joints?': '舵機校準參數清零? (Y/N)',
     'reseting joints': '校準參數清零中...',
     'joints reset': '校準參數清零完成！',
@@ -633,6 +653,7 @@ textDE = {
 'Servo':'Servo',
 'Gyro':'Gyro',
 'Random':'Zufällig',
+'Send':'Schicken',
 'Postures':'Voreingestellte Haltungen',
 'Skill Editor':'Skill-Editor',
 'Play':'Abspielen',
@@ -696,14 +717,19 @@ textDE = {
 'Need to manually select the model type (Nybble/Bittle)':'Sie müssen den Modelltyp manuell auswählen (Nybble/Bittle)',
 'msgFileDir': 'Bitte wählen Sie das Freigabe-Verzeichnis!',
 'msgPort': 'Bitte wählen Sie die korrekte serielle Schnittstelle!',
+
+'msgNoneAvrdude': '''Es gibt kein Avrdude. Bitte installieren Sie zuerst avrdude! Einzelheiten finden Sie unter :
+https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+
 'titleVersion': 'Versionsinformation',
-'msgVersion': '''Version: 1.0.0
-Firmware-Uploader für OpenCat
-Copyright © 2018-2022
+
+'msgVersion': 'Version: ' + versionNum + '\n'+
+'''Firmware-Uploader für OpenCat
+Copyright © 2018-2023
 Alle Rechte vorbehalten
 Petoi LLC
-https://www.petoi.com\n
-''',
+https://www.petoi.com\n''' + dateStr,
+
 'reset joints?': 'Gelenkabweichungen zurücksetzen? (J/N)',
 'reseting joints': 'Gelenkabweichungen werden zurückgesetzt...',
 'joints reset': 'Gelenkabweichungen erfolgreich zurückgesetzt!',
@@ -734,7 +760,9 @@ Der nächste Schritt ist das Hochladen der Hauptfunktion!''',
 'Flash':'Blitzen',
 'Meow':'Miauen',
 
-'':'',
+'labEdit':'Bearbeiten',
+'labTheme':'Thema',
+# '':'',
 'tipConnect':'Aktive serielle Verbindungen aktualisieren,\nbis diese deaktiviert ist',
 'tipPortMenu':'Steuerung einzelner oder aller Geräte',
 'tipServo':'Servos aktivieren/deaktivieren',
@@ -844,6 +872,7 @@ textIT = {
     'Servo':'Servo',
     'Gyro':'Gyro',
     'Random':'Random',
+    'Send':'Inviare',
     'Postures':'Posizioni Preset',
     'Skill Editor':'Skill Editor',
     'Play':'Start',
@@ -900,14 +929,14 @@ textIT = {
 
     'msgFileDir': 'Si prega di scegliere la cartella di rilascio!',
     'msgPort': 'Si prega di scegliere la porta seriale corretta!',
+    'msgNoneAvrdude': '''Non c\'è avrdude. Si prega di installare avrdude all\'inizio! Per i dettagli, fare riferimento a:
+    https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
     'titleVersion': 'Informazioni sulla versione',
-    'msgVersion': '''Versione: 1.0.0
-    Strumento di caricamento del firmware per OpenCat
+    'msgVersion': 'Versione: ' + versionNum + '\n' +
+    '''Strumento di caricamento del firmware per OpenCat
     Diritto d'autore © 2018-2022
-    Tutti i diritti riservati
-    Petoi LLC
-    https://www.petoi.com\n
-    ''',
+    Tutti i diritti riservati Petoi LLC
+    https://www.petoi.com\n''' + dateStr,
     'reset joints?': 'Reimpostare gli offset dei giunti? (S/N)',
     'reseting joints': 'Reimposta gli offset del giunto...',
     'joints reset': 'Ripristino offset giunti completato!',
@@ -936,7 +965,9 @@ textIT = {
     'Rotate':'Ruotare',
     'Flash':'Veloce',
     'Meow':'Miao',
-    '':'',
+    'labEdit':'Modificare',
+    'labTheme':'Tema',
+    # '':'',
     'tipConnect':'Continua ad aggiornare le porte seriali\nattive fino a quando non viene disabilitato',
     'tipPortMenu':'Controlla dispositivon singolo o tutti',
     'tipServo':'Attiva/Disattiva servos',

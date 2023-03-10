@@ -362,6 +362,15 @@ class SkillComposer:
             tip(button, txt(tipDial[i]))
 
         self.createPortMenu()
+        
+        self.newCmd = StringVar()
+        entryCmd = Entry(self.frameDial, textvariable=self.newCmd)
+        entryCmd.grid(row=2, column=0, columnspan=4, padx=3, sticky=E + W)
+        button = Button(self.frameDial,text=txt('Send'),fg='blue',width=self.dialW-2,command=self.sendCmd)
+        button.grid(row=2, column=4, padx=3)
+        entryCmd.bind('<Return>',self.sendCmd)
+        
+
 
     def createPortMenu(self):
         self.port = StringVar()
@@ -1473,6 +1482,22 @@ class SkillComposer:
             self.updateSliders(self.frameData)
             self.indicateEdit()
 
+
+    def sendCmd(self,event=None):
+        if self.ready == 1:
+            serialCmd = self.newCmd.get()
+            logger.debug(f'serialCmd={serialCmd}')
+            if serialCmd != '':
+                token = serialCmd[0]
+                cmdList = serialCmd[1:].replace(',',' ').split()
+
+                if len(cmdList) <= 1:
+                    send(ports, [serialCmd, 1])
+                else:
+                    cmdList = list(map(lambda x:int(x),cmdList))
+                    send(ports, [token,cmdList, 1])
+                self.newCmd.set('')
+
     def setPose(self, pose):
         if self.ready == 1:
             self.getWidget(self.activeFrame, cNote).delete(0, END)
@@ -1593,6 +1618,7 @@ class SkillComposer:
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
+            closeAllSerial(goodPorts)
             os._exit(0)
            
 if __name__ == '__main__':
