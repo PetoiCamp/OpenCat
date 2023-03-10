@@ -57,7 +57,26 @@ void voiceSetup() {
 }
 
 void read_voice() {
-  // put your main code here, to run repeatedly:
+  if (token == 'X' && newCmd[0] == 'A') {  // send some control command directly to the module
+                                           //XAa: turn on the voice response
+                                           //XAb: mute the voice response
+                                           //XAc: start learning
+                                           //XAd: stop learning
+                                           //XAe: switch English
+                                           //XAf: switch Chinese
+    byte c = 0;
+    while (newCmd[c++] != '~')
+      ;
+    newCmd[c - 1] = '\0';
+    Serial.print('X');
+    Serial.println(newCmd);
+    Serial2.print('X');
+    Serial2.println(newCmd);
+    while (Serial2.available() && Serial2.read())
+      ;
+    resetCmd();
+  }
+
   if (Serial2.available()) {
     String raw = Serial2.readStringUntil('\n');
     PTL(raw);

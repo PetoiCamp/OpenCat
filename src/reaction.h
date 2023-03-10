@@ -104,7 +104,6 @@ void reaction() {
       case T_RAMP:
 #endif
         {
-
 #ifdef GYRO_PIN
           if (token == T_GYRO_FINENESS) {
             fineAdjust = !fineAdjust;
@@ -168,11 +167,16 @@ void reaction() {
 #ifdef ULTRASONIC
       case T_COLOR:
         {
-          long color = ((long)(newCmd[0]) << 16) + ((long)(newCmd[1]) << 8) + (long)(newCmd[2]);
-          if (newCmd[4] == -1)  //no special effect
-            mRUS04.SetRgbColor(E_RGB_INDEX(newCmd[3]), color);
-          else
-            mRUS04.SetRgbEffect(E_RGB_INDEX(newCmd[3]), color, newCmd[4]);
+          if (cmdLen == 0)  //a single 'C' will turn off the manual color mode
+            manualEyeColorQ = false;
+          else {  // turn on the manual color mode
+            manualEyeColorQ = true;
+            long color = ((long)(newCmd[0]) << 16) + ((long)(newCmd[1]) << 8) + (long)(newCmd[2]);
+            if (newCmd[4] == -1)  //no special effect
+              mRUS04.SetRgbColor(E_RGB_INDEX(newCmd[3]), color);
+            else
+              mRUS04.SetRgbEffect(E_RGB_INDEX(newCmd[3]), color, newCmd[4]);
+          }
           break;
         }
 #endif

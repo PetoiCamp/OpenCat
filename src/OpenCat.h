@@ -332,6 +332,7 @@ bool serialDominateQ = false;
 bool manualHeadQ = false;
 bool nonHeadJointQ = false;
 bool hardServoQ = true;
+bool manualEyeColorQ = false;
 #define HEAD_GROUP_LEN 4  //used for controlling head pan, tilt, tail, and other joints independent from walking
 // #define DAMPED_MOTION
 int targetHead[HEAD_GROUP_LEN];
