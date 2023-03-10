@@ -1488,15 +1488,20 @@ class SkillComposer:
             serialCmd = self.newCmd.get()
             logger.debug(f'serialCmd={serialCmd}')
             if serialCmd != '':
-                token = serialCmd[0]
-                cmdList = serialCmd[1:].replace(',',' ').split()
+                try:
+                    token = serialCmd[0]
+                    cmdList = serialCmd[1:].replace(',',' ').split()
 
-                if len(cmdList) <= 1:
-                    send(ports, [serialCmd, 1])
-                else:
-                    cmdList = list(map(lambda x:int(x),cmdList))
-                    send(ports, [token,cmdList, 1])
-                self.newCmd.set('')
+                    if len(cmdList) <= 1:
+                        send(ports, [serialCmd, 1])
+                    else:
+                        cmdList = list(map(lambda x:int(x),cmdList))
+                        send(ports, [token,cmdList, 1])
+                    self.newCmd.set('')
+                except Exception as e:
+                    logger.info("Exception")
+                    print("Illegal input!")
+                    raise e
 
     def setPose(self, pose):
         if self.ready == 1:
