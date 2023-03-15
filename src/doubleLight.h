@@ -55,8 +55,8 @@ void read_doubleLight() {
   // PTL(last);
 
   if (maxL < -50) {
-    tQueue->push_back(new Task('k', "bk", 2000));  // jigs when entering this case for the 2nd time. ???
-    tQueue->push_back(new Task('k', "up"));        // jigs when entering this case for the 2nd time. ???
+    tQueue->addTask('k', "bk", 2000);  // jigs when entering this case for the 2nd time. ???
+    tQueue->addTask('k', "up");        // jigs when entering this case for the 2nd time. ???
     PTL(tQueue->size());
   } else if (maxL < 300) {
     actualOffset = (last + clippedOffset) / 2;
@@ -68,7 +68,8 @@ void read_doubleLight() {
     cmdLen = 2;
     newCmdIdx = 5;
     PTL(actualOffset);
-  } else if (maxL > 300 && abs(offset) > 30) {
-    tQueue->push_back(new Task('k', (offset > 0 ? "vtR" : "vtL"), 1000));
-  }
+  } 
+  // else if (maxL > 300 && abs(offset) > 30) {
+  //   tQueue->addTask('k', (offset > 0 ? "vtR" : "vtL"), 1000);
+  // }
 }

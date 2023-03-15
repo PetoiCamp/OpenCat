@@ -45,25 +45,25 @@ void read_gesture() {
       case GESTURE_UP:
         {
           PTLF("UP\t↑");
-          tQueue->push_back(new Task(T_BEEP_BIN, melody12345, 0));
-          tQueue->push_back(new Task('k', "fiv", 2000));
-          tQueue->push_back(new Task('k', "up"));
+          tQueue->addTask(T_BEEP_BIN, melody12345, 0);
+          tQueue->addTask('k', "fiv", 2000);
+          tQueue->addTask('k', "up");
           break;
         }
 
       case GESTURE_DOWN:
         {
           PTLF("DOWN\t↓");
-          tQueue->push_back(new Task('i', ""));
-          tQueue->push_back(new Task(T_BEEP_BIN, melody54321, 0));
-          tQueue->push_back(new Task('k',
+          tQueue->addTask('i', "");
+          tQueue->addTask(T_BEEP_BIN, melody54321, 0);
+          tQueue->addTask('k',
 
 #ifdef BITTLE
                                      "scrh"
 #elif defined NYBBLE
                                      "wsf"
 #endif
-                                     ));
+                                     );
 
           break;
         }
@@ -72,18 +72,18 @@ void read_gesture() {
         {
           PTLF("LEFT\t←");
           int8_t move[] = { 0, -70, 0, -65, '~' };
-          tQueue->push_back(new Task(T_BEEP_BIN, melody32654, 0));
-          tQueue->push_back(new Task(T_INDEXED_SEQUENTIAL_BIN, move, 1000));
-          tQueue->push_back(new Task(T_INDEXED_SIMULTANEOUS_ASC, "0 0"));
+          tQueue->addTask(T_BEEP_BIN, melody32654, 0);
+          tQueue->addTask(T_INDEXED_SEQUENTIAL_BIN, move, 1000);
+          tQueue->addTask(T_INDEXED_SIMULTANEOUS_ASC, "0 0");
           break;
         }
       case GESTURE_RIGHT:
         {
           PTLF("RIGHT\t→");
           int8_t move[] = { 0, 70, 0, 65, '~' };
-          tQueue->push_back(new Task(T_BEEP_BIN, melody67345, 0));
-          tQueue->push_back(new Task(T_INDEXED_SEQUENTIAL_BIN, move, 0));
-          tQueue->push_back(new Task(T_INDEXED_SIMULTANEOUS_ASC, "0 0"));
+          tQueue->addTask(T_BEEP_BIN, melody67345, 0);
+          tQueue->addTask(T_INDEXED_SEQUENTIAL_BIN, move, 0);
+          tQueue->addTask(T_INDEXED_SIMULTANEOUS_ASC, "0 0");
           break;
         }
       default:

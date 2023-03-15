@@ -141,14 +141,14 @@ void read_camera() {
     else
       widthCounter = 0;
     if (width < 20) {
-      tQueue->push_back(new Task('k', currentX < -15 ? "wkR" : (currentX > 15 ? "wkL" : "wkF"), (50 - width) * 80));
-      tQueue->push_back(new Task('k', "sit"));
-      tQueue->push_back(new Task('i', ""));
+      tQueue->addTask('k', currentX < -15 ? "wkR" : (currentX > 15 ? "wkL" : "wkF"), (50 - width) * 80);
+      tQueue->addTask('k', "sit");
+      tQueue->addTask('i', "");
       currentX = 0;
     } else if (widthCounter > 5) {
-      tQueue->push_back(new Task('k', "bk", 1000));
-      tQueue->push_back(new Task('k', "sit"));
-      tQueue->push_back(new Task('i', ""));
+      tQueue->addTask('k', "bk", 1000);
+      tQueue->addTask('k', "sit");
+      tQueue->addTask('i', "");
       widthCounter = 0;
       currentX = 0;
     } else {
@@ -174,9 +174,9 @@ void read_camera() {
           //      printList(newCmd);}
         }
         else {
-          tQueue->push_back(new Task('k', (currentX < 0 ? "vtR" : "vtL"), 2000));
-          tQueue->push_back(new Task('k', "sit"));
-          tQueue->push_back(new Task('i', ""));
+          tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), 2000);
+          tQueue->addTask('k', "sit");
+          tQueue->addTask('i', "");
           currentX = 0;
         }
       }

@@ -338,7 +338,7 @@ bool manualEyeColorQ = false;
 int targetHead[HEAD_GROUP_LEN];
 
 
-byte exceptions = 0;
+int exceptions = 0;
 byte transformSpeed = 2;
 float protectiveShift;  //reduce the wearing of the potentiometer
 
@@ -412,7 +412,9 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 
 #ifdef GYRO_PIN
 #include "imu.h"
+#ifdef IR_PIN
 #undef TASK_QUEUE
+#endif
 #endif
 
 #include "PCA9685servo.h"

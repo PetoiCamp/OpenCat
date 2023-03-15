@@ -20,23 +20,22 @@ void read_doubleTouch() {
       currentTouchState[i] = digitalRead(touchIn[i]);
     if (currentTouchState[0] && currentTouchState[1]) {
       beep(20, 50, 50, 3);
-      tQueue->push_back(new Task('k', "bk", 1500));
-      tQueue->push_back(new Task('k', "up"));
+      tQueue->addTask('k', "bk", 1500);
+      tQueue->addTask('k', "up");
     } else if (currentTouchState[0]) {
-      tQueue->push_back(new Task('b', "10,16,12,16,14,16"));  //example using 'b' for ASCII commands. Not recommended because of low encoding efficiency.It uses 17 byes to encode 6 numbers
-      tQueue->push_back(new Task('i', "0,90"));               //example using 'i' for ASCII commands. Not recommended because of low encoding efficiency. It uses 4 byes to encode 2 numbers
-                                                              //the movement starts after the music
+      tQueue->addTask('i', "0,90");               //example using 'i' for ASCII commands. Not recommended because of low encoding efficiency. It uses 4 byes to encode 2 numbers
+      tQueue->addTask('b', "10,16,12,16,14,16");  //example using 'b' for ASCII commands. Not recommended because of low encoding efficiency.It uses 17 byes to encode 6 numbers
     } else if (currentTouchState[1]) {
       char mel[] = { 17, 16, 19, 16, 21, 16, '~' };  //example using 'B' for Binary commands. it has to end up with '~' because regular 0 can be mistaken as '\0'.
       char mov[] = { 0, -90, '~' };                  //example using 'I' for Binary commands. it has to end up with '~' because regular 0 can be mistaken as '\0'.
-      tQueue->push_back(new Task('I', mov));         //the movement starts before the music
-      tQueue->push_back(new Task('B', mel));
+      tQueue->addTask('I', mov);                     //the movement starts before the music
+      tQueue->addTask('B', mel);
     } else {
       // char mel[]={
       char mel[] = { 15, 16, 14, 16, 12, 16, '~' };
-      tQueue->push_back(new Task('i', ""));
-      tQueue->push_back(new Task('k', "sit"));
-      tQueue->push_back(new Task('B', mel));
+      tQueue->addTask('i', "");
+      tQueue->addTask('k', "sit");
+      tQueue->addTask('B', mel);
     }
   }
   for (byte i = 0; i < 2; i++)

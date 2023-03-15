@@ -31,9 +31,12 @@ public:
     PTLF("TaskQ");
   };
   // void createTask() {  //this is an example task
-  //   this->push_back(new Task('k', "vtF", 2000));
-  //   this->push_back(new Task('k', "up"));
+  //   this->addTask('k', "vtF", 2000);
+  //   this->addTask('k', "up");
   // }
+  template<typename T> void addTask(char t, T* p, int d = 0) {
+    this->push_back(new Task(t, p, d));
+  }
   void popTask() {
     if (taskInterval == -1 || millis() - taskTimer > taskInterval) {
       Task* t = this->front();

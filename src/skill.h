@@ -263,7 +263,6 @@ public:
     dutyAngles = (int8_t*)newCmd + BUFF_LEN - angleLen;
   }
   void formatSkill() {
-    transformSpeed = 2;
     for (int i = 0; i < 2; i++) {
       expectedRollPitch[i] = (int8_t)newCmd[1 + i];
       yprTilt[2 - i] = 0;
@@ -319,10 +318,8 @@ public:
         loadDataFromProgmem(dataArrayAddress);
       formatSkill();
       strcpy(newCmd, tempName);
-      if (strcmp(newCmd, "calib") && period == 1)
-        protectiveShift = random() % 100 / 10.0 - 5;
-      else
-        protectiveShift = 0;
+      transformSpeed = strcmp(newCmd, "lnd") ? 2 : 0;
+      protectiveShift = (strcmp(newCmd, "calib") && period == 1) ? random() % 100 / 10.0 - 5 : 0;
       for (byte i = 0; i < DOF; i++)
         dutyAngles[i] += protectiveShift;
       // info();

@@ -1,6 +1,6 @@
 #ifdef VOICE
 #include <SoftwareSerial.h>
-SoftwareSerial Serial2(6, 7);
+SoftwareSerial Serial2(6, 7);  //Rx, Tx
 #endif
 #define SERIAL2_BAUD_RATE 9600
 #define MAX_CUSTOMIZED_CMD 10
@@ -100,10 +100,10 @@ void read_voice() {
         shift = 4;              //3;
       }
       const char *cmd = raw.c_str() + shift;
-      tQueue->push_back(new Task(token, shift > 0 ? cmd : "", 2000));
+      tQueue->addTask(token, shift > 0 ? cmd : "", 2000);
       char end = cmd[strlen(cmd) - 1];
       if (!strcmp(cmd, "bk") || !strcmp(cmd, "x") || end >= 'A' && end <= 'Z' || end == 'x') {
-        tQueue->push_back(new Task('k', "up"));
+        tQueue->addTask('k', "up");
       }
     }
   }

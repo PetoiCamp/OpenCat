@@ -137,13 +137,19 @@ VectorInt16 aaWorld;  // [x, y, z]            world-frame accel sensor measureme
 VectorFloat gravity;  // [x, y, z]            gravity vector
 float euler[3];       // [psi, theta, phi]    Euler angle container
 float ypr[3];         // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-
+#define ARX aaReal.x
+#define ARY aaReal.y
+#define ARZ aaReal.z
+#define AWX aaWorld.x
+#define AWY aaWorld.y
+#define AWZ aaWorld.z
 #define IMU_SKIP 3
 #define IMU_SKIP_MORE 23  //use prime number to avoid repeatly skipping the same joint
 byte imuSkip = IMU_SKIP;
 int16_t imuOffset[9] = { 0, 0, 0,
                          0, 0, 0,
                          0, 0, 0 };
+
 
 // ================================================================
 // ===               INTERRUPT DETECTION ROUTINE                ===
@@ -154,21 +160,30 @@ int16_t imuOffset[9] = { 0, 0, 0,
 //  mpuInterrupt = true;
 //}
 
+// The REALACCEL numbers are calculated with respect to the orientation of the sensor itself, so that if it is flat and you move it straight up, the "Z" accel will change, but if you flip it up on one side and move it in the new relative "up" direction (along the sensor's Z axis), it will still register acceleration on the Z axis. Essentially, it is sensor-oriented acceleration which removes the effects of gravity and any non-flat/level orientation.
 
+// The WORLDACCEL numbers are calculated to ignore orientation. Moving it straight up while flat will look the same as the REALACCEL numbers, but if you then flip it upside-down and do the exact same movement ("up" with respect to you), you'll get exactly the same numbers as before, even though the sensor itself is upside-down.
+
+// #define READ_ACCELERATION
 void print6Axis() {
-  PT_FMT(ypr[0], 5);
-  PT('\t');
-  PT_FMT(ypr[1], 5);
-  PT('\t');
-  PT_FMT(ypr[2], 5);
-  //  PT("\t");
-  //  PT(aaWorld.x);
-  //  PT("\t");
-  //  PT(aaWorld.y);
-  //  PT("\t");
-  //  PTL(aaWorld.z / 1000);
-  //  PT('\t');
-  //  PT(aaReal.z);
+  // PT_FMT(ypr[0], 5);
+  // PT('\t');
+  // PT_FMT(ypr[1], 5);
+  // PT('\t');
+  // PT_FMT(ypr[2], 5);
+#ifdef READ_ACCELERATION
+  PT("\t");
+  // PT(aaWorld.x);
+  // PT("\t");
+  // PT(aaWorld.y);
+  PT(aaReal.x);  //x is along the longer direction of the robot
+  PT("\t");
+  PT(aaReal.y);
+  PT("\t");
+  PT(aaWorld.z);
+  // PT('\t');
+  // PT(aaReal.z);
+#endif
   PTL();
 }
 bool read_IMU() {
@@ -176,18 +191,38 @@ bool read_IMU() {
   //  mpuIntStatus = mpu.getIntStatus();
   //  PTL(mpuInterrupt);
   if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) {  // Get the Latest packet
-    // display Euler angles in degrees
+                                                  // display Euler angles in degrees
     mpu.dmpGetQuaternion(&q, fifoBuffer);
+#ifdef READ_ACCELERATION
+    mpu.dmpGetAccel(&aa, fifoBuffer);
+    mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+    mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+#endif
     mpu.dmpGetGravity(&gravity, &q);
     mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-    //    mpu.dmpGetAccel(&aa, fifoBuffer);
-    //    mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+
 
     for (int i = 0; i < 3; i++)
       ypr[i] *= degPerRad;
     if (printGyro)
       print6Axis();
     exceptions = fabs(ypr[2]) > 90;  // && aaReal.z < 0; //the second condition is used to filter out some noise
+
+    // Acceleration Real
+    //        ^ x+
+    //        |
+    //  y+ <----- y-
+    //        |
+    //        | x-
+    // exceptions = false;
+    // if (aaWorld.z < 2000)
+    //   exceptions = -1;  //dropping
+    // if (fabs(ypr[2]) > 90)
+    //   exceptions = -2;  // flipped
+
+    // if (abs(ARX) > 5000 || abs(ARY) > 5000) {
+    //   exceptions = -3;
+    // }
     //however, its change is very slow.
     return true;
   }
