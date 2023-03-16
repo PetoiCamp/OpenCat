@@ -43,10 +43,10 @@ class Calibrator:
 #        quitButton.grid(row=11, column=2)
 
         imageW = 250
-        self.imgWiring = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Wire.jpeg', imageW)
+        self.imgWiring = createImage(self.frameCalibButtons, resourcePath + self.model + 'Wire.jpeg', imageW)
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
-        self.imgPosture = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Ruler.jpeg', imageW)
+        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', imageW)
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
 
         for i in range(16):
@@ -115,7 +115,7 @@ class Calibrator:
         imageW = 250
         self.imgPosture.destroy()
         if cmd == 'c':
-            self.imgPosture = createImage(self.frameCalibButtons, 'resources/' + self.model + 'Ruler.jpeg', imageW)
+            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', imageW)
             result = send(goodPorts, ['c', 0])
             if result != -1:
                 offsets = result[1]

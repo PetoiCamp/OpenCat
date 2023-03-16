@@ -6,7 +6,8 @@ const char calibrationpage[] PROGMEM = R"=====(
     <div class="explanation">
         <h5>Calibrating is vital for your robot to correctly stand and walk</h5>
         <p>It is important to understand that the servos installed on your robot do have some backlash and that you have to overcome it.</p>
-        <p><b>Do calibrate all your joints on the same direction!</b> What does this mean in practice? Well, choose if you are going to fine tune with "+" buttons or "-" buttons. Let's say you chose the "+" button. First, exaggerate the "-" offset, so that the joint is totally off calibration. Then, slowly come back to calibration position with the "+" button. If you pass the correct angle, <b>do not just step back one offset</b> or you'll see that the servo might not even move! Just exaggerate the "-" offset again and slowly come back with the "+". Choose the same direction for all joints!</p>
+        <p><b>Do calibrate all your joints on the same direction!</b> What does this mean in practice? Well, choose if you are going to fine tune with "+" buttons or "-" buttons. Let's say you chose the "+" button. First, exaggerate the "-" offset, so that the joint is totally off calibration. Then, slowly come back to calibration position with the "+" button.
+If you pass the correct angle, <b>do not just step back one offset</b> or you'll see that the servo might not even move! Just exaggerate the "-" offset again and slowly come back with the "+". Choose the same direction for all joints!</p>
         <p><b>Don't forget to hit the save button once you're done, or you'll loose your hard work!</b></p>
     </div>
     <div class="center">
