@@ -37,17 +37,21 @@ public:
   template<typename T> void addTask(char t, T* p, int d = 0) {
     this->push_back(new Task(t, p, d));
   }
+  template<typename T> void addTaskToFront(char t, T* p, int d = 0) {
+    this->push_front(new Task(t, p, d));
+  }
+  bool Cleared() {
+    return this->size() == 0 && long(millis() - taskTimer) > taskInterval;
+  }
   void popTask() {
-    if (taskInterval == -1 || millis() - taskTimer > taskInterval) {
+    if (this->size() > 0 && long(millis() - taskTimer) > taskInterval) {
       Task* t = this->front();
       // t->info();
       token = t->tkn;
       cmdLen = t->paraLength;
       taskInterval = t->dly;
-      // if (cmdLen) {
       arrayNCPY(newCmd, t->parameters, cmdLen);
       newCmd[cmdLen] = token < 'a' ? '~' : '\0';
-      // }
       taskTimer = millis();
       newCmdIdx = 5;
       delete t;

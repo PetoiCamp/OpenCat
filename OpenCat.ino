@@ -64,7 +64,7 @@
 // #define DOUBLE_TOUCH  //for double touch sensor
 // #define DOUBLE_LIGHT  //for double light sensor
 // #define GESTURE  //for Gesture module
-// #define CAMERA          //for BallTracking using Mu Vision camera
+// #define CAMERA  //for BallTracking using Mu Vision camera
 // You need to install https://github.com/mu-opensource/MuVisionSensor3 as a zip library in Arduino IDE.
 // Set the four dial switches on the camera as **v ^ v v** (the second switch dialed up to I2C) and connect the camera module to the I2C grove on NyBoard.
 // The battery should be turned on to drive the servos.
@@ -108,22 +108,17 @@ void loop() {
 #endif
 
 #ifdef TASK_QUEUE
-  if (tQueue->size() > 0) {
+  if (!tQueue->Cleared()) {
     tQueue->popTask();
-  } else {
-    if (long(millis() - taskTimer) > taskInterval) {
-      taskInterval = -1;
+  } else
 #endif
-      readSignal();  //commands sent by user interfaces and sensors
+  {
+    readSignal();  //commands sent by user interfaces and sensors
 #ifdef OTHER_MODULES
-      otherModule();  //you can create your own code here
-                      //or put it in the readSignal() function of src/io.h
+    otherModule();  //you can create your own code here
+                    //or put it in the readSignal() function of src/io.h
 #endif
-#ifdef TASK_QUEUE
-    }
   }
-#endif
-
   reaction();  //handle different commands
 #else
   calibratePCA9685();
