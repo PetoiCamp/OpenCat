@@ -61,6 +61,7 @@ void showRecognitionResult(int xCoord, int yCoord, int width, int height = -1) {
 }
 
 #define WALK  //let the robot move its body to follow people rather than sitting at the original position
+              // it works the best on the table so the robot doesn't need to loop upward.
 void cameraBehavior(int xCoord, int yCoord, int width) {
   // showRecognitionResult(xCoord, yCoord, width);
 #ifdef WALK
@@ -68,15 +69,15 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
     widthCounter++;
   else
     widthCounter = 0;
-  if (width < 25 && width > 16) {                                                                                   //16 maybe a noise signal
-    tQueue->push_back(new Task('k', currentX < -15 ? "wkR" : (currentX > 15 ? "wkL" : "wkF"), (50 - width) * 80));  //walk towards you
-    tQueue->push_back(new Task('k', "sit"));
-    tQueue->push_back(new Task('i', ""));
+  if (width < 25 && width > 16) {                                                                       //16 maybe a noise signal
+    tQueue->addTask('k', currentX < -15 ? "wkR" : (currentX > 15 ? "wkL" : "wkF"), (50 - width) * 80);  //walk towards you
+    tQueue->addTask('k', "sit");
+    tQueue->addTask('i', "");
     currentX = 0;
   } else if (widthCounter > 3) {
-    tQueue->push_back(new Task('k', "bk", 1000));  //the robot will walk backward if you get too close!
-    tQueue->push_back(new Task('k', "sit"));
-    tQueue->push_back(new Task('i', ""));
+    tQueue->addTask('k', "bk", 1000);  //the robot will walk backward if you get too close!
+    tQueue->addTask('k', "sit");
+    tQueue->addTask('i', "");
     widthCounter = 0;
     currentX = 0;
   } else {
@@ -103,9 +104,9 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
       }
 #ifdef WALK
       else {
-        tQueue->push_back(new Task('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 50));  //spin its body to follow you
-        tQueue->push_back(new Task('k', "sit"));
-        tQueue->push_back(new Task('i', ""));
+        tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 50);  //spin its body to follow you
+        tQueue->addTask('k', "sit");
+        tQueue->addTask('i', "");
         currentX = 0;
       }
     }
