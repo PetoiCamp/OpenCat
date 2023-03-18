@@ -449,6 +449,7 @@ void reaction() {
               ))
         token = T_SKILL;
     }
+    resetCmd();
   }
 
 #ifdef MAIN_SKETCH
@@ -475,12 +476,10 @@ void reaction() {
     }
     if (exceptions && lastCmd[strlen(lastCmd) - 1] < 'L' && skill.lookupAddressByName(lastCmd) > 0) {  //lastToken == T_SKILL && lastSkill->period > 0) {
                                                                                                        // if the last command is not a behavior and not a turning gait. case wkF, wkL, wkR, rlL, rlR
-      if (strcmp(lastCmd, ""))
+      if (lastCmd[0] != '\0')
         skill.loadFrame(lastCmd);
       // read_IMU();
     }
   }
-
-  resetCmd();
 #endif
 }
