@@ -10,17 +10,6 @@ char getUserInputChar() {  //take only the first character, allow "no line endin
   return result;
 }
 
-void printCmd() {
-  PTF("lastT:");
-  PT(lastToken);
-  PTF("\tT:");
-  PT(token);
-  PTF("\tLastCmd:");
-  PT(lastCmd);
-  PTF("\tCmd:");
-  printCmdByType(token, newCmd);
-}
-
 void read_serial() {
   if (Serial.available() > 0) {
     serialDominateQ = true;

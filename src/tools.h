@@ -104,6 +104,17 @@ void FPS() {
   }
 }
 
+void printCmd() {
+  PTF("lastT:");
+  PT(lastToken);
+  PTF("\tT:");
+  PT(token);
+  PTF("\tLastCmd:");
+  PT(lastCmd);
+  PTF("\tCmd:");
+  printCmdByType(token, newCmd);
+} 
+
 void resetCmd() {
   if (token == T_SKILL && newCmd[0] != '\0' && strcmp(newCmd, "rc")) {
     strcpy(lastCmd, newCmd);
