@@ -169,11 +169,14 @@ void read_infrared() {
     String IRsig = irParser(translateIR());
     // PTL(IRsig);
     if (IRsig != "") {
-      strcpy(newCmd, IRsig.c_str());
-      if (strlen(newCmd) == 1)
-        token = newCmd[0];
-      else
+      if (IRsig.length() == 1)
+        token = IRsig[0];
+      else {
         token = T_SKILL;
+        strcpy(newCmd, IRsig.c_str());
+        if (!strcmp(newCmd, "up"))
+          direct = 'F';
+      }
       newCmdIdx = 1;
     }
     irrecv.resume();  // receive the next value

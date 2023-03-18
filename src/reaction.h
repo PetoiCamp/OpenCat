@@ -167,7 +167,8 @@ void reaction() {
 #ifdef ULTRASONIC
       case T_COLOR:
         {
-          if (cmdLen == 0)  //a single 'C' will turn off the manual color mode
+          if (cmdLen < 2)  //a single 'C' will turn off the manual color mode
+                           //the terminator of upper-case tokens is not '\n'. it may cause error when entered in the Arduino serial monitor
             manualEyeColorQ = false;
           else {  // turn on the manual color mode
             manualEyeColorQ = true;
@@ -326,8 +327,8 @@ void reaction() {
       // this block handles array like arguments
       case T_INDEXED_SEQUENTIAL_BIN:
       case T_INDEXED_SIMULTANEOUS_BIN:
-        {  //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
-          if (cmdLen == 0)
+        {                  //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
+          if (cmdLen < 2)  //the terminator of upper-case tokens is not '\n'. it may cause error when entered in the Arduino serial monitor
             manualHeadQ = false;
           else {
             int targetFrame[DOF];
@@ -367,7 +368,8 @@ void reaction() {
         }
       case T_BEEP_BIN:
         {
-          if (cmdLen == 0)  //toggle the melody on/off
+          if (cmdLen < 2)  //toggle the melody on/off
+                           //the terminator of upper-case tokens is not '\n'. it may cause error when entered in the Arduino serial monitor
             EEPROM.update(BOOTUP_SOUND_STATE, !eeprom(BOOTUP_SOUND_STATE));
           else {
             for (byte b = 0; b < cmdLen / 2; b++)
@@ -447,13 +449,8 @@ void reaction() {
               ))
         token = T_SKILL;
     }
-
-    resetCmd();
-#ifdef DEVELOPER
-    PTF("Mem:");
-    PTL(freeMemory());
-#endif
   }
+
 #ifdef MAIN_SKETCH
   if (token == T_SKILL) {
     skill.perform();
@@ -461,23 +458,29 @@ void reaction() {
 #if defined NyBoard_V0_1 || defined NyBoard_V0_2 || !defined GYRO_PIN
     delayMicroseconds(850);  //Slow the robot down to smooth out motion; adjust delay PRN
 #endif
-  }
-  if (skill.period < 0) {
-    if (exceptions && lastCmd[strlen(lastCmd) - 1] < 'L' && skill.lookupAddressByName(lastCmd) > 0) {  //lastToken == T_SKILL && lastSkill->period > 0) {
-      // if the last command is not a behavior and not a turning gait. case wkF, wkL, wkR, rlL, rlR
-      strcpy(newCmd, lastCmd);
-    } else {
-      newCmd[0] = '\0';
-      arrayNCPY(skill.dutyAngles, skill.dutyAngles + (abs(skill.period) - 1) * skill.frameSize, DOF);
-      skill.period = 1;
-      frame = 0;
+    if (skill.period < 0) {  //behaviors
+      {                      //use the last frame as a posture
+        // newCmd[0] = '\0';
+        // arrayNCPY(skill.dutyAngles, skill.dutyAngles + (abs(skill.period) - 1) * skill.frameSize, DOF);
+        // skill.period = 1;
+        // frame = 0;
+        skill.convertTargetToPosture(currentAng);
+      }
+      for (int i = 0; i < DOF; i++)
+        currentAdjust[i] = 0;
+      // if (strcmp(newCmd, ""))
+      //   skill.loadFrame(newCmd);
+      PTL(token);  //behavior can confirm completion by sending the token back
+      //      PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
     }
-    for (int i = 0; i < DOF; i++)
-      currentAdjust[i] = 0;
-    if (strcmp(newCmd, ""))
-      skill.loadFrame(newCmd);
-    PTL(token);  //behavior can confirm completion by sending the token back
-    //      PTL("lastT:" + String(lastToken) + "\tT:" + String(token) + "\tLastCmd:" + String(lastCmd) + "\tCmd:" + String(newCmd));
+    if (exceptions && lastCmd[strlen(lastCmd) - 1] < 'L' && skill.lookupAddressByName(lastCmd) > 0) {  //lastToken == T_SKILL && lastSkill->period > 0) {
+                                                                                                       // if the last command is not a behavior and not a turning gait. case wkF, wkL, wkR, rlL, rlR
+      if (strcmp(lastCmd, ""))
+        skill.loadFrame(lastCmd);
+      // read_IMU();
+    }
   }
+
+  resetCmd();
 #endif
 }

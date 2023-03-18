@@ -17,10 +17,8 @@ void printCmd() {
   PT(token);
   PTF("\tLastCmd:");
   PT(lastCmd);
-  PT('\t');
-  PT(cmdLen);
   PTF("\tCmd:");
-  printCmdByType(token, newCmd, cmdLen);
+  printCmdByType(token, newCmd);
 }
 
 void read_serial() {
@@ -62,7 +60,7 @@ void read_serial() {
     // PTH("*SR\t", long(millis() - lastSerialTime));
     cmdLen = (newCmd[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
     newCmd[cmdLen] = token < 'a' ? '~' : '\0';
-    // PTL(cmdLen);
+    PTL(cmdLen);
     // printCmdByType(token, newCmd, cmdLen);
 #ifdef DEVELOPER
     PTF("Mem:");

@@ -21,7 +21,7 @@ public:
     delete[] parameters;
   };
   void info() {
-    printCmdByType(tkn, parameters, paraLength);
+    printCmdByType(tkn, parameters);
   }
 };
 
