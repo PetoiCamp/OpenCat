@@ -40,21 +40,22 @@ public:
   template<typename T> void addTaskToFront(char t, T* p, int d = 0) {
     this->push_front(new Task(t, p, d));
   }
-  bool Cleared() {
+  bool cleared() {
     return this->size() == 0 && long(millis() - taskTimer) > taskInterval;
+  }
+  void loadTaskInfo(Task* t) {
+    token = t->tkn;
+    cmdLen = t->paraLength;
+    taskInterval = t->dly;
+    arrayNCPY(newCmd, t->parameters, cmdLen);
+    newCmd[cmdLen] = token < 'a' ? '~' : '\0';
+    taskTimer = millis();
+    newCmdIdx = 5;
+    delete t;
   }
   void popTask() {
     if (this->size() > 0 && long(millis() - taskTimer) > taskInterval) {
-      Task* t = this->front();
-      // t->info();
-      token = t->tkn;
-      cmdLen = t->paraLength;
-      taskInterval = t->dly;
-      arrayNCPY(newCmd, t->parameters, cmdLen);
-      newCmd[cmdLen] = token < 'a' ? '~' : '\0';
-      taskTimer = millis();
-      newCmdIdx = 5;
-      delete t;
+      loadTaskInfo(this->front());
       this->pop_front();
     }
   }

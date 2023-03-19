@@ -126,3 +126,13 @@ void resetCmd() {
   newCmd[0] = '\0';
   cmdLen = 0;
 }
+
+char *strGet(char *s, int i) {  //allow negative index
+  int len = strlen(s);
+  if (abs(i) <= len)
+    return s + (i < 0 ? len + i : i);
+  else {
+    PTL("Invalid index!");
+    return s;
+  }
+}
