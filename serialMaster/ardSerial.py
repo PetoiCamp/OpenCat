@@ -115,7 +115,6 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
             in_str = token.encode()+encode(message) +'\n'.encode()
 
     slice = 0
-    printH("send len ",len(in_str))
     while len(in_str) > slice:
         if len(in_str) - slice >= 20:
             port.Send_data(in_str[slice:slice+20])
@@ -169,12 +168,12 @@ def printSerialMessage(port, token, timeout=0):
             response = port.main_engine.readline().decode('ISO-8859-1')
             if response != '':
                 #                startTime = time.time()
-                response = response[:-2]  # delete '\r\n'
-                if response.lower() == token.lower():
+                responseTrim = response.replace('\r','').replace('\n','')
+                if responseTrim.lower() == token.lower():
                     return [response, allPrints]
                 else:
                     print(response, flush=True)
-                    allPrints += response + '\n'
+                    allPrints += response
         now = time.time()
         if (now - startTime) > threshold:
             print('Elapsed time: ', end='')

@@ -279,24 +279,24 @@ if __name__ == '__main__':
         t.start()
         parallel = False
 #        if len(goodPorts)>0:
-        time.sleep(2);
+#        time.sleep(2);
         for task in testSchedule:  # execute the tasks in the testSchedule
-            print(task)
+#            print(task)
             send(goodPorts, task)
         send(goodPorts, ['kbalance',0.5])
         send(goodPorts, ['kwkF',0])
         for i in range (3): # move head while walking
             for a in range(0,180,5): # allow controlling the head while walking
-                send(goodPorts,['i',[0,a-90,1,a//2-45,2,a-90],0])
+                send(goodPorts,['i',[0,a-90,1,a//2-45,2,a-90],0.01])
             for a in range(0,180,5):
-                send(goodPorts,['i',[0,-(a-90),1,-(a//2-45),2,90-a],0])
+                send(goodPorts,['i',[0,-(a-90),1,-(a//2-45),2,90-a],0.01])
         send(goodPorts, ['i',0])
         send(goodPorts, ['kwkF',2])
         for i in range (3): # move head while walking
             for a in range(0,180,5): # allow controlling the head while walking
-                send(goodPorts,['I',[0,a-90,1,a//2-45,2,a-90],0])
+                send(goodPorts,['I',[0,a-90,1,a//2-45,2,a-90],0.01])
             for a in range(0,180,5):
-                send(goodPorts,['I',[0,-(a-90),1,-(a//2-45),2,90-a],0])
+                send(goodPorts,['I',[0,-(a-90),1,-(a//2-45),2,90-a],0.01])
         send(goodPorts, ['i',2])
         send(goodPorts, ['kvtF',2])
 
@@ -310,9 +310,9 @@ if __name__ == '__main__':
 #            send(goodPorts,['W',[100,9,0,100,8,1],0.1])
 #            send(goodPorts,['W',[100,9,0,100,8,0],0.1])
 #            for i in range(8):
-#                send(goodPorts,['W',[97,9,i*30,97,3,255-i*30],0.1]) # analog write. 'a' = 97.
+#                send(goodPorts,['W',[97,6,i*30,97,9,255-i*30,97,10,255-i*30],0.1]) # analog write. 'a' = 97.
 #            for i in range(8):
-#                send(goodPorts,['W',[97,9,255-i*30,97,3,255-i*30],0.1])
+#                send(goodPorts,['W',[97,6,255-i*30,97,9,i*30,97,10,i*30],0.1])
 #            send(goodPorts,['R',[97,16,97,17],0.1])
 #            time.sleep(1)
 #

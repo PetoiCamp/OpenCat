@@ -366,18 +366,12 @@ void reaction() {
                 PTF("Got ");
                 pinMode(newCmd[i + 1], INPUT);
                 if (newCmd[i] == TYPE_ANALOG)  // Arduino Uno: A2->16, A3->17
-                  PT(analogRead(newCmd[i + 1]));
+                  PTL(analogRead(newCmd[i + 1]));
                 else if (newCmd[i] == TYPE_DIGITAL)
-                  PT(digitalRead(newCmd[i + 1]));
-                PT('\t');
+                  PTL(digitalRead(newCmd[i + 1]));
               }
 #endif
             }
-#ifdef GROVE_SERIAL_PASS_THROUGH
-            if (token == T_READ) {
-              PTL();
-            }
-#endif
             if (nonHeadJointQ || lastToken != T_SKILL) {
               // PTL(token);
               transform(targetFrame, 1, 4);  // if (token == T_INDEXED_SEQUENTIAL_BIN) it will be useless
