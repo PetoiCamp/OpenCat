@@ -3,11 +3,7 @@
 // -- comment out these blocks to save program space for your own codes --
 
 #define IR_PIN 4  // Signal Pin of IR receiver to Arduino Digital Pin 4
-// -----------------------------------------------------------------------
 #define BUZZER 5
-
-#define SOUND A2
-#define LIGHT A3
 
 //#define SERVO_SLOW_BOOT
 

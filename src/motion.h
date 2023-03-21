@@ -18,6 +18,7 @@ int8_t levelTolerance[2] = { ROLL_LEVEL_TOLERANCE, PITCH_LEVEL_TOLERANCE };  //t
 #define LEFT_RIGHT_FACTOR 1.2
 #define FRONT_BACK_FACTOR 1.2
 #define POSTURE_WALKING_FACTOR 0.5
+#define ADJUSTMENT_DAMPER 5
 #ifdef POSTURE_WALKING_FACTOR
 float postureOrWalkingFactor;
 #endif
@@ -80,14 +81,18 @@ float adjust(byte i) {
 
   } else
     rollAdj = RollPitchDeviation[0] * eeprom(ADAPT_PARAM, i, 0, 2);
-  currentAdjust[i] = radPerDeg * (
+  float idealAdjust = radPerDeg * (
 #ifdef POSTURE_WALKING_FACTOR
-                       (i > 3 ? postureOrWalkingFactor : 1) *
+                        (i > 3 ? postureOrWalkingFactor : 1) *
 #endif
 
-                         rollAdj
-                       - /*slope * */ eeprom(ADAPT_PARAM, i, 1, 2) * ((i % 4 < 2) ? (RollPitchDeviation[1]) : RollPitchDeviation[1]));
-
+                          rollAdj
+                        - /*slope * */ eeprom(ADAPT_PARAM, i, 1, 2) * ((i % 4 < 2) ? (RollPitchDeviation[1]) : RollPitchDeviation[1]));
+#ifdef ADJUSTMENT_DAMPER
+  currentAdjust[i] += max(min(idealAdjust - currentAdjust[i], float(ADJUSTMENT_DAMPER)), -float(ADJUSTMENT_DAMPER));
+#else
+  currentAdjust[i] = idealAdjust;
+#endif
   return currentAdjust[i];
 }
 
