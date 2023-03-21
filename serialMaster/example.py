@@ -230,6 +230,8 @@ if __name__ == '__main__':
             ['K', ts, 1],
             ['K',wkF,3],
             ['kbdF',2],
+            
+            #the last 'K' skill sent over in this way can be recalled by the 'T' token even after the robot reboots.
             ['T',1],
             ['g',3],
             ['I',[0,80,1,60],0],
@@ -297,8 +299,24 @@ if __name__ == '__main__':
                 send(goodPorts,['I',[0,-(a-90),1,-(a//2-45),2,90-a],0])
         send(goodPorts, ['i',2])
         send(goodPorts, ['kvtF',2])
+
+# the following test checks the serial pass through mode
+#        send(goodPorts,['kup',1])
+#        send(goodPorts,['w',[0,2300],0.1])
+#        send(goodPorts,['w',[0,600],0.1])
+#        while 1:
+#            send(goodPorts,['W',[100,9,1,100,8,1],0.1]) # digital write. 'd' = 100.
+#            send(goodPorts,['W',[100,9,1,100,8,0],0.1])
+#            send(goodPorts,['W',[100,9,0,100,8,1],0.1])
+#            send(goodPorts,['W',[100,9,0,100,8,0],0.1])
+#            for i in range(8):
+#                send(goodPorts,['W',[97,9,i*30,97,3,255-i*30],0.1]) # analog write. 'a' = 97.
+#            for i in range(8):
+#                send(goodPorts,['W',[97,9,255-i*30,97,3,255-i*30],0.1])
+#            send(goodPorts,['R',[97,16,97,17],0.1])
+#            time.sleep(1)
 #
-#        schedulerToSkill(goodPorts, testSchedule) # compile the motion related instructions to a skill and send it to the robot. the last skill sent over in this way can be recalled by the 'T' token even after the robot reboots.
+#        schedulerToSkill(goodPorts, testSchedule) # compile the motion related instructions to a skill and send it to the robot.
         closeAllSerial(goodPorts)
         logger.info("finish!")
         os._exit(0)

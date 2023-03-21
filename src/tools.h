@@ -59,16 +59,17 @@ template<typename T> void printListWithoutString(T *arr, byte len = DOF) {
   PTL();
 }
 template<typename T> void printCmdByType(char t, T *data) {
-  PT(t);
-  int len = (t < 'a') ? strlenUntil(data, '~') : strlen((char *)data);
-  PT(len);
-  PT('\t');
-  // if (len > 0) {
-  if (t < 'a')
-    printListWithoutString((int8_t *)data, len);
-  else
-    PTL((char *)data);
-  // }
+  if (t != '\0') {
+    PT(t);
+    PT('\t');
+    int len = (t < 'a') ? strlenUntil(data, '~') : strlen((char *)data);
+    PT(len);
+    PT('\t');
+    if (t < 'a')
+      printListWithoutString((int8_t *)data, len);
+    else
+      PTL((char *)data);
+  }
 }
 
 // template<typename T, typename T1> void arrayNCPY(T *destination, const T1 *source, int len) {  //deep copy regardless of '\0'
@@ -113,7 +114,7 @@ void printCmd() {
   PT(lastCmd);
   PTF("\tCmd:");
   printCmdByType(token, newCmd);
-} 
+}
 
 void resetCmd() {
   if (token == T_SKILL && newCmd[0] != '\0' && strcmp(newCmd, "rc")) {

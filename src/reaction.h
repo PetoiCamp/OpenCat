@@ -100,8 +100,8 @@ void reaction() {
 #ifdef RANDOM_MIND
       case T_RANDOM_MIND:
 #endif
-#ifdef T_RAMP
-      case T_RAMP:
+#ifdef T_SLOPE
+      case T_SLOPE:
 #endif
         {
 #ifdef GYRO_PIN
@@ -133,10 +133,10 @@ void reaction() {
             token = autoSwitch ? 'Z' : 'z';  //Z for active random mind
           } else
 #endif
-#ifdef T_RAMP
-            if (token == T_RAMP) {  //reverse the adjustment direction
-            ramp = -ramp;
-            token = ramp > 0 ? 'R' : 'r';
+#ifdef T_SLOPE
+            if (token == T_SLOPE) {  //reverse the adjustment direction
+            slope = -slope;
+            token = slope > 0 ? 'R' : 'r';
           }
 #endif
           {}  //must have in cases the else combines with break
@@ -172,11 +172,8 @@ void reaction() {
             manualEyeColorQ = false;
           else {  // turn on the manual color mode
             manualEyeColorQ = true;
-            long color = ((long)(newCmd[0]) << 16) + ((long)(newCmd[1]) << 8) + (long)(newCmd[2]);
-            if (newCmd[4] == -1)  //no special effect
-              mRUS04.SetRgbColor(E_RGB_INDEX(newCmd[3]), color);
-            else
-              mRUS04.SetRgbEffect(E_RGB_INDEX(newCmd[3]), color, newCmd[4]);
+            long color = ((long)(uint8_t(newCmd[0])) << 16) + ((long)(uint8_t(newCmd[1])) << 8) + (long)(uint8_t(newCmd[2]));
+            mRUS04.SetRgbEffect(E_RGB_INDEX(uint8_t(newCmd[3])), color, uint8_t(newCmd[4]));
           }
           break;
         }
@@ -313,7 +310,6 @@ void reaction() {
                 PT('\t');
               }
 #endif
-
             if ((token == T_INDEXED_SIMULTANEOUS_ASC || token == T_INDEXED_SIMULTANEOUS_ASC) && (nonHeadJointQ || lastToken != T_SKILL)) {
               // PTL(token);
               transform(targetFrame, 1, 4);  // if (token == T_INDEXED_SEQUENTIAL_ASC) it will be useless
@@ -323,10 +319,13 @@ void reaction() {
           }
           break;
         }
-
       // this block handles array like arguments
       case T_INDEXED_SEQUENTIAL_BIN:
       case T_INDEXED_SIMULTANEOUS_BIN:
+#ifdef GROVE_SERIAL_PASS_THROUGH
+      case T_READ:
+      case T_WRITE:
+#endif
         {                  //indexed joint motions: joint0, angle0, joint1, angle1, ... (binary encoding)
           if (cmdLen < 2)  //the terminator of upper-case tokens is not '\n'. it may cause error when entered in the Arduino serial monitor
             manualHeadQ = false;
@@ -337,7 +336,12 @@ void reaction() {
               targetFrame[i] = currentAng[i] - (gyroBalanceQ ? currentAdjust[i] : 0);
             }
             // arrayNCPY(targetFrame, currentAng, DOF);
-            for (int i = 0; i < cmdLen; i += 2) {
+            byte group =
+#ifdef GROVE_SERIAL_PASS_THROUGH
+              token == T_WRITE ? 3 :
+#endif
+                               2;
+            for (int i = 0; i < cmdLen; i += group) {
               if (newCmd[i] >= 0 && newCmd[i] < DOF) {
                 targetFrame[newCmd[i]] = (int8_t)newCmd[i + 1];
                 if (newCmd[i] < 4) {
@@ -349,7 +353,30 @@ void reaction() {
               if (token == T_INDEXED_SEQUENTIAL_BIN) {
                 transform(targetFrame, 1, 2);
               }
+#ifdef GROVE_SERIAL_PASS_THROUGH
+              else if (token == T_WRITE) {
+                pinMode(newCmd[i + 1], OUTPUT);
+                if (newCmd[i] == TYPE_ANALOG) {
+                  analogWrite(newCmd[i + 1], uint8_t(newCmd[i + 2]));  //analog value can go up to 255.
+                                                                       //the value was packed as unsigned byte by ardSerial
+                                                                       //but casted by readSerial() as signed char and saved into newCmd.
+                } else if (newCmd[i] == TYPE_DIGITAL)
+                  digitalWrite(newCmd[i + 1], newCmd[i + 2]);
+              } else if (token == T_READ) {
+                pinMode(newCmd[i + 1], INPUT);
+                if (newCmd[i] == TYPE_ANALOG)  // Arduino Uno: A2->16, A3->17
+                  PT(analogRead(newCmd[i + 1]));
+                else if (newCmd[i] == TYPE_DIGITAL)
+                  PT(digitalRead(newCmd[i + 1]));
+                PT('\t');
+              }
+#endif
             }
+#ifdef GROVE_SERIAL_PASS_THROUGH
+            if (token == T_READ) {
+              PTL();
+            }
+#endif
             if (nonHeadJointQ || lastToken != T_SKILL) {
               // PTL(token);
               transform(targetFrame, 1, 4);  // if (token == T_INDEXED_SEQUENTIAL_BIN) it will be useless

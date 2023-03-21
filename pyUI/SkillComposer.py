@@ -1096,28 +1096,40 @@ class SkillComposer:
     def changeColor(self,i):
         colorTuple = askcolor(title="Tkinter Color Chooser")
         colors = list(colorTuple[0])
+        self.colorHex = colorTuple[1]
 #        for c in range(3):
 #            colors[c] //= 2    #it's not always returning interger.
-        colors = list(map(lambda x:int(x//2),colors)) #colors have to be integer
+#        colors = list(map(lambda x:int(x//2),colors)) #colors have to be integer
 #        printH('RGB: ',colors)
         if self.colorBinderValue.get():
             self.activeEye = 0
             self.eyeColors[0]=colors
             for c in range(2):
-                self.canvasFace.itemconfig(self.eyes[c], fill=colorTuple[1])
+                self.canvasFace.itemconfig(self.eyes[c], fill=self.colorHex)
                 self.eyeColors[c+1] = colors
                 self.eyeBtn[c].config(text = str(colors))
-            send(ports, ['C', colors+[0,-1], 0])
+            send(ports, ['C', colors+[0,3], 0])
         else:
-            self.activeEye = i+1
-            self.canvasFace.itemconfig(self.eyes[i], fill=colorTuple[1])
+            self.activeEye = i
+            self.canvasFace.itemconfig(self.eyes[i], fill=self.colorHex)
             self.eyeColors[i+1] = colors
             self.eyeBtn[i].config(text = str(colors))
-            send(ports, ['C', colors+[i+1,-1], 0])
+            send(ports, ['C', colors+[i+1,3], 0])
 
     def changeEffect(self,e):
-#        print(self.eyeColors[self.activeEye])
-        send(ports, ['C', self.eyeColors[self.activeEye]+[self.activeEye, e], 0])
+        if self.colorBinderValue.get():
+            colors = self.eyeColors[self.activeEye+1]
+            self.activeEye = 0
+            self.eyeColors[0]=colors
+            for c in range(2):
+                self.canvasFace.itemconfig(self.eyes[c], fill=self.colorHex)
+                self.eyeColors[c+1] = colors
+                self.eyeBtn[c].config(text = str(colors))
+            send(ports, ['C', colors+[0, e], 0])
+        else:
+            colors = self.eyeColors[self.activeEye+1]
+            self.eyeBtn[self.activeEye].config(text = str(colors))
+            send(ports, ['C', colors+[self.activeEye+1, e], 0])
         
     def popEyeColor(self):
         #E_RGB_ALL = 0

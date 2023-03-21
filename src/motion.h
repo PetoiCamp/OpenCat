@@ -63,7 +63,7 @@ float adaptiveParameterArray[16][2] = {  // they will be saved as int8_t in EEPR
 #endif
 
 float RollPitchDeviation[2];
-int8_t ramp = 1;
+int8_t slope = 1;
 
 
 float adjust(byte i) {
@@ -73,9 +73,9 @@ float adjust(byte i) {
     //bool frontQ = i % 4 < 2 ? true : false;
     //bool upperQ = i / 4 < 3 ? true : false;
     float leftRightFactor = 1;
-    if ((leftQ && ramp * RollPitchDeviation[0] > 0)  // operator * is higher than &&
-        || (!leftQ && ramp * RollPitchDeviation[0] < 0))
-      leftRightFactor = LEFT_RIGHT_FACTOR * abs(ramp);
+    if ((leftQ && slope * RollPitchDeviation[0] > 0)  // operator * is higher than &&
+        || (!leftQ && slope * RollPitchDeviation[0] < 0))
+      leftRightFactor = LEFT_RIGHT_FACTOR * abs(slope);
     rollAdj = fabs(RollPitchDeviation[0]) * eeprom(ADAPT_PARAM, i, 0, 2) * leftRightFactor;
 
   } else
@@ -86,7 +86,7 @@ float adjust(byte i) {
 #endif
 
                          rollAdj
-                       - /*ramp * */ eeprom(ADAPT_PARAM, i, 1, 2) * ((i % 4 < 2) ? (RollPitchDeviation[1]) : RollPitchDeviation[1]));
+                       - /*slope * */ eeprom(ADAPT_PARAM, i, 1, 2) * ((i % 4 < 2) ? (RollPitchDeviation[1]) : RollPitchDeviation[1]));
 
   return currentAdjust[i];
 }

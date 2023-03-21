@@ -221,17 +221,21 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_INDEXED_SEQUENTIAL_ASC 'm'  //m jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. m0 70 0 -70 8 -20 9 -20
 // #define T_MELODY 'o'
 #define T_PAUSE 'p'
-// #define T_RAMP 'r'
+// #define T_SLOPE 'l'
 #define T_SAVE 's'  //save the calibration values
 // #define T_TILT 't'
 // #define T_MEOW 'u'
 #define T_PRINT_GYRO 'v'            //print the Gyro data once
 #define T_VERBOSELY_PRINT_GYRO 'V'  //toggle verbosely print Gyro data
-// #define T_WORD        'w'
 // #define T_XLEG        'x'
 // #define T_ACCELERATE  '.'
 // #define T_DECELERATE  ','
 #define T_RANDOM_MIND 'z'  //toggle random behaviors in the RANDOM_MIND mode
+
+#define T_READ 'R'        //read pin     R
+#define T_WRITE 'W'       //write pin                      W
+#define TYPE_ANALOG 'a'   //            Ra(analog read)   Wa(analog write)
+#define TYPE_DIGITAL 'd'  //            Rd(digital read)  Wd(digital write)
 
 #define T_COLOR 'C'                     //change the eye colors of the RGB ultrasonic sensor
 #define T_INDEXED_SIMULTANEOUS_BIN 'I'  //I jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. I0 70 8 -20 9 -20
@@ -240,11 +244,11 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define BINARY_COMMAND  //disable the binary commands to save space for the simple random demo
 
 #ifdef BINARY_COMMAND
-#define T_BEEP_BIN 'B'    //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4 \
+#define T_BEEP_BIN 'B'           //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4 \
                           //a single B will toggle the melody on/off
-#define T_LISTED_BIN 'L'  //a list of the DOFx joint angles: angle0 angle1 angle2 ... angle15
-// #define T_SERVO_MICROSECOND 'W'  //PWM width modulation
-#define T_TEMP 'T'  //call the last 'K' skill data received from the serial port
+#define T_LISTED_BIN 'L'         //a list of the DOFx joint angles: angle0 angle1 angle2 ... angle15
+#define T_SERVO_MICROSECOND 'w'  //PWM width modulation
+#define T_TEMP 'T'               //call the last 'K' skill data received from the serial port
 #endif
 
 // #define T_TUNER '}'
@@ -370,7 +374,7 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #if defined NyBoard_V0_1 || defined NyBoard_V0_2
 #undef VOLTAGE_DETECTION_PIN
 #undef T_SERVO_MICROSECOND
-#undef T_RAMP
+#undef T_SLOPE
 #endif
 
 #ifndef MAIN_SKETCH
@@ -401,6 +405,7 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #include "doubleTouch.h"
 #elif defined DOUBLE_LIGHT
 #include "doubleLight.h"
+#elif defined GROVE_SERIAL_PASS_THROUGH
 #elif defined OTHER_MODULES
 #else
 #define GYRO_PIN 0
@@ -415,6 +420,11 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #ifdef IR_PIN
 #undef TASK_QUEUE
 #endif
+#endif
+
+#ifdef GROVE_SERIAL_PASS_THROUGH
+#undef IR_PIN
+#undef BUZZER
 #endif
 
 #include "PCA9685servo.h"

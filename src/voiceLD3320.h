@@ -4,19 +4,22 @@ long voiceTimer;
 // format:
 //    phrase:token+command
 //    should NOT be more than 40 chars
-const char voice1[] PROGMEM = "ma pi jing:m0 50 0 -10 0 30";                                                                                                                                                                                                        //马屁精
-const char voice2[] PROGMEM = "ni hao:khi";                                                                                                                                                                                                                         //你好
-const char voice3[] PROGMEM = "qi li:kup";                                                                                                                                                                                                                          //起立
-const char voice4[] PROGMEM = "zuo xia:ksit";                                                                                                                                                                                                                       //坐下
-const char voice5[] PROGMEM = "fu wo cheng:kpu";                                                                                                                                                                                                                    //俯卧撑
-const char voice6[] PROGMEM = "jia you:kjy";                                                                                                                                                                                                                        //加油
-const char voice7[] PROGMEM = "ta bu:kvt";                                                                                                                                                                                                                          //踏步
-const char voice8[] PROGMEM = "xiao xing xing:b14,8,14,8,21,8,21,8,23,8,23,8,21,4,19,8,19,8,18,8,18,8,16,8,16,8,14,4,21,8,21,8,19,8,19,8,18,8,18,8,16,4,21,8,21,8,19,8,19,8,18,8,18,8,16,4,14,8,14,8,21,8,21,8,23,8,23,8,21,4,19,8,19,8,18,8,18,8,16,8,16,8,14,4";  //小星星
-const char voice9[] PROGMEM = "shui jiao:d ";                                                                                                                                                                                                                       //睡觉
-const char voice10[] PROGMEM = "guan cha:kck";                                                                                                                                                                                                                      //观察
-const char voice11[] PROGMEM = "he lou:khi";                                                                                                                                                                                                                        //hello
-const char voice12[] PROGMEM = "si dan de a pu:kup";                                                                                                                                                                                                                //stand up
-const char voice13[] PROGMEM = "yao tou:m0 -45 0 45 0 -45 0 45";                                                                                                                                                                                                    //stand up
+const char voice1[] PROGMEM = "ma pi jing:m0 50 0 -10 0 30";             //马屁精
+const char voice2[] PROGMEM = "ni hao:khi";                              //你好
+const char voice3[] PROGMEM = "qi li:kup";                               //起立
+const char voice4[] PROGMEM = "zuo xia:ksit";                            //坐下
+const char voice5[] PROGMEM = "fu wo cheng:kpu";                         //俯卧撑
+const char voice6[] PROGMEM = "jia you:kjy";                             //加油
+const char voice7[] PROGMEM = "ta bu:kvt";                               //踏步
+const char voice8[] PROGMEM = "xiao xing xing:\
+b14,8,14,8,21,8,21,8,23,8,23,8,21,4,19,8,19,8,18,8,18,8,16,8,16,8,14,4,\
+21,8,21,8,19,8,19,8,18,8,18,8,16,4,21,8,21,8,19,8,19,8,18,8,18,8,16,4,\
+14,8,14,8,21,8,21,8,23,8,23,8,21,4,19,8,19,8,18,8,18,8,16,8,16,8,14,4";  //小星星
+const char voice9[] PROGMEM = "shui jiao:d ";                            //睡觉
+const char voice10[] PROGMEM = "guan cha:kck";                           //观察
+const char voice11[] PROGMEM = "he lou:khi";                             //hello
+const char voice12[] PROGMEM = "si dan de a pu:kup";                     //stand up
+const char voice13[] PROGMEM = "yao tou:m0 -45 0 45 0 -45 0 45";         //stand up
 const char voice14[] PROGMEM = "chong fu:T ";
 const char *const voiceTable[] PROGMEM = { voice1, voice2, voice3, voice4,
                                            voice5, voice6, voice7, voice8,

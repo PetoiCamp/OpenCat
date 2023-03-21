@@ -124,6 +124,14 @@ void read_camera() {
 }
 
 #ifdef MU_CAMERA
+// You need to install https://github.com/mu-opensource/MuVisionSensor3 as a zip library in Arduino IDE.
+// Set the four dial switches on the camera as **v ^ v v** (the second switch dialed up to I2C) and connect the camera module to the I2C grove on NyBoard.
+// The battery should be turned on to drive the servos.
+
+// You can use these 3D printed structures to attach the camera module.
+// https://github.com/PetoiCamp/NonCodeFiles/blob/master/stl/MuIntelligentCamera_mount.stl
+// https://github.com/PetoiCamp/NonCodeFiles/blob/master/stl/bone.stl
+// After uploading the code, you may need to press the reset buttons on the module and then the NyBoard.
 /*
    Choose communication mode define here:
       I2C_MODE    : I2C mode, default pin: MU_SDA <==> ARDUINO_SDA, MU_SCL <==> ARDUINO_SCL
