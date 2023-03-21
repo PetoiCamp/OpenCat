@@ -60,7 +60,7 @@ void showRecognitionResult(int xCoord, int yCoord, int width, int height = -1) {
   PTL();
 }
 
-#define WALK  //let the robot move its body to follow people rather than sitting at the original position \
+// #define WALK  //let the robot move its body to follow people rather than sitting at the original position \
               // it works the best on the table so the robot doesn't need to loop upward.
 void cameraBehavior(int xCoord, int yCoord, int width) {
   showRecognitionResult(xCoord, yCoord, width);
@@ -80,9 +80,9 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
     tQueue->addTask('i', "");
     widthCounter = 0;
     currentX = 0;
-  } else {
+  } else
 #endif
-
+  {
     xDiff = (xCoord - imgRangeX / 2) / (f / 10.0);  //max(min((xCoord - imgRangeX / 2) / 3, 32), -32);
     yDiff = (yCoord - imgRangeY / 2) / (f / 10.0);  //max(min((yCoord - imgRangeY / 2) / 3, 24), -24);
     currentX = max(min(currentX - xDiff, 90), -90) / (p / 10.0);
@@ -101,16 +101,13 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
         newCmd[cmdLen] = '~';
         newCmdIdx = 6;
         //      printList(newCmd);}
-      }
-#ifdef WALK
-      else {
+      } else {
         tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 40);  //spin its body to follow you
         tQueue->addTask('k', "sit");
         tQueue->addTask('i', "");
         currentX = 0;
       }
     }
-#endif
   }
 }
 
