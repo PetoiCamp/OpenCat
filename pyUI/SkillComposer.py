@@ -562,7 +562,7 @@ class SkillComposer:
         global language
         if self.ready and txt('lan') != l:
             global triggerAxis
-            inv_triggerAxis = {v: k for k, v in triggerAxis.items()}
+            inv_triggerAxis = {txt(v): k for k, v in triggerAxis.items()}
             language = languageList[l]
             self.window.title(txt('skillComposerTitle'))
             self.menubar.destroy()
@@ -595,14 +595,6 @@ class SkillComposer:
                     self.frameRowScheduler.winfo_children()[i].config(text=txt(labelSkillEditorHeader[i]))
                 if tipSkillEditor[i]:
                     tip(self.frameRowScheduler.winfo_children()[i], txt(tipSkillEditor[i]))
-
-            triggerAxis = {
-                0: txt('None'),
-                1: txt('Pitch'),
-                -1: txt('-Pitch'),
-                2: txt('Roll'),
-                -2: txt('-Roll'),
-            }
             for r in range(len(self.frameList)):
                 tip(self.getWidget(r, cLoop), txt('tipLoop'))
                 tt = '='  # +txt('Set')
@@ -623,9 +615,9 @@ class SkillComposer:
                     self.getWidget(r, cStep).insert(0, txt('max'))
 
                 vTrig = self.getWidget(r, cTrig).get()
-                self.getWidget(r, cTrig).config(values=list(triggerAxis.values()))
+                self.getWidget(r, cTrig).config(values=list(map(lambda x:txt(x),triggerAxis.values())))
                 self.getWidget(r, cTrig).delete(0, END)
-                self.getWidget(r, cTrig).insert(0, triggerAxis[inv_triggerAxis[vTrig]])
+                self.getWidget(r, cTrig).insert(0, txt(triggerAxis[inv_triggerAxis[vTrig]]))
 
     def showAbout(self):
         messagebox.showinfo('Petoi Controller UI',
@@ -673,9 +665,8 @@ class SkillComposer:
                 values=('1', '2', '4', '8', '12', '16', '32', '48', '64', txt('max')), textvariable=vStep, wrap=True).grid(
             row=0, column=cStep)
 
-
         vTrig = StringVar()
-        spTrig = Spinbox(singleFrame, width=self.frameItemWidth[cTrig], values=list(triggerAxis.values()),
+        spTrig = Spinbox(singleFrame, width=self.frameItemWidth[cTrig], values=list(map(lambda x:txt(x),triggerAxis.values())),
                          textvariable=vTrig, wrap=True)
         spTrig.grid(row=0, column=cTrig)
 
@@ -973,7 +964,7 @@ class SkillComposer:
 
                 self.getWidget(f, cTrig).delete(0, END)
                 self.getWidget(f, cAngle).delete(0, END)
-                self.getWidget(f, cTrig).insert(0, triggerAxis[frame[2][22]])
+                self.getWidget(f, cTrig).insert(0, txt(triggerAxis[frame[2][22]]))
                 self.getWidget(f, cAngle).insert(0, frame[2][23])
 
             else:
@@ -1257,7 +1248,7 @@ class SkillComposer:
             frameSize = 16
         angleRatio = 1
         startFrame = self.activeFrame
-        inv_triggerAxis = {v: k for k, v in triggerAxis.items()}
+        inv_triggerAxis = {txt(v): k for k, v in triggerAxis.items()}
         for f in range(startFrame, self.totalFrame):
             frame = self.frameList[f]
             self.frameData = copy.deepcopy(frame[2])

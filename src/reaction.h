@@ -363,6 +363,7 @@ void reaction() {
                 } else if (newCmd[i] == TYPE_DIGITAL)
                   digitalWrite(newCmd[i + 1], newCmd[i + 2]);
               } else if (token == T_READ) {
+                PTF("Got ");
                 pinMode(newCmd[i + 1], INPUT);
                 if (newCmd[i] == TYPE_ANALOG)  // Arduino Uno: A2->16, A3->17
                   PT(analogRead(newCmd[i + 1]));
