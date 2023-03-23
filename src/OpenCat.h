@@ -434,13 +434,13 @@ void initRobot() {
 #ifdef MAIN_SKETCH  // **
   PTL('k');
   PTLF("\n* Start *");
-  PTLF(SOFTWARE_VERSION);
 #ifdef BITTLE
   PTLF("Bittle");
 #elif defined NYBBLE
   PTLF("Nybble");
 #elif defined CUB
   PTLF("Cub");
+  PTLF(SOFTWARE_VERSION);
 #endif
 
   if (eeprom(BOOTUP_SOUND_STATE))

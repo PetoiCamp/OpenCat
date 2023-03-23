@@ -564,8 +564,8 @@ void writeConst() {
 }
 
 int configureEEPROM() {
-  PTLF("\n* Change model and board definitions in OpenCat.ino!");
-  PTLF("\nConfigure EEPROM");
+  PTLF("\n* Change model and board names in OpenCat.ino!");
+  PTLF("\nSet EEPROM");
   writeConst();  // only run for the first time when writing to the board.
   wdt_enable(WDTO_8S);
   skill.saveSkillInfoFromProgmemToOnboardEeprom();

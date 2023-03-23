@@ -188,9 +188,9 @@ void setServoP(unsigned int p) {
 */
 long initValue;
 void PCA9685CalibrationPrompt() {
-  PT("Optional: Connect PWM ");
+  PTF("Optional: Connect PWM ");
   PT(eeprom(PWM_PIN, 3));
-  PTL(" -> Grove pin A3 to calibrate PCA9685");
+  PTLF(" -> Grove pin A3 to calibrate PCA9685");
 }
 
 int measurePulseWidth(uint8_t pwmReadPin) {
@@ -224,9 +224,9 @@ void calibratePCA9685() {
         match++;
         if (match == MATCHING_TIMES) {
           EEPROMWriteInt(PCA9685_FREQ, actualFreq);
-          PT("Calibrated: ");
+          PTF("Calibrated: ");
           PT(actualFreq);
-          PT(" kHz");
+          PTF(" kHz");
           beep(20, 100, 50, 3);
           calibrated = true;
           pwm.setup(DOF, long(actualFreq) * 1000);
