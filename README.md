@@ -6,20 +6,20 @@ OpenCat is the open-source Arduino and Raspberry Pi-based quadruped robotic pet 
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/run.gif?raw=true)
 
-Inspired by Boston Dynamics' Big Dog, Dr. Rongzhong Li started the project in his dorm in 2016. After one year of R&D, he founded Petoi LLC and devoted all his resources to the startup. The goal is to foster collaboration in quadruped(four-legged) robotic research, education, and engineering development of agile and affordable quadruped robot pets, bring STEM concepts to the mass and inspire newcomers (including many kids and adults) to join the robotic AI revolution to create more applications.
+Inspired by Boston Dynamics' Big Dog and Spot Mini, Dr. Rongzhong Li started the project in his dorm in 2016. After one year of R&D, he founded Petoi LLC and devoted all his resources to the startup. The goal is to foster collaboration in quadruped(four-legged) robotic research, education, and engineering development of agile and affordable quadruped robot pets, bring STEM concepts to the mass and inspire newcomers (including many kids and adults) to join the robotic AI revolution to create more applications.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/slope.gif?raw=true)
 
-The project is still a complex system only for skilled makers. Yet we want to share our design and work with the community by mass production and bring down the hardware and software costs. OpenCat has been deployed on Petoi's bionic palm-sized, realistic lifelike [cute robot cat Nybble](https://www.petoi.com/collections/robots/products/petoi-nybble-robot-cat?utm_source=github&utm_medium=code&utm_campaign=nybble) and
+The project is still [a complex quadruped robot system](https://www.petoi.com/pages/petoi-programmable-quadruped-robot-system) only for skilled makers. Yet we want to share our design and work with the community by mass production and bring down the hardware and software costs. OpenCat has been deployed on Petoi's bionic palm-sized, realistic lifelike [cute robot cat Nybble](https://www.petoi.com/collections/robots/products/petoi-nybble-robot-cat?utm_source=github&utm_medium=code&utm_campaign=nybble) and
 [high-performance robot dog Bittle](https://www.petoi.com/collections/robots/products/petoi-bittle-robot-dog?utm_source=github&utm_medium=code&utm_campaign=bittle). We now have established a production line and can ship these [affordable robotic kits and accessories](https://www.petoi.com/store?utm_source=github&utm_medium=code&utm_campaign=store) worldwide.
 
-This project provides a base open-source platform to create amazing programmable gaits, locomotion, and deployment of inverse kinematics quadruped robots and bring simulations to the real world via C/C++/Python programming languages.  Our users have deployed [NVIDIA Issac simulations and reinforcement learning on our robots](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg). Our users have also successfully deployed OpenCat on their DIY 3D-print robot pets.
+This project provides a base open-source platform to create amazing programmable gaits, locomotion, and deployment of inverse kinematics quadruped robots and bring simulations to the real world via C/C++/Python programming languages.  Our users have deployed [NVIDIA Issac simulations and reinforcement learning on our robots](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg), [developed visual and lidar-based SLAM with ROS using Bittle and Raspberry Pi](https://www.youtube.com/watch?v=uXpQUIF_Jyk&list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg&index=6) and [imitation learning using Tiny Machine Learning Models with Petoi Bittle and Raspberry Pi](https://www.learnwitharobot.com/p/imitation-learning-with-petoi-bittle).  Our users have also successfully deployed OpenCat on their [DIY 3D-print robot pets](https://www.petoi.com/pages/3d-printed-robot-dog-robot-cat) and developed many robotics projects & applications, such as using [IoT automation of a robot fleet with AWS to improve worker safety](https://www.petoi.com/blogs/blog/aws-iot-robot-fleet-demo-with-petoi-bittle).
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/stand.gif?raw=true)
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/NybbleBalance.gif?raw=true)
 
-We've successfully crowdfunded these two mini robot kits and shipped thousands of units worldwide.  With our customized Arduino board and servos coordinating all instinctive and sophisticated movements(walking, running, jumping, backflipping), one can clip on various sensors to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips(such as Nvidia Jetson Nano) through wired/wireless connections.  Please see [Petoi FAQs](https://www.petoi.com/pages/faq?utm_source=github&utm_medium=code&utm_campaign=faq) for more info.
+We've successfully crowdfunded these two mini robot kits and shipped thousands of units worldwide.  With our customized Arduino board and servos coordinating all instinctive and sophisticated movements(walking, running, jumping, backflipping), one can clip on [various sensors](https://www.petoi.com/products/petoi-sensor-pack) and [camera](https://www.petoi.com/products/intelligent-camera-module) to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips(such as Nvidia Jetson Nano) through wired/wireless connections.  Please see [Petoi FAQs](https://www.petoi.com/pages/faq?utm_source=github&utm_medium=code&utm_campaign=faq) for more info.
 
 Also, Check out [all of the OpenCat and Petoi robot user showcases](https://www.petoi.camp/forum/showcase).
 
@@ -32,7 +32,7 @@ OpenCat software works on both Nybble and Bittle, controlled by NyBoard based on
 
 To configure the board:
 
-1. Download the repo and unfold. Remove the **-main** (or any branch name) suffix of the folder. 
+1. Download the repo and unfold. Remove the **-main** (or any branch name) suffix of the folder.
 
 
 2. Open the file OpenCat.ino, select your robot and board version.
@@ -46,12 +46,12 @@ To configure the board:
 //#define NyBoard_V1_1
 ```
 
-3. Comment out ```#define MAIN_SKETCH``` so that it will turn the code to the board configuration mode. Upload and follow the serial prompts to proceed. 
+3. Comment out ```#define MAIN_SKETCH``` so that it will turn the code to the board configuration mode. Upload and follow the serial prompts to proceed.
 ```cpp
 // #define MAIN_SKETCH
 ```
 
-4. If you activate ```#define AUTO_INIT```, the program will automatically set up without prompts. It will not reset joint offsets but calibrate the IMU. It's just a convenient option for our production line. 
+4. If you activate ```#define AUTO_INIT```, the program will automatically set up without prompts. It will not reset joint offsets but calibrate the IMU. It's just a convenient option for our production line.
 
 5. Plug the USB uploader to the NyBoard and install the driver if no USB port is found under Arduino -> Tools -> Port.
 
@@ -59,23 +59,23 @@ To configure the board:
 
 7. Open the serial monitor of Arduino IDE. You can find the button either under Tools, or at the top-right corner of the IDE.
 
-Set the serial monitor as **no line ending** and **115200** baud rate. 
+Set the serial monitor as **no line ending** and **115200** baud rate.
 The serial prompts:
 ```
 Reset joint offsets? (Y/n)
 Y
 ```
 
-Input ‘Y’ and hit enter, if you want to reset all the joint offsets to 0. 
+Input ‘Y’ and hit enter, if you want to reset all the joint offsets to 0.
 
-The program will do the reset, then update the constants and instinctive skills in the static memory. 
+The program will do the reset, then update the constants and instinctive skills in the static memory.
 
 8. IMU (Inertial Measurement Unit) calibration.
 
 The serial prompts:
 ```
-Calibrate the IMU? (Y/n): 
-Y 
+Calibrate the IMU? (Y/n):
+Y
 ```
 Input ‘Y’ and hit enter, if you have never calibrated the IMU or want to redo calibration.
 
@@ -98,7 +98,7 @@ When the serial monitor prints "Ready!", the robot is ready to take your next in
 
 You can refer to the calibration section in the user manual (https://bittle.petoi.com/6-calibration) and Guide for the Petoi App(https://docs.petoi.com/app-guide).
 
-12. you can use the infrared remote or other applications (such as the Petoi App, python, serial monitor ... etc.) to play with the robot (https://bittle.petoi.com/7-play-with-bittle).
+12. you can use the infrared remote or other applications (such as the Petoi App, Python, serial monitor ... etc.) to play with the robot (https://bittle.petoi.com/7-play-with-bittle).
 
 For updates:
 * star this repository to receive timely notifications on changes.
@@ -107,8 +107,11 @@ For updates:
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/backflip.gif?raw=true)
 
-[Advanced tutorials made by users](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg)
+## Resources:
+* [STEM Curriculum & Educational Robots for Teaching Coding Robotics](https://www.petoi.com/pages/resources-curriculum-stem-coding-robot)
+* [Advanced tutorials made by users](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg)
+* [Review, open-box, and demos by users](https://www.youtube.com/playlist?list=PLHMFXft_rV6PSS3Qu5yQ-0iPW-ohu1sM3)
+* [OpenCat robot showcase by users](https://www.petoi.com/pages/petoi-open-source-extensions-user-demos-and-hacks)
+* [OpenCat robot gallery](https://www.petoi.com/pages/robot-pet-gallery)
 
-[Review, open-box, and demos by users](https://www.youtube.com/playlist?list=PLHMFXft_rV6PSS3Qu5yQ-0iPW-ohu1sM3)
-
-The [old repository for OpenCat](https://github.com/PetoiCamp/OpenCat-Old) is too redundant with large image logs and will be obsolete after adding compatibility notes in the documentation.
+The [old repository for OpenCat](https://github.com/PetoiCamp/OpenCat-Old) is too redundant with large image logs and is obsolete without further updates.
