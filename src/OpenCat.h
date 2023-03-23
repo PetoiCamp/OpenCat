@@ -440,8 +440,8 @@ void initRobot() {
   PTLF("Nybble");
 #elif defined CUB
   PTLF("Cub");
-  PTLF(SOFTWARE_VERSION);
 #endif
+  PTLF(SOFTWARE_VERSION);
 
   if (eeprom(BOOTUP_SOUND_STATE))
     playMelody(MELODY_NORMAL);
