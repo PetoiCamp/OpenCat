@@ -66,6 +66,9 @@ void reaction() {
 #ifdef BINARY_COMMAND
         && token != T_LISTED_BIN && token != T_INDEXED_SIMULTANEOUS_BIN
 #endif
+#ifdef GROVE_SERIAL_PASS_THROUGH
+        && token != T_READ && token != T_WRITE
+#endif
     )
       beep(15 + newCmdIdx, 5);  //ToDo: check the muted sound when newCmdIdx = -1
     if (hardServoQ && (lowerToken == T_SKILL || lowerToken == T_INDEXED_SIMULTANEOUS_ASC || lowerToken == T_INDEXED_SIMULTANEOUS_ASC)) {
