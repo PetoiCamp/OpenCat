@@ -247,7 +247,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_TEMP 'T'               //call the last 'K' skill data received from the serial port
 #endif
 
-// #define T_TUNER '}'
+#define T_TUNER '}'
 
 
 float degPerRad = 180.0 / M_PI;
@@ -288,14 +288,14 @@ int currentAng[DOF] = { -30, -80, -45, 0,
 float currentAdjust[DOF] = {};
 
 //control related variables
-#define IDLE_TIME 5000
+#define IDLE_TIME 3000
 long idleTimer = 0;
 int randomInterval = 2000;
 #define CHECK_BATTERY_PERIOD 10000  //every 10 seconds. 60 mins -> 3600 seconds
 int uptime = -1;
 int frame = 0;
 byte tStep = 0;
-int **par = new int *[7];
+int **par = new int *[8];
 
 char token;
 char lowerToken;

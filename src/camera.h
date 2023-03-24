@@ -6,14 +6,15 @@ int imgRangeX = 100;                      //the frame size 0~100 on X and Y dire
 int imgRangeY = 100;
 int f = 30;
 int p = 10;
+int pan = 10;
 int sp = 4;
 int u1 = 6;
 int u2 = 8;
 int d1 = 2;
 int d2 = 8;
 
-#define MU_CAMERA
-// #define SENTRY1_CAMERA
+// #define MU_CAMERA
+#define SENTRY1_CAMERA
 
 #ifdef MU_CAMERA
 void muCameraSetup();
@@ -28,11 +29,12 @@ void read_Sentry1Camera();
 void cameraSetup() {
   par[0] = &f;
   par[1] = &p;
-  par[2] = &sp;
-  par[3] = &u1;
-  par[4] = &u2;
-  par[5] = &d1;
-  par[6] = &d2;
+  par[2] = &pan;
+  par[3] = &sp;
+  par[4] = &u1;
+  par[5] = &u2;
+  par[6] = &d1;
+  par[7] = &d2;
   transformSpeed = 0;
   widthCounter = 0;
 #ifdef MU_CAMERA
@@ -89,7 +91,7 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
     currentY = max(min(currentY - yDiff, 75), -75) / (p / 10.0);
     if (abs(xDiff) > 1 || abs(yDiff) > 1) {
       if (abs(currentX) < 45) {
-        int allParameter[DOF] = { currentX, 0, 0, 0,
+        int allParameter[DOF] = { currentX * pan / 10.0, 0, 0, 0,
                                   0, 0, 0, 0,
                                   75 - currentY / 2 + currentX / u1, 75 - currentY / 2 - currentX / u1, 90 + currentY / 3 - currentX / u2, 90 + currentY / 3 + currentX / u2,
                                   int(10 + currentY / 1.2 - currentX / d1), int(10 + currentY / 1.2 + currentX / d1), -30 - currentY / 3 + currentX / d2, -30 - currentY / 3 - currentX / d2 };
@@ -101,12 +103,13 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
         newCmd[cmdLen] = '~';
         newCmdIdx = 6;
         //      printList(newCmd);}
-      } else {
-        tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 40);  //spin its body to follow you
-        tQueue->addTask('k', "sit");
-        tQueue->addTask('i', "");
-        currentX = 0;
       }
+      // else {
+      //   tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 40);  //spin its body to follow you
+      //   tQueue->addTask('k', "sit");
+      //   tQueue->addTask('i', "");
+      //   currentX = 0;
+      // }
     }
   }
 }
@@ -274,8 +277,10 @@ void sentry1CameraSetup() {
   writeRegData(0x22, 0x10);  // set vision level: 0x10=Sensitive/Speed 0x20=balance(default if not set) 0x30=accurate
   delay(1000);
   PTLF("Sentry1 ready");
-  int f = 3;
-  int p = 2;
+  f = 30;
+  p = 20;
+  // pan = 15;
+  sp = 1;
 }
 
 void read_Sentry1Camera() {
