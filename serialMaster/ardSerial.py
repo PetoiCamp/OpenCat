@@ -10,7 +10,7 @@ import platform
 import copy
 import threading
 import os
-import var 
+import var
 import tkinter as tk
 sys.path.append("../pyUI")
 from translate import *
@@ -99,7 +99,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                 message = list(map(int, var))
                 if token == 'B':
                     for l in range(len(message)//2):
-                        message[l*2+1]*=8 #change 1 to 8 to save time for tests
+                        message[l*2+1]*=1   #8  #change 1 to 8 to save time for tests
                         print(message[l*2],end=",")
                         print(message[l*2+1],end=",")
             if token == 'W' or token == 'C':
@@ -167,9 +167,10 @@ def printSerialMessage(port, token, timeout=0):
         if port:
             response = port.main_engine.readline().decode('ISO-8859-1')
             if response != '':
-                #                startTime = time.time()
+                logger.debug(f"response is: {response}")
                 responseTrim = response.replace('\r','').replace('\n','')
-                if responseTrim.lower() == token.lower():
+                logger.debug(f"responseTrim is: {responseTrim}")
+                if responseTrim[0].lower() == token.lower():
                     return [response, allPrints]
                 else:
                     print(response, flush=True)
@@ -194,7 +195,8 @@ def sendTask(PortList, port, task, timeout=0):  # task Structure is [token, var=
         try:
             previousBuffer = port.main_engine.read_all().decode('ISO-8859-1')
             if previousBuffer:
-                printH('Previous buffer:', previousBuffer)
+                logger.debug(f"Previous buffer: {previousBuffer}")
+                pass
             if len(task) == 2:
                 #        print('a')
                 #        print(task[0])
@@ -587,7 +589,7 @@ def showSerialPorts(allPorts):
             allPorts.append('/dev/ttyS0')
 
     for index in range(len(allPorts)):
-        logger.info(f"port[{index}] is {allPorts[index]} ")
+        logger.debug(f"port[{index}] is {allPorts[index]} ")
     print("\n*** Available serial ports: ***")
     print(*allPorts, sep = "\n")
     if platform.system() != "Windows":
@@ -595,18 +597,18 @@ def showSerialPorts(allPorts):
              if 'cu.usb' in p:
                 print('\n* Manually connect to the following port if it fail to connect automatically\n')
                 print(p, end='\n\n')
-
+                
 def connectPort(PortList):
     global initialized
     allPorts = Communication.Print_Used_Com()
     showSerialPorts(allPorts)
-    
+
     if len(allPorts) > 0:
         goodPortCount = 0
         checkPortList(PortList,allPorts)
     initialized = True
     if len(PortList) == 0:
-        print('No port found!')
+        print('No port found! Please make sure the serial port can be recognized by the computer first.')
         print('Replug mode')
         replug(PortList)
     else:
