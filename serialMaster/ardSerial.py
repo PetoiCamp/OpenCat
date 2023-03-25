@@ -155,7 +155,7 @@ def printSerialMessage(port, token, timeout=0):
     if token == 'k' or token == 'K':
         threshold = 4
     else:
-        threshold = 1
+        threshold = 3
     #    if token == 'K':
     #        timeout = 1
     startTime = time.time()

@@ -13,8 +13,8 @@ int u2 = 8;
 int d1 = 2;
 int d2 = 8;
 
-// #define MU_CAMERA
-#define SENTRY1_CAMERA
+#define MU_CAMERA
+// #define SENTRY1_CAMERA
 
 #ifdef MU_CAMERA
 void muCameraSetup();
@@ -104,12 +104,12 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
         newCmdIdx = 6;
         //      printList(newCmd);}
       }
-      // else {
-      //   tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 40);  //spin its body to follow you
-      //   tQueue->addTask('k', "sit");
-      //   tQueue->addTask('i', "");
-      //   currentX = 0;
-      // }
+      else {
+        tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 40);  //spin its body to follow you
+        tQueue->addTask('k', "sit");
+        tQueue->addTask('i', "");
+        currentX = 0;
+      }
     }
   }
 }
