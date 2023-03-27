@@ -307,11 +307,11 @@ void reaction() {
 #endif
             } while (pch != NULL);
 #ifdef T_TUNER
-            if (token == T_TUNER)
-              for (byte p = 0; p < 6; p++) {
-                PT(*par[p]);
-                PT('\t');
-              }
+            // if (token == T_TUNER)
+            //   for (byte p = 0; p < 6; p++) {
+            //     PT(*par[p]);
+            //     PT('\t');
+            //   }
 #endif
             if ((token == T_INDEXED_SIMULTANEOUS_ASC || token == T_INDEXED_SIMULTANEOUS_ASC) && (nonHeadJointQ || lastToken != T_SKILL)) {
               // PTL(token);
