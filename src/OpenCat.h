@@ -228,11 +228,12 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 // #define T_DECELERATE  ','
 #define T_RANDOM_MIND 'z'  //toggle random behaviors in the RANDOM_MIND mode
 
+#ifdef GROVE_SERIAL_PASS_THROUGH
 #define T_READ 'R'        //read pin     R
 #define T_WRITE 'W'       //write pin                      W
 #define TYPE_ANALOG 'a'   //            Ra(analog read)   Wa(analog write)
 #define TYPE_DIGITAL 'd'  //            Rd(digital read)  Wd(digital write)
-
+#endif
 #define T_COLOR 'C'                     //change the eye colors of the RGB ultrasonic sensor
 #define T_INDEXED_SIMULTANEOUS_BIN 'I'  //I jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. I0 70 8 -20 9 -20
 #define T_INDEXED_SEQUENTIAL_BIN 'M'    //M jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. M0 70 0 -70 8 -20 9 -20
@@ -247,7 +248,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_TEMP 'T'               //call the last 'K' skill data received from the serial port
 #endif
 
-#define T_TUNER '}'
+// #define T_TUNER '}'
 
 
 float degPerRad = 180.0 / M_PI;
@@ -361,8 +362,10 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #include <Adafruit_NeoPixel.h>
 //Adafruit_NeoPixel pixel(NUMPIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 #endif
+
 #ifdef RANDOM_MIND
-#define ALL_RANDOM  // add random joint movements between the choice list of preset behaviors
+// #define ALL_RANDOM  // add random joint movements between the choice list of preset behaviors \
+                    // when it's activated, the gyro will be disabled
 #include "randomMind.h"
 #undef BINARY_COMMAND
 #endif
@@ -403,6 +406,7 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #include "doubleLight.h"
 #elif defined GROVE_SERIAL_PASS_THROUGH
 #elif defined OTHER_MODULES
+#elif defined ALL_RANDOM
 #else
 #define GYRO_PIN 0
 #endif
