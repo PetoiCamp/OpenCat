@@ -157,7 +157,11 @@ void reaction() {
         }
       case T_JOINTS:
         {  //show the list of current joint anles
-          printTable(currentAng);
+          PT('=');
+          if (cmdLen)
+            PTL(currentAng[atoi(newCmd)]);
+          else
+            printTable(currentAng);
           break;
         }
 #ifdef T_MELODY
@@ -366,7 +370,7 @@ void reaction() {
                 } else if (newCmd[i] == TYPE_DIGITAL)
                   digitalWrite(newCmd[i + 1], newCmd[i + 2]);
               } else if (token == T_READ) {
-                PTF("Got ");
+                PT('=');
                 pinMode(newCmd[i + 1], INPUT);
                 if (newCmd[i] == TYPE_ANALOG)  // Arduino Uno: A2->16, A3->17
                   PTL(analogRead(newCmd[i + 1]));

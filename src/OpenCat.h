@@ -211,7 +211,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_GYRO_BALANCE 'G'              //toggle on/off the gyro adjustment
 #define T_INDEXED_SIMULTANEOUS_ASC 'i'  //i jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. i0 70 8 -20 9 -20 \
                                         //a single 'i' will free the head joints if it were previously manually controlled.
-#define T_JOINTS 'j'                    //print the joint angles
+#define T_JOINTS 'j'                    //A single "j" returns all angles. "j Index" prints the joint's angle. e.g. "j 8" or "j11".
 #define T_SKILL 'k'
 #define T_SKILL_DATA 'K'
 #define T_INDEXED_SEQUENTIAL_ASC 'm'  //m jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. m0 70 0 -70 8 -20 9 -20
