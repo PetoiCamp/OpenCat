@@ -71,7 +71,7 @@ void readSignal() {
   read_voice_ld3320();
 #endif
   long current = millis();
-  if (newCmdIdx) {
+  if (newCmdIdx && newCmdIdx <= 2) {
     idleTimer = millis() + IDLE_TIME;
   } else if (token != T_CALIBRATE && current - idleTimer > 0) {
     serialDominateQ = false;
@@ -92,6 +92,9 @@ void readSignal() {
 #endif
 #ifdef DOUBLE_LIGHT
     read_doubleLight();
+#endif
+#ifdef DOUBLE_INFRARED_DISTANCE
+    read_doubleInfraredDistance();
 #endif
 #ifdef RANDOM_MIND
     if (autoSwitch && newCmdIdx == 0)

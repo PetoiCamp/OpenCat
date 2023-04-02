@@ -404,6 +404,8 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #include "doubleTouch.h"
 #elif defined DOUBLE_LIGHT
 #include "doubleLight.h"
+#elif defined DOUBLE_INFRARED_DISTANCE
+#include "doubleInfraredDistance.h"
 #elif defined GROVE_SERIAL_PASS_THROUGH
 #elif defined OTHER_MODULES
 #elif defined ALL_RANDOM
@@ -505,9 +507,9 @@ void initRobot() {
   allCalibratedPWM(currentAng);  //soft boot for servos
   delay(500);
   lastCmd[0] = '\0';
-#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH
-  skill.loadFrame("rest");  //required by double light
-  delay(500);               //use your palm to cover the two light sensors for calibration
+#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH || defined DOUBLE_INFRARED_DISTANCE
+  skill.loadFrame("sit");  //required by double light
+  delay(500);              //use your palm to cover the two light sensors for calibration
 #endif
   //----------------------------------
 #else  // ** save parameters to device's static memory

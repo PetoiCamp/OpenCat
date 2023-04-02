@@ -63,6 +63,7 @@
 // #define PIR             //for PIR (Passive Infrared) sensor
 // #define DOUBLE_TOUCH  //for double touch sensor
 // #define DOUBLE_LIGHT  //for double light sensor
+// #define DOUBLE_INFRARED_DISTANCE  //for double infrared distance sensor
 // #define GESTURE  //for Gesture module
 // #define CAMERA  //for human body tracking or ball tracking using an intelligent camera
 // #define GROVE_SERIAL_PASS_THROUGH  //allow analog/digital read/write GPIO pins through serial protocol
