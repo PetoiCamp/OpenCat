@@ -48,12 +48,12 @@ void read_doubleInfraredDistance() {
   PT(dR);
   PT("\tmin ");
   PT(minL);
-  PT("\tofs ");
+  PT("\tdiff ");
   PT(diff);
-  PT("\tang ");
+  PT("\toffset ");
   float offset = atan(diff / SENSOR_DISPLACEMENT) * degPerRad;
   PTL(offset);
-  if (minL < 20 && diff < 5 && abs(offset) > 1) {
+  if (minL < 20 && abs(offset) > 5 - minL / 5) {
     currentX = min(90, max(-90, currentX + offset / 2));
     char mov[] = { 0, currentX, '~' };  //example using 'I' for Binary commands. it has to end up with '~' because regular 0 can be mistaken as '\0'.
     tQueue->addTask('I', mov);          //the movement starts before the music
