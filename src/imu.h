@@ -255,7 +255,10 @@ void imuSetup() {
 
   // load and configure the DMP
   //  PTLF("Init DMP");
-  devStatus = mpu.dmpInitialize();
+  do {
+    devStatus = mpu.dmpInitialize();
+    delay(100);
+  } while (devStatus);
   wdt_disable();
 
   // supply the gyro offsets here, scaled for min sensitivity
