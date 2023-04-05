@@ -6,7 +6,7 @@
 
 int meanA = 0, meanB = 0, diffA_B = 0, actualDiff = 0, last = 0;
 int tolerance = 20;
-int currentX = 0;
+float currentX = 0;
 
 void doubleInfraredDistanceSetup() {
   // put your setup code here, to run once:
@@ -21,59 +21,54 @@ void doubleInfraredDistanceSetup() {
 }
 
 void read_doubleInfraredDistance() {
-  int a = analogRead(SENSOR1) - 24;
-  int b = analogRead(SENSOR2) - 24;
-  PT("\ta ");
-  PT(a);
-  PT("\tb ");
-  PT(b);
-  float dL = a < 30 ? a / 4.0 : 200.0 / sqrt(MAX_READING - analogRead(SENSOR1));
-  float dR = b < 30 ? b / 4.0 : 200.0 / sqrt(MAX_READING - analogRead(SENSOR2));
-  // PT(a);
-  // PT('\t');
-  // PT(meanA);
-  // PT('\t');
-  // PT(b);
-  // PT('\t');
-  // PT(meanB);
-  // PT('\t');
-  // a -= meanA;
-  // b -= meanB;
-  float diff = dL - dR;
-  float minL = min(dL, dR);
-  float clippedDiff = min(max(diff, -60), 60);
-  PT("\tdL ");
-  PT(dL);
-  PT("\tdR ");
-  PT(dR);
-  PT("\tmin ");
-  PT(minL);
-  PT("\tdiff ");
-  PT(diff);
-  PT("\toffset ");
+  int rawL = analogRead(SENSOR2) - 24;
+  int rawR = analogRead(SENSOR1) - 24;
+  float dL = rawL < 30 ? rawL / 4.0 : 200.0 / sqrt(MAX_READING - rawL);
+  float dR = rawR < 30 ? rawR / 4.0 : 200.0 / sqrt(MAX_READING - rawR);
+  float minD = min(dL, dR);
+  float diff = dR - dL;
   float offset = atan(diff / SENSOR_DISPLACEMENT) * degPerRad;
-  PTL(offset);
-  if (minL < 20 && abs(offset) > 5 - minL / 5) {
-    currentX = min(90, max(-90, currentX + offset / 2));
-    char mov[] = { 0, currentX, '~' };  //example using 'I' for Binary commands. it has to end up with '~' because regular 0 can be mistaken as '\0'.
-    tQueue->addTask('I', mov);          //the movement starts before the music
+
+  if (periodGlobal == 1) {  //posture
+    if (minD < 20 && abs(offset) > 5 - minD / 5) {
+      // PT("rawLeft ");
+      // PT(rawL);
+      // PT("\trawRight ");
+      // PT(rawR);
+      // PT("\tdL ");
+      // PT(dL);
+      // PT("\tdR ");
+      // PT(dR);
+      // // // PT("\tmin ");
+      // // // PT(minD);
+      // PT("\tdiff ");
+      // PT(diff);
+      // PT("\toffset ");
+      // PT(offset);
+      // PT("\tcX ");
+      // PT(currentX);
+      currentX = min(90, max(-90, currentX + offset / 10));
+      calibratedPWM(0, currentX, 0.2);
+      // PT("\tcX2 ");
+      // PT(currentX);
+      // PTL();
+      FPS();
+    }
+  } else if (periodGlobal > 1 && tQueue->empty()) {  //gait
+    tQueue->addTask('i', "");
+    if (dL > 30 && dR > 30) {  //free to run
+      tQueue->addTask('k', "trF");
+      // idleTimer = millis() + IDLE_TIME / 4;
+    } else if (dL < 3 || dR < 3) {  //too close. retreat
+      tQueue->addTask('k', "bk", 1000);
+    } else {
+      // idleTimer = millis() + IDLE_TIME/2;
+      if (abs(dR - dL) > 2)  //one side has longer free distance
+        tQueue->addTask('k', dR > dL ? "trR" : "trL", 1000);
+      else if (dL < 12 || dR < 12) {
+        tQueue->addTask('k', dL < dR ? "bkL" : "bkR", 1500);
+        tQueue->addTask('k', dL < dR ? "trR" : "trL", 1500);
+      }
+    }
   }
-  // if (maxL < -50) {
-  //   tQueue->addTask('k', "bk", 2000);  // jigs when entering this case for the 2nd time. ???
-  //   tQueue->addTask('k', "up");        // jigs when entering this case for the 2nd time. ???
-  //   PTL(tQueue->size());
-  // } else if (maxL < 300) {
-  //   actualDiff = (last + clippedDiff) / 2;
-  //   actualDiff = max(min(actualDiff, 90), -90);
-  //   token = T_INDEXED_SIMULTANEOUS_BIN;
-  //   newCmd[0] = 0;
-  //   newCmd[1] = actualDiff;
-  //   last = actualDiff;
-  //   cmdLen = 2;
-  //   newCmdIdx = 5;
-  //   PTL(actualDiff);
-  // }
-  // else if (maxL > 300 && abs(diff) > 30) {
-  //   tQueue->addTask('k', (diff > 0 ? "vtR" : "vtL"), 1000);
-  // }
 }

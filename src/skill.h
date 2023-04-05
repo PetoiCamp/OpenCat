@@ -279,6 +279,8 @@ public:
     firstMotionJoint = (period <= 1) ? 0 : DOF - WALKING_DOF;
     // dutyAngles = newCmd + skillHeader;
     inplaceShift();
+    periodGlobal = period;
+    // PTL(periodGlobal);
 #ifdef DEVELOPER
     info();
 #endif
@@ -333,6 +335,7 @@ public:
 #endif
     }
   }
+
   void mirror() {
     expectedRollPitch[0] = -expectedRollPitch[0];
     for (int k = 0; k < abs(period); k++) {

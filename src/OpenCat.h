@@ -292,7 +292,7 @@ float currentAdjust[DOF] = {};
 #define IDLE_TIME 3000
 long idleTimer = 0;
 int randomInterval = 2000;
-#define CHECK_BATTERY_PERIOD 10000  //every 10 seconds. 60 mins -> 3600 seconds
+#define CHECK_BATTERY_PERIOD 5000  //every 10 seconds. 60 mins -> 3600 seconds
 int uptime = -1;
 int frame = 0;
 byte tStep = 0;
@@ -303,6 +303,7 @@ char lowerToken;
 char lastToken;
 byte newCmdIdx = 0;
 int cmdLen = 0;
+int8_t periodGlobal = 0;
 #define CMD_LEN 10    //the last char will be '\0' so only CMD_LEN-1 elements are allowed
 #define BUFF_LEN 467  //452
 // char *newCmd = new char[BUFF_LEN + 1];
@@ -376,6 +377,9 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #undef T_SLOPE
 #endif
 
+#include "PCA9685servo.h"
+#include "motion.h"
+
 #ifndef MAIN_SKETCH
 #define GYRO_PIN 0
 
@@ -429,8 +433,6 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #undef BUZZER
 #endif
 
-#include "PCA9685servo.h"
-#include "motion.h"
 #include "skill.h"
 #include "reaction.h"
 

@@ -58,12 +58,13 @@ void voiceSetup() {
 
 void read_voice() {
   if (token == 'X' && newCmd[0] == 'A') {  // send some control command directly to the module
-                                           //XAa: turn on the voice response
-                                           //XAb: mute the voice response
-                                           //XAc: start learning
-                                           //XAd: stop learning
-                                           //XAe: switch English
-                                           //XAf: switch Chinese
+                                           // XAa: switch English
+                                           // XAb: switch Chinese
+                                           // XAc: turn on the sound response
+                                           // XAd: turn off the sound response
+                                           // XAe: start learning
+                                           // XAf: stop learning
+                                           // XAg: clear the learning data
     byte c = 0;
     while (newCmd[c++] != '~')
       ;

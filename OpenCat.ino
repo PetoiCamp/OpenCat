@@ -100,7 +100,7 @@ void loop() {
 #endif
 
 #ifdef TASK_QUEUE
-  if (!tQueue->cleared()) {
+  if (!tQueue->empty()) {
     tQueue->popTask();
   } else
 #endif

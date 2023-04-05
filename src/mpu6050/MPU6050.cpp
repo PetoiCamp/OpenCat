@@ -3369,6 +3369,7 @@ void MPU6050::PID(uint8_t ReadAddress, float kP,float kI, uint8_t Loops){
 			I2Cdev::writeWords(devAddr, SaveAddress + (i * shift), 1, (uint16_t *)&Data);
 		}
 	}
+    Serial.write('\n');
 	resetFIFO();
 	resetDMP();
 }

@@ -40,7 +40,7 @@ public:
   template<typename T> void addTaskToFront(char t, T* p, int d = 0) {
     this->push_front(new Task(t, p, d));
   }
-  bool cleared() {
+  bool empty() {
     return this->size() == 0 && long(millis() - taskTimer) > taskInterval;
   }
   void loadTaskInfo(Task* t) {

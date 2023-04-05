@@ -414,6 +414,52 @@ postureDict = {
     'Bittle': postureTableBittle,
     'DoF16': postureTableDoF16
 }
+
+skillFullName = {
+        'balance': 'balance',
+        'buttUp': 'buttUp',\
+        'dropped': 'dropped',\
+        'lifted': 'lifted',\
+        'lnd': 'landing',\
+        'rest': 'rest',\
+        'sit': 'sit',\
+        'up': 'up',\
+        'str': 'stretch',\
+        'calib': 'calib',\
+        'zero': 'zero',
+        'ang':'angry',
+         'bf': 'backFlip',
+         'bx': 'boxing',
+         'ck': 'check',
+         'cmh': 'comeHere',
+         'dg': 'dig',
+         'ff': 'frontFlip',
+         'fiv': 'highFive',
+         'gdb': 'goodboy',
+         'hds': 'handStand',
+         'hi': 'hi',
+         'hg': 'hug',
+         'hsk': 'handShake',
+         'hu': 'handsUp',
+         'jmp': 'jump',
+         'chr': 'cheers',
+         'kc': 'kick',
+         'mw': 'moonWalk',
+         'nd': 'nod',
+         'pd': 'playDead',
+         'pee': 'pee',
+         'pu': 'pushUp',
+         'pu1': 'pushUpSingleArm',
+         'rc': 'recover',
+         'rl': 'roll',
+         'scrh': 'scratch',
+         'snf': 'sniff',
+         'tbl': 'table',
+         'ts': 'testServo',
+         'wh': 'waveHead',
+         'zz': 'zz',
+         }
+             
 model = 'Bittle'
 postureTable = postureDict[model]
 

@@ -66,7 +66,6 @@ float adaptiveParameterArray[16][2] = {  // they will be saved as int8_t in EEPR
 float RollPitchDeviation[2];
 int8_t slope = 1;
 
-
 float adjust(byte i) {
   float rollAdj, pitchAdj, adj;
   if (i == 1 || i > 3) {  //check idx = 1

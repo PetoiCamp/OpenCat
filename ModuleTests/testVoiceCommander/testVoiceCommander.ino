@@ -34,12 +34,19 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  // if (Serial.available()) {// send some control command directly to the module
-  //   String cmd = Serial.readStringUntil('\n');
-  //   int idx = 0;
-  //   Serial.println(cmd);
-  //   Serial2.print(cmd);
-  // }
+  if (Serial.available()) {  // send some control command directly to the module
+                             // XAa: switch English
+                             // XAb: switch Chinese
+                             // XAc: turn on the sound response
+                             // XAd: turn off the sound response
+                             // XAe: start learning
+                             // XAf: stop learning
+                             // XAg: clear the learning data
+    String cmd = Serial.readStringUntil('\n');
+    int idx = 0;
+    Serial.println(cmd);
+    Serial2.print(cmd);
+  }
 
   if (Serial2.available()) {
     String cmd = Serial2.readStringUntil('\n');
