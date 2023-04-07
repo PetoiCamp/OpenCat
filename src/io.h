@@ -18,8 +18,8 @@ void read_serial() {
     newCmdIdx = 2;
     delay(1);  //leave enough time for serial read
 
-    char terminator = (token < 'a') ? '~' : '\n';  //capitalized tokens use binary encoding for long data commands
-                                                   //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
+    char terminator = (token >= 'A' && token <= 'Z') ? '~' : '\n';  //capitalized tokens use binary encoding for long data commands
+                                                                    //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
     long lastSerialTime = millis();
     int serialTimout = (token == T_SKILL_DATA || lowerToken == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT_LONG;
     do {
@@ -43,12 +43,13 @@ void read_serial() {
         } while (Serial.available());
         lastSerialTime = millis();
       }
-    } while (newCmd[cmdLen - 1] != terminator && long(millis() - lastSerialTime) < serialTimout);  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
-                                                                                                   //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
-                                                                                                   //so it needs a timeout for the no line ending case
+    } while (newCmd[cmdLen - 1] != terminator
+             && long(millis() - lastSerialTime) < serialTimout);  //the lower case tokens are encoded in ASCII and can be entered in Arduino IDE's serial monitor
+                                                                  //if the terminator of the command is set to "no line ending" or "new line", parsing can be different
+                                                                  //so it needs a timeout for the no line ending case
     // PTH("*SR\t", long(millis() - lastSerialTime));
     cmdLen = (newCmd[cmdLen - 1] == terminator) ? cmdLen - 1 : cmdLen;
-    newCmd[cmdLen] = token < 'a' ? '~' : '\0';
+    newCmd[cmdLen] = (token >= 'A' && token <= 'Z') ? '~' : '\0';
     // PTL(cmdLen);
     // printCmdByType(token, newCmd, cmdLen);
 #ifdef DEVELOPER

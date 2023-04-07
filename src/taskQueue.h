@@ -9,11 +9,11 @@ public:
   int dly;
   template<typename T> Task(char t, T* p, int d = 0)
     : tkn{ t }, dly{ d } {
-    paraLength = (tkn < 'a') ? strlenUntil(p, '~') : strlen((char*)p);
+    paraLength = (tkn >= 'A' && tkn <= 'Z') ? strlenUntil(p, '~') : strlen((char*)p);
     // if (paraLength) {
     parameters = new char[paraLength + 1];
     arrayNCPY(parameters, p, paraLength);
-    parameters[paraLength] = token < 'a' ? '~' : '\0';
+    parameters[paraLength] = (token >= 'A' && token <= 'Z') ? '~' : '\0';
     // }
   };
   ~Task() {
@@ -48,7 +48,7 @@ public:
     cmdLen = t->paraLength;
     taskInterval = t->dly;
     arrayNCPY(newCmd, t->parameters, cmdLen);
-    newCmd[cmdLen] = token < 'a' ? '~' : '\0';
+    newCmd[cmdLen] = (token >= 'A' && token <= 'Z') ? '~' : '\0';
     taskTimer = millis();
     newCmdIdx = 5;
     delete t;

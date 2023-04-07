@@ -91,6 +91,7 @@ void read_voice() {
       if (index < 21) {  //11 ~ 20 are customized commands, and their indexes should be shifted by 11
         index -= 11;
         PT(index);
+        PT('\t');
         if (index < listLength) {
           raw = strcpy_P(newCmd, (char *)pgm_read_word(&(voiceTable[index])));
           PTL(newCmd);
