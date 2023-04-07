@@ -1,3 +1,10 @@
+// Petoi Voice Command Module
+// use the software serial port on the NyBoard to read the module. connect the module to the grove socket with pin 6 and 7.
+// or use the serial 2 port on the BiBoard to read the module. connect the module to the pin Tx2 and Rx2.
+// if you wire the module up with the USB programmer directly, connect the module's Tx to the programmer's Rx, and Rx to Tx.
+// Rongzhong Li
+// Petoi LLC
+// Jan 12, 2023
 #ifdef VOICE
 #include <SoftwareSerial.h>
 SoftwareSerial Serial2(6, 7);  //Rx, Tx
@@ -19,19 +26,16 @@ SoftwareSerial Serial2(6, 7);  //Rx, Tx
 // 下列行为是程序中预设的，您可以用技能创作坊设计新技能并导入到 InstinctX.h
 // 支持其他的串口指令，比如活动关节和旋律
 
-// const char voice1[] PROGMEM = "b14,8,14,8,21,8,21,8,23,8,23,8,21,4";  //小星星 twinkle star
-// const char voice2[] PROGMEM = "m0 80 0 -80 0 0";                                                         //动头 move head
-// const char voice3[] PROGMEM = "scrh";                                                                    //挠痒痒 scratch
-const char voice1[] PROGMEM = "kdg";    //刨地	dig
-const char voice2[] PROGMEM = "khg";    //抱抱	hug
-const char voice3[] PROGMEM = "khu";    //举手	hands up
-const char voice4[] PROGMEM = "khds";   //倒立	handstand
-const char voice5[] PROGMEM = "ksnf";   //闻一下	sniff
-const char voice6[] PROGMEM = "khsk";   //握手	handshake
-const char voice7[] PROGMEM = "kgdb";   //好孩子	Good boy
-const char voice8[] PROGMEM = "ktbl";   //变桌子	Be table
-const char voice9[] PROGMEM = "kbx";    //打拳	boxing
-const char voice10[] PROGMEM = "kang";  //生气 angry
+const char voice1[] PROGMEM = "kpu1";                                 //单手俯卧撑	 single-handed pushups
+const char voice2[] PROGMEM = "m0 80 0 -80";                          //动头 move head
+const char voice3[] PROGMEM = "kmw";                                  //moonwalk
+const char voice4[] PROGMEM = "b14,8,14,8,21,8,21,8,23,8,23,8,21,4";  //小星星 twinkle star
+const char voice5[] PROGMEM = "5th";
+const char voice6[] PROGMEM = "6th";
+const char voice7[] PROGMEM = "7th";
+const char voice8[] PROGMEM = "8th";
+const char voice9[] PROGMEM = "9th";
+const char voice10[] PROGMEM = "10th";
 const char *const voiceTable[] PROGMEM = {
   voice1,
   voice2,
