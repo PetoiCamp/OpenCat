@@ -61,45 +61,64 @@ void loop() {
   }
 
   if (Serial2.available()) {
+    Serial.print("-----\nReturned value: ");
     String cmd = Serial2.readStringUntil('\n');
-    int index = (byte)cmd[2];  //Convert the third byte to integer
+
+    Serial.print(cmd[0]);  //It should be X
+    Serial.print(' ');
+    Serial.print(cmd[1]);  //It should be A
+    Serial.print(' ');
+    int index = (byte)cmd[2];
+    Serial.print((byte)cmd[2]);
+    Serial.print(' ');
+    Serial.println(cmd.c_str() + 3);
     if (index <= 20) {
       Serial.print("Customized Command Index: ");
-      index -= 11;  //Convert the third byte to integer index of the customized command, starting from 0
+      index = index - 11;  //Convert the third byte to integer index of the customized command, starting from 0
       Serial.println(index);
       Serial.println((index < listLength) ? customizedCmdList[index] : "Undefined!");
+    } else if (index < 61) {
+      // Serial.print((byte)cmd[2]);  //Convert the third byte to integer
+      Serial.print("Predefined Command Index: ");
+      Serial.println(index - 21);  //Convert the third byte to integer index, starting from 0
+      Serial.println(cmd.c_str() + 3);
     } else {
-      Serial.print(cmd[0]);  //It should be X
-      Serial.print(' ');
-      Serial.print(cmd[1]);  //It should be A
-      Serial.print(' ');
-      Serial.print(index);  //Converted the third byte to integer
-      Serial.print(' ');
-      Serial.println(cmd.c_str() + 3);  //print the bytes as char strings from the 4th byte}
-      if (index <= 61)
-        index -= 21;
-      switch (tolower(index)) {  // control commands
+      switch (tolower(index)) {
         case 'a':
-          Serial.println("Switch English");
-          break;
+          {
+            Serial.println("Switch English");
+            break;
+          }
         case 'b':
-          Serial.println("Switch Chinese");
-          break;
+          {
+            Serial.println("Switch Chinese");
+            break;
+          }
         case 'c':
-          Serial.println("Turn on the audio response");
-          break;
+          {
+            Serial.println("Turn on the audio response");
+            break;
+          }
         case 'd':
-          Serial.println("Turn off the audio response");
-          break;
+          {
+            Serial.println("Turn off the audio response");
+            break;
+          }
         case 'e':
-          Serial.println("Start learning");
-          break;
+          {
+            Serial.println("Start learning");
+            break;
+          }
         case 'f':
-          Serial.println("Stop learning");
-          break;
+          {
+            Serial.println("Stop learning");
+            break;
+          }
         case 'g':
-          Serial.println("Delete all learning data!");
-          break;
+          {
+            Serial.println("Delete all learning data!");
+            break;
+          }
       }
     }
   }
