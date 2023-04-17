@@ -73,7 +73,13 @@ void readSignal() {
 #endif
   long current = millis();
   if (newCmdIdx && newCmdIdx <= 2) {
-    idleTimer = millis() + IDLE_TIME;
+    idleTimer = millis() +
+#ifdef DOUBLE_INFRARED_DISTANCE
+                0
+#else
+                IDLE_TIME
+#endif
+      ;
   } else if (token != T_CALIBRATE && current - idleTimer > 0) {
     serialDominateQ = false;
 #ifdef CAMERA

@@ -441,6 +441,11 @@ void reaction() {
             skill.loadFrame(newCmd);
             // skill.info();
             // PTH("mem",freeMemory());
+
+#ifdef DOUBLE_INFRARED_DISTANCE
+            if (skill.period == 1)
+              token = ' ';
+#endif
           }
           break;
         }

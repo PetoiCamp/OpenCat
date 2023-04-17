@@ -510,6 +510,9 @@ void initRobot() {
   delay(500);
   lastCmd[0] = '\0';
 #if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH || defined DOUBLE_INFRARED_DISTANCE
+#ifdef DOUBLE_INFRARED_DISTANCE
+  doubleInfraredDistanceSetup();
+#endif
   skill.loadFrame("sit");  //required by double light
   delay(500);              //use your palm to cover the two light sensors for calibration
 #endif
