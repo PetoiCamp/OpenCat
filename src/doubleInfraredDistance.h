@@ -1,5 +1,6 @@
 /*
 Demo for the Petoi double infrared distance sensor
+It works under the indoor lighting condition. 
 
 The robot will make different sound by the distance of the obstable in front of it.
 
@@ -55,6 +56,7 @@ float d = SENSOR_DISPLACEMENT;  // Displacement of sensors on the x-axis
 int rawL, rawR;
 float dL, dR, meanD, maxD, minD;
 int meanA = 0, meanB = 0, diffA_B = 0, actualDiff = 0, last = 0;
+int longThres = 20;
 
 void resetPID() {
   error = 0;
@@ -119,6 +121,9 @@ void doubleInfraredDistanceSetup() {
   strip.show();             // Turn OFF all pixels ASAP
   strip.setBrightness(50);  // Set BRIGHTNESS to about 1/5 (max = 255)
 #endif
+#ifdef LED_PIN
+  pinMode(LED_PIN, OUTPUT);
+#endif
 }
 
 void readDistancePins() {
@@ -129,7 +134,7 @@ void readDistancePins() {
   meanD = (dL + dR) / 2;
   maxD = max(dL, dR);
   minD = min(dL, dR);
-  if (0) {
+  if (1) {
     PT("rL ");
     PT(rawL);
     PT("\trR ");
@@ -146,7 +151,7 @@ void readDistancePins() {
 
 void read_doubleInfraredDistance() {
   readDistancePins();
-  if (makeSound && minD > 10 && maxD < 25 && periodGlobal == 1)
+  if (makeSound && minD > longThres / 2 && maxD < longThres && periodGlobal == 1)
     beep(35 - meanD, meanD / 4);
 #ifdef NEOPIXEL_PIN
   strip.clear();
@@ -154,6 +159,12 @@ void read_doubleInfraredDistance() {
     strip.setPixelColor(i, strip.Color(255 - meanD * 6, meanD * 6, 128 + currentX * 2));  //  Set pixel's color (in RAM)
     strip.show();
   }
+#endif
+#ifdef LED_PIN
+  if (LED_PIN == 10)
+    digitalWrite(LED_PIN, 255 - meanD * 6 > 128);
+  else
+    analogWrite(LED_PIN, 255 - meanD * 6);
 #endif
   if (dL < 1 || dR < 1) {
     readDistancePins();
@@ -180,11 +191,11 @@ void read_doubleInfraredDistance() {
   // distanceNaive(dL, dR);
   else if (periodGlobal > 1 && tQueue->empty()) {  //gait
     tQueue->addTask('i', "");
-    if (dL > 30 && dR > 30) {  //free to run
+    if (dL > longThres && dR > longThres) {  //free to run
       tQueue->addTask('k', "trF");
       idleTimer = millis() + IDLE_TIME / 2;
       PTLF(" free");
-    } else if (dL < 4 || dR < 4) {  //too close. retreat
+    } else if (dL < longThres / 5 || dR < longThres / 5) {  //too close. retreat
       tQueue->addTask('k', dL < dR ? "vtR" : "vtL", 2000);
       PTLF(" too close");
     } else {
@@ -192,7 +203,7 @@ void read_doubleInfraredDistance() {
       if (abs(dR - dL) > 2) {  //one side has longer free distance
         tQueue->addTask('k', dL < dR ? "trR" : "trL", 1000);
         PTLF("turn");
-      } else if (dL < 12 || dR < 12) {
+      } else if (dL < longThres / 2 || dR < longThres / 2) {
         tQueue->addTask('k', dL < dR ? "bkL" : "bkR", 1500);
         tQueue->addTask('k', dL < dR ? "trR" : "trL", 1500);
         PTLF(" retreat and turn");
