@@ -88,30 +88,33 @@ void distanceNaive(float dLeft, float dRight) {  //a simple feedback loop withou
 
 void distancePID(float dLeft, float dRight) {
   // Read the current distances from the sensors
-  if (min(dLeft, dRight) < 30) {
+  if (minD < longThres) {
     // Calculate the error between the setpoint and the actual values, taking into account the x-axis displacement
     //error = atan((dLeft - dRight) / SENSOR_DISPLACEMENT) * degPerRad;
     error = dLeft - dRight - setpoint;
-    // Calculate the integral and derivative terms
-    integral = max(-900, min(900, integral + error));
-    derivative = error - last_error;
+    if (fabs(error) > 1) {
+      // Calculate the integral and derivative terms
+      integral = max(-900, min(900, integral + error));
+      derivative = error - last_error;
 
-    // Calculate the control signal using the PID formula
-    currentX = -max(-90, min(90, kp * error + ki * integral + kd * derivative));
+      // Calculate the control signal using the PID formula
+      currentX = -max(-90, min(90, kp * error + ki * integral + kd * derivative));
 
-    // Send the control signal to the sensors to adjust their angles
-    calibratedPWM(0, currentX, 0);
-    // PT('\t');
-    // PT(error);
-    // PT('\t');
-    // PT(integral);
-    // PT('\t');
-    // PT(derivative);
-    // PT('\t');
-    // PT(currentX);
-    // Save the current error for use in the next iteration
-    last_error = error;
+      // Send the control signal to the sensors to adjust their angles
+      calibratedPWM(0, currentX, 0);
+      // Save the current error for use in the next iteration
+      last_error = error;
+    }
   }
+  // PT('\t');
+  // PT(error);
+  // PT('\t');
+  // PT(integral);
+  // PT('\t');
+  // PT(derivative);
+  // PT('\t');
+  // PT(currentX);
+  // PTL();
 }
 
 void doubleInfraredDistanceSetup() {
@@ -144,8 +147,7 @@ void readDistancePins() {
     PT("\tdR ");
     PT(dR);
     PT("\tmD ");
-    PT(meanD);
-    PTL();
+    PTL(meanD);
   }
 }
 
