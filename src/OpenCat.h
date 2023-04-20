@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N230305"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_230305"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
@@ -156,6 +156,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #endif
 
 #ifdef NYBBLE
+#define MODEL "Nybble"
 #define HEAD
 #define TAIL
 #define X_LEG
@@ -164,6 +165,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define KNEE G41
 
 #elif defined BITTLE
+#define MODEL "Bittle"
 #define HEAD
 #define LL_LEG
 #define WALKING_DOF 8
@@ -227,6 +229,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 // #define T_ACCELERATE  '.'
 // #define T_DECELERATE  ','
 #define T_RANDOM_MIND 'z'  //toggle random behaviors in the RANDOM_MIND mode
+#define T_QUERY '?'
 
 #ifdef GROVE_SERIAL_PASS_THROUGH
 #define T_READ 'R'        //read pin     R
@@ -442,14 +445,6 @@ void initRobot() {
 #ifdef MAIN_SKETCH  // **
   PTL('k');
   PTLF("\n* Start *");
-#ifdef BITTLE
-  PTLF("Bittle");
-#elif defined NYBBLE
-  PTLF("Nybble");
-#elif defined CUB
-  PTLF("Cub");
-#endif
-  PTLF(SOFTWARE_VERSION);
 
   if (eeprom(BOOTUP_SOUND_STATE))
     playMelody(MELODY_NORMAL);

@@ -88,7 +88,12 @@ void reaction() {
 #endif
     switch (token) {
 #ifdef MAIN_SKETCH
-
+      case T_QUERY:
+        {
+          PTLF(MODEL);
+          PTLF(SOFTWARE_VERSION);
+          break;
+        }
 #ifdef GYRO_PIN
       case T_GYRO_FINENESS:
       case T_GYRO_BALANCE:

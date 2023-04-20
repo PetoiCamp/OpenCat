@@ -538,15 +538,15 @@ def testPort(PortList, serialObject, p):
             print(result)
             if result != -1:
                 printH('Adding', p)
-                for r in result:
-                    if 'Bittle' in r:
-                        var.model_ = 'Bittle'
-                        break
-                    elif 'Nybble' in r:
-                        var.model_ = 'Nybble'
-                        break
                 PortList.update({serialObject: p})
                 goodPortCount += 1
+                
+                result = sendTask(PortList, serialObject, ['?', 0], waitTime)
+                parse = result[1].replace('\r','').split('\n')
+                var.model_ = parse[0]
+                var.version_ = parse [1]
+                print(var.model_)
+                print(var.version_)
             else:
                 serialObject.Close_Engine()
                 print('* Port ' + p + ' is not connected to a Petoi device!')
