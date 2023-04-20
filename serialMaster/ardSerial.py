@@ -519,12 +519,10 @@ def schedulerToSkill(ports, testSchedule):
 
 def testPort(PortList, serialObject, p):
     global goodPortCount
-   
-    
     #    global sync
     try:
         time.sleep(3)
-
+        waitTime = 0
         result = serialObject.main_engine
         if result != None:
             result = result.read_all().decode('ISO-8859-1')
@@ -535,7 +533,6 @@ def testPort(PortList, serialObject, p):
             else:
                 waitTime = 2
             result = sendTask(PortList, serialObject, ['b', [20, 50], 0], waitTime)
-            print(result)
             if result != -1:
                 printH('Adding', p)
                 PortList.update({serialObject: p})
@@ -543,10 +540,14 @@ def testPort(PortList, serialObject, p):
                 
                 result = sendTask(PortList, serialObject, ['?', 0], waitTime)
                 parse = result[1].replace('\r','').split('\n')
-                var.model_ = parse[0]
-                var.version_ = parse [1]
-                print(var.model_)
-                print(var.version_)
+                for l in range(len(parse)):
+                    if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
+                        var.model_ = parse[l]
+                        var.version_ = parse [l+1]
+                        var.modelList += [var.model_]
+                        print(var.model_)
+                        print(var.version_)
+                        break
             else:
                 serialObject.Close_Engine()
                 print('* Port ' + p + ' is not connected to a Petoi device!')
@@ -719,8 +720,19 @@ def replug(PortList):
                         serialObject = Communication(p, 115200, 1)
                         PortList.update({serialObject: p.split('/')[-1]})
                         goodPortCount += 1
-                        var.model_ = 'Bittle'
                         logger.info(f"Connected to serial port: {p}")
+                        time.sleep(2)
+                        result = sendTask(PortList, serialObject, ['?', 0])
+                        parse = result[1].replace('\r','').split('\n')
+                        for l in range(len(parse)):
+                            if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
+                                var.model_ = parse[l]
+                                var.version_ = parse [l+1]
+                                var.modelList += [var.model_]
+                                print(var.model_)
+                                print(var.version_)
+                                break
+                        
                         success = True
                     except Exception as e:
                         raise e
@@ -754,7 +766,6 @@ def replug(PortList):
 def selectList(PortList,ls,win):
     
     global goodPortCount
-    
     for i in ls.curselection():
         p = ls.get(i)#.split('/')[-1]
         try:
@@ -764,8 +775,19 @@ def selectList(PortList,ls,win):
             PortList.update({serialObject: p.split('/')[-1]})
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
-            var.model_ = 'Bittle' #default value
             
+            time.sleep(2)
+            result = sendTask(PortList, serialObject, ['?', 0])
+            parse = result[1].replace('\r','').split('\n')
+            for l in range(len(parse)):
+                if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
+                    var.model_ = parse[l]
+                    var.version_ = parse [l+1]
+                    var.modelList += [var.model_]
+                    print(var.model_)
+                    print(var.version_)
+                    break
+
             tk.messagebox.showwarning(title='Warning', message=txt('Need to manually select the model type (Nybble/Bittle)'))
             win.destroy()
 
@@ -826,7 +848,7 @@ if __name__ == '__main__':
                 token = sys.argv[1][0]
             #                sendTaskParallel([sys.argv[1][0], sys.argv[1:], 1])
             send(goodPorts, [sys.argv[1][0], sys.argv[1:], 1])
-
+        printH('Model list',var.modelList)
         print("You can type 'quit' or 'q' to exit.")
 
         keepReadingInput(goodPorts)

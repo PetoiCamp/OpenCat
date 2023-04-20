@@ -33,13 +33,13 @@ cLoop, cSet, cStep,  cTrig, cAngle, cDelay, cNote, cDel, cAdd = range(len(labelS
 axisDisable = {
     'Nybble': [0, 5],
     'Bittle': [0, 5],
-    #    'DoF16' : []
+    'DoF16' : []
 
 }
 NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
-    #    'DoF16' : []
+    'DoF16' : []
 }
 jointConfig = {
     'Nybble': '><',
@@ -64,8 +64,6 @@ WORDS = animalNames
 
 class SkillComposer:
     def __init__(self,model, lan):
-        self.model = model
-        self.postureTable = postureDict[model]
         global language
         language = lan
         connectPort(goodPorts)
@@ -73,8 +71,10 @@ class SkillComposer:
         while var.model_ == '':
             if time.time()-start > 5:
                 var.model_ = 'Bittle'
+                print('Use Bittle as default model')
             time.sleep(0.01)
         self.model = var.model_
+        self.postureTable = postureDict[self.model]
         ports = goodPorts
         self.window = Tk()
         self.sliders = list()
