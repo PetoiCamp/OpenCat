@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N_230305"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_230421"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
@@ -445,7 +445,8 @@ void initRobot() {
 #ifdef MAIN_SKETCH  // **
   PTL('k');
   PTLF("\n* Start *");
-
+  PTLF(MODEL);
+  PTLF(SOFTWARE_VERSION);
   if (eeprom(BOOTUP_SOUND_STATE))
     playMelody(MELODY_NORMAL);
 
