@@ -298,7 +298,7 @@ int randomInterval = 2000;
 #define CHECK_BATTERY_PERIOD 5000  //every 10 seconds. 60 mins -> 3600 seconds
 int uptime = -1;
 int frame = 0;
-byte tStep = 0;
+byte tStep = 1;
 int **par = new int *[8];
 
 char token;
