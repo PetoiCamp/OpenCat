@@ -6,7 +6,6 @@
 # May.22nd, 2022
 import sys
 sys.path.append('../serialMaster/')
-import var
 import random
 import tkinter.font as tkFont
 import copy
@@ -68,12 +67,12 @@ class SkillComposer:
         language = lan
         connectPort(goodPorts)
         start = time.time()
-        while var.model_ == '':
+        while config.model_ == '':
             if time.time()-start > 5:
-                var.model_ = 'Bittle'
+                config.model_ = 'Bittle'
                 print('Use Bittle as default model')
             time.sleep(0.01)
-        self.model = var.model_
+        self.model = config.model_
         self.postureTable = postureDict[self.model]
         ports = goodPorts
         self.window = Tk()

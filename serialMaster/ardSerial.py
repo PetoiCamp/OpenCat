@@ -9,7 +9,7 @@ import platform
 import copy
 import threading
 import os
-import var
+import config
 import tkinter as tk
 sys.path.append("../pyUI")
 from translate import *
@@ -542,11 +542,11 @@ def testPort(PortList, serialObject, p):
                 parse = result[1].replace('\r','').split('\n')
                 for l in range(len(parse)):
                     if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
-                        var.model_ = parse[l]
-                        var.version_ = parse [l+1]
-                        var.modelList += [var.model_]
-                        print(var.model_)
-                        print(var.version_)
+                        config.model_ = parse[l]
+                        config.version_ = parse [l+1]
+                        config.modelList += [config.model_]
+                        print(config.model_)
+                        print(config.version_)
                         break
             else:
                 serialObject.Close_Engine()
@@ -726,11 +726,11 @@ def replug(PortList):
                         parse = result[1].replace('\r','').split('\n')
                         for l in range(len(parse)):
                             if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
-                                var.model_ = parse[l]
-                                var.version_ = parse [l+1]
-                                var.modelList += [var.model_]
-                                print(var.model_)
-                                print(var.version_)
+                                config.model_ = parse[l]
+                                config.version_ = parse [l+1]
+                                config.modelList += [config.model_]
+                                print(config.model_)
+                                print(config.version_)
                                 break
                         
                         success = True
@@ -781,11 +781,11 @@ def selectList(PortList,ls,win):
             parse = result[1].replace('\r','').split('\n')
             for l in range(len(parse)):
                 if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
-                    var.model_ = parse[l]
-                    var.version_ = parse [l+1]
-                    var.modelList += [var.model_]
-                    print(var.model_)
-                    print(var.version_)
+                    config.model_ = parse[l]
+                    config.version_ = parse [l+1]
+                    config.modelList += [config.model_]
+                    print(config.model_)
+                    print(config.version_)
                     break
 
             tk.messagebox.showwarning(title='Warning', message=txt('Need to manually select the model type (Nybble/Bittle)'))
@@ -848,7 +848,7 @@ if __name__ == '__main__':
                 token = sys.argv[1][0]
             #                sendTaskParallel([sys.argv[1][0], sys.argv[1:], 1])
             send(goodPorts, [sys.argv[1][0], sys.argv[1:], 1])
-        printH('Model list',var.modelList)
+        printH('Model list',config.modelList)
         print("You can type 'quit' or 'q' to exit.")
 
         keepReadingInput(goodPorts)
