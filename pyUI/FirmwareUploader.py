@@ -61,7 +61,7 @@ class Uploader:
         language = lan
         self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera']))
         self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic']))
-        self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'Voice']))
+        self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Voice']))
         self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
@@ -464,6 +464,8 @@ class Uploader:
         # NyBoard_V1_X software version are all the same
         if "NyBoard_V1" in strBoardVersion:
             pathBoardVersion = "NyBoard_V1"
+        else:
+            pathBoardVersion = strBoardVersion
 
         path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + pathBoardVersion + '/'
 

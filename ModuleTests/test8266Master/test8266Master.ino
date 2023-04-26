@@ -41,18 +41,18 @@ void sendCMD(const char cmd[], int wait = 0) {
 }
 
 void loop() {
-  sendCMD("d", 500);                    //坐下
-  sendCMD("khi");                       //打招呼
-  sendCMD("kpu");                       //俯卧撑
-  sendCMD("kvtF", 1000);                //原地踏步
-  sendCMD("g");                         //加速
-  sendCMD("kwkF", 1500);                //行走
-  sendCMD("kck");                       //观察
-  sendCMD("kpu1");                      //单手俯卧撑
-  sendCMD("kvtR", 2000);                //旋转
-  sendCMD("g", 100);                    //减速
-  sendCMD("ktrF", 1500);                //跑步
-  sendCMD("kjy", 0);                    //加油
-  sendCMD("i 0 45 8 -90 9 -90", 1000);  //伸手转头
-  sendCMD("ksit", 1000);                //坐下
+  sendCMD("d", 500);                    //rest and wait 0.5 seconds 趴下并等待0.5秒
+  sendCMD("khi");                       //greetings 打招呼
+  sendCMD("kpu");                       //pushups 俯卧撑
+  sendCMD("kvtF", 1000);                //stepping 原地踏步
+  sendCMD("G");                         //Turn off the gyro 关闭陀螺仪
+  sendCMD("kwkF", 1500);                //walk 行走
+  sendCMD("kck");                       //check 观察
+  sendCMD("kpu1");                      //push ups with on hand 单手俯卧撑
+  sendCMD("kvtR", 2000);                //spin 旋转
+  sendCMD("G", 100);                    //turn on the gyro 打开陀螺仪
+  sendCMD("ktrF", 1500);                //trot 跑步
+  sendCMD("kjy", 0);                    //joy 加油
+  sendCMD("i 0 45 8 -90 9 -90", 1000);  //rotate the head and arm joints 伸手转头
+  sendCMD("ksit", 1000);                //sit 坐下
 }
