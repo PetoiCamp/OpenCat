@@ -516,7 +516,18 @@ def schedulerToSkill(ports, testSchedule):
     #    sendTaskParallel(['K', newSkill, 1])
     send(ports, ['K', newSkill, 1])
 
-
+def getModelAndVersion(parse):
+    for l in range(len(parse)):
+        if 'Nybble' in parse[l] or 'Bittle' in parse[l] or 'DoF16' in parse[l]:
+            config.model_ = parse[l]
+            config.version_ = parse [l+1]
+            config.modelList += [config.model_]
+            print(config.model_)
+            print(config.version_)
+            return
+    config.model_ = 'Bittle'
+    config.version_ = 'unknown'
+    
 def testPort(PortList, serialObject, p):
     global goodPortCount
     #    global sync
@@ -540,14 +551,7 @@ def testPort(PortList, serialObject, p):
                 
                 result = sendTask(PortList, serialObject, ['?', 0], waitTime)
                 parse = result[1].replace('\r','').split('\n')
-                for l in range(len(parse)):
-                    if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
-                        config.model_ = parse[l]
-                        config.version_ = parse [l+1]
-                        config.modelList += [config.model_]
-                        print(config.model_)
-                        print(config.version_)
-                        break
+                getModelAndVersion(parse)
             else:
                 serialObject.Close_Engine()
                 print('* Port ' + p + ' is not connected to a Petoi device!')
@@ -700,22 +704,25 @@ def replug(PortList):
         global timePassed
         curPorts = copy.deepcopy(Communication.Print_Used_Com())
         if len(curPorts)!=len(ap):
-#            time.sleep(0.5)
-#            curPorts = copy.deepcopy(Communication.Print_Used_Com())
+            time.sleep(0.5) # USB modem serial takes longer time to get ready
+            curPorts = copy.deepcopy(Communication.Print_Used_Com())
             print(ap)
-#            print(len(ap))
             print('---')
             print(curPorts)
-#            print(len(curPorts))
             if len(curPorts) < len(ap):
-                ap  = curPorts
+                ap = curPorts
                 start = time.time()
                 timePassed = 0
             else:
                 dif = list(set(curPorts)-set(ap))
-                printH("dif",reversed(dif))
+                for item in dif:
+                    if 'modem' in item: # prefer the USB modem device because it can restart the NyBoard
+                        serialNumber = item[item.index('modem')+5:]
+                        for name in dif:
+                            if serialNumber in name and 'modem' not in name:
+                                dif.remove(name)
                 success = False
-                for p in reversed(dif):
+                for p in dif:
                     try:
                         serialObject = Communication(p, 115200, 1)
                         PortList.update({serialObject: p.split('/')[-1]})
@@ -723,15 +730,9 @@ def replug(PortList):
                         logger.info(f"Connected to serial port: {p}")
                         time.sleep(2)
                         result = sendTask(PortList, serialObject, ['?', 0])
+                        printH("result",result)
                         parse = result[1].replace('\r','').split('\n')
-                        for l in range(len(parse)):
-                            if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
-                                config.model_ = parse[l]
-                                config.version_ = parse [l+1]
-                                config.modelList += [config.model_]
-                                print(config.model_)
-                                print(config.version_)
-                                break
+                        getModelAndVersion(parse)
                         
                         success = True
                     except Exception as e:
@@ -760,9 +761,7 @@ def replug(PortList):
     #tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
     
     window.mainloop()
-
     
-
 def selectList(PortList,ls,win):
     
     global goodPortCount
@@ -779,14 +778,7 @@ def selectList(PortList,ls,win):
             time.sleep(2)
             result = sendTask(PortList, serialObject, ['?', 0])
             parse = result[1].replace('\r','').split('\n')
-            for l in range(len(parse)):
-                if 'Nybble' in parse[l] or 'Bittle' in parse[l]:
-                    config.model_ = parse[l]
-                    config.version_ = parse [l+1]
-                    config.modelList += [config.model_]
-                    print(config.model_)
-                    print(config.version_)
-                    break
+            getModelAndVersion(parse)
 
             tk.messagebox.showwarning(title='Warning', message=txt('Need to manually select the model type (Nybble/Bittle)'))
             win.destroy()

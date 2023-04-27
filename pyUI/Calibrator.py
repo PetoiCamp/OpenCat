@@ -12,7 +12,7 @@ class Calibrator:
         self.calibratorReady = False
 #        global goodPorts
         connectPort(goodPorts)
-        self.model = var.model_
+        self.model = config.model_
         global language
         language = lan
         self.winCalib = Tk()
