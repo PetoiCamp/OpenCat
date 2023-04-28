@@ -98,7 +98,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                 message = list(map(int, var))
                 if token == 'B':
                     for l in range(len(message)//2):
-                        message[l*2+1]*=1   #8  #change 1 to 8 to save time for tests
+                        message[l*2+1]*= 8  #change 1 to 8 to save time for tests
                         print(message[l*2],end=",")
                         print(message[l*2+1],end=",")
             if token == 'W' or token == 'C':
@@ -516,17 +516,28 @@ def schedulerToSkill(ports, testSchedule):
     #    sendTaskParallel(['K', newSkill, 1])
     send(ports, ['K', newSkill, 1])
 
-def getModelAndVersion(parse):
-    for l in range(len(parse)):
-        if 'Nybble' in parse[l] or 'Bittle' in parse[l] or 'DoF16' in parse[l]:
-            config.model_ = parse[l]
-            config.version_ = parse [l+1]
-            config.modelList += [config.model_]
-            print(config.model_)
-            print(config.version_)
-            return
+def getModelAndVersion(result):
+    if result != -1:
+        parse = result[1].replace('\r','').split('\n')
+        for l in range(len(parse)):
+            if 'Nybble' in parse[l] or 'Bittle' in parse[l] or 'DoF16' in parse[l]:
+                config.model_ = parse[l]
+                config.version_ = parse [l+1]
+                config.modelList += [config.model_]
+                print(config.model_)
+                print(config.version_)
+                return
     config.model_ = 'Bittle'
-    config.version_ = 'unknown'
+    config.version_ = 'Unknown'
+    
+def deleteDuplicatedUsbSerial(list):
+    for item in list:
+        if 'modem' in item: # prefer the USB modem device because it can restart the NyBoard
+            serialNumber = item[item.index('modem')+5:]
+            for name in list:
+                if serialNumber in name and 'modem' not in name:
+                    list.remove(name)
+    return list
     
 def testPort(PortList, serialObject, p):
     global goodPortCount
@@ -548,10 +559,8 @@ def testPort(PortList, serialObject, p):
                 printH('Adding', p)
                 PortList.update({serialObject: p})
                 goodPortCount += 1
-                
                 result = sendTask(PortList, serialObject, ['?', 0], waitTime)
-                parse = result[1].replace('\r','').split('\n')
-                getModelAndVersion(parse)
+                getModelAndVersion(result)
             else:
                 serialObject.Close_Engine()
                 print('* Port ' + p + ' is not connected to a Petoi device!')
@@ -603,7 +612,8 @@ def keepCheckingPort(portList, check=True):
 """
 def keepCheckingPort(portList,cond1=None,check=True,updateFunc = lambda:None):
 #    print('***@@@ Checking port started') #debug
-    allPorts = Communication.Print_Used_Com()
+    allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+
     if cond1 is None:
         cond1 = lambda: len(portList) > 0
     while cond1():
@@ -637,7 +647,7 @@ def showSerialPorts(allPorts):
         target = "Raspbian"
         if target in line:
             allPorts.append('/dev/ttyS0')
-
+    allPorts = deleteDuplicatedUsbSerial(allPorts)
     for index in range(len(allPorts)):
         logger.debug(f"port[{index}] is {allPorts[index]} ")
     print("\n*** Available serial ports: ***")
@@ -665,7 +675,7 @@ def connectPort(PortList):
         logger.info(f"Connect to serial port:")
         for p in PortList:
             logger.info(f"{PortList[p]}")
-            
+                                
 def replug(PortList):
     global timePassed
     print('Please disconnect and reconnect the device from the COMPUTER side')
@@ -693,7 +703,7 @@ def replug(PortList):
         countdown(time.time(),copy.deepcopy(Communication.Print_Used_Com()))
         
     labelC = tk.Label(window, font='sans 14 bold')
-    labelC['text']= "Please unplug and replug the port from the computer side"
+    labelC['text']= "Please click the confirm button\n then unplug and replug the port from the computer side"
     labelC.grid(row=0,column=0)
     buttonC = tk.Button(window, text="Confirm", command=bCallback)
     buttonC.grid(row=1,column=0)
@@ -715,12 +725,8 @@ def replug(PortList):
                 timePassed = 0
             else:
                 dif = list(set(curPorts)-set(ap))
-                for item in dif:
-                    if 'modem' in item: # prefer the USB modem device because it can restart the NyBoard
-                        serialNumber = item[item.index('modem')+5:]
-                        for name in dif:
-                            if serialNumber in name and 'modem' not in name:
-                                dif.remove(name)
+                dif = deleteDuplicatedUsbSerial(dif)
+                
                 success = False
                 for p in dif:
                     try:
@@ -730,9 +736,7 @@ def replug(PortList):
                         logger.info(f"Connected to serial port: {p}")
                         time.sleep(2)
                         result = sendTask(PortList, serialObject, ['?', 0])
-                        printH("result",result)
-                        parse = result[1].replace('\r','').split('\n')
-                        getModelAndVersion(parse)
+                        getModelAndVersion(result)
                         
                         success = True
                     except Exception as e:
@@ -777,25 +781,16 @@ def selectList(PortList,ls,win):
             
             time.sleep(2)
             result = sendTask(PortList, serialObject, ['?', 0])
-            parse = result[1].replace('\r','').split('\n')
-            getModelAndVersion(parse)
-
-            tk.messagebox.showwarning(title='Warning', message=txt('Need to manually select the model type (Nybble/Bittle)'))
+            getModelAndVersion(result)
             win.destroy()
 
-
         except Exception as e:
-            
             tk.messagebox.showwarning(title='Warning', message='* Port ' + p + ' cannot be opened')
             print("Cannot open {}".format(p))
             raise e
-       
-        
 
-        
 def manualSelect(PortList, window):
-
-    allPorts = Communication.Print_Used_Com()
+    allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
     window.title('Manual mode')
     l1 = tk.Label(window, font = 'sans 14 bold')
     l1['text'] = "Manual mode" 
@@ -806,7 +801,7 @@ def manualSelect(PortList, window):
     ls = tk.Listbox(window,selectmode="multiple")
     ls.grid(row=2,column=0)
     def refreshBox(ls):
-        allPorts = Communication.Print_Used_Com()
+        allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
         ls.delete(0,tk.END)
         for p in allPorts:
             ls.insert(tk.END,p)
