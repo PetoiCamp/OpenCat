@@ -164,6 +164,8 @@ class Calibrator:
             self.calibratorReady = False
             self.calibSliders.clear()
             self.winCalib.destroy()
+            closeAllSerial(goodPorts)
+            os._exit(0)
             
 if __name__ == '__main__':
     goodPorts = {}

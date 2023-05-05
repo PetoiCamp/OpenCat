@@ -8,7 +8,7 @@
 # May.1st, 2022
 
 from commonVar import *
-import serial.tools.list_ports
+# import serial.tools.list_ports
 import logging
 from subprocess import check_call
 from tkinter import ttk
@@ -41,6 +41,8 @@ def txt(key):
     
 class Uploader:
     def __init__(self,model,lan):
+        connectPort(goodPorts, needTesting=False, needSendTask=False)
+        closeAllSerial(goodPorts, clearPorts=False)
         self.win = Tk()
         self.OSname = self.win.call('tk', 'windowingsystem')
         self.shellOption = True
@@ -59,9 +61,11 @@ class Uploader:
         self.strProduct = StringVar()
         global language
         language = lan
-        self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera']))
-        self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic']))
-        self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Voice']))
+        self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera','GroveSerialPassThrough']))
+        self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic','GroveSerialPassThrough']))
+        # self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'Voice', 'GroveSerialPassThrough']))
+        # self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'GroveSerialPassThrough']))
+        self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
@@ -85,7 +89,6 @@ class Uploader:
     def initWidgets(self):
         self.win.title(txt('uploaderTitle'))
         self.buildMenu()
-
         self.strFileDir = StringVar()
         self.strPort = StringVar()
         self.strStatus = StringVar()
@@ -97,7 +100,7 @@ class Uploader:
 
         lines = []
         try:
-            with open("./defaultConfig.txt", "r") as f:
+            with open(defaultConfPath, "r") as f:
                 lines = f.readlines()
                 lines = [line[:-1] for line in lines] # remove the '\n' at the end of each line
                 self.defaultLan = lines[0]
@@ -112,7 +115,7 @@ class Uploader:
             print ('Create configuration file')
             self.defaultLan = 'English'
             model = 'Bittle'
-            strDefaultPath = './release'
+            strDefaultPath = releasePath
             strSwVersion = '2.0'
             strBdVersion = NyBoard_version_list[-1]
             mode = 'Standard'
@@ -230,19 +233,20 @@ class Uploader:
         fmSerial = ttk.Frame(self.win)
         fmSerial.grid(row=3, columnspan=2, ipadx=2, padx=2, sticky=W + E)
         self.labPort = ttk.Label(fmSerial, text=txt('labPort'), font=('Arial', 16))
-        self.labPort.grid(row=0,column = 0,  ipadx=5, padx=5, sticky=W)
+        self.labPort.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
         cb = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=16, font=12)
 
         # list of serial port number
         port_list_number = []
-        port_list = list(serial.tools.list_ports.comports())
-        if len(port_list) == 0:
+        # port_list = list(serial.tools.list_ports.comports())
+        if len(goodPorts) == 0:
             port_list_number = [' ']
             print("Cannot find the serial port!")
         else:
-            cb.set(port_list[-1][0])
-            for each_port in reversed(port_list):
-                port_list_number.append(each_port[0])
+            for p in goodPorts:
+                logger.info(f"{goodPorts[p]}")
+                port_list_number.append(goodPorts[p])
+            cb.set(port_list_number[-1])
         # 为 Combobox 设置列表项
         cb['values'] = port_list_number
         cb.grid(row=1, column=0, ipadx=5, padx=5, sticky=W)
@@ -319,7 +323,7 @@ class Uploader:
 
         if self.strMode.get() not in modeList:
             messagebox.showwarning(txt('titleWarning'),txt('msgMode'))
-            self.strMode.set(txt('Standard'))
+            self.strMode.set(txt(modeList[0]))
             self.force_focus()  # 强制主界面获取focus
 
     def formalize(self, strdir=' '):
@@ -342,8 +346,8 @@ class Uploader:
     def open_dir(self):
         # 调用 askdirectory 方法打开目录
         logger.debug(f"{self.strFileDir.get()}")
-        if (self.strFileDir.get()).find('./release') != -1:
-            initDir = r'./release' # 初始目录
+        if (self.strFileDir.get()).find(releasePath) != -1:
+            initDir = releasePath # 初始目录
         else:
             initDir = self.strFileDir # 用户自定目录
         dirpath = filedialog.askdirectory(title=txt('titleFileDir'), initialdir=initDir)
@@ -563,7 +567,7 @@ class Uploader:
 
         self.lastSetting = self.currentSetting
         self.bParaUploaded = True
-        self.saveConfigToFile('./defaultConfig.txt')
+        self.saveConfigToFile(defaultConfPath)
             
         print('Finish!')
         messagebox.showinfo(title=None, message=txt('msgFinish'))
@@ -575,7 +579,7 @@ class Uploader:
         
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
-            self.saveConfigToFile('./defaultConfig.txt')
+            self.saveConfigToFile(defaultConfPath)
             self.win.destroy()
 
 if __name__ == '__main__':

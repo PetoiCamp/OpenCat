@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
+
 import struct
 import sys
 import time
@@ -10,12 +11,15 @@ import copy
 import threading
 import os
 import config
-import tkinter as tk
-sys.path.append("../pyUI")
-from translate import *
-language = languageList['English']
-def txt(key):
-    return language.get(key, textEN[key])
+
+if not config.useMindPlus:
+    import tkinter as tk
+    sys.path.append("../pyUI")
+    from translate import *
+    language = languageList['English']
+    def txt(key):
+        return language.get(key, textEN[key])
+
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
 Level: The level determines the minimum priority level of messages to log. 
@@ -31,7 +35,6 @@ which means that the logging module will automatically filter out any DEBUG mess
 # logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
-#global model_
 
 
 def printH(head, value):
@@ -315,13 +318,17 @@ def closeSerialBehavior(port):
     logger.info("close the serial port.")
 
 
-def closeAllSerial(ports):
-    send(ports, ['d', 0], 1)
+def closeAllSerial(ports, clearPorts=True):
+    if clearPorts is True:
+        send(ports, ['d', 0], 1)
+
     for p in ports:
         t = threading.Thread(target=closeSerialBehavior, args=(p,))
         t.start()
         t.join()
-    ports.clear()
+
+    if clearPorts is True:
+        ports.clear()
 
 
 balance = [
@@ -571,20 +578,27 @@ def testPort(PortList, serialObject, p):
 
 
 
-def checkPortList(PortList, allPorts):
+def checkPortList(PortList, allPorts, needTesting=True):
     threads = list()
-    
+    global goodPortCount
+
     for p in reversed(allPorts):  # assuming the last one is the most possible port
         # if p == '/dev/ttyAMA0':
         #     continue
         serialObject = Communication(p, 115200, 1)
-        t = threading.Thread(target=testPort,
-                             args=(PortList, serialObject, p.split('/')[-1]))  # remove '/dev/' in the port name
-        threads.append(t)
-        t.start()
-    for t in threads:
-        if t.is_alive():
-            t.join(8)
+        if needTesting is True:
+            t = threading.Thread(target=testPort,
+                                 args=(PortList, serialObject, p.split('/')[-1]))  # remove '/dev/' in the port name
+            threads.append(t)
+            t.start()
+        else:
+            PortList.update({serialObject: p.split('/')[-1]})
+            goodPortCount += 1
+            logger.info(f"Connected to serial port: {p}")
+    if needTesting is True:
+        for t in threads:
+            if t.is_alive():
+                t.join(8)
 
 """
 def keepCheckingPort(portList, check=True):
@@ -656,27 +670,33 @@ def showSerialPorts(allPorts):
         for p in allPorts:
              if 'cu.usb' in p:
                 print('\n* Manually connect to the following port if it fail to connect automatically\n')
-                print(p, end='\n\n')
+                if config.useMindPlus:
+                    print(p.replace('/dev/',''),end='\n\n')
+                else:
+                    print(p, end='\n\n')
+
                 
-def connectPort(PortList):
+def connectPort(PortList, needTesting=True, needSendTask=True):
     global initialized
+    global goodPortCount
     allPorts = Communication.Print_Used_Com()
     showSerialPorts(allPorts)
 
     if len(allPorts) > 0:
         goodPortCount = 0
-        checkPortList(PortList,allPorts)
+        checkPortList(PortList, allPorts, needTesting)
     initialized = True
     if len(PortList) == 0:
         print('No port found! Please make sure the serial port can be recognized by the computer first.')
-        print('Replug mode')
-        replug(PortList)
+        if not config.useMindPlus:
+            print('Replug mode')
+            replug(PortList, needSendTask)
     else:
         logger.info(f"Connect to serial port:")
         for p in PortList:
             logger.info(f"{PortList[p]}")
                                 
-def replug(PortList):
+def replug(PortList, needSendTask=True):
     global timePassed
     print('Please disconnect and reconnect the device from the COMPUTER side')
     
@@ -703,7 +723,7 @@ def replug(PortList):
         countdown(time.time(),copy.deepcopy(Communication.Print_Used_Com()))
         
     labelC = tk.Label(window, font='sans 14 bold')
-    labelC['text']= "Please click the confirm button\n then unplug and replug the port from the computer side"
+    labelC['text'] = "Please click the confirm button\n then unplug and replug the port from the computer side"
     labelC.grid(row=0,column=0)
     buttonC = tk.Button(window, text="Confirm", command=bCallback)
     buttonC.grid(row=1,column=0)
@@ -713,6 +733,7 @@ def replug(PortList):
         global goodPortCount
         global timePassed
         curPorts = copy.deepcopy(Communication.Print_Used_Com())
+
         if len(curPorts)!=len(ap):
             time.sleep(0.5) # USB modem serial takes longer time to get ready
             curPorts = copy.deepcopy(Communication.Print_Used_Com())
@@ -734,9 +755,10 @@ def replug(PortList):
                         PortList.update({serialObject: p.split('/')[-1]})
                         goodPortCount += 1
                         logger.info(f"Connected to serial port: {p}")
-                        time.sleep(2)
-                        result = sendTask(PortList, serialObject, ['?', 0])
-                        getModelAndVersion(result)
+                        if needSendTask is True:
+                            time.sleep(2)
+                            result = sendTask(PortList, serialObject, ['?', 0])
+                            getModelAndVersion(result)
                         
                         success = True
                     except Exception as e:
@@ -744,29 +766,28 @@ def replug(PortList):
                         print("Cannot open {}".format(p))
                 if success:
                     window.destroy()
-#                    return
+                    # return
                 else:
                     labelT.destroy()
                     label.destroy()
-                    manualSelect(PortList, window)
-#                    return
+                    manualSelect(PortList, window, needSendTask)
                 return
-                    
-        if time.time()-start>thres:
+
+        if time.time() - start > thres:
             labelT.destroy()
             label.destroy()
-            manualSelect(PortList, window)
-
+            manualSelect(PortList, window, needSendTask)
             return
-        elif (time.time()-start)%1<0.1:
-            print(thres-round(time.time()-start)//1)
-            label['text']="{} s".format((thres-round(time.time()-start)//1))
-        window.after(100,lambda:countdown(start,ap))
+        elif (time.time() - start) % 1 < 0.1:
+            print(thres - round(time.time() - start) // 1)
+            label['text'] = "{} s".format((thres - round(time.time() - start) // 1))
+        window.after(100, lambda: countdown(start, ap))
+
     #tk.messagebox.showwarning(title='Warning', message=txt('Please disconnect and reconnect the device from the computer side'))
     
     window.mainloop()
     
-def selectList(PortList,ls,win):
+def selectList(PortList,ls,win, needSendTask=True):
     
     global goodPortCount
     for i in ls.curselection():
@@ -779,9 +800,10 @@ def selectList(PortList,ls,win):
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
             
-            time.sleep(2)
-            result = sendTask(PortList, serialObject, ['?', 0])
-            getModelAndVersion(result)
+            if needSendTask is True:
+                time.sleep(2)
+                result = sendTask(PortList, serialObject, ['?', 0])
+                getModelAndVersion(result)
             win.destroy()
 
         except Exception as e:
@@ -789,7 +811,7 @@ def selectList(PortList,ls,win):
             print("Cannot open {}".format(p))
             raise e
 
-def manualSelect(PortList, window):
+def manualSelect(PortList, window, needSendTask=True):
     allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
     window.title('Manual mode')
     l1 = tk.Label(window, font = 'sans 14 bold')
@@ -807,10 +829,10 @@ def manualSelect(PortList, window):
             ls.insert(tk.END,p)
     for p in allPorts:
         ls.insert(tk.END,p)
-    bu = tk.Button(window, text=txt("OK"), command=lambda:selectList(PortList,ls,window))
-    bu.grid(row=2,column=1)
+    bu = tk.Button(window, text=txt("OK"), command=lambda:selectList(PortList, ls, window, needSendTask))
+    bu.grid(row=2, column=1)
     bu2 = tk.Button(window, text=txt("Refresh"), command=lambda:refreshBox(ls))
-    bu2.grid(row=1,column=1)
+    bu2.grid(row=1, column=1)
     tk.messagebox.showwarning(title='Warning', message=txt('Manual mode'))
     window.mainloop()
     

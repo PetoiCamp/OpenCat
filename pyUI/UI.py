@@ -12,6 +12,7 @@ from Calibrator import *
 from commonVar import *
 
 language = languageList['English']
+NyBoard_version = 'NyBoard_V1_2'
 apps = ['Firmware Uploader', 'Joint Calibrator', 'Skill Composer']  # ,'Task Scheduler']
 
 
@@ -24,7 +25,7 @@ class UI:
         global model
         global language
         try:
-            with open("./defaultConfig.txt", "r") as f:
+            with open(defaultConfPath, "r") as f:
                 lines = f.readlines()
                 lines = [line[:-1] for line in lines]  # remove the '\n' at the end of each line
                 self.defaultLan = lines[0]
@@ -39,9 +40,9 @@ class UI:
             print('Create configuration file')
             self.defaultLan = 'English'
             model = 'Bittle'
-            self.defaultPath = './release'
+            self.defaultPath = releasePath
             self.defaultSwVer = '2.0'
-            self.defaultBdVer = 'NyBoard_V1_0'
+            self.defaultBdVer = NyBoard_version
             self.defaultMode = 'Standard'
         #            raise e
 
@@ -53,7 +54,7 @@ class UI:
         self.OSname = self.window.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
             self.window.iconbitmap(r'./resources/Petoi.ico')
-            self.window.geometry('320x270+800+400')
+            self.window.geometry('350x270+800+400')
         else:
             self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
@@ -123,7 +124,7 @@ class UI:
     def utility(self, app):
         configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                          self.defaultMode]
-        self.saveConfigToFile('./defaultConfig.txt', configuration)
+        self.saveConfigToFile(defaultConfPath, configuration)
         self.window.destroy()
 
         if app == 'Firmware Uploader':
@@ -143,7 +144,7 @@ class UI:
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                              self.defaultMode]
-            self.saveConfigToFile('./defaultConfig.txt', configuration)
+            self.saveConfigToFile(defaultConfPath, configuration)
             self.window.destroy()
 
 

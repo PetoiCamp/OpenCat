@@ -2,6 +2,7 @@ from translate import *
 import sys
 sys.path.append('../serialMaster/')
 resourcePath = './resources/'
+releasePath = './release'
 sys.path.append(resourcePath)
 from ardSerial import *
 from tkinter import *
@@ -11,6 +12,8 @@ import tkinter.font as tkFont
 import threading
 import random
 from datetime import date
+import platform
+import os
 
 verNumber = sys.version.split('(')[0].split()[0]
 verNumber = verNumber.split('.')
@@ -47,7 +50,41 @@ scaleNames = [
 sideNames = ['Left Front', 'Right Front', 'Right Back', 'Left Back']
 
 ports = []
+
+def mkdir(path):
+    # delete spaces in the path string
+    path = path.strip()
+    # delete the '\' at the end of path string
+    path = path.rstrip("\\").rstrip("/")
+    # path = path.rstrip("/")
+	
+    # check whether the path exists
+    isExists = os.path.exists(path)
     
+    if not isExists:
+        # Create the directory if it does not exist
+        os.makedirs(path)
+        print(path + ' creat successfully')
+        return True
+    else:
+        # If the directory exists, it will not be created and prompt that the directory already exists.
+        print(path + ' already exists')
+        return False
+
+if platform.system() == "Windows":    # for Windows
+    seperation = '\\'
+    homeDri = os.getenv('HOMEDRIVE') 
+    homePath = os.getenv('HomePath') 
+    configDir = homeDri + '\\' + homePath 
+else:  # for Linux & macOS
+    seperation = '/'
+    home = os.getenv('HOME') 
+    configDir = home 
+configDir = configDir + seperation +'.config' + seperation +'Petoi'
+mkdir(configDir)
+defaultConfPath = configDir + seperation + 'defaultConfig.txt'
+print(defaultConfPath)
+
 def createImage(frame, imgFile, imgW):
     img = Image.open(imgFile)
     ratio = img.size[0] / imgW

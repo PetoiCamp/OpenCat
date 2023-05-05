@@ -1,5 +1,5 @@
-versionNum = '1.0.2'
-dateStr = '2023-03-08'
+versionNum = '1.0.3'
+dateStr = '2023-04-23'
 
 textEN = {
     'lan':'English',
@@ -156,12 +156,12 @@ textEN = {
     'msgFinish': 'Firmware upload complete!',
     'msgMode': 'Invalide, please select another mode!',
 
-
     'Standard':'Standard',
     'RandomMind':'RandomMind',
     'Ultrasonic':'Ultrasonic',
     'Voice':'Voice',
     'Camera':'Camera',
+    'GroveSerialPassThrough':'GroveSerialPassThrough',
     'RandomMind_Ultrasonic':'RandomMind_Ultrasonic',
     
     'Breath':'Breath',
@@ -356,6 +356,7 @@ textCN = {
     'Ultrasonic':'超声波',
     'Voice':'语音',
     'Camera':'摄像头',
+    'GroveSerialPassThrough':'串口透传',
     'RandomMind_Ultrasonic':'随机_超声波',
     'Parameters':'参数',
     'Main function':'主程序',
@@ -551,6 +552,7 @@ textCN_TW = {
     'Ultrasonic':'超聲波',
     'Voice':'語音',
     'Camera':'鏡頭',
+    'GroveSerialPassThrough':'串口透傳',
     'RandomMind_Ultrasonic':'随機_超聲波',
     'Parameters':'參數',
     'Main function':'主程序',
@@ -753,6 +755,7 @@ Der nächste Schritt ist das Hochladen der Hauptfunktion!''',
 'Ultrasonic':'Ultraschall-Modus',
 'Voice':'Sprachmodus',
 'Camera':'Kamera',
+'GroveSerialPassThrough':'Grove Serial Pass-Through',
 'RandomMind_Ultrasonic':'Zufallsmodus_Ultraschall',
 
 'Breath':'Atmen',
@@ -792,7 +795,7 @@ Der nächste Schritt ist das Hochladen der Hauptfunktion!''',
 }
 
 textTH = {
-'lan':'Thai',#'ภาษาไทย',
+'lan':'Thai',    #'ภาษาไทย'
 'lanOption':'ภาษาไทย',
 'lanMenu':'ภาษา',
 'uiTitle':'แอพพลิเคชั่น Petoi Desktop',
@@ -865,7 +868,7 @@ textTH = {
 'Open File':'เปิดไฟล์',
 'Cancel':'ยกเลิก',
 'OK':'ตกลง',
-"Refresh":"รีเฟรช",
+'Refresh':"รีเฟรช",
 'Multiple':'หลายตัว',
 'Skill List':'รายการสกิล',
 'Type of skill':'ประเภทของสกิล',
@@ -913,49 +916,55 @@ textTH = {
 'Uploading': 'กำลังอัพโหลด',
 'is successully uploaded':' อัพโหลดสำเร็จ',
 'failed to upload':' ไม่สามารถอัพโหลด',
-
-
+'Need to manually select the model type (Nybble/Bittle)': 'ต้องเลือกประเภทรุ่นด้วยตนเอง (Nybble/Bittle)',
 'msgFileDir': 'โปรดเลือกโฟลเดอร์ปล่อย!',
 'msgPort': 'โปรดเลือกพอร์ตอนุกรมที่ถูกต้อง!',
+
+'msgNoneAvrdude': '''ไม่มี avrdude โปรดติดตั้ง avrdude ในตอนแรก! สำหรับรายละเอียด โปรดดูที่:
+https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+                  
 'titleVersion': 'ข้อมูลเวอร์ชัน',
-'msgVersion': '''เวอร์ชัน: 1.0.0
-เครื่องมืออัพโหลดเฟิร์มแวร์สำหรับ OpenCat
-ลิขสิทธิ์ © 2018-2022
-สงวนลิขสิทธิ์ทั้งหมด
-Petoi LLC
-https://www.petoi.com\n
-''',
+
+'msgVersion': 'เวอร์ชัน: ' + versionNum + '\n'+
+'''เครื่องมืออัพโหลดเฟิร์มแวร์สำหรับ OpenCat
+ลิขสิทธิ์ ©  2018-2023
+สงวนลิขสิทธิ์ทั้งหมด Petoi LLC
+https://www.petoi.com\n''' + dateStr,
+
 'reset joints?': 'ตั้งค่าเทียบข้อต่อใหม่หรือไม่? (Y/N)',
 'reseting joints': 'กำลังตั้งค่าเทียบข้อต่อใหม่...',
 'joints reset': 'ตั้งค่าเทียบข้อต่อใหม่เสร็จสมบูรณ์!',
 
-
 'update instincts?':'อัปเดตตัวอย่างหรือไม่? (Y/N)',
 'updating instincts':'กำลังอัปเดตตัวอย่าง...',
 'instincts updated': 'อัปเดตตัวอย่างแล้ว',
+
 'calibrate IMU?':'''ต้องการปรับแต่ง IMU หรือไม่? (Y/N)
 หมายเหตุ: วางเมนบอร์ดให้ราบไปกับบนโต๊ะ!''',
 'calibrating IMU': 'กำลังปรับแต่ง IMU...',
 'IMU calibrated': 'ปรับแต่ง IMU เสร็จสมบูรณ์!',
 
-
 'parameterFinish': '''ตั้งค่าพารามิเตอร์เสร็จแล้ว!
  ขั้นตอนถัดไปคือการโหลดฟังก์ชันหลัก!''',
 'msgFinish': 'การโหลดเฟิร์มแวร์เสร็จสมบูรณ์!',
 'msgMode': 'ไม่ถูกต้อง โปรดเลือกโหมดอื่น!',
+
 'Standard':'มาตรฐาน',
 'RandomMind':'จิตใจสุ่ม',
 'Ultrasonic':'อัลตราโซนิก',
 'Voice':'เสียง',
 'Camera':'กล้อง',
+'GroveSerialPassThrough':'โกรฟซีเรียลพาสทรู',
 'RandomMind_Ultrasonic':'จิตใจสุ่ม_อัลตราโซนิก',
-
 
 'Breath':'หายใจ',
 'Rotate':'หมุน',
 'Flash':'รวดเร็ว',
 'Meow':'เหมียว',
-'':'',
+
+'labEdit':'แก้ไข',
+'labTheme':'ธีม',
+# '':'',
 'tipConnect':'อัปเดตพอร์ตอนุกรมที่เชื่อมต่ออยู่\nจนกว่าจะปิดใช้งาน',
 'tipPortMenu':'ควบคุมอุปกรณ์เดียวหรือทั้งหมด',
 'tipServo':'เปิด/ปิดเซอร์โว',
@@ -980,6 +989,7 @@ https://www.petoi.com\n
 'tipNote':'ตั้งชื่อเฟรมให้ง่ายต่อการจำ',
 'tipAdd':'คัดลอกเฟรมที่ใช้งานอยู่และ\nแทรกลงในแถวถัดไป',
 'tipDel':'ลบเฟรมปัจจุบัน',
+
 'tipImgWiring':'ระมัดระวังตำแหน่งและทิศทางของตัวเชื่อมต่อเซอร์โว\nกดปุ่มแบตเตอรี่นานเพื่อเปิดเครื่อง\nคลิก "ปรับสอบ" เพื่อหมุนเซอร์โวทั้งหมดให้อยู่ในสถานะการปรับสอบ\nติดตั้งขาและหัวให้ตั้งฉาก\nใช้ตัวเลื่อนเพื่อปรับขอบขาให้สอดคล้องกันและตัวชี้วัดอ้างอิง',
 'tipImgPosture':'สลับระหว่างท่าทางต่าง ๆ เพื่อทดสอบผลการปรับสอบ\nบันทึกค่าออฟเซ็ตในเวลาจริง\nไม่จำเป็นต้องปรับสอบในอนาคต',
 }
@@ -1152,6 +1162,7 @@ textIT = {
     'Ultrasonic':'Ultrasonico',
     'Voice':'Voce',
     'Camera':'Telecamera',
+    'GroveSerialPassThrough':'Passaggio seriale Grove',
     'RandomMind_Ultrasonic':'MenteCasuale_Ultrasonico',
     
     'Breath':'Respiro',
