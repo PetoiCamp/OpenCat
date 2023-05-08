@@ -8,9 +8,9 @@
 # May.1st, 2022
 
 from commonVar import *
-# import serial.tools.list_ports
 import logging
 from subprocess import check_call
+import threading
 from tkinter import ttk
 from tkinter import filedialog
 import pathlib
@@ -63,8 +63,6 @@ class Uploader:
         language = lan
         self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera','GroveSerialPassThrough']))
         self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic','GroveSerialPassThrough']))
-        # self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'Voice', 'GroveSerialPassThrough']))
-        # self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'GroveSerialPassThrough']))
         self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
@@ -72,6 +70,10 @@ class Uploader:
 
         self.win.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.win.update()
+
+        t = threading.Thread(target=keepListeningPort, args=(True, self.updatePortlist))
+        t.daemon = True
+        t.start()
         self.win.mainloop()
         self.force_focus()  # 强制主界面获取focus
 
@@ -127,7 +129,7 @@ class Uploader:
 
         self.currentSetting = []
         
-        logger.info(f"{strDefaultPath}")
+        logger.info(f"The firmware file folder is {strDefaultPath}")
         self.strFileDir.set(strDefaultPath)
 
         # 设置 Button 字体
@@ -234,22 +236,25 @@ class Uploader:
         fmSerial.grid(row=3, columnspan=2, ipadx=2, padx=2, sticky=W + E)
         self.labPort = ttk.Label(fmSerial, text=txt('labPort'), font=('Arial', 16))
         self.labPort.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
-        cb = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=16, font=12)
+        self.cbPort = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=16, font=12)
 
         # list of serial port number
-        port_list_number = []
+        port_number_list = []
         # port_list = list(serial.tools.list_ports.comports())
-        if len(goodPorts) == 0:
-            port_list_number = [' ']
+        if len(portStrList) == 0:
+            port_number_list = [' ']
             print("Cannot find the serial port!")
         else:
-            for p in goodPorts:
-                logger.info(f"{goodPorts[p]}")
-                port_list_number.append(goodPorts[p])
-            cb.set(port_list_number[-1])
+            logger.info(f"portStrList is {portStrList}")
+            for p in portStrList:
+                portName = p
+                logger.debug(f"portName is {portName}")
+                port_number_list.append(portName)
+            logger.debug(f"port_number_list is {port_number_list}")
+            self.cbPort.set(port_number_list[0])
         # 为 Combobox 设置列表项
-        cb['values'] = port_list_number
-        cb.grid(row=1, column=0, ipadx=5, padx=5, sticky=W)
+        self.cbPort['values'] = port_number_list
+        self.cbPort.grid(row=1, column=0, ipadx=5, padx=5, sticky=W)
 #        fmSerial.rowconfigure(0, weight=1)  # 尺寸适配
 #        fmSerial.rowconfigure(1, weight=1)  # 尺寸适配
 
@@ -264,6 +269,21 @@ class Uploader:
         fmStatus.columnconfigure(0, weight=1)    # 尺寸适配
         # fmStatus.rowconfigure(0, weight=1)  # 尺寸适配
 
+    def updatePortlist(self):
+        port_number_list = []
+        if len(portStrList) == 0:
+            port_number_list = [' ']
+            print("Cannot find the serial port!")
+        else:
+            logger.info(f"portStrList is {portStrList}")
+            for p in portStrList:
+                portName = p
+                logger.debug(f"{portName}")
+                port_number_list.append(portName)
+            logger.debug(f"port_number_list is {port_number_list}")
+        self.cbPort.set(port_number_list[0])
+        # 为 Combobox 设置列表项
+        self.cbPort['values'] = port_number_list
 
     def about(self):
         self.msgbox = messagebox.showinfo(txt('titleVersion'), txt('msgVersion'))
@@ -322,7 +342,7 @@ class Uploader:
         self.cbMode['values'] = modeList
 
         if self.strMode.get() not in modeList:
-            messagebox.showwarning(txt('titleWarning'),txt('msgMode'))
+            messagebox.showwarning(txt('Warning'),txt('msgMode'))
             self.strMode.set(txt(modeList[0]))
             self.force_focus()  # 强制主界面获取focus
 
@@ -412,7 +432,7 @@ class Uploader:
                         if progress>0 and retMsg == True:
                             self.strStatus.set(promptList[progress-1]['result'])
                             self.statusBar.update()
-                        retMsg = messagebox.askyesno(txt('titleWarning'), prompt['message'])
+                        retMsg = messagebox.askyesno(txt('Warning'), prompt['message'])
                         if retMsg:
                             self.strStatus.set(prompt['operating'])
                             self.statusBar.update()
@@ -461,7 +481,7 @@ class Uploader:
         logger.info(f"currentSetting: {self.currentSetting}.")
 
         if self.strFileDir.get() == '' or self.strFileDir.get() == ' ':
-            messagebox.showwarning(txt('titleWarning'), txt('msgFileDir'))
+            messagebox.showwarning(txt('Warning'), txt('msgFileDir'))
             self.force_focus()  # 强制主界面获取focus
             return False
 
@@ -476,7 +496,7 @@ class Uploader:
         port = self.strPort.get()
         print(self.strPort.get())
         if port == ' ' or port == '':
-            messagebox.showwarning(txt('titleWarning'), txt('msgPort'))
+            messagebox.showwarning(txt('Warning'), txt('msgPort'))
             self.force_focus()  # 强制主界面获取focus
             return False
 
@@ -501,7 +521,7 @@ class Uploader:
                     avrdudePath = '/usr/bin/'
                     path = pathlib.Path(avrdudePath + 'avrdude')
                     if not path.exists():
-                        messagebox.showwarning(txt('titleWarning'), txt('msgNoneAvrdude'))
+                        messagebox.showwarning(txt('Warning'), txt('msgNoneAvrdude'))
                         self.force_focus()  # 强制主界面获取focus
                         return False
                     # avrdudeconfPath = '/etc/avrdude/'      # Fedora / CentOS
@@ -521,6 +541,7 @@ class Uploader:
                     status = txt(uploadStage[s]) + txt('failed to upload')
                     self.strStatus.set(status)
                     self.statusBar.update()
+                    messagebox.showwarning(txt('Warning'), txt('Replug prompt'))
                     return False
                 else:
                     status = txt(uploadStage[s]) + txt('is successully uploaded')

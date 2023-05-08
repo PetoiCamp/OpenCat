@@ -90,8 +90,25 @@ textEN = {
     'Behavior':'  Behavior',
     'Clear':'Clear',
     'max':'max',
+
     'Manual mode':'Manual mode',
-    'Please disconnect and reconnect the device from the computer side': 'Please disconnect and\nreconnect the device\nfrom the COMPUTER side!',
+    'Replug mode':'Replug mode',
+    'Replug prompt':'''* If you have connected the NyBoard to the computer with a USB uploader and a data cable,\n
+    please confirm whether the computer recognizes the USB device.\n
+    You may need to download and install a serial port suitable for your OS.\n
+    After confirming that the correct driver is installed, if the computer still cannot recognize the USB device,\n
+    please click the button below, then unplug the data cable from the USB port on the COMPUTER, and then plug it in again.\n
+* If you have NOT connected the USB uploader (which is connected to the NyBoard) and data cable to the computer,\n
+    please click the button below, then plug the data cable into the USB port on the COMPUTER.\n
+    ''',
+    'Confirm':'Confirm',
+    'Counting down to manual mode:  ':'Counting down to manual mode:  ',
+    'Info':'Info',
+    'New port prompt':'Discover the new USB device: ',
+    'Please select the port from the list':'Please select the port from the list',
+    '* Port ':'* Port ',
+    ' cannot be opened':' cannot be opened',
+
     'Calibrate':'Calibrate',
     'Rest':'Rest',
     'Stand Up':'Stand Up',
@@ -119,7 +136,7 @@ textEN = {
     'Parameters':'Parameters',
     'Main function':'Main function',
     'btnUpload': 'Upload',
-    'titleWarning': 'Warning',
+    'Warning': 'Warning',
     'Uploading': 'Uploading ',
     'is successully uploaded':' is successully uploaded',
     'failed to upload':' failed to upload',
