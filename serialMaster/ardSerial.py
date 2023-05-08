@@ -715,7 +715,7 @@ def replug(PortList, needSendTask=True):
         label['text']="{} s".format(thres)
         countdown(time.time(),copy.deepcopy(Communication.Print_Used_Com()))
         
-    labelC = tk.Label(window, font='sans 14 bold')
+    labelC = tk.Label(window, font='sans 14 bold', justify='left')
     labelC['text'] = txt('Replug prompt')
     labelC.grid(row=0, column=0)
     buttonC = tk.Button(window, text=txt('Confirm'), command=bCallback)

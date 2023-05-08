@@ -93,14 +93,14 @@ textEN = {
 
     'Manual mode':'Manual mode',
     'Replug mode':'Replug mode',
-    'Replug prompt':'''* If you have connected the NyBoard to the computer with a USB uploader and a data cable,\n
-    please confirm whether the computer recognizes the USB device.\n
-    You may need to download and install a serial port driver suitable for your OS.\n
-    After confirming that the correct driver is installed, if the computer still cannot recognize the USB device,\n
-    please click the button below, then unplug the data cable from the USB port on the COMPUTER, and then plug it in again.\n
-* If you have NOT connected the USB uploader (which is connected to the NyBoard) and data cable to the computer,\n
-    please click the button below, then plug the data cable into the USB port on the COMPUTER.\n
-    ''',
+    'Replug prompt':'''WARNING: Upload Failed!\n\n
+* If the main board is NOT connected to the computer:\n
+Click the button below. Connect the USB cable to the main board, then plug the other end to the COMPUTER.\n\n
+* If the main board is already connected to the computer via a USB cable:\n
+1. Confirm your computer can recognize the USB device.\n
+More details can be found at https://docs.petoi.com/upload-firmware.\n
+2. After clicking the button below, unplug the USB cable from the COMPUTER side, and then plug it back.
+''',
     'Confirm':'Confirm',
     'Counting down to manual mode: ':'Counting down to manual mode: ',
     'Info':'Info',
@@ -313,14 +313,14 @@ textCN = {
 
     'Manual mode':'手动模式',
     'Replug mode':'重新拔插',
-    'Replug prompt':'''* 如果您已使用USB上载器和数据线将NyBoard和电脑连接起来，\n
-    请确认电脑是否识别出此串口设备。\n
-    您可能需要下载并安装适合您操作系统的串口驱动程序。\n
-    确定安装正确的驱动程序后，如果电脑仍未能识别出此串口设备，\n
-    请点击以下按钮，然后将数据线从电脑端的USB接口拔出，再重新插入。\n
-* 如果您未将连接NyBoard的USB上载器和数据线连接至电脑，\n
-    请点击以下按钮，然后将数据线插入电脑端的USB接口。\n
-    ''',
+    'Replug prompt':'''警告：上传失败！\n\n
+* 如果主板未连接到计算机：\n
+点击下面的按钮，将USB数据线连接到主板，然后将另一端插入电脑。\n\n
+* 如果主板已经通过USB数据线连接到计算机：\n
+1. 确认您的计算机可以识别 USB 设备。\n
+   更多详情请参考 https://docs.petoi.com/upload-firmware。\n
+2. 点击下面的按钮后，从电脑端拔下USB数据线，然后再插回去。
+''',
     'Confirm':'确认',
     'Counting down to manual mode: ':'切换到手动模式倒计时: ',
     'Info':'提示',
@@ -526,14 +526,14 @@ textCN_TW = {
 
     'Manual mode':'手動模式',
     'Replug mode':'重新拔插',
-    'Replug prompt':'''* 如果您已使用USB上載器和資料線將NyBoard和電腦連接起來，\n
-    請確認電腦是否識別出此串口設備。\n
-    您可能需要下載並安裝適合您作業系統的串口驅動程式。\n
-    確定安裝正確的驅動程式後，如果電腦仍未能識別出此串口設備，\n
-    請點擊以下按鈕，然後將資料線從電腦端的USB埠拔出，再重新插入。\n
-* 如果您未將連接NyBoard的USB上載器和資料線連接至電腦，\n
-    請點擊以下按鈕，然後將資料線插入電腦端的USB埠。\n
-    ''',
+    'Replug prompt':'''警告：上傳失敗！\n\n
+* 如果主機板未連接到電腦：\n
+點擊下面的按鈕後，將USB資料線連接到主機板，然後將另一端插入電腦。\n\n
+* 如果主機板已經通過USB資料線連接到電腦：\n
+1. 確認您的電腦可以識別 USB 設備。\n
+   更多詳情請參考 https://docs.petoi.com/upload-firmware。\n
+2. 點擊下面的按鈕後，從電腦端拔下USB資料線，然後再插回去。
+''',
     'Confirm':'確認',
     'Counting down to manual mode: ':'切換到手動模式倒計時: ',
     'Info':'提示',
@@ -736,14 +736,14 @@ textDE = {
 
     'Manual mode':'Manueller Modus',
     'Replug mode':'Replug-Modus',
-    'Replug prompt':'''* Wenn Sie das NyBoard mit einem USB-Uploader und einem Datenkabel an den Computer angeschlossen haben,\n
-    Bitte bestätigen Sie, ob der Computer das USB-Gerät erkennt.\n
-    Möglicherweise müssen Sie einen für Ihr Betriebssystem geeigneten seriellen Anschlusstreiber herunterladen und installieren.\n
-    Nachdem Sie bestätigt haben, dass der richtige Treiber installiert ist, kann der Computer das USB-Gerät immer noch nicht erkennen,\n
-    Bitte klicken Sie auf die Schaltfläche unten, ziehen Sie dann das Datenkabel vom USB-Anschluss am COMPUTER ab und stecken Sie es dann wieder ein.\n
-* Wenn Sie den USB-Uploader (der mit dem NyBoard verbunden ist) und das Datenkabel NICHT an den Computer angeschlossen haben,\n
-    Bitte klicken Sie auf die Schaltfläche unten und stecken Sie dann das Datenkabel in den USB-Anschluss des COMPUTERS.\n
-    ''',
+    'Replug prompt':'''WARNUNG: Hochladen fehlgeschlagen!\n\n
+* Wenn die Hauptplatine NICHT mit dem Computer verbunden ist:\n
+Klicken Sie auf die Schaltfläche unten. Verbinden Sie das USB-Kabel mit der Hauptplatine und stecken Sie dann das andere Ende in den COMPUTER.\n\n
+* Wenn die Hauptplatine bereits über ein USB-Kabel mit dem Computer verbunden ist:\n
+1. Vergewissern Sie sich, dass Ihr Computer das USB-Gerät erkennen kann.\n
+Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
+2. Nachdem Sie auf die Schaltfläche unten geklickt haben, ziehen Sie das USB-Kabel von der COMPUTER-Seite ab und stecken Sie es dann wieder ein.
+''',
     'Confirm':'Bestätigen',
     'Counting down to manual mode: ':'Countdown zum manuellen Modus: ',
     'Info':'Information',
@@ -953,14 +953,14 @@ textTH = {
 
     'Manual mode':'โหมดแมนนวล',
     'Replug mode':'โหมดเสียบปลั๊ก',
-    'Replug prompt':'''* หากคุณเชื่อมต่อ NyBoard เข้ากับคอมพิวเตอร์ด้วยตัวอัปโหลด USB และสายเคเบิลข้อมูล,\n
-    โปรดยืนยันว่าคอมพิวเตอร์รู้จักอุปกรณ์ USB หรือไม่.\n
-    คุณอาจต้องดาวน์โหลดและติดตั้งไดรเวอร์พอร์ตอนุกรมที่เหมาะกับระบบปฏิบัติการของคุณ.\n
-    หลังจากยืนยันว่าติดตั้งไดรเวอร์ที่ถูกต้องแล้ว หากคอมพิวเตอร์ยังคงไม่รู้จักอุปกรณ์ USB,\n
-    โปรดคลิกปุ่มด้านล่าง จากนั้นถอดสายข้อมูลออกจากพอร์ต USB บนคอมพิวเตอร์ แล้วเสียบใหม่อีกครั้ง.\n
-* หากคุณไม่ได้เชื่อมต่อตัวอัปโหลด USB (ซึ่งเชื่อมต่อกับ NyBoard) และสายเคเบิลข้อมูลเข้ากับคอมพิวเตอร์,\n
-    โปรดคลิกปุ่มด้านล่าง จากนั้นเสียบสายเคเบิลข้อมูลเข้ากับพอร์ต USB บนคอมพิวเตอร์.\n
-    ''',
+    'Replug prompt':'''คำเตือน: การอัปโหลดล้มเหลว!\n\n
+* ถ้าเมนบอร์ดไม่ได้เชื่อมต่อกับคอมพิวเตอร์:\n
+คลิกปุ่มด้านล่าง ต่อสาย USB เข้ากับเมนบอร์ด จากนั้นเสียบปลายอีกด้านเข้ากับคอมพิวเตอร์\n\n
+* หากเมนบอร์ดเชื่อมต่อกับคอมพิวเตอร์ผ่านสาย USB อยู่แล้ว:\n
+1. ยืนยันว่าคอมพิวเตอร์ของคุณสามารถรู้จักอุปกรณ์ USB ได้\n
+ดูรายละเอียดเพิ่มเติมได้ที่ https://docs.petoi.com/upload-firmware.\n
+2. หลังจากคลิกปุ่มด้านล่าง ให้ถอดสาย USB จากฝั่งคอมพิวเตอร์ แล้วเสียบกลับเข้าไปใหม่
+''',
     'Confirm':'ยืนยัน',
     'Counting down to manual mode: ':'นับถอยหลังสู่โหมดแมนนวล: ',
     'Info':'ข้อมูล',
@@ -1184,14 +1184,14 @@ textIT = {
 
     'Manual mode':'Modalità manuale',
     'Replug mode':'Modalità di ricarica',
-    'Replug prompt':'''* Se hai collegato la NyBoard al computer con un caricatore USB e un cavo dati,\n
-    confermare se il computer riconosce il dispositivo USB.\n
-    Potrebbe essere necessario scaricare e installare un driver per porta seriale adatto al proprio sistema operativo.\n
-    Dopo aver confermato che è installato il driver corretto, se il computer continua a non riconoscere il dispositivo USB,\n
-    fare clic sul pulsante in basso, quindi scollegare il cavo dati dalla porta USB del COMPUTER, quindi ricollegarlo.\n
-* Se NON hai collegato l'uploader USB (che è collegato alla NyBoard) e il cavo dati al computer,\n
-    fare clic sul pulsante in basso, quindi collegare il cavo dati alla porta USB del COMPUTER.\n
-    ''',
+    'Replug prompt':'''ATTENZIONE: caricamento fallito!\n\n
+* Se la scheda principale NON è collegata al computer:\n
+Fare clic sul pulsante in basso. Collegare il cavo USB alla scheda principale, quindi collegare l\'altra estremità al COMPUTER.\n\n
+* Se la scheda principale è già collegata al computer tramite un cavo USB:\n
+1. Verificare che il computer sia in grado di riconoscere il dispositivo USB.\n
+Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
+2. Dopo aver fatto clic sul pulsante in basso, scollegare il cavo USB dal lato COMPUTER, quindi ricollegarlo.
+''',
     'Confirm':'Confermare',
     'Counting down to manual mode: ':'Conto alla rovescia per la modalità manuale: ',
     'Info':'Informazione',
