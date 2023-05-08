@@ -745,7 +745,7 @@ def replug(PortList, needSendTask=True):
         labelC.destroy()
         buttonC.destroy()
         
-        labelT['text']= txt('Counting down to manual mode:  ')
+        labelT['text']= txt('Counting down to manual mode: ')
         labelT.grid(row=0,column=0)
         
         label.grid(row=1,column=0)
