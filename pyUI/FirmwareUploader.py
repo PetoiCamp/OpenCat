@@ -71,7 +71,9 @@ class Uploader:
         self.win.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.win.update()
 
-        t = threading.Thread(target=keepListeningPort, args=(True, self.updatePortlist))
+        self.keepChecking = True
+        t = threading.Thread(target=keepCheckingPort,
+                             args=(goodPorts, lambda: self.keepChecking, False, self.updatePortlist))
         t.daemon = True
         t.start()
         self.win.mainloop()

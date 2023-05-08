@@ -563,7 +563,7 @@ def testPort(PortList, serialObject, p):
                 waitTime = 2
             result = sendTask(PortList, serialObject, ['b', [20, 50], 0], waitTime)
             if result != -1:
-                logger.debug(f"Adding in testPort: {p}")   # set to debug later
+                logger.debug(f"Adding in testPort: {p}")
                 PortList.update({serialObject: p})
                 goodPortCount += 1
                 result = sendTask(PortList, serialObject, ['?', 0], waitTime)
@@ -590,7 +590,7 @@ def checkPortList(PortList, allPorts, needTesting=True):
             threads.append(t)
             t.start()
         else:
-            logger.info(f"Adding in checkPortList: {p}")   # set to debug later
+            logger.debug(f"Adding in checkPortList: {p}")
             PortList.update({serialObject: p.split('/')[-1]})    # remove '/dev/' in the port name
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
@@ -599,33 +599,11 @@ def checkPortList(PortList, allPorts, needTesting=True):
             if t.is_alive():
                 t.join(8)
 
-"""
-def keepCheckingPort(portList, check=True):
-    allPorts = Communication.Print_Used_Com()
-    while len(portList) > 0:
-        currentPorts = Communication.Print_Used_Com()
-        time.sleep(0.01)
-        if set(currentPorts) - set(allPorts):
-            newPort = list(set(currentPorts) - set(allPorts))
-            if check:
-                time.sleep(0.5)
-                checkPortList(portList, newPort)
-#            if goodPortCount == 0:
-#                popManualMenu(allPorts)
-
-        elif set(allPorts) - set(currentPorts):
-            closedPort = list(set(allPorts) - set(currentPorts))
-            inv_dict = {v: k for k, v in portList.items()}
-            for p in closedPort:
-                if inv_dict.get(p.split('/')[-1], -1) != -1:
-                    printH('Removing', p)
-                    portList.pop(inv_dict[p.split('/')[-1]])
-
-        allPorts = copy.deepcopy(currentPorts)
-"""
 def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None):
     # portList is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
     # allPorts is a string list which delete the duplicated port(Reserve the name of the serial port that contains the usbmodem)
+    # portStrList is the serial port string list
+    global portStrList
     allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
     logger.debug(f"allPorts is {allPorts}")
     if cond1 is None:
@@ -640,43 +618,28 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
             if check:
                 time.sleep(0.5)
                 checkPortList(portList, newPort)
-                updateFunc()
+            else:
+                for p in newPort:
+                    logger.debug(f"Adding serial port: {p}")
+                    portName = p.split('/')[-1]
+                    portStrList.insert(0, portName)  # remove '/dev/' in the port name
+                    tk.messagebox.showinfo(title=txt('Info'), message=txt('New port prompt') + portName)
+            updateFunc()
         elif set(allPorts) - set(currentPorts):
             time.sleep(0.5) #usbmodem is slower in detection
             currentPorts = Communication.Print_Used_Com()
             closedPort = list(set(allPorts) - set(currentPorts))
-            inv_dict = {v: k for k, v in portList.items()}
-            for p in closedPort:
-                if inv_dict.get(p.split('/')[-1], -1) != -1:
-                    logger.info(f"Removing {p.split('/')[-1]}")
-                    portList.pop(inv_dict[p.split('/')[-1]])
-            updateFunc()
-        allPorts = copy.deepcopy(currentPorts)
-
-def keepListeningPort(cond=True, updateFunc=lambda:None):
-    # portStrList is the serial port string list
-    global portStrList
-    allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
-    logger.debug(f"allPorts is {allPorts}")
-
-    while cond:
-        currentPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
-        logger.debug(f"currentPorts is {currentPorts}")
-        time.sleep(0.01)
-        if set(currentPorts) - set(allPorts):
-            newPort = list(set(currentPorts) - set(allPorts))
-            for p in newPort:
-                logger.info(f"Adding in keepListeningPort: {p}")  # set to debug later
-                portName = p.split('/')[-1]
-                portStrList.insert(0, portName)    # remove '/dev/' in the port name
-                tk.messagebox.showinfo(title=txt('Info'), message=txt('New port prompt') + portName)
-            updateFunc()
-        elif set(allPorts) - set(currentPorts):
-            closedPort = list(set(allPorts) - set(currentPorts))
-            for p in reversed(closedPort):
-                if p.split('/')[-1] in portStrList:
-                    logger.info(f"Removing in keepListeningPort:{p.split('/')[-1]}")
-                    portStrList.remove(p)
+            if check:
+                inv_dict = {v: k for k, v in portList.items()}
+                for p in closedPort:
+                    if inv_dict.get(p.split('/')[-1], -1) != -1:
+                        logger.info(f"Removing {p.split('/')[-1]}")
+                        portList.pop(inv_dict[p.split('/')[-1]])
+            else:
+                for p in reversed(closedPort):
+                    if p.split('/')[-1] in portStrList:
+                        logger.info(f"Removing serial port:{p.split('/')[-1]}")
+                        portStrList.remove(p)
             updateFunc()
         allPorts = copy.deepcopy(currentPorts)
 
@@ -722,7 +685,7 @@ def connectPort(PortList, needTesting=True, needSendTask=True):
     else:
         logger.info(f"Connect to serial port list:")
         for p in PortList:
-            logger.debug(f"datatype of p : {type(p)}")  # set to debug later
+            logger.debug(f"datatype of p : {type(p)}")
             logger.info(f"{PortList[p]}")
             portStrList.append(PortList[p])
                                 
