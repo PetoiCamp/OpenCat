@@ -61,8 +61,8 @@ class Uploader:
         self.strProduct = StringVar()
         global language
         language = lan
-        self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera','GroveSerialPassThrough']))
-        self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic','GroveSerialPassThrough']))
+        self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera','Mind+']))
+        self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic','Mind+']))
         self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
@@ -297,7 +297,6 @@ class Uploader:
             self.strMode.set(txt('Standard'))
             board_version_list = NyBoard_version_list
             self.strBoardVersion.set(board_version_list[-1])
-            
         else:
             stt = NORMAL
             # self.strMode.set(txt(self.lastSetting[4]))

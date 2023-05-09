@@ -178,7 +178,7 @@ More details can be found at https://docs.petoi.com/upload-firmware.\n
     'Ultrasonic':'Ultrasonic',
     'Voice':'Voice',
     'Camera':'Camera',
-    'GroveSerialPassThrough':'GroveSerialPassThrough',
+    'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'RandomMind_Ultrasonic',
     
     'Breath':'Breath',
@@ -390,7 +390,7 @@ textCN = {
     'Ultrasonic':'超声波',
     'Voice':'语音',
     'Camera':'摄像头',
-    'GroveSerialPassThrough':'串口透传',
+    'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'随机_超声波',
     'Parameters':'参数',
     'Main function':'主程序',
@@ -603,7 +603,7 @@ textCN_TW = {
     'Ultrasonic':'超聲波',
     'Voice':'語音',
     'Camera':'鏡頭',
-    'GroveSerialPassThrough':'串口透傳',
+    'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'随機_超聲波',
     'Parameters':'參數',
     'Main function':'主程序',
@@ -822,7 +822,7 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     'Ultrasonic':'Ultraschall-Modus',
     'Voice':'Sprachmodus',
     'Camera':'Kamera',
-    'GroveSerialPassThrough':'Grove Serial Pass-Through',
+    'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'Zufallsmodus_Ultraschall',
 
     'Breath':'Atmen',
@@ -1038,7 +1038,7 @@ textTH = {
     'Ultrasonic':'อัลตราโซนิก',
     'Voice':'เสียง',
     'Camera':'กล้อง',
-    'GroveSerialPassThrough':'โกรฟซีเรียลพาสทรู',
+    'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'จิตใจสุ่ม_อัลตราโซนิก',
 
     'Breath':'หายใจ',
@@ -1264,7 +1264,7 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'Ultrasonic':'Ultrasonico',
     'Voice':'Voce',
     'Camera':'Telecamera',
-    'GroveSerialPassThrough':'Passaggio seriale Grove',
+    'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'MenteCasuale_Ultrasonico',
     
     'Breath':'Respiro',
