@@ -542,7 +542,12 @@ def deleteDuplicatedUsbSerial(list):
         if 'modem' in item: # prefer the USB modem device because it can restart the NyBoard
             serialNumber = item[item.index('modem')+5:]
             for name in list:
-                if serialNumber in name and 'modem' not in name:
+                if serialNumber in name and 'modem' not in name:    # remove the "wch" device
+                    list.remove(name)
+        elif 'serial-' in item: # prefer the "serial-" device 
+            serialNumber = item[item.index('serial-')+7:]
+            for name in list:
+                if serialNumber in name and 'wch' in name:    # remove the "wch" device
                     list.remove(name)
     return list
     
@@ -604,17 +609,20 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
     # allPorts is a string list which delete the duplicated port(Reserve the name of the serial port that contains the usbmodem)
     # portStrList is the serial port string list
     global portStrList
-    allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+    allPorts = Communication.Print_Used_Com()
     logger.debug(f"allPorts is {allPorts}")
     if cond1 is None:
         cond1 = lambda: len(portList) > 0
 
     while cond1():
-        currentPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())    # string list
+        time.sleep(0.5)
+        currentPorts = Communication.Print_Used_Com()    # string list
         logger.debug(f"currentPorts is {currentPorts}")
-        time.sleep(0.01)
+        
         if set(currentPorts) - set(allPorts):
-            newPort = list(set(currentPorts) - set(allPorts))
+            time.sleep(1) #usbmodem is slower in detection
+            currentPorts = Communication.Print_Used_Com()
+            newPort = deleteDuplicatedUsbSerial(list(set(currentPorts) - set(allPorts)))
             if check:
                 time.sleep(0.5)
                 checkPortList(portList, newPort)
@@ -626,9 +634,9 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
                     tk.messagebox.showinfo(title=txt('Info'), message=txt('New port prompt') + portName)
             updateFunc()
         elif set(allPorts) - set(currentPorts):
-            time.sleep(0.5) #usbmodem is slower in detection
+            time.sleep(1) #usbmodem is slower in detection
             currentPorts = Communication.Print_Used_Com()
-            closedPort = list(set(allPorts) - set(currentPorts))
+            closedPort = deleteDuplicatedUsbSerial(list(set(allPorts) - set(currentPorts)))
             if check:
                 inv_dict = {v: k for k, v in portList.items()}
                 for p in closedPort:
@@ -637,9 +645,10 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
                         portList.pop(inv_dict[p.split('/')[-1]])
             else:
                 for p in reversed(closedPort):
-                    if p.split('/')[-1] in portStrList:
-                        logger.info(f"Removing serial port:{p.split('/')[-1]}")
-                        portStrList.remove(p)
+                    portName = p.split('/')[-1]
+                    if portName in portStrList:
+                        logger.info(f"Removing serial port:{portName}")
+                        portStrList.remove(portName)
             updateFunc()
         allPorts = copy.deepcopy(currentPorts)
 

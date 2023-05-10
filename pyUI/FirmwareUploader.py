@@ -494,7 +494,10 @@ class Uploader:
 
         path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + pathBoardVersion + '/'
 
-        port = self.strPort.get()
+        if self.OSname == 'x11' or self.OSname == 'aqua':
+            port = '/dev/' + self.strPort.get()
+        else:
+            port = self.strPort.get()
         print(self.strPort.get())
         if port == ' ' or port == '':
             messagebox.showwarning(txt('Warning'), txt('msgPort'))
