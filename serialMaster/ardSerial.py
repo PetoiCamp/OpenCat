@@ -636,7 +636,7 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
         elif set(allPorts) - set(currentPorts):
             time.sleep(1) #usbmodem is slower in detection
             currentPorts = Communication.Print_Used_Com()
-            closedPort = deleteDuplicatedUsbSerial(list(set(allPorts) - set(currentPorts)))
+            closedPort = list(set(allPorts) - set(currentPorts))
             if check:
                 inv_dict = {v: k for k, v in portList.items()}
                 for p in closedPort:
