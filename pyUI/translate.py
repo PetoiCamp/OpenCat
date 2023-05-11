@@ -93,7 +93,7 @@ textEN = {
 
     'Manual mode':'Manual mode',
     'Replug mode':'Replug mode',
-    'Replug prompt':'''WARNING: Upload Failed!\n\n
+    'Replug prompt':'''WARNING: Connection Failed!\n\n
 * If the main board is NOT connected to the computer:\n
 Click the button below. Connect the USB cable to the main board, then plug the other end to the COMPUTER.\n\n
 * If the main board is already connected to the computer via a USB cable:\n
@@ -104,7 +104,7 @@ More details can be found at https://docs.petoi.com/upload-firmware.\n
     'Confirm':'Confirm',
     'Counting down to manual mode: ':'Counting down to manual mode: ',
     'Info':'Info',
-    'New port prompt':'Discover the new USB device: ',
+    'New port prompt':'Discover a new USB device: ',
     'Please select the port from the list':'Please select the port from the list',
     '* Port ':'* Port ',
     ' cannot be opened':' cannot be opened',
@@ -135,6 +135,7 @@ More details can be found at https://docs.petoi.com/upload-firmware.\n
     'rbnCamera': 'Camera',
     'Parameters':'Parameters',
     'Main function':'Main function',
+    'UploadPara':'UploadPara',
     'btnUpload': 'Upload',
     'Warning': 'Warning',
     'Uploading': 'Uploading ',

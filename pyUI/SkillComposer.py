@@ -332,7 +332,7 @@ class SkillComposer:
         self.frameDial.grid(row=0, column=1)
         labelDial = Label(self.frameDial, text=txt('State Dials'), font=self.myFont)
         labelDial.grid(row=0, column=0, columnspan=5, pady=5)
-        defaultValue = [1, 1, 1, 1]
+        defaultValue = [1, 1, 0, 0]
         textColor = ['red','green']
         for i in range(len(dialTable)):
             key = list(dialTable)[i]
@@ -1595,8 +1595,8 @@ class SkillComposer:
             elif len(goodPorts) > 0:
                 result = send(ports, [dialTable[key], 0])
                 if result != -1:
-                    state = result[0]
-                    if state == 'p':
+                    state = result[0].replace('\r', '').replace('\n', '')
+                    if state == 'k':
                         self.dialValue[i].set(True)
                         self.frameDial.winfo_children()[2].config(fg='green')
                         self.frameDial.winfo_children()[2].select()

@@ -55,7 +55,7 @@ class Uploader:
         if self.OSname == 'win32':
             self.shellOption = False
         self.win.resizable(False, False)
-        self.bParaUploaded = False
+        self.bParaUpload = True
         Grid.rowconfigure(self.win, 0, weight=1)
         Grid.columnconfigure(self.win, 0, weight=1)
         self.strProduct = StringVar()
@@ -101,6 +101,7 @@ class Uploader:
         
         self.intMode = IntVar()
         self.strMode = StringVar()
+        self.checkVar = IntVar()
 
         lines = []
         try:
@@ -198,7 +199,7 @@ class Uploader:
 #        fmBoardVersion.rowconfigure(1, weight=1)  # 尺寸适配
 
         fmProduct = ttk.Frame(self.win)
-        fmProduct.grid(row=2, columnspan=2, ipadx=2, padx=2, sticky=W + E + N + S)
+        fmProduct.grid(row=2, column=0, ipadx=2, padx=2, sticky=W)    # columnspan=2, sticky=W + E + N + S
         self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
         self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
         
@@ -213,7 +214,7 @@ class Uploader:
         cbProduct.bind("<<ComboboxSelected>>",self.chooseProduct)
         
         fmMode = ttk.Frame(self.win)
-        fmMode.grid(row=2, column=1, ipadx=2, padx=2, sticky=W + E + N + S)
+        fmMode.grid(row=2, column=1, ipadx=2, padx=2, sticky=W)    # sticky=W + E + N + S
         self.labMode = ttk.Label(fmMode, text=txt('labMode'), font=('Arial', 16))
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
@@ -235,7 +236,7 @@ class Uploader:
         self.cbMode.grid(row=1, ipadx=5, padx=5, sticky=W)
 
         fmSerial = ttk.Frame(self.win)
-        fmSerial.grid(row=3, columnspan=2, ipadx=2, padx=2, sticky=W + E)
+        fmSerial.grid(row=3, column=0, ipadx=2, padx=2, sticky=W)
         self.labPort = ttk.Label(fmSerial, text=txt('labPort'), font=('Arial', 16))
         self.labPort.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
         self.cbPort = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=16, font=12)
@@ -260,9 +261,16 @@ class Uploader:
 #        fmSerial.rowconfigure(0, weight=1)  # 尺寸适配
 #        fmSerial.rowconfigure(1, weight=1)  # 尺寸适配
 
-        self.btnUpload = Button(fmSerial, text=txt('btnUpload'), font=('Arial', 22, 'bold'), foreground='blue',
-                                       background=self.backgroundColor, relief = 'groove', command=self.autoupload)    # 绑定 autoupload 方法 
-        self.btnUpload.grid(row=0, column=1, rowspan=2, ipadx=5, padx=5, pady=5, sticky=E)
+        fmUpload = ttk.Frame(self.win)
+        fmUpload.grid(row=3, column=1, ipadx=2, padx=2, sticky=W)
+        textColor = ['red', 'green']
+        self.checkVar.set(1)
+        self.checkBtn = Checkbutton(fmUpload, text=txt('UploadPara'), indicator=0, font=('Arial', 12, 'bold'),fg=textColor[1], width=regularW,
+                             variable=self.checkVar, onvalue=1, offvalue=0, command=self.updateParaUpload)    # command=self.autoupload
+        self.checkBtn.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+        self.btnUpload = Button(fmUpload, text=txt('btnUpload'), font=('Arial', 12, 'bold'), foreground='blue', width=regularW,
+                                       background=self.backgroundColor, relief='groove', command=self.autoupload)    # 绑定 autoupload 方法
+        self.btnUpload.grid(row=1, column=0, padx=5, pady=5, sticky=W)    # rowspan=2, ipadx=5,
 
         fmStatus = ttk.Frame(self.win)
         fmStatus.grid(row=4, columnspan=2, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
@@ -270,6 +278,16 @@ class Uploader:
         self.statusBar.grid(row=0, ipadx=5, padx=5, sticky=W + E + N + S)
         fmStatus.columnconfigure(0, weight=1)    # 尺寸适配
         # fmStatus.rowconfigure(0, weight=1)  # 尺寸适配
+
+    def updateParaUpload(self):
+        if self.checkVar.get() == 1:
+            self.checkBtn.config(fg='green')
+            self.checkBtn.select()
+            self.bParaUpload = True
+        else:
+            self.checkBtn.config(fg='red')
+            self.checkBtn.deselect()
+            self.bParaUpload = False
 
     def updatePortlist(self):
         port_number_list = []
@@ -320,6 +338,7 @@ class Uploader:
             # self.strSoftwareVersion.set(self.lastSetting[2])
         # self.cbMode.config(state=stt)
         self.cbSoftwareVersion.config(state=stt)
+        self.checkBtn.config(state=stt)
 
     def chooseBoardVersion(self, event):
         self.setActiveOption()
@@ -511,7 +530,8 @@ class Uploader:
             print(filename)
             uploadStage = ['Parameters', 'Main function']
             for s in range(len(uploadStage)):
-                if s == 0 and self.bParaUploaded and self.currentSetting[:4] == self.lastSetting[:4]:
+                # if s == 0 and self.bParaUploaded and self.currentSetting[:4] == self.lastSetting[:4]:
+                if s == 0 and self.bParaUpload == False:
                     continue
                 self.strStatus.set(txt('Uploading') + txt(uploadStage[s]) + '...' )
                 self.win.update()
@@ -556,7 +576,6 @@ class Uploader:
                 if s == 0:
                     self.WriteInstinctPrompts(port)
                     messagebox.showinfo(title=None, message=txt('parameterFinish'))
-
         elif strBoardVersion in BiBoard_version_list:
             # fnBootLoader = path + 'OpenCatEsp32Standard.ino.bootloader.bin'
             fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
@@ -591,7 +610,6 @@ class Uploader:
             self.WriteInstinctPrompts(port)
 
         self.lastSetting = self.currentSetting
-        self.bParaUploaded = True
         self.saveConfigToFile(defaultConfPath)
             
         print('Finish!')
