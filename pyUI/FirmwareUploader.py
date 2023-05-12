@@ -199,7 +199,7 @@ class Uploader:
 #        fmBoardVersion.rowconfigure(1, weight=1)  # 尺寸适配
 
         fmProduct = ttk.Frame(self.win)
-        fmProduct.grid(row=2, column=0, ipadx=2, padx=2, sticky=W)    # columnspan=2, sticky=W + E + N + S
+        fmProduct.grid(row=2, column=0, ipadx=2, padx=2, sticky=W)
         self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
         self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
         
@@ -214,7 +214,7 @@ class Uploader:
         cbProduct.bind("<<ComboboxSelected>>",self.chooseProduct)
         
         fmMode = ttk.Frame(self.win)
-        fmMode.grid(row=2, column=1, ipadx=2, padx=2, sticky=W)    # sticky=W + E + N + S
+        fmMode.grid(row=2, column=1, ipadx=2, padx=2, sticky=W)
         self.labMode = ttk.Label(fmMode, text=txt('labMode'), font=('Arial', 16))
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
@@ -265,12 +265,12 @@ class Uploader:
         fmUpload.grid(row=3, column=1, ipadx=2, padx=2, sticky=W)
         self.checkVar.set(1)
         self.checkBtn = Checkbutton(fmUpload, text=txt('Upload Para'), indicator=0, font=('Arial', 10, 'bold'),fg='green', width=15,
-                             variable=self.checkVar, onvalue=1, offvalue=0, command=self.updateParaUpload)    # command=self.autoupload
+                             variable=self.checkVar, onvalue=1, offvalue=0, command=self.updateParaUpload)
         self.checkBtn.grid(row=0, column=0, padx=5, pady=5, sticky=W)
         tip(self.checkBtn, txt('tipCheckBtn'))
         self.btnUpload = Button(fmUpload, text=txt('btnUpload'), font=('Arial', 12, 'bold'), foreground='blue', width=regularW,
-                                       background=self.backgroundColor, relief='groove', command=self.autoupload)    # 绑定 autoupload 方法
-        self.btnUpload.grid(row=1, column=0, padx=5, pady=5, sticky=W)    # rowspan=2, ipadx=5,
+                                       background=self.backgroundColor, relief='groove', command=self.autoupload)
+        self.btnUpload.grid(row=1, column=0, padx=5, pady=5, sticky=W)
 
         fmStatus = ttk.Frame(self.win)
         fmStatus.grid(row=4, columnspan=2, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
