@@ -263,11 +263,11 @@ class Uploader:
 
         fmUpload = ttk.Frame(self.win)
         fmUpload.grid(row=3, column=1, ipadx=2, padx=2, sticky=W)
-        textColor = ['red', 'green']
         self.checkVar.set(1)
-        self.checkBtn = Checkbutton(fmUpload, text=txt('UploadPara'), indicator=0, font=('Arial', 12, 'bold'),fg=textColor[1], width=regularW,
+        self.checkBtn = Checkbutton(fmUpload, text=txt('Upload Para'), indicator=0, font=('Arial', 10, 'bold'),fg='green', width=15,
                              variable=self.checkVar, onvalue=1, offvalue=0, command=self.updateParaUpload)    # command=self.autoupload
         self.checkBtn.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+        tip(self.checkBtn, txt('tipCheckBtn'))
         self.btnUpload = Button(fmUpload, text=txt('btnUpload'), font=('Arial', 12, 'bold'), foreground='blue', width=regularW,
                                        background=self.backgroundColor, relief='groove', command=self.autoupload)    # 绑定 autoupload 方法
         self.btnUpload.grid(row=1, column=0, padx=5, pady=5, sticky=W)    # rowspan=2, ipadx=5,
@@ -281,11 +281,11 @@ class Uploader:
 
     def updateParaUpload(self):
         if self.checkVar.get() == 1:
-            self.checkBtn.config(fg='green')
+            self.checkBtn.config(text=txt('Upload Para'), fg='green')
             self.checkBtn.select()
             self.bParaUpload = True
         else:
-            self.checkBtn.config(fg='red')
+            self.checkBtn.config(text=txt('NOT Upload Para'), fg='red')
             self.checkBtn.deselect()
             self.bParaUpload = False
 
