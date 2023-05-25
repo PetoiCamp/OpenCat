@@ -329,10 +329,10 @@ public:
         mirror();
       frame = 0;
       transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
-#ifdef NYBBLE
-      for (byte i = 0; i < HEAD_GROUP_LEN; i++)
-        targetHead[i] = currentAng[i];
-#endif
+// #ifdef NYBBLE
+//       for (byte i = 0; i < HEAD_GROUP_LEN; i++)
+//         targetHead[i] = currentAng[i];
+// #endif
     }
   }
 

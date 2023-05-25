@@ -166,8 +166,8 @@ int16_t imuOffset[9] = { 0, 0, 0,
 
 // #define READ_ACCELERATION
 void print6Axis() {
-  PT_FMT(ypr[0], 5);
-  PT('\t');
+  // PT_FMT(ypr[0], 5);
+  // PT('\t');
   PT_FMT(ypr[1], 5);
   PT('\t');
   PT_FMT(ypr[2], 5);
