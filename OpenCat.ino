@@ -49,8 +49,8 @@
 // #define NyBoard_V0_1
 // #define NyBoard_V0_2
 // #define NyBoard_V1_0
-#define NyBoard_V1_1
-// #define NyBoard_V1_2
+// #define NyBoard_V1_1
+#define NyBoard_V1_2
 
 // you can also activate the following modes (they will disable the gyro to save programming space)
 // allowed combinations: RANDOM_MIND + ULTRASONIC, RANDOM_MIND, ULTRASONIC, VOICE, CAMERA
