@@ -174,6 +174,8 @@ def printSerialMessage(port, token, timeout=0):
                 logger.debug(f"responseTrim is: {responseTrim}")
                 if responseTrim[0].lower() == token.lower():
                     return [response, allPrints]
+                elif token == 'p' and responseTrim[0].lower() == 'k':
+                    return [response, allPrints]
                 else:
                     print(response, flush=True)
                     allPrints += response
@@ -617,7 +619,7 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
     while cond1():
         time.sleep(0.5)
         currentPorts = Communication.Print_Used_Com()    # string list
-        logger.debug(f"currentPorts is {currentPorts}")
+        # logger.debug(f"currentPorts is {currentPorts}")
         
         if set(currentPorts) - set(allPorts):
             time.sleep(1) #usbmodem is slower in detection
