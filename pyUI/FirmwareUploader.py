@@ -31,7 +31,7 @@ which means that the logging module will automatically filter out any DEBUG mess
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
-regularW = 12
+regularW = 14
 language = languageList['English']
 NyBoard_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1', 'NyBoard_V1_2']
 BiBoard_version_list = ['BiBoard_V0']
@@ -56,6 +56,7 @@ class Uploader:
             self.shellOption = False
         self.win.resizable(False, False)
         self.bParaUpload = True
+        self.bFacReset = False
         Grid.rowconfigure(self.win, 0, weight=1)
         Grid.columnconfigure(self.win, 0, weight=1)
         self.strProduct = StringVar()
@@ -77,7 +78,7 @@ class Uploader:
         t.daemon = True
         t.start()
         self.win.mainloop()
-        self.force_focus()  # 强制主界面获取focus
+        self.force_focus()  # force the main interface to get focus
 
     def buildMenu(self):
         self.menuBar = Menu(self.win)
@@ -101,7 +102,6 @@ class Uploader:
         
         self.intMode = IntVar()
         self.strMode = StringVar()
-        self.checkVar = IntVar()
 
         lines = []
         try:
@@ -128,93 +128,76 @@ class Uploader:
         num = len(lines)
         logger.debug(f"len(lines): {num}")
         self.lastSetting = [model,strDefaultPath,strSwVersion,strBdVersion,mode]
-        
-
         self.currentSetting = []
         
         logger.info(f"The firmware file folder is {strDefaultPath}")
         self.strFileDir.set(strDefaultPath)
 
-        # 设置 Button 字体
-        style = ttk.Style()
-        # style.configure('my.TButton', font=('Arial', 14), background='gray')
-        # style.configure('my.TEntry', background='white')
-
-        product = ('Bittle', 'Nybble')
-
-        # fmFileDir = ttk.Frame(self.win)
-        fmFileDir = Frame(self.win)
-        # fmFileDir.pack(side=TOP, fill=BOTH, expand=YES)
-        fmFileDir.grid(row=0, columnspan=2, ipadx=2, padx=2, sticky=W + E + N + S)
+        fmFileDir = ttk.Frame(self.win)
+        fmFileDir.grid(row=0, columnspan=3, ipadx=2, padx=2, sticky=W + E + N + S)
 
         self.labFileDir = Label(fmFileDir, text=txt('labFileDir'), font=('Arial', 16))
         self.labFileDir.grid(row=0, column=0, ipadx=2, padx=2, sticky=W)
 
-
         self.btnFileDir = Button(fmFileDir, text=txt('btnFileDir'), font=('Arial', 12), foreground='blue',
-                                        background=self.backgroundColor, command=self.open_dir)  # 绑定 open_dir 方法
+                                        background=self.backgroundColor, command=self.open_dir)  # bind open_dir function
         self.btnFileDir.grid(row=0, column=1, ipadx=5, padx=5, pady=5, sticky=E)
 
         self.entry = Entry(fmFileDir, textvariable=self.strFileDir, font=('Arial', 16), foreground='green', background='white')
         self.entry.grid(row=1, columnspan=2, ipadx=5, padx=5, sticky=E + W)
         
-        fmFileDir.columnconfigure(0, weight=8)  # 尺寸适配
-        fmFileDir.columnconfigure(1, weight=1)  # 尺寸适配
-        fmFileDir.rowconfigure(1, weight=1)  # 尺寸适配
+        fmFileDir.columnconfigure(0, weight=8)  # set column width
+        fmFileDir.columnconfigure(1, weight=1)  # set column width
+        fmFileDir.rowconfigure(1, weight=1)
+
+        fmProduct = ttk.Frame(self.win)
+        fmProduct.grid(row=1, column=0, ipadx=2, padx=2, sticky=W)
+        self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
+        self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
+
+        cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', font=12)
+        # list of product
+        cbProductList = ['Nybble', 'Bittle']
+        # set default value of Combobox
+        cbProduct.set(self.lastSetting[0])
+        # set list for Combobox
+        cbProduct['values'] = cbProductList
+        cbProduct.grid(row=1, ipadx=5, padx=5, sticky=W)
+        cbProduct.bind("<<ComboboxSelected>>", self.chooseProduct)
 
         fmSoftwareVersion = ttk.Frame(self.win)
-        fmSoftwareVersion.grid(row=1, column=0, ipadx=2, padx=2, sticky=W)
+        fmSoftwareVersion.grid(row=1, column=1, ipadx=2, padx=2, sticky=W)
         self.labSoftwareVersion = ttk.Label(fmSoftwareVersion, text=txt('labSoftwareVersion'), font=('Arial', 16))
         self.labSoftwareVersion.grid(row=0, ipadx=5, padx=5, sticky=W)
-        self.cbSoftwareVersion = ttk.Combobox(fmSoftwareVersion, textvariable=self.strSoftwareVersion, foreground='blue', width=regularW, font=12)
+        self.cbSoftwareVersion = ttk.Combobox(fmSoftwareVersion, textvariable=self.strSoftwareVersion, foreground='blue', font=12)
         self.cbSoftwareVersion.bind("<<ComboboxSelected>>",self.chooseSoftwareVersion)
 
         # list of software_version
         software_version_list = ['1.0', '2.0']
-        # 为 Combobox 设置默认项
+        # set default value of Combobox
         self.cbSoftwareVersion.set(self.lastSetting[2])
         
-        # 为 Combobox 设置列表项
+        # set list for Combobox
         self.cbSoftwareVersion['values'] = software_version_list
         self.cbSoftwareVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
-#        fmSoftwareVersion.rowconfigure(0, weight=1)  # 尺寸适配
-#        fmSoftwareVersion.rowconfigure(1, weight=1)  # 尺寸适配
 
         fmBoardVersion = ttk.Frame(self.win)
-        fmBoardVersion.grid(row=1, column=1, ipadx=2, padx=2, sticky=W)
+        fmBoardVersion.grid(row=1, column=2, ipadx=2, padx=2, sticky=W)
         self.labBoardVersion = ttk.Label(fmBoardVersion, text=txt('labBoardVersion'), font=('Arial', 16))
         self.labBoardVersion.grid(row=0, ipadx=5, padx=5, sticky=W)
         
-        self.cbBoardVersion = ttk.Combobox(fmBoardVersion, textvariable=self.strBoardVersion, foreground='blue', width=regularW, font=12)
+        self.cbBoardVersion = ttk.Combobox(fmBoardVersion, textvariable=self.strBoardVersion, foreground='blue', font=12)
         self.cbBoardVersion.bind("<<ComboboxSelected>>", self.chooseBoardVersion)
         # list of board_version
         board_version_list = NyBoard_version_list + BiBoard_version_list
-        # 为 Combobox 设置默认项
+        # set default value of Combobox
         self.cbBoardVersion.set(self.lastSetting[3])
-        # 为 Combobox 设置列表项
+        # set list for Combobox
         self.cbBoardVersion['values'] = board_version_list
         self.cbBoardVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
-        
-#        fmBoardVersion.rowconfigure(0, weight=1)  # 尺寸适配
-#        fmBoardVersion.rowconfigure(1, weight=1)  # 尺寸适配
 
-        fmProduct = ttk.Frame(self.win)
-        fmProduct.grid(row=2, column=0, ipadx=2, padx=2, sticky=W)
-        self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
-        self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
-        
-        cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', width=regularW, font=12)
-        # list of product
-        cbProductList = ['Nybble', 'Bittle']
-        # 为 Combobox 设置默认项
-        cbProduct.set(self.lastSetting[0])
-        # 为 Combobox 设置列表项
-        cbProduct['values'] = cbProductList
-        cbProduct.grid(row=1, ipadx=5, padx=5, sticky=W)
-        cbProduct.bind("<<ComboboxSelected>>",self.chooseProduct)
-        
         fmMode = ttk.Frame(self.win)
-        fmMode.grid(row=2, column=1, ipadx=2, padx=2, sticky=W)
+        fmMode.grid(row=2, column=0, ipadx=2, padx=2, pady=6,sticky=W)
         self.labMode = ttk.Label(fmMode, text=txt('labMode'), font=('Arial', 16))
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
@@ -228,22 +211,20 @@ class Uploader:
                 cbModeList = self.NybbleNyBoardModes
             else:
                 cbModeList = self.NybbleBiBoardModes
-        self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', width=regularW, font=12)
-        # 为 Combobox 设置默认项
+        self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', font=12)
+        # set default value of Combobox
         self.cbMode.set(txt(self.lastSetting[4]))
-        # 为 Combobox 设置列表项
+        # set list for Combobox
         self.cbMode['values'] = cbModeList
         self.cbMode.grid(row=1, ipadx=5, padx=5, sticky=W)
 
-        fmSerial = ttk.Frame(self.win)
-        fmSerial.grid(row=3, column=0, ipadx=2, padx=2, sticky=W)
+        fmSerial = ttk.Frame(self.win)    # relief=GROOVE
+        fmSerial.grid(row=2, column=1, ipadx=2, padx=2, pady=6, sticky=W)
         self.labPort = ttk.Label(fmSerial, text=txt('labPort'), font=('Arial', 16))
-        self.labPort.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
-        self.cbPort = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', width=16, font=12)
-
+        self.labPort.grid(row=0, ipadx=5, padx=5, sticky=W)
+        self.cbPort = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', font=12)    # width=38,
         # list of serial port number
         port_number_list = []
-        # port_list = list(serial.tools.list_ports.comports())
         if len(portStrList) == 0:
             port_number_list = [' ']
             print("Cannot find the serial port!")
@@ -255,39 +236,50 @@ class Uploader:
                 port_number_list.append(portName)
             logger.debug(f"port_number_list is {port_number_list}")
             self.cbPort.set(port_number_list[0])
-        # 为 Combobox 设置列表项
+        # set list for Combobox
         self.cbPort['values'] = port_number_list
-        self.cbPort.grid(row=1, column=0, ipadx=5, padx=5, sticky=W)
-#        fmSerial.rowconfigure(0, weight=1)  # 尺寸适配
-#        fmSerial.rowconfigure(1, weight=1)  # 尺寸适配
+        self.cbPort.grid(row=1, ipadx=5, padx=5, sticky=W)
+
+        fmFacReset = ttk.Frame(self.win)    # relief=GROOVE
+        fmFacReset.grid(row=2, column=2, ipadx=2, padx=2, pady=6, sticky=W + E)
+        self.btnFacReset = Button(fmFacReset, text=txt('btnFacReset'), font=('Arial', 16, 'bold'), fg='red',
+                                  relief='groove', command=self.factoryReset)
+        self.btnFacReset.grid(row=0, ipadx=5, ipady=5, padx=9, pady=8, sticky=W + E + N + S)
+        tip(self.btnFacReset, txt('tipFacReset'))
+        fmFacReset.columnconfigure(0, weight=1)
+        fmFacReset.rowconfigure(0, weight=1)
 
         fmUpload = ttk.Frame(self.win)
-        fmUpload.grid(row=3, column=1, ipadx=2, padx=2, sticky=W)
-        self.checkVar.set(1)
-        self.checkBtn = Checkbutton(fmUpload, text=txt('Upload Para'), indicator=0, font=('Arial', 10, 'bold'),fg='green', width=15,
-                             variable=self.checkVar, onvalue=1, offvalue=0, command=self.updateParaUpload)
-        self.checkBtn.grid(row=0, column=0, padx=5, pady=5, sticky=W)
-        tip(self.checkBtn, txt('tipCheckBtn'))
-        self.btnUpload = Button(fmUpload, text=txt('btnUpload'), font=('Arial', 12, 'bold'), foreground='blue', width=regularW,
-                                       background=self.backgroundColor, relief='groove', command=self.autoupload)
-        self.btnUpload.grid(row=1, column=0, padx=5, pady=5, sticky=W)
+        fmUpload.grid(row=3, columnspan=3, ipadx=2, padx=2, pady=8, sticky=W + E + N + S)
+        self.btnUpgrade = Button(fmUpload, text=txt('btnUpgrade'), font=('Arial', 16, 'bold'), foreground='blue',
+                                background=self.backgroundColor, relief='groove', command=self.upgrade)
+        self.btnUpgrade.grid(row=0, column=0, ipadx=5, padx=5, pady=5, sticky=W + E)
+        self.btnUpdateMode = Button(fmUpload, text=txt('btnUpdateMode'), font=('Arial', 16, 'bold'), foreground='blue',
+                                       background=self.backgroundColor, relief='groove', command=self.uploadeModeOnly)
+        self.btnUpdateMode.grid(row=0, column=1, ipadx=5, padx=5, pady=5, sticky=W + E)
+        fmUpload.columnconfigure(0, weight=1)
+        fmUpload.columnconfigure(1, weight=1)
+        fmUpload.rowconfigure(0, weight=1)
 
         fmStatus = ttk.Frame(self.win)
-        fmStatus.grid(row=4, columnspan=2, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
+        fmStatus.grid(row=4, columnspan=3, ipadx=2, padx=2, pady=5, sticky=W + E + N + S)
         self.statusBar = ttk.Label(fmStatus, textvariable=self.strStatus, font=('Arial', 16), relief=SUNKEN)
         self.statusBar.grid(row=0, ipadx=5, padx=5, sticky=W + E + N + S)
-        fmStatus.columnconfigure(0, weight=1)    # 尺寸适配
-        # fmStatus.rowconfigure(0, weight=1)  # 尺寸适配
+        fmStatus.columnconfigure(0, weight=1)
 
-    def updateParaUpload(self):
-        if self.checkVar.get() == 1:
-            self.checkBtn.config(text=txt('Upload Para'), fg='green')
-            self.checkBtn.select()
-            self.bParaUpload = True
-        else:
-            self.checkBtn.config(text=txt('NOT Upload Para'), fg='red')
-            self.checkBtn.deselect()
-            self.bParaUpload = False
+    def uploadeModeOnly(self):
+        self.bParaUpload = False
+        self.autoupload()
+
+    def factoryReset(self):
+        self.bParaUpload = True
+        self.bFacReset = True
+        self.autoupload()
+
+    def upgrade(self):
+        self.bParaUpload = True
+        self.bFacReset = False
+        self.autoupload()
 
     def updatePortlist(self):
         port_number_list = []
@@ -302,12 +294,12 @@ class Uploader:
                 port_number_list.append(portName)
             logger.debug(f"port_number_list is {port_number_list}")
         self.cbPort.set(port_number_list[0])
-        # 为 Combobox 设置列表项
+        # set list for Combobox
         self.cbPort['values'] = port_number_list
 
     def about(self):
         self.msgbox = messagebox.showinfo(txt('titleVersion'), txt('msgVersion'))
-        self.force_focus()  # 强制主界面获取focus
+        self.force_focus()
 
     def setActiveMode(self):
         if self.strSoftwareVersion.get() == '1.0':
@@ -317,10 +309,8 @@ class Uploader:
             self.strBoardVersion.set(board_version_list[-1])
         else:
             stt = NORMAL
-            # self.strMode.set(txt(self.lastSetting[4]))
-            # self.cbBoardVersion.set(self.lastSetting[3])
             board_version_list = NyBoard_version_list + BiBoard_version_list
-        # 为 Combobox 设置列表项
+        # set list for Combobox
         self.cbBoardVersion['values'] = board_version_list
         self.cbMode.config(state = stt)
     
@@ -330,15 +320,11 @@ class Uploader:
     def setActiveOption(self):
         if self.cbBoardVersion.get() in BiBoard_version_list:
             stt = DISABLED
-            # self.strMode.set(txt('Standard'))
             self.strSoftwareVersion.set('2.0')
         else:
             stt = NORMAL
-            # self.strMode.set(txt(self.lastSetting[4]))
-            # self.strSoftwareVersion.set(self.lastSetting[2])
-        # self.cbMode.config(state=stt)
+
         self.cbSoftwareVersion.config(state=stt)
-        self.checkBtn.config(state=stt)
 
     def chooseBoardVersion(self, event):
         self.setActiveOption()
@@ -348,7 +334,6 @@ class Uploader:
         self.updateMode()
 
     def updateMode(self):
-#        print("self.strProduct is " + self.strProduct.get())
         if self.strProduct.get() == 'Bittle':
             if 'NyBoard' in self.strBoardVersion.get():
                 modeList = self.BittleNyBoardModes
@@ -369,7 +354,6 @@ class Uploader:
     def formalize(self, strdir=' '):
         sep = "/"
         listDir = strdir.split("/")
-#        print("listDir:" + str(listDir))
         if (strdir == str(pathlib.Path().resolve())):
             strdir = sep.join(listDir) + '/release'
         else:
@@ -384,17 +368,17 @@ class Uploader:
 
 
     def open_dir(self):
-        # 调用 askdirectory 方法打开目录
+        # call askdirectory to open file director
         logger.debug(f"{self.strFileDir.get()}")
         if (self.strFileDir.get()).find(releasePath) != -1:
-            initDir = releasePath # 初始目录
+            initDir = releasePath
         else:
-            initDir = self.strFileDir # 用户自定目录
+            initDir = self.strFileDir
         dirpath = filedialog.askdirectory(title=txt('titleFileDir'), initialdir=initDir)
 
         if dirpath:
             self.formalize(dirpath)
-        self.force_focus()  # 强制主界面获取focus
+        self.force_focus()
 
     def encode(self, in_str, encoding='utf-8'):
         if isinstance(in_str, bytes):
@@ -406,9 +390,6 @@ class Uploader:
         ser = Communication(port, 115200, 0.5)
         logger.info(f"Connect to usb serial port: {port}.")
         strSoftwareVersion = self.strSoftwareVersion.get()
-        bReset = False
-        bCalibrate = False
-        bUploadInst = False
         promptJointCalib = {
             'message':txt('reset joints?'),
             'operating':txt('reseting joints'),
@@ -431,11 +412,14 @@ class Uploader:
         
         progress = 0
         retMsg = False
+        counter = 0
+        prompStr = ""
         while True:
             time.sleep(0.01)
             if ser.main_engine.in_waiting > 0:
                 x = str(ser.main_engine.readline())
-                logger.debug(f"{x}")
+                prompStr = x[2:-1]
+                logger.debug(f"new line:{x}")
                 if x != "":
                     print(x[2:-1])
                     questionMark = "Y/n"
@@ -449,7 +433,7 @@ class Uploader:
                         elif x.find("assurance") != -1:
                             ser.Send_data(self.encode("n"))
                             continue
-                        if progress>0 and retMsg == True:
+                        if progress > 0 and retMsg == True:
                             self.strStatus.set(promptList[progress-1]['result'])
                             self.statusBar.update()
                         retMsg = messagebox.askyesno(txt('Warning'), prompt['message'])
@@ -461,16 +445,30 @@ class Uploader:
                             ser.Send_data(self.encode("n"))
                             if progress == len(promptList) - 1:
                                 break
-                        progress+=1
-                        
-                    elif x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
-                        self.strStatus.set(promptIMU['result'])
-                        self.statusBar.update()
-                        break
+                        progress += 1
+                    if not self.bFacReset:
+                        if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
+                            self.strStatus.set(promptIMU['result'])
+                            self.statusBar.update()
+                            break
+                    else:
+                        if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
+                            self.strStatus.set(promptIMU['result'])
+                            self.statusBar.update()
+                        elif x.find("Calibrated:") != -1:
+                            self.strStatus.set(txt('9685 Calibrated'))
+                            self.statusBar.update()
+                            break
+            else:
+                if self.bFacReset:
+                    if prompStr.find("Optional: Connect PWM 3") != -1:
+                        counter += 1
+                        if counter == 10:
+                            break
 
         ser.Close_Engine()
         logger.info("close the serial port.")
-        self.force_focus()  # 强制主界面获取focus
+        self.force_focus()
 
 
     def saveConfigToFile(self,filename):
@@ -481,15 +479,6 @@ class Uploader:
             f.writelines(lines)
             f.close()
 
-#    def progressiveDots(self, label):
-#        while self.inProgress:
-#            print(label,flush = True)
-#            time.sleep(1)
-#            label += '.'
-#            self.strStatus.set(label)
-#            self.win.update()
-#        print('exit fun')
-    
     def autoupload(self):
         logger.info(f"lastSetting: {self.lastSetting}.")
         strProd = self.strProduct.get()
@@ -520,18 +509,23 @@ class Uploader:
         print(self.strPort.get())
         if port == ' ' or port == '':
             messagebox.showwarning(txt('Warning'), txt('msgPort'))
-            self.force_focus()  # 强制主界面获取focus
+            self.force_focus()
             return False
 
         if strBoardVersion in NyBoard_version_list:
-            fnWriteI = path + 'WriteInstinct.ino.hex'
-            fnOpenCat = path + 'OpenCat' + strMode + '.ino.hex'
+            if self.bFacReset:
+                fnWriteI = path + 'WriteInstinctAutoInit.ino.hex'
+                fnOpenCat = path + 'OpenCatStandard.ino.hex'
+                self.currentSetting[4] = 'Standard'
+            else:
+                fnWriteI = path + 'WriteInstinct.ino.hex'
+                fnOpenCat = path + 'OpenCat' + strMode + '.ino.hex'
             filename = [fnWriteI, fnOpenCat]
             print(filename)
             uploadStage = ['Parameters', 'Main function']
             for s in range(len(uploadStage)):
                 # if s == 0 and self.bParaUploaded and self.currentSetting[:4] == self.lastSetting[:4]:
-                if s == 0 and self.bParaUpload == False:
+                if s == 0 and (not self.bParaUpload):
                     continue
                 self.strStatus.set(txt('Uploading') + txt(uploadStage[s]) + '...' )
                 self.win.update()
@@ -575,7 +569,12 @@ class Uploader:
 
                 if s == 0:
                     self.WriteInstinctPrompts(port)
-                    messagebox.showinfo(title=None, message=txt('parameterFinish'))
+                    if not self.bFacReset:
+                        messagebox.showinfo(title=None, message=txt('parameterFinish'))
+                    else:
+                        pass
+                else:
+                    pass
         elif strBoardVersion in BiBoard_version_list:
             # fnBootLoader = path + 'OpenCatEsp32Standard.ino.bootloader.bin'
             fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
@@ -610,6 +609,8 @@ class Uploader:
             self.WriteInstinctPrompts(port)
 
         self.lastSetting = self.currentSetting
+        if self.bFacReset:
+            self.strMode.set(txt('Standard'))
         self.saveConfigToFile(defaultConfPath)
             
         print('Finish!')

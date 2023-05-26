@@ -1,5 +1,5 @@
 versionNum = '1.0.3'
-dateStr = '2023-05-12'
+dateStr = '2023-05-26'
 
 textEN = {
     'lan':'English',
@@ -98,7 +98,7 @@ textEN = {
 Click the button below. Connect the USB cable to the main board, then plug the other end to the COMPUTER.\n\n
 * If the main board is already connected to the computer via a USB cable:\n
 1. Confirm your computer can recognize the USB device.\n
-More details can be found at https://docs.petoi.com/upload-firmware.\n
+More details can be found at https://docs.petoi.com/upload-firmware\n
 2. After clicking the button below, unplug the USB cable from the COMPUTER side, and then plug it back.
 ''',
     'Confirm':'Confirm',
@@ -135,10 +135,11 @@ More details can be found at https://docs.petoi.com/upload-firmware.\n
     'rbnCamera': 'Camera',
     'Parameters':'Parameters',
     'Main function':'Main function',
-    'Upload Para':'Upload Para',
-    'NOT Upload Para':'NOT Upload Para',
-    'tipCheckBtn':'If you upload the new version firmware for NyBoard for the first time, please UPLOAD the Parameters Firmware.',
-    'btnUpload': 'Upload',
+    'btnFacReset':'Factory Reset',
+    'btnUpgrade':'Upgrade the Firmware',
+    'tipFacReset':'''After factory reset, you need to do joint calibration, please refer to:
+    https://docs.petoi.com/joint-calibration''',
+    'btnUpdateMode': 'Update the Mode Only',
     'Warning': 'Warning',
     'Uploading': 'Uploading ',
     'is successully uploaded':' is successully uploaded',
@@ -173,6 +174,7 @@ More details can be found at https://docs.petoi.com/upload-firmware.\n
     
     'parameterFinish': '''Parameters initialized!
      The next step is uploading the Main Function!''',
+    '9685 Calibrated':'PCA9685 has been calibrated successfully!',
     'msgFinish': 'Firmware upload complete!',
     'msgMode': 'Invalide, please select another mode!',
 
@@ -297,9 +299,9 @@ textCN = {
     'Skill List':'技能表',
     'Type of skill':'技能类型',
     'Name of skill':'技能名',
-    'exampleFormat':'从文件导入，或以下列格式从 instinct.h 复制粘贴技能数组。\n* 保留大括号!',
+    'exampleFormat':'从文件导入，或以下列格式从 instinct.h 复制粘贴技能数组。\n* 保留大括号！',
     'Quit':'退出',
-    'Do you want to quit?':'要退出吗?',
+    'Do you want to quit?':'要退出吗？',
     'mirror':'      镜像导出',
     '>|<':'>|<',
     'Posture': '   姿势',
@@ -321,13 +323,13 @@ textCN = {
 点击下面的按钮，将USB数据线连接到主板，然后将另一端插入电脑。\n\n
 * 如果主板已经通过USB数据线连接到计算机：\n
 1. 确认您的计算机可以识别 USB 设备。\n
-   更多详情请参考 https://docs.petoi.com/upload-firmware。\n
+   更多详情请参考 https://docs.petoi.com/upload-firmware\n
 2. 点击下面的按钮后，从电脑端拔下USB数据线，然后再插回去。
 ''',
     'Confirm':'确认',
-    'Counting down to manual mode: ':'切换到手动模式倒计时: ',
+    'Counting down to manual mode: ':'切换到手动模式倒计时：',
     'Info':'提示',
-    'New port prompt':'发现新的USB口串口设备: ',
+    'New port prompt':'发现新的USB口串口设备：',
     'Please select the port from the list':'请从列表中选择串口名称',
     '* Port ':'* 端口 ',
     ' cannot be opened':' 无法打开',
@@ -351,13 +353,9 @@ textCN = {
     'labBoardVersion': '主板型号',
     'labProduct': '产品',
     'labMode': '模式',
-    'Upload Para':'上传 Para',
-    'NOT Upload Para':'不上传 Para',
-    'tipCheckBtn':'第一次为NyBoard上传新版本固件时，请上传参数固件',
-    'btnUpload': '上传',
     'Warning': "警告",
-    'msgFileDir': '请选择release文件夹!',
-    'msgPort': '请选择正确的串口!',
+    'msgFileDir': '请选择release文件夹！',
+    'msgPort': '请选择正确的串口！',
 
     'msgNoneAvrdude': '''没有找到可执行程序文件 avrdude。请先安装 avrdude！详细说明请参考：
     https://docs.petoi.com/v/chinese/zhuo-mian-ying-yong/gu-jian-shang-zai#linux-xi-tong-zhong-an-zhuang-avrdude''',
@@ -373,24 +371,25 @@ textCN = {
     派拓艺（深圳）科技有限责任公司
     https://www.petoi.com\n''' + dateStr,
 
-    'reset joints?': '舵机校准参数清零? (Y/N)',
-    'reseting joints': '校准参数清零中...',
+    'reset joints?': '舵机校准参数清零？(Y/N)',
+    'reseting joints': '校准参数清零中......',
     'joints reset': '校准参数清零完成！',
     
     'update instincts?':'更新技能? (Y/N)',
     'updating instincts':'刷新EEPROM数据......',
     'instincts updated': '更新技能完成!',
     
-    'calibrate IMU?':'''校准 IMU? (Y/N)
-            注意: 请务必将主板保持水平放置!''' ,
+    'calibrate IMU?':'''校准 IMU？(Y/N)
+            注意: 请务必将主板保持水平放置！''' ,
     'calibrating IMU': 'IMU校准中...',
     'IMU calibrated': 'IMU校准完成！',
             
             
     'parameterFinish': '''参数初始化完成！
-                       接下来将开始上传主程序!''',
-    'msgFinish': '固件上传完成!',
-    'msgMode': '无效模式，请选择其他模式!',
+                       接下来将开始上传主程序！''',
+    '9685 Calibrated':'PCA9685校准完成！',
+    'msgFinish': '固件上传完成！',
+    'msgMode': '无效模式，请选择其他模式！',
     'Standard':'标准',
     'RandomMind':'随机',
     'Ultrasonic':'超声波',
@@ -400,6 +399,11 @@ textCN = {
     'RandomMind_Ultrasonic':'随机_超声波',
     'Parameters':'参数',
     'Main function':'主程序',
+    'btnFacReset':'恢复出厂设置',
+    'btnUpgrade':'升级固件',
+    'tipFacReset':'''恢复出厂设置后，你需要重新校准关节舵机，请参考：
+    https://docs.petoi.com/joint-calibration''',
+    'btnUpdateMode': '只更新模式',
     
     'Breath':'渐变',
     'Rotate':'旋转',
@@ -513,9 +517,9 @@ textCN_TW = {
     'Skill List':'技能表',
     'Type of skill':'技能類型',
     'Name of skill':'技能名',
-    'exampleFormat':'從文件導入，或以下列格式從 instinct.h 複製黏貼技能數組。\n* 保留大括號!',
+    'exampleFormat':'從文件導入，或以下列格式從 instinct.h 複製黏貼技能數組。\n* 保留大括號！',
     'Quit':'退出',
-    'Do you want to quit?':'要退出嗎?',
+    'Do you want to quit?':'要退出嗎？',
     'mirror':'      鏡像導出',
     '>|<':'>|<',
     'Posture': '   姿勢',
@@ -537,13 +541,13 @@ textCN_TW = {
 點擊下面的按鈕後，將USB資料線連接到主機板，然後將另一端插入電腦。\n\n
 * 如果主機板已經通過USB資料線連接到電腦：\n
 1. 確認您的電腦可以識別 USB 設備。\n
-   更多詳情請參考 https://docs.petoi.com/upload-firmware。\n
+   更多詳情請參考 https://docs.petoi.com/upload-firmware\n
 2. 點擊下面的按鈕後，從電腦端拔下USB資料線，然後再插回去。
 ''',
     'Confirm':'確認',
-    'Counting down to manual mode: ':'切換到手動模式倒計時: ',
+    'Counting down to manual mode: ':'切換到手動模式倒計時：',
     'Info':'提示',
-    'New port prompt':'發現新的USB口串口設備: ',
+    'New port prompt':'發現新的USB口串口設備：',
     'Please select the port from the list':'請從列表中選擇串口名稱',
     '* Port ':'* 埠 ',
     ' cannot be opened':' 無法打開',
@@ -567,13 +571,9 @@ textCN_TW = {
     'labBoardVersion': '主板型號',
     'labProduct': '產品',
     'labMode': '模式',
-    'Upload Para':'上傳 Para',
-    'NOT Upload Para':'不上傳 Para',
-    'tipCheckBtn':'第一次為NyBoard上傳新版本固件時，請上傳參數固件',
-    'btnUpload': '上傳',
     'Warning': '警告',
-    'msgFileDir': '請選擇release文件夾!',
-    'msgPort': '請選擇正確的端口!',
+    'msgFileDir': '請選擇release文件夾！',
+    'msgPort': '請選擇正確的端口！',
 
     'msgNoneAvrdude': '''沒有找到可執行程式文件 avrdude。請先安裝 avrdude！詳細說明請參考：
     https://docs.petoi.com/v/chinese/zhuo-mian-ying-yong/gu-jian-shang-zai#linux-xi-tong-zhong-an-zhuang-avrdude''',
@@ -589,22 +589,23 @@ textCN_TW = {
     派拓藝（深圳）科技有限责任公司
     https://www.petoi.com\n''' + dateStr,
 
-    'reset joints?': '舵機校準參數清零? (Y/N)',
-    'reseting joints': '校準參數清零中...',
+    'reset joints?': '舵機校準參數清零？(Y/N)',
+    'reseting joints': '校準參數清零中......',
     'joints reset': '校準參數清零完成！',
     
-    'update instincts?':'更新技能? (Y/N)',
+    'update instincts?':'更新技能？(Y/N)',
     'updating instincts':'刷新EEPROM數據......',
-    'instincts updated': '更新技能完成!',
+    'instincts updated': '更新技能完成！',
     
-    'calibrate IMU?':'''校準 IMU? (Y/N)
-            注意: 請務必將主板保持水平放置!''' ,
-    'calibrating IMU': 'IMU校準中...',
+    'calibrate IMU?':'''校準 IMU？(Y/N)
+            注意: 請務必將主板保持水平放置！''' ,
+    'calibrating IMU': 'IMU校準中......',
     'IMU calibrated': 'IMU校準完成！',
             
             
     'parameterFinish': '''參數初始化完成！
-                       接下來將開始上傳主程序!''',
+                       接下來將開始上傳主程序！''',
+    '9685 Calibrated':'PCA9685校準完成！',
     'msgFinish': '固件上傳完成!',
     'msgMode': '無效模式，請選擇其他模式!',
     'Standard':'標準',
@@ -616,6 +617,11 @@ textCN_TW = {
     'RandomMind_Ultrasonic':'随機_超聲波',
     'Parameters':'參數',
     'Main function':'主程序',
+    'btnFacReset':'恢復出廠設置',
+    'btnUpgrade':'升級固件',
+    'tipFacReset':'''恢復出廠設置後，你需要重新校準關節舵機，請參考：
+    https://docs.petoi.com/joint-calibration''',
+    'btnUpdateMode': '僅更新模式',
     
     'Breath':'漸變',
     'Rotate':'旋轉',
@@ -787,10 +793,11 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     'rbnCamera': 'Kamera',
     'Parameters':'Parameter',
     'Main function':'Hauptfunktion',
-    'Upload Para':'Hochladen Para',
-    'NOT Upload Para':'Nicht hochladen Para',
-    'tipCheckBtn':'Wenn Sie die neue Firmware-Version für NyBoard zum ersten Mal hochladen, laden Sie bitte die Parameter-Firmware HOCH.',
-    'btnUpload': 'Hochladen',
+    'btnFacReset':'Werkseinstellungen zurückgesetzt',
+    'btnUpgrade':'Aktualisieren Sie die Firmware',
+    'tipFacReset':'''Nach dem Zurücksetzen auf die Werkseinstellungen müssen Sie eine gemeinsame Kalibrierung durchführen. \n
+	Weitere Informationen finden Sie unter: https://docs.petoi.com/joint-calibration''',
+    'btnUpdateMode': 'Aktualisieren Sie nur den Modus',
     'Warning': 'Warnung',
     'Uploading': 'Hochladen ',
     'is successully uploaded':' erfolgreich hochgeladen',
@@ -826,6 +833,7 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
 
     'parameterFinish': '''Parameter initialisiert!
     Der nächste Schritt ist das Hochladen der Hauptfunktion!''',
+    '9685 Calibrated':'PCA9685 wurde erfolgreich kalibriert!',
     'msgFinish': 'Firmware-Hochladen abgeschlossen!',
     'msgMode': 'Ungültig, bitte wählen Sie einen anderen Modus!',
 
@@ -1007,10 +1015,11 @@ textTH = {
     'rbnCamera': 'กล้อง',
     'Parameters':'พารามิเตอร์',
     'Main function':'ฟังก์ชั่นหลัก',
-    'Upload Para':'ที่อัพโหลด Para',
-    'NOT Upload Para':'ไม่อัปโหลด Para',
-    'tipCheckBtn':'หากคุณอัปโหลดเฟิร์มแวร์เวอร์ชันใหม่สำหรับ NyBoard เป็นครั้งแรก โปรดอัปโหลดเฟิร์มแวร์พารามิเตอร์',
-    'btnUpload': 'อัพโหลด',
+    'btnFacReset':'รีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน',
+    'btnUpgrade':'อัพเกรดเฟิร์มแวร์',
+    'tipFacReset':'''หลังจากการรีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน คุณต้องทำการปรับเทียบร่วม โปรดดูที่:
+    https://docs.petoi.com/joint-calibration''',
+    'btnUpdateMode': 'อัปเดตโหมดเท่านั้น',
     'Warning': 'คำเตือน',
     'Uploading': 'กำลังอัพโหลด',
     'is successully uploaded':' อัพโหลดสำเร็จ',
@@ -1045,6 +1054,7 @@ textTH = {
 
     'parameterFinish': '''ตั้งค่าพารามิเตอร์เสร็จแล้ว!
      ขั้นตอนถัดไปคือการโหลดฟังก์ชันหลัก!''',
+    '9685 Calibrated':'PCA9685 ได้รับการปรับเทียบเรียบร้อยแล้ว!',
     'msgFinish': 'การโหลดเฟิร์มแวร์เสร็จสมบูรณ์!',
     'msgMode': 'ไม่ถูกต้อง โปรดเลือกโหมดอื่น!',
 
@@ -1241,10 +1251,12 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'rbnCamera': 'Telecamera',
     'Parameters':'Parametri',
     'Main function':'Funzione principale',
-    'Upload Para':'Caricamento Para',
-    'NOT Upload Para':'Non caricare Para',
-    'tipCheckBtn':'Se carichi la nuova versione del firmware per NyBoard per la prima volta, CARICA il firmware dei parametri.',
-    'btnUpload': 'Caricamento',
+    'btnFacReset':'Ripristino delle impostazioni di fabbrica',
+    'btnUpgrade':'Aggiorna il firmware',
+    'tipFacReset':'''Dopo il ripristino delle impostazioni di fabbrica, \n
+	è necessario eseguire la calibrazione del giunto, fare riferimento a: \n
+    https://docs.petoi.com/joint-calibration''',
+    'btnUpdateMode': 'Aggiorna solo la modalità',
     'Warning': 'Avvertimento',
     'Uploading': 'Caricamento in corso ',
     'is successully uploaded':' è caricato con successo',
@@ -1275,6 +1287,7 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     
     'parameterFinish': '''Parametri inizializzati!
      Il prossimo passo è caricare la funzione principale!''',
+    '9685 Calibrated':'PCA9685 è stato calibrato con successo!',
     'msgFinish': 'Caricamento del firmware completato!',
     'msgMode': 'Non valido, selezionare un\'altra modalità!',
     'Standard':'Standard',
