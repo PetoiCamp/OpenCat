@@ -489,8 +489,10 @@ void initRobot() {
   doubleLightSetup();
 #endif
 #ifdef GYRO_PIN
-  for (byte r = 0; r < 3; r++)
-    read_IMU();                                                             //ypr is slow when starting up. leave enough time between IMU initialization and this reading
+  for (byte r = 0; r < 50; r++) {  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
+    read_IMU();
+    delay(10);
+  }
   token = (fabs(ypr[1]) > 30 || fabs(ypr[2]) > 30) ? T_CALIBRATE : T_REST;  //put the robot's side on the table to enter calibration posture for attaching legs
   newCmdIdx = 2;
   int rndSeed = ypr[2] * 10000;
