@@ -94,9 +94,10 @@ void reaction() {
           PTLF(SOFTWARE_VERSION);
           break;
         }
-#ifdef GYRO_PIN
+
       case T_GYRO_FINENESS:
       case T_GYRO_BALANCE:
+#ifdef GYRO_PIN
 #ifdef T_PRINT_GYRO
       case T_PRINT_GYRO:
 #endif
@@ -112,15 +113,24 @@ void reaction() {
       case T_SLOPE:
 #endif
         {
-#ifdef GYRO_PIN
           if (token == T_GYRO_FINENESS) {
+#ifdef GYRO_PIN
             fineAdjust = !fineAdjust;
             imuSkip = fineAdjust ? IMU_SKIP : IMU_SKIP_MORE;
             token = fineAdjust ? 'G' : 'g';  //G for fine adjust
+#else
+            token = 'g';
+#endif
           } else if (token == T_GYRO_BALANCE) {
-            gyroBalanceQ = !gyroBalanceQ;
+
+#ifdef GYRO_PIN
             token = gyroBalanceQ ? 'G' : 'g';  //G for activated balance
+            gyroBalanceQ = !gyroBalanceQ;
+#else
+            token = 'g';
+#endif
           }
+#ifdef GYRO_PIN
 #ifdef T_PRINT_GYRO
           else if (token == T_PRINT_GYRO) {
             print6Axis();
