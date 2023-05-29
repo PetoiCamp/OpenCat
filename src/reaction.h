@@ -124,8 +124,8 @@ void reaction() {
           } else if (token == T_GYRO_BALANCE) {
 
 #ifdef GYRO_PIN
-            token = gyroBalanceQ ? 'G' : 'g';  //G for activated balance
             gyroBalanceQ = !gyroBalanceQ;
+            token = gyroBalanceQ ? 'G' : 'g';  //G for activated balance
 #else
             token = 'g';
 #endif
