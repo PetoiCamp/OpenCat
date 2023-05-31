@@ -21,10 +21,13 @@ Our users have also successfully deployed OpenCat on their [DIY 3D-print robot p
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/NybbleBalance.gif?raw=true)
 
-We've successfully crowdfunded these two mini robot kits and shipped thousands of units worldwide.  With our customized Arduino board and servos coordinating all instinctive and sophisticated movements(walking, running, jumping, backflipping), one can clip on [various sensors](https://www.petoi.com/products/petoi-sensor-pack) and [camera](https://www.petoi.com/products/intelligent-camera-module) to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips(such as Nvidia Jetson Nano) through wired/wireless connections.  Please see [Petoi FAQs](https://www.petoi.com/pages/faq?utm_source=github&utm_medium=code&utm_campaign=faq) for more info.
+We've successfully crowdfunded these two mini robot kits and shipped thousands of units worldwide. 
+
+With our customized Arduino board and servos coordinating all instinctive and sophisticated movements(walking, running, jumping, backflipping), one can clip on [various sensors](https://www.petoi.com/products/petoi-sensor-pack) and [camera](https://www.petoi.com/products/intelligent-camera-module) to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips(such as Nvidia Jetson Nano) through wired/wireless connections. 
+ 
+Please see [Petoi FAQs](https://www.petoi.com/pages/faq?utm_source=github&utm_medium=code&utm_campaign=faq) for more info.
 
 Also, Check out [all of the OpenCat and Petoi robot user showcases](https://www.petoi.camp/forum/showcase).
-
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/ball.gif?raw=true)
 
@@ -35,7 +38,6 @@ OpenCat software works on both Nybble and Bittle, controlled by NyBoard based on
 To configure the board:
 
 1. Download the repo and unfold. Remove the **-main** (or any branch name) suffix of the folder.
-
 
 2. Open the file OpenCat.ino, select your robot and board version.
 ```cpp
