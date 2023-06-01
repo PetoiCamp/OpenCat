@@ -1,5 +1,5 @@
-#define TOUCH_PIN_L 6
-#define TOUCH_PIN_R 7
+#define TOUCH_PIN_L 8
+#define TOUCH_PIN_R 9
 byte touchIn[2] = { TOUCH_PIN_L, TOUCH_PIN_R };
 bool previousTouchState[2] = { false, false };
 bool currentTouchState[2];

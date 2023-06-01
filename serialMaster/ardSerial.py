@@ -172,7 +172,7 @@ def printSerialMessage(port, token, timeout=0):
                 logger.debug(f"response is: {response}")
                 responseTrim = response.replace('\r','').replace('\n','')
                 logger.debug(f"responseTrim is: {responseTrim}")
-                if responseTrim[0].lower() == token.lower():
+                if responseTrim.lower() == token.lower(): 
                     return [response, allPrints]
                 elif token == 'p' and responseTrim[0].lower() == 'k':
                     return [response, allPrints]
