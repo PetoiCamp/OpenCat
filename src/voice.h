@@ -1,5 +1,5 @@
 // Petoi Voice Command Module
-// use the software serial port on the NyBoard to read the module. connect the module to the grove socket with pin 6 and 7.
+// use the software serial port on the NyBoard to read the module. connect the module to the grove socket with pin 8 and 9.
 // or use the serial 2 port on the BiBoard to read the module. connect the module to the pin Tx2 and Rx2.
 // if you wire the module up with the USB programmer directly, connect the module's Tx to the programmer's Rx, and Rx to Tx.
 // Rongzhong Li
