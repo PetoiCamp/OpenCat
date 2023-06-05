@@ -136,10 +136,15 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     'Parameters':'Parameters',
     'Main function':'Main function',
     'btnFacReset':'Factory Reset',
+    'tipFacReset':''' After factory reset, you need to do joint calibration, please refer to: 
+ https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Upgrade the Firmware',
-    'tipFacReset':'''After factory reset, you need to do joint calibration, please refer to:
-    https://docs.petoi.com/joint-calibration''',
+    'tipUpgrade':''' Upgrade both the parameters and the main function. 
+ * Mandatory if you just downloaded a new version of this software. 
+ * You can select \'N\' to preserve the calibration values. ''',
     'btnUpdateMode': 'Update the Mode Only',
+    'tipUpdateMode':''' If you have upgraded the firmware at least once after a new download, 
+ it\'s faster to only switch the modes without refreshing the parameters. ''',
     'Warning': 'Warning',
     'Uploading': 'Uploading ',
     'is successully uploaded':' is successully uploaded',
@@ -400,11 +405,15 @@ textCN = {
     'Parameters':'参数',
     'Main function':'主程序',
     'btnFacReset':'恢复出厂设置',
+    'tipFacReset':''' 恢复出厂设置后，你需要重新校准关节舵机，请参考：
+ https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'升级固件',
-    'tipFacReset':'''恢复出厂设置后，你需要重新校准关节舵机，请参考：
-    https://docs.petoi.com/joint-calibration''',
+    'tipUpgrade':''' 升级参数固件和主程序固件。
+ * 如果您初次下载了该软件的新版本，则必须点击此按钮升级固件。
+ * 您可以选择 “N” 来保留校准值。''',
     'btnUpdateMode': '只更新模式',
-    
+    'tipUpdateMode':''' 如果您在下载后至少升级过一次固件，
+ 只切换模式而不刷新参数固件会更快。''',
     'Breath':'渐变',
     'Rotate':'旋转',
     'Flash':'闪烁',
@@ -618,11 +627,15 @@ textCN_TW = {
     'Parameters':'參數',
     'Main function':'主程序',
     'btnFacReset':'恢復出廠設置',
+    'tipFacReset':''' 恢復出廠設置後，你需要重新校準關節舵機，請參考：
+ https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'升級固件',
-    'tipFacReset':'''恢復出廠設置後，你需要重新校準關節舵機，請參考：
-    https://docs.petoi.com/joint-calibration''',
+    'tipUpgrade':''' 升級參數固件和主程序固件。
+ * 如果您初次下載了該軟體的新版本，則必須點擊此按鈕升級固件。
+ * 您可以選擇 “N” 來保留校準值。''',
     'btnUpdateMode': '僅更新模式',
-    
+    'tipUpdateMode':''' 如果您在下載後至少升級過一次固件，
+ 僅切換模式而不刷新參數固件會更快。''',
     'Breath':'漸變',
     'Rotate':'旋轉',
     'Flash':'閃爍',
@@ -794,10 +807,15 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     'Parameters':'Parameter',
     'Main function':'Hauptfunktion',
     'btnFacReset':'Werkseinstellungen zurückgesetzt',
+    'tipFacReset':''' Nach dem Zurücksetzen auf die Werkseinstellungen müssen Sie eine gemeinsame Kalibrierung durchführen. 
+ Weitere Informationen finden Sie unter: https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Aktualisieren Sie die Firmware',
-    'tipFacReset':'''Nach dem Zurücksetzen auf die Werkseinstellungen müssen Sie eine gemeinsame Kalibrierung durchführen. \n
-	Weitere Informationen finden Sie unter: https://docs.petoi.com/joint-calibration''',
+    'tipUpgrade':''' Aktualisieren Sie sowohl die Parameter als auch die Hauptfunktion. 
+ * Obligatorisch, wenn Sie gerade eine neue Version dieser Software heruntergeladen haben. 
+ * Sie können „N“ wählen, um die Kalibrierungswerte beizubehalten. ''',
     'btnUpdateMode': 'Aktualisieren Sie nur den Modus',
+    'tipUpdateMode':''' Wenn Sie die Firmware nach einem erneuten Download mindestens einmal aktualisiert haben, 
+ Es ist schneller, nur die Modi zu wechseln, ohne die Parameter zu aktualisieren. ''',
     'Warning': 'Warnung',
     'Uploading': 'Hochladen ',
     'is successully uploaded':' erfolgreich hochgeladen',
@@ -1016,10 +1034,15 @@ textTH = {
     'Parameters':'พารามิเตอร์',
     'Main function':'ฟังก์ชั่นหลัก',
     'btnFacReset':'รีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน',
+    'tipFacReset':''' หลังจากการรีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน คุณต้องทำการปรับเทียบร่วม โปรดดูที่: 
+ https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'อัพเกรดเฟิร์มแวร์',
-    'tipFacReset':'''หลังจากการรีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน คุณต้องทำการปรับเทียบร่วม โปรดดูที่:
-    https://docs.petoi.com/joint-calibration''',
+    'tipUpgrade':''' อัปเกรดทั้งพารามิเตอร์และฟังก์ชันหลัก 
+ * จำเป็นหากคุณเพิ่งดาวน์โหลดเวอร์ชันใหม่ของซอฟต์แวร์นี้ 
+ * คุณสามารถเลือก 'N' เพื่อรักษาค่าการสอบเทียบ ''',
     'btnUpdateMode': 'อัปเดตโหมดเท่านั้น',
+    'tipUpdateMode':''' หากคุณได้อัปเกรดเฟิร์มแวร์อย่างน้อยหนึ่งครั้งหลังจากดาวน์โหลดใหม่ 
+ การสลับโหมดเพียงอย่างเดียวโดยไม่รีเฟรชพารามิเตอร์จะเร็วกว่า ''',
     'Warning': 'คำเตือน',
     'Uploading': 'กำลังอัพโหลด',
     'is successully uploaded':' อัพโหลดสำเร็จ',
@@ -1252,11 +1275,16 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'Parameters':'Parametri',
     'Main function':'Funzione principale',
     'btnFacReset':'Ripristino delle impostazioni di fabbrica',
+    'tipFacReset':''' Dopo il ripristino delle impostazioni di fabbrica, 
+ è necessario eseguire la calibrazione del giunto, fare riferimento a: 
+ https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Aggiorna il firmware',
-    'tipFacReset':'''Dopo il ripristino delle impostazioni di fabbrica, \n
-	è necessario eseguire la calibrazione del giunto, fare riferimento a: \n
-    https://docs.petoi.com/joint-calibration''',
+    'tipUpgrade':''' Aggiorna sia i parametri che la funzione principale. 
+ * Obbligatorio se hai appena scaricato una nuova versione di questo software. 
+ * È possibile selezionare \'N\' per conservare i valori di calibrazione. ''',
     'btnUpdateMode': 'Aggiorna solo la modalità',
+    'tipUpdateMode':''' Se hai aggiornato il firmware almeno una volta dopo un nuovo download, 
+ è più veloce cambiare solo modalità senza aggiornare i parametri. ''',
     'Warning': 'Avvertimento',
     'Uploading': 'Caricamento in corso ',
     'is successully uploaded':' è caricato con successo',

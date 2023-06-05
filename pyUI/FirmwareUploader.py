@@ -254,9 +254,11 @@ class Uploader:
         self.btnUpgrade = Button(fmUpload, text=txt('btnUpgrade'), font=('Arial', 16, 'bold'), foreground='blue',
                                 background=self.backgroundColor, relief='groove', command=self.upgrade)
         self.btnUpgrade.grid(row=0, column=0, ipadx=5, padx=5, pady=5, sticky=W + E)
+        tip(self.btnUpgrade, txt('tipUpgrade'))
         self.btnUpdateMode = Button(fmUpload, text=txt('btnUpdateMode'), font=('Arial', 16, 'bold'), foreground='blue',
                                        background=self.backgroundColor, relief='groove', command=self.uploadeModeOnly)
         self.btnUpdateMode.grid(row=0, column=1, ipadx=5, padx=5, pady=5, sticky=W + E)
+        tip(self.btnUpdateMode, txt('tipUpdateMode'))
         fmUpload.columnconfigure(0, weight=1)
         fmUpload.columnconfigure(1, weight=1)
         fmUpload.rowconfigure(0, weight=1)
@@ -350,7 +352,7 @@ class Uploader:
             messagebox.showwarning(txt('Warning'),txt('msgMode'))
             # printH("modeList[0]:", modeList[0])
             self.strMode.set(modeList[0])
-            self.force_focus()  # 强制主界面获取focus
+            self.force_focus()  # force the main interface to get focus
 
     def formalize(self, strdir=' '):
         sep = "/"
@@ -492,7 +494,7 @@ class Uploader:
 
         if self.strFileDir.get() == '' or self.strFileDir.get() == ' ':
             messagebox.showwarning(txt('Warning'), txt('msgFileDir'))
-            self.force_focus()  # 强制主界面获取focus
+            self.force_focus()  # force the main interface to get focus
             return False
 
         # NyBoard_V1_X software version are all the same
@@ -541,7 +543,7 @@ class Uploader:
                     path = pathlib.Path(avrdudePath + 'avrdude')
                     if not path.exists():
                         messagebox.showwarning(txt('Warning'), txt('msgNoneAvrdude'))
-                        self.force_focus()  # 强制主界面获取focus
+                        self.force_focus()  # force the main interface to get focus
                         return False
                     # avrdudeconfPath = '/etc/avrdude/'      # Fedora / CentOS
                     avrdudeconfPath = '/etc/'            # Debian / Ubuntu
@@ -616,7 +618,7 @@ class Uploader:
             
         print('Finish!')
         messagebox.showinfo(title=None, message=txt('msgFinish'))
-        self.force_focus()  # 强制主界面获取focus
+        self.force_focus()  # force the main interface to get focus
         return True
         
     def force_focus(self):
