@@ -170,7 +170,7 @@ def printSerialMessage(port, token, timeout=0):
             response = port.main_engine.readline().decode('ISO-8859-1')
             if response != '':
                 logger.debug(f"response is: {response}")
-                responseTrim = response.replace('\r','').replace('\n','')
+                responseTrim = response.split('\r')[0]
                 logger.debug(f"responseTrim is: {responseTrim}")
                 if responseTrim.lower() == token.lower(): 
                     return [response, allPrints]
