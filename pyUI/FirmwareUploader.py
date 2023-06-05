@@ -348,7 +348,8 @@ class Uploader:
 
         if self.strMode.get() not in modeList:
             messagebox.showwarning(txt('Warning'),txt('msgMode'))
-            self.strMode.set(txt(modeList[0]))
+            # printH("modeList[0]:", modeList[0])
+            self.strMode.set(modeList[0])
             self.force_focus()  # 强制主界面获取focus
 
     def formalize(self, strdir=' '):
