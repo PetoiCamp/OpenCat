@@ -176,10 +176,10 @@ def printSerialMessage(port, token, timeout=0):
                 logger.debug(f"responseTrim is: {responseTrim}")
                 if responseTrim.lower() == token.lower(): 
                     return [response, allPrints]
-                elif token == 'p' and responseTrim[0].lower() == 'k':
+                elif token == 'p' and responseTrim == 'k':
                     return [response, allPrints]
                 else:
-                    print(response, flush=True)
+                    # print(response, flush=True)
                     allPrints += response
         now = time.time()
         if (now - startTime) > threshold:
