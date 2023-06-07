@@ -473,6 +473,11 @@ void initRobot() {
   //  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
   //  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
 #endif
+
+#ifdef TASK_QUEUE
+  tQueue = new TaskQueue();
+#endif
+
 #ifdef VOICE
   voiceSetup();
 #endif
@@ -501,9 +506,6 @@ void initRobot() {
 #endif
   randomSeed(rndSeed);  //use the fluctuation of voltage caused by servos as entropy pool
 
-#ifdef TASK_QUEUE
-  tQueue = new TaskQueue();
-#endif
   allCalibratedPWM(currentAng);  //soft boot for servos
   delay(500);
   lastCmd[0] = '\0';
