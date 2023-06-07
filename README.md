@@ -6,7 +6,9 @@ OpenCat is the open-source Arduino and Raspberry Pi-based quadruped robotic pet 
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/run.gif?raw=true)
 
-Inspired by Boston Dynamics' Big Dog and Spot Mini, Dr. Rongzhong Li started the project in his dorm in 2016. After one year of R&D, he founded Petoi LLC and devoted all his resources to the startup. The goal is to foster collaboration in quadruped(four-legged) robotic research, education, and engineering development of agile and affordable quadruped robot pets, bring STEM concepts to the mass and inspire newcomers (including many kids and adults) to join the robotic AI revolution to create more applications.
+Inspired by Boston Dynamics' Big Dog and Spot Mini, Dr. Rongzhong Li started the project in his dorm in 2016. After one year of R&D, he founded Petoi LLC and devoted all his resources to the startup. 
+
+The goal is to foster collaboration in quadruped(four-legged) robotic research, education, and engineering development of agile and affordable quadruped robot pets, bring STEM concepts to the mass and inspire newcomers (including many kids and adults) to join the robotic AI revolution to create more applications.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/slope.gif?raw=true)
 
