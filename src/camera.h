@@ -4,10 +4,12 @@ int xDiff, yDiff;                         //the scaled distance from the center 
 int currentX = 0, currentY = 0;           //the current x y of the camera's direction in the world coordinate
 int imgRangeX = 100;                      //the frame size 0~100 on X and Y direction
 int imgRangeY = 100;
+
 int8_t lensFactor = 30;
-int8_t proportion = 10;
+int8_t proportion = 11;
 int8_t pan = 10;
 int8_t sp = 4;
+
 int8_t frontUpX = 60;
 int8_t backUpX = 80;
 int8_t frontDownX = 20;
@@ -16,7 +18,13 @@ int8_t frontUpY = 20;
 int8_t backUpY = 30;
 int8_t frontDownY = 12;
 int8_t backDownY = 30;
-int8_t **par = new int8_t *[12];
+
+int8_t frontUp = 60;
+int8_t backUp = 90;
+int8_t frontDown = 10;
+int8_t backDown = -30;
+
+int8_t **par = new int8_t *[16];
 
 #define MU_CAMERA
 // #define SENTRY1_CAMERA
@@ -45,6 +53,10 @@ void cameraSetup() {
   par[9] = &backUpY;
   par[10] = &frontDownY;
   par[11] = &backDownY;
+  par[12] = &frontUp;
+  par[13] = &backUp;
+  par[14] = &frontDown;
+  par[15] = &backDown;
   transformSpeed = 0;
   widthCounter = 0;
 #ifdef MU_CAMERA
@@ -57,6 +69,7 @@ void cameraSetup() {
 #endif
   fps = 0;
   loopTimer = millis();
+  tQueue->addTask('k', "sit");
 }
 void showRecognitionResult(int xCoord, int yCoord, int width, int height = -1) {
   PT(xCoord);  // get vision result: x axes value
@@ -71,11 +84,7 @@ void showRecognitionResult(int xCoord, int yCoord, int width, int height = -1) {
   }
   PTL();
 }
-int8_t base[] = { 0, 0, 0, 0,
-                  // 0, 0, 0, 0,
-                  75, 75, 90, 90,
-                  10, 10, -30, -30 };
-int8_t allParameter[DOF];
+
 // #define WALK  //let the robot move its body to follow people rather than sitting at the original position \
               // it works the best on the table so the robot doesn't need to loop upward.
 // #define ROTATE
@@ -100,44 +109,63 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
   } else
 #endif
   {
-    xDiff = (xCoord - imgRangeX / 2) / (lensFactor / 10.0);
-    yDiff = (yCoord - imgRangeY / 2) / (lensFactor / 10.0);
-    currentX = max(min(currentX - xDiff, 90), -90) / (proportion / 10.0);
-    currentY = max(min(currentY - yDiff, 75), -75) / (proportion / 10.0);
+    xDiff = (xCoord - imgRangeX / 2.0);  //atan((xCoord - imgRangeX / 2.0) / (imgRangeX / 2.0)) * degPerRad;//almost the same
+    yDiff = (yCoord - imgRangeY / 2.0);  //atan((yCoord - imgRangeY / 2.0) / (imgRangeX / 2.0)) * degPerRad;
     if (abs(xDiff) > 1 || abs(yDiff) > 1) {
-      if (abs(currentX) < 45) {
-        int8_t feedBackArray[][2] = {
-          { pan, 0 },
-          { 0, 0 },
-          { 0, 0 },
-          { 0, 0 },  //
-          // { 0, 0 },
-          // { 0, 0 },
-          // { 0, 0 },
-          // { 0, 0 },
-          { frontUpX, -frontUpY },
-          { -frontUpX, -frontUpY },
-          { -backUpX, backUpY },
-          { backUpX, backUpX },
-          { -frontDownX, frontDownY },
-          { frontDownX, frontDownY },
-          { backDownX, -backDownY },
-          { -backDownX, -backDownY },
-        };
+      xDiff = xDiff / (lensFactor / 10.0);
+      yDiff = yDiff / (lensFactor / 10.0);
+      currentX = max(min(currentX - xDiff, 125), -125) / (proportion / 10.0);
+      currentY = max(min(currentY - yDiff, 125), -125) / (proportion / 10.0);
 
-        for (int j = 0; j < DOF; j++) {
-          int i = (j < 4) ? j : j - 4;
-          allParameter[j] = min(125, max(-125, base[i] + currentX * 10 / feedBackArray[i][0] + currentY * 10 / feedBackArray[i][1]));
-        }
+      // PT('\t');
+      // PT(currentX);
+      // PT('\t');
+      // PTL(currentY);
 
-        cmdLen = DOF;
-        token = T_LISTED_BIN;
-        for (byte i = 0; i < cmdLen; i++)
-          newCmd[i] = (int8_t)min(max(allParameter[i], -125), 125);
-        newCmd[cmdLen] = '~';
-        newCmdIdx = 6;
-        //      printList(newCmd);}
+      // if (abs(currentX) < 60) {
+      int8_t base[] = { 0, 0, 0, 0,
+                        0, 0, 0, 0,
+                        frontUp, frontUp, backUp, backUp,
+                        -frontDown, -frontDown, backDown, backDown };
+      int8_t feedBackArray[][2] = {
+        { pan, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { frontUpX, -frontUpY },
+        { -frontUpX, -frontUpY },
+        { -backUpX, backUpY },
+        { backUpX, backUpY },
+        { -frontDownX, frontDownY },
+        { frontDownX, frontDownY },
+        { backDownX, -backDownY },
+        { -backDownX, -backDownY },
+      };
+      transformSpeed = sp;
+      for (int j = 0; j < DOF; j++) {
+        int i = j;
+        float adj = float(base[i])
+                    + (feedBackArray[i][0] ? currentX * 10.0 / feedBackArray[i][0] : 0)
+                    + (feedBackArray[i][1] ? currentY * 10.0 / feedBackArray[i][1] : 0);
+        newCmd[j] = min(125, max(-125, adj));
+
+        // PT(adj);
+        // PT('\t');
+        // PT(int8_t(newCmd[j]));
+        // PTF(",\t");
       }
+      PTL();
+      cmdLen = DOF;
+      token = T_LISTED_BIN;
+
+      newCmd[cmdLen] = '~';
+      newCmdIdx = 6;
+      //      printList(newCmd);}
+      // }
 #ifdef ROTATE
       else {
         tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 40);  //spin its body to follow you
@@ -233,10 +261,7 @@ void muCameraSetup() {
     }
     delay(1000);
   } while (err != MU_OK);
-  //  shutServos();
-  //  counter = 0;
-  //  motion.loadBySkillName("rest");
-  //  transform(motion.dutyAngles);
+
   (*Mu).VisionBegin(object[objectIdx]);
   noResultTime = millis();
 }
@@ -249,32 +274,35 @@ void read_MuCamera() {
     yCoord = (int)(*Mu).GetValue(object[objectIdx], kYValue);
     width = (int)(*Mu).GetValue(object[objectIdx], kWidthValue);
     // height = (int)(*Mu).GetValue(VISION_BODY_DETECT, kHeightValue);
-    if (objectIdx == 1) {
-      int ballType = (*Mu).GetValue(object[objectIdx], kLabel);
-      if (lastBallType != ballType) {
-        switch ((*Mu).GetValue(object[objectIdx], kLabel)) {  // get vision result: label value
-          case MU_BALL_TABLE_TENNIS:
-            PTLF("table tennis");
-            break;
-          case MU_BALL_TENNIS:
-            PTLF("tennis");
-            break;
-          default:
-            PTLF("unknow ball type");
-            break;
-        }
-        lastBallType = ballType;
-      }
-    }
+    //-------ball------
+    // if (objectIdx == 1) {
+    //   int ballType = (*Mu).GetValue(object[objectIdx], kLabel);
+    //   if (lastBallType != ballType) {
+    //     switch ((*Mu).GetValue(object[objectIdx], kLabel)) {  // get vision result: label value
+    //       case MU_BALL_TABLE_TENNIS:
+    //         PTLF("table tennis");
+    //         break;
+    //       case MU_BALL_TENNIS:
+    //         PTLF("tennis");
+    //         break;
+    //       default:
+    //         PTLF("unknow ball type");
+    //         break;
+    //     }
+    //     lastBallType = ballType;
+    //   }
+    // }
+    //-------ball------
     cameraBehavior(xCoord, yCoord, width);
     // FPS();
-  } else if (millis() - noResultTime > 2000) {  // if no object is detected for 2 seconds, switch object
-    (*Mu).VisionEnd(object[objectIdx]);
-    objectIdx = (objectIdx + 1) % (sizeof(object) / 2);
-    (*Mu).VisionBegin(object[objectIdx]);
-    PTL(objectName[objectIdx]);
-    noResultTime = millis();
   }
+  //  else if (millis() - noResultTime > 2000) {  // if no object is detected for 2 seconds, switch object
+  //   (*Mu).VisionEnd(object[objectIdx]);
+  //   objectIdx = (objectIdx + 1) % (sizeof(object) / 2);
+  //   (*Mu).VisionBegin(object[objectIdx]);
+  //   PTL(objectName[objectIdx]);
+  //   noResultTime = millis();
+  // }
 }
 #endif
 

@@ -300,18 +300,20 @@ void reaction() {
 #ifdef T_TUNER
               else if (token == T_TUNER) {
                 *par[target[0]] = target[1];
-                PT(target[0]);
-                PT('\t');
-                PTL(target[1]);
+                // PT(target[0]);
+                // PT('\t');
+                // PTL(target[1]);
               }
 #endif
             } while (pch != NULL);
 #ifdef T_TUNER
-            // if (token == T_TUNER)
-            //   for (byte p = 0; p < 6; p++) {
+            // if (token == T_TUNER) {
+            //   for (byte p = 0; p < 16; p++) {
             //     PT(*par[p]);
             //     PT('\t');
             //   }
+            //   PTL();
+            // }
 #endif
             if ((token == T_INDEXED_SIMULTANEOUS_ASC || token == T_INDEXED_SIMULTANEOUS_ASC) && (nonHeadJointQ || lastToken != T_SKILL)) {
               // PTL(token);

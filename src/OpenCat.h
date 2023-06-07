@@ -2,7 +2,7 @@
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
-#define IR_PIN 4  // Signal Pin of IR receiver to Arduino Digital Pin 4
+// #define IR_PIN 4  // Signal Pin of IR receiver to Arduino Digital Pin 4
 #define BUZZER 5
 
 //#define SERVO_SLOW_BOOT
@@ -288,7 +288,7 @@ int currentAng[DOF] = { -30, -80, -45, 0,
 float currentAdjust[DOF] = {};
 
 //control related variables
-#ifdef GROVE_SERIAL_PASS_THROUGH
+#if defined GROVE_SERIAL_PASS_THROUGH || defined T_TUNER
 #define IDLE_TIME 0
 #else
 #define IDLE_TIME 3000
@@ -306,7 +306,7 @@ char lastToken;
 byte newCmdIdx = 0;
 int cmdLen = 0;
 #define CMD_LEN 10    //the last char will be '\0' so only CMD_LEN-1 elements are allowed
-#define BUFF_LEN 467  //452
+#define BUFF_LEN 300//467  //452
 // char *newCmd = new char[BUFF_LEN + 1];
 // char *lastCmd = new char[CMD_LEN + 1];  //the last char must be '\0' for safe so CMD_LEN+1 elements are required
 char newCmd[BUFF_LEN + 1];
@@ -472,6 +472,11 @@ void initRobot() {
   //  pixel.begin();           // INITIALIZE NeoPixel pixel object (REQUIRED)
   //  pixel.setBrightness(50); // Set BRIGHTNESS to about 1/5 (max = 255)
 #endif
+
+#ifdef TASK_QUEUE
+  tQueue = new TaskQueue();
+#endif
+
 #ifdef VOICE
   voiceSetup();
 #endif
@@ -498,9 +503,6 @@ void initRobot() {
 #endif
   randomSeed(rndSeed);  //use the fluctuation of voltage caused by servos as entropy pool
 
-#ifdef TASK_QUEUE
-  tQueue = new TaskQueue();
-#endif
   allCalibratedPWM(currentAng);  //soft boot for servos
   delay(500);
   lastCmd[0] = '\0';
