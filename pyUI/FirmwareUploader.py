@@ -271,6 +271,7 @@ class Uploader:
 
     def uploadeModeOnly(self):
         self.bParaUpload = False
+        self.bFacReset = False
         self.autoupload()
 
     def factoryReset(self):
@@ -412,6 +413,8 @@ class Uploader:
             promptList = [promptJointCalib,promptInstinct,promptIMU]
         elif strSoftwareVersion == '2.0':
             promptList = [promptJointCalib,promptIMU]
+
+        strBoardVersion = self.strBoardVersion.get()
         
         progress = 0
         retMsg = False
@@ -433,7 +436,7 @@ class Uploader:
                             prompt = promptInstinct
                         elif x.find("Calibrate") != -1:
                             prompt = promptIMU
-                        elif x.find("assurance") != -1:
+                        elif x.find("assurance") != -1:    # for BiBoard it need to be modified later
                             ser.Send_data(self.encode("n"))
                             continue
                         if progress > 0 and retMsg == True:
@@ -458,6 +461,8 @@ class Uploader:
                         if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
                             self.strStatus.set(promptIMU['result'])
                             self.statusBar.update()
+                            if strBoardVersion in BiBoard_version_list:    # for BiBoard it need to be modified later
+                                break
                         elif x.find("Calibrated:") != -1:
                             self.strStatus.set(txt('9685 Calibrated'))
                             self.statusBar.update()
