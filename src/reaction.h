@@ -72,10 +72,8 @@ void reaction() {
     )
       beep(15 + newCmdIdx, 5);                    //ToDo: check the muted sound when newCmdIdx = -1
     if (hardServoQ && (lowerToken == T_SKILL)) {  //|| lowerToken == T_INDEXED_SEQUENTIAL_ASC || lowerToken == T_INDEXED_SIMULTANEOUS_ASC)) {
-#ifdef T_SERVO_MICROSECOND
       setServoP(P_SOFT);
       hardServoQ = false;
-#endif
     }
     if ((lastToken == T_CALIBRATE || lastToken == T_REST) && token != T_CALIBRATE) {
       gyroBalanceQ = true;

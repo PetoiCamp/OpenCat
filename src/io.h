@@ -21,7 +21,7 @@ void read_serial() {
     char terminator = (token >= 'A' && token <= 'Z') ? '~' : '\n';  //capitalized tokens use binary encoding for long data commands
                                                                     //'~' ASCII code = 126; may introduce bug when the angle is 126 so only use angles <= 125
     long lastSerialTime = millis();
-    int serialTimout = (token == T_SKILL_DATA || lowerToken == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT_SHORT;
+    int serialTimout = (token == T_SKILL_DATA || lowerToken == T_BEEP) ? SERIAL_TIMEOUT_LONG : SERIAL_TIMEOUT;
     do {
       if (Serial.available()) {
         // long current = millis();
