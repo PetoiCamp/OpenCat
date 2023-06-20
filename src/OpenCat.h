@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N_230529"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_230620"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 
@@ -9,6 +9,7 @@
 
 #define I2C_EEPROM  //comment this line out if you don't have an I2C EEPROM in your DIY board.
 #define SERIAL_TIMEOUT 5
+#define SERIAL_TIMEOUT_SHORT 10
 #define SERIAL_TIMEOUT_LONG 200
 //Tutorial: https://bittle.petoi.com/11-tutorial-on-creating-new-skills
 #ifdef NYBBLE
@@ -247,7 +248,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_BEEP_BIN 'B'           //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4 \
                           //a single B will toggle the melody on/off
 #define T_LISTED_BIN 'L'         //a list of the DOFx joint angles: angle0 angle1 angle2 ... angle15
-#define T_SERVO_MICROSECOND 'w'  //PWM width modulation
+// #define T_SERVO_MICROSECOND 'w'  //PWM width modulation
 #define T_TEMP 'T'               //call the last 'K' skill data received from the serial port
 #endif
 
