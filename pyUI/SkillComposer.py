@@ -1300,7 +1300,7 @@ class SkillComposer:
     def export(self):
         self.getCreatorInfo(False)
         if not self.creatorInfoAcquired:
-            return
+            return # to avoid a bug that the creator window won't open until the file saver is cloesd
         print("Creator:", self.creator)
         print("Location:", self.location)
         files = [('Text Document', '*.md'),
