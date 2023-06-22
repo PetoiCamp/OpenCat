@@ -11,10 +11,11 @@ from PIL import ImageTk, Image
 import tkinter.font as tkFont
 import threading
 import random
-from datetime import date
+import datetime
 import platform
 import os
 
+NyBoard_version = 'NyBoard_V1_2'
 verNumber = sys.version.split('(')[0].split()[0]
 verNumber = verNumber.split('.')
 print(verNumber)

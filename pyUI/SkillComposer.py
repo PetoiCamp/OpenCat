@@ -61,6 +61,57 @@ animalNames = [  # used for memorizing individual frames
     'pig', 'rabbit', 'sheep', 'tiger', 'whale', 'wolf', 'zebra']
 WORDS = animalNames
 
+creator = "Nature"
+location = "Earth"
+
+class CreatorWin:
+    def __init__(self,configuration):
+        self.window = tk.Tk()
+        self.window.title("Creator Information")
+        self.config = configuration
+
+        # creator label and entry
+        creator_label = tk.Label(self.window, text="Creator:")
+        creator_label.pack()
+        self.creator_entry = tk.Entry(self.window)
+        self.creator_entry.pack()
+
+        # location label and entry
+        location_label = tk.Label(self.window, text="Location:")
+        location_label.pack()
+        self.location_entry = tk.Entry(self.window)
+        self.location_entry.pack()
+
+        # saveID button
+        saveID_button = tk.Button(self.window, text=txt("Save"), command=self.saveID)
+        saveID_button.pack()
+        self.window.geometry('250x150+500+400')
+        self.window.mainloop()
+        
+    def saveID(self):
+        global creator
+        global location
+        creatorValue = self.creator_entry.get()
+        locationValue = self.location_entry.get()
+        if creatorValue != '':
+            creator = creatorValue
+        if locationValue != '':
+            location = locationValue
+        print("Creator:", creator)
+        print("Location:", location)
+        
+        self.config = self.config + [creator, location]
+        self.saveConfigToFile(defaultConfPath, self.config)
+        self.window.destroy()
+        
+    def saveConfigToFile(self, filename, config):
+        printH("conf ",config)
+        f = open(filename, 'w+')
+        lines = '\n'.join(config) + '\n'
+        f.writelines(lines)
+        time.sleep(0.1)
+        f.close()
+
 class SkillComposer:
     def __init__(self,model, lan):
         global language
@@ -187,6 +238,7 @@ class SkillComposer:
 
         util = Menu(self.menubar, tearoff=0)
         util.add_command(label=txt('Eye color picker'), command=lambda: self.popEyeColor())
+        util.add_command(label=txt('Creator Info'), command=lambda: self.getCreatorInfo(True))
         self.menubar.add_cascade(label=txt('Utility'), menu=util)
         
         helpMenu = Menu(self.menubar, tearoff=0)
@@ -1216,8 +1268,46 @@ class SkillComposer:
         self.frameController.update()
         send(ports, ['L', self.frameData[4:20], 0.05])
 
+    def getCreatorInfo(self, modifyQ):
+        global creator
+        global location
+        try:
+            with open(defaultConfPath, "r") as f:
+                lines = f.readlines()
+                f.close()
+                lines = [line[:-1] for line in lines]  # remove the '\n' at the end of each line
+                defaultLan = lines[0]
+                defaultModel = lines[1]
+                defaultPath = lines[2]
+                defaultSwVer = lines[3]
+                defaultBdVer = lines[4]
+                defaultMode = lines[5]
+                if len(lines)>=8 and not modifyQ:
+                    creator = lines[6]
+                    location = lines[7]
+                else:
+                    configuration = [defaultLan, defaultModel, defaultPath, defaultSwVer, defaultBdVer, defaultMode]
+                    CreatorWin(configuration)
+                
+        except Exception as e:
+            print(e)
+            print('Create configuration file')
+            defaultLan = 'English'
+            defaultModel = "Bittle"
+            defaultPath = releasePath
+            defaultSwVer = '2.0'
+            defaultBdVer = NyBoard_version
+            defaultMode = 'Standard'
+            configuration = [defaultLan, defaultModel, defaultPath, defaultSwVer, defaultBdVer, defaultMode]
+            CreatorWin(configuration)
+        
     def export(self):
-        files = [('Text Document', '*.txt'),
+        global creator
+        global location
+        self.getCreatorInfo(False)
+        print("Creator:", creator)
+        print("Location:", location)
+        files = [('Text Document', '*.md'),
                  ('Python Files', '*.py'),
                  ('All Files', '*.*'),
                  ]
@@ -1295,8 +1385,17 @@ class SkillComposer:
         for row in skillData:
             print(('{:>4},' * frameSize).format(*row))
         print('};')
-
-        fileData = '{\n' + '{:>4},{:>4},{:>4},{:>4},\n'.format(*[period, 0, 0, angleRatio])
+        
+        x = datetime.datetime.now()
+        fileData = '# ' + file.name.split('/')[-1].split('.')[0] + '\n'
+        fileData += 'Note: '+'You may add a short description/instruction here.\n\n'
+        fileData += 'Model: ' + self.model + '\n\n'
+        fileData += 'Creator: ' + creator + '\n\n'
+        fileData += 'Location: ' + location + '\n\n'
+        fileData += 'Date: ' + x.strftime("%b")+' '+x.strftime("%d")+', '+x.strftime("%Y") + '\n\n'
+        fileData += '# [Demo](www.youtube.com) You can modify the link in the round brackets\n\n'
+        fileData += '# Token\nK\n\n'
+        fileData += '# Data\n{\n' + '{:>4},{:>4},{:>4},{:>4},\n'.format(*[period, 0, 0, angleRatio])
         if period < 0 and self.gaitOrBehavior.get() == txt('Behavior'):
             fileData += '{:>4},{:>4},{:>4},\n'.format(*[loopStructure[0], loopStructure[-1], self.loopRepeat.get()])
         for row in skillData:
@@ -1311,8 +1410,10 @@ class SkillComposer:
         print(flat_list)
         if file:
             print(file.name)
-            with open(file.name, 'w') as f:
+            with open(file.name, 'w+') as f:
                 f.write(fileData)
+                time.sleep(0.1)
+                f.close()
         send(ports, ['i',0.1])
         res = send(ports, ['K', flat_list, 0], 0)
         print(res)

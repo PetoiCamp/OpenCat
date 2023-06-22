@@ -12,7 +12,6 @@ from Calibrator import *
 from commonVar import *
 
 language = languageList['English']
-NyBoard_version = 'NyBoard_V1_2'
 apps = ['Firmware Uploader', 'Joint Calibrator', 'Skill Composer']  # ,'Task Scheduler']
 
 
