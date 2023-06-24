@@ -26,15 +26,15 @@ SoftwareSerial Serial2(8, 9);  //Rx, Tx
 // 下列行为是程序中预设的，您可以用技能创作坊设计新技能并导入到 InstinctX.h
 // 支持其他的串口指令，比如活动关节和旋律
 
+const char voice1[] PROGMEM = "T";                                    //call the last skill data sent by the Skill Composer
 #ifdef BITTLE
-const char voice1[] PROGMEM = "kpu1";                                 //单手俯卧撑	 single-handed pushups
+const char voice2[] PROGMEM = "kpu1";                                 //单手俯卧撑	 single-handed pushups
 #elif defined NYBBLE
-const char voice1[] PROGMEM = "kwsf";                                 //洗脸	  wash face
+const char voice2[] PROGMEM = "kwsf";                                 //洗脸	  wash face
 #endif
-const char voice2[] PROGMEM = "m0 80 0 -80";                          //动头 move head
-const char voice3[] PROGMEM = "kmw";                                  //moonwalk
-const char voice4[] PROGMEM = "b14,8,14,8,21,8,21,8,23,8,23,8,21,4";  //小星星 twinkle star
-const char voice5[] PROGMEM = "5th";
+const char voice3[] PROGMEM = "m0 80 0 -80";                          //动头 move head
+const char voice4[] PROGMEM = "kmw";                                  //moonwalk
+const char voice5[] PROGMEM = "b14,8,14,8,21,8,21,8,23,8,23,8,21,4";  //小星星 twinkle star
 const char voice6[] PROGMEM = "6th";
 const char voice7[] PROGMEM = "7th";
 const char voice8[] PROGMEM = "8th";
