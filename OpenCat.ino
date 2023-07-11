@@ -68,7 +68,7 @@
 // #define CAMERA  //for human body tracking or ball tracking using an intelligent camera
 // #define GROVE_SERIAL_PASS_THROUGH  //allow analog/digital read/write GPIO pins through serial protocol
 // #define OTHER_MODULES  //uncomment this line to disable the gyroscope code to save programming resources for other modules.
-
+#define IR_PIN 4       // Signal Pin of IR receiver to Arduino Digital Pin 4
 #include "src/OpenCat.h"
 
 void setup() {

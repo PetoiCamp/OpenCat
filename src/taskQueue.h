@@ -30,10 +30,10 @@ public:
   TaskQueue() {
     PTLF("TaskQ");
   };
-  // void createTask() {  //this is an example task
-  //   this->addTask('k', "vtF", 2000);
-  //   this->addTask('k', "up");
-  // }
+  void createTask() {  //this is an example task
+    this->addTask('k', "vtF", 2000);
+    this->addTask('k', "up");
+  }
   template<typename T> void addTask(char t, T* p, int d = 0) {
     this->push_back(new Task(t, p, d));
   }
