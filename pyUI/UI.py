@@ -26,14 +26,23 @@ class UI:
         try:
             with open(defaultConfPath, "r") as f:
                 lines = f.readlines()
-                lines = [line[:-1] for line in lines]  # remove the '\n' at the end of each line
-                self.defaultLan = lines[0]
-                model = lines[1]
-                self.defaultPath = lines[2]
-                self.defaultSwVer = lines[3]
-                self.defaultBdVer = lines[4]
-                self.defaultMode = lines[5]
                 f.close()
+            lines = [line.split('\n')[0] for line in lines]  # remove the '\n' at the end of each line
+            self.defaultLan = lines[0]
+            model = lines[1]
+            self.defaultPath = lines[2]
+            self.defaultSwVer = lines[3]
+            self.defaultBdVer = lines[4]
+            self.defaultMode = lines[5]
+            if len(lines) >= 8:
+                self.defaultCreator = lines[6]
+                self.defaultLocation = lines[7]
+                self.configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                                      self.defaultMode, self.defaultCreator, self.defaultLocation]
+            else:
+                self.configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                                      self.defaultMode]
+
 
         except Exception as e:
             print('Create configuration file')
@@ -43,7 +52,9 @@ class UI:
             self.defaultSwVer = '2.0'
             self.defaultBdVer = NyBoard_version
             self.defaultMode = 'Standard'
-        #            raise e
+            self.configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                                  self.defaultMode]
+            # raise e
 
         language = languageList[self.defaultLan]
 
@@ -53,7 +64,7 @@ class UI:
         self.OSname = self.window.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
             self.window.iconbitmap(r'./resources/Petoi.ico')
-            self.window.geometry('350x270+800+400')
+            self.window.geometry('398x270+800+400')
         else:
             self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
@@ -62,7 +73,7 @@ class UI:
             family='Times New Roman', size=20, weight='bold')
         self.window.title(txt('uiTitle'))
         self.createMenu()
-        bw = 20
+        bw = 23
         self.modelLabel = Label(self.window, text=model, font=self.myFont)
         self.modelLabel.grid(row=0, column=0, pady=10)
         for i in range(len(apps)):
@@ -121,9 +132,9 @@ class UI:
         f.close()
 
     def utility(self, app):
-        configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
-                         self.defaultMode]
-        self.saveConfigToFile(defaultConfPath, configuration)
+        # configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+        #                  self.defaultMode]    # self.defaultCreator, self.defaultLocation
+        self.saveConfigToFile(defaultConfPath, self.configuration)
         self.window.destroy()
 
         if app == 'Firmware Uploader':
@@ -141,9 +152,9 @@ class UI:
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
-            configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
-                             self.defaultMode]
-            self.saveConfigToFile(defaultConfPath, configuration)
+            # configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+            #                  self.defaultMode]    # self.defaultCreator, self.defaultLocation
+            self.saveConfigToFile(defaultConfPath, self.configuration)
             self.window.destroy()
 
 

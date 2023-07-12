@@ -107,14 +107,22 @@ class Uploader:
         try:
             with open(defaultConfPath, "r") as f:
                 lines = f.readlines()
-                lines = [line[:-1] for line in lines] # remove the '\n' at the end of each line
-                self.defaultLan = lines[0]
-                model = lines[1]
-                strDefaultPath = lines[2]
-                strSwVersion = lines[3]
-                strBdVersion = lines[4]
-                mode = lines[5]
                 f.close()
+            lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
+            self.defaultLan = lines[0]
+            model = lines[1]
+            strDefaultPath = lines[2]
+            strSwVersion = lines[3]
+            strBdVersion = lines[4]
+            mode = lines[5]
+            if len(lines) >= 8:
+                strCreator = lines[6]
+                strLocation = lines[7]
+                self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion,
+                                      mode, strCreator, strLocation]
+            else:
+                self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion, mode]
+
                 
         except Exception as e:
             print ('Create configuration file')
@@ -124,6 +132,7 @@ class Uploader:
             strSwVersion = '2.0'
             strBdVersion = NyBoard_version_list[-1]
             mode = 'Standard'
+            self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion, mode]
             
         num = len(lines)
         logger.debug(f"len(lines): {num}")
@@ -480,7 +489,12 @@ class Uploader:
 
 
     def saveConfigToFile(self,filename):
-        config = [self.defaultLan,self.lastSetting[0],self.lastSetting[1],self.lastSetting[2],self.lastSetting[3],self.lastSetting[4]]
+        if len(self.configuration) >= 8:
+            config = [self.defaultLan, self.lastSetting[0], self.lastSetting[1], self.lastSetting[2],
+                      self.lastSetting[3], self.lastSetting[4], self.configuration[6], self.configuration[7]]
+        else:
+            config = [self.defaultLan,self.lastSetting[0],self.lastSetting[1],self.lastSetting[2],
+                      self.lastSetting[3],self.lastSetting[4]]
         print(config)
         with open(filename, "w") as f:
             lines = '\n'.join(config)+'\n'
