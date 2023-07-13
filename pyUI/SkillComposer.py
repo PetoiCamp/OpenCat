@@ -1174,9 +1174,13 @@ class SkillComposer:
         
         btnsEff = Frame(face)
         btnsEff.grid(row = 1,column = 0)
+        if self.OSname == 'win32':
+            wValue = 5
+        else:
+            wValue = 3
         for e in range(len(effectDictionary)):
-            Button(btnsEff,text=txt(list(effectDictionary.keys())[e]),width = 5,command = lambda eff=list(effectDictionary.values())[e]:self.changeEffect(eff)).grid(row = 0,column = e)
-        Button(btnsEff,text=txt('Meow'),width = 5,command = lambda :send(ports, ['u', 0])).grid(row = 0,column = 3)
+            Button(btnsEff,text=txt(list(effectDictionary.keys())[e]),width = wValue,command = lambda eff=list(effectDictionary.values())[e]:self.changeEffect(eff)).grid(row = 0,column = e)
+        Button(btnsEff,text=txt('Meow'),width = wValue,command = lambda :send(ports, ['u', 0])).grid(row = 0,column = 3)
 
 
     def playThread(self):
