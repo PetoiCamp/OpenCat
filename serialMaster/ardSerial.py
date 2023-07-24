@@ -37,7 +37,6 @@ logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
 
-
 def printH(head, value):
     print(head, end=' ')
     print(value)
@@ -104,8 +103,9 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                 if token == 'B':
                     for l in range(len(message)//2):
                         message[l*2+1]*= 8  #change 1 to 8 to save time for tests
-                        print(message[l*2],end=",")
-                        print(message[l*2+1],end=",")
+                        # print(message[l*2],end=",")
+                        # print(message[l*2+1],end=",")
+                        logger.debug(f"{message[l*2]},{message[l*2+1]}")
             if token == 'W' or token == 'C':
                 in_str = struct.pack('B' * len(message), *message)
             else:
@@ -183,8 +183,9 @@ def printSerialMessage(port, token, timeout=0):
                     allPrints += response
         now = time.time()
         if (now - startTime) > threshold:
-            print('Elapsed time: ', end='')
-            print(threshold, end=' seconds\n', flush=True)
+            # print('Elapsed time: ', end='')
+            # print(threshold, end=' seconds\n', flush=True)
+            logger.debug(f"Elapsed time: {threshold} seconds")
             threshold += 2
             if threshold > 5:
                 return -1
@@ -286,13 +287,13 @@ def send(port, task, timeout=0):
         p = port
     queue = splitTaskForLargeAngles(task)
     for task in queue:
-        printH("task",task)
+        # printH("task",task)
         if len(port) > 1:
             returnResult = sendTaskParallel(p, task, timeout)
         elif len(port) == 1:
             returnResult = sendTask(goodPorts, p[0], task, timeout)
         else:
-            #            print('no ports')
+            # print('no ports')
             return -1
     return returnResult
 
