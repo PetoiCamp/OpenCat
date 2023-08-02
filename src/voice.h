@@ -52,8 +52,8 @@ const char *const voiceTable[] PROGMEM = {
   voice9,
   voice10,
 };
-
 int listLength = 0;
+bool enableVoiceQ = true;
 
 void voiceSetup() {
   PTLF("Init voice");
@@ -83,6 +83,10 @@ void read_voice() {
     Serial2.println(newCmd);
     while (Serial2.available() && Serial2.read())
       ;
+    if (!strcmp(newCmd, "Ac"))
+      enableVoiceQ = true;
+    else if (!strcmp(newCmd, "Ad"))
+      enableVoiceQ = false;
     resetCmd();
   }
 
@@ -91,7 +95,11 @@ void read_voice() {
     // PTL(raw);
     byte index = (byte)raw[2];  //interpret the 3rd byte as integer
     int shift = -1;
-    if (index > 10) {
+    if (index == 67)
+      enableVoiceQ = true;
+    else if (index == 68)
+      enableVoiceQ = false;
+    else if (index > 10) {
       if (index < 21) {  //11 ~ 20 are customized commands, and their indexes should be shifted by 11
         index -= 11;
         PT(index);
@@ -109,11 +117,13 @@ void read_voice() {
         token = raw[3];         //T_SKILL;
         shift = 4;              //3;
       }
-      const char *cmd = raw.c_str() + shift;
-      tQueue->addTask(token, shift > 0 ? cmd : "", 2000);
-      char end = cmd[strlen(cmd) - 1];
-      if (!strcmp(cmd, "bk") || !strcmp(cmd, "x") || end >= 'A' && end <= 'Z' || end == 'x') {
-        tQueue->addTask('k', "up");
+      if (enableVoiceQ) {
+        const char *cmd = raw.c_str() + shift;
+        tQueue->addTask(token, shift > 0 ? cmd : "", 2000);
+        char end = cmd[strlen(cmd) - 1];
+        if (!strcmp(cmd, "bk") || !strcmp(cmd, "x") || end >= 'A' && end <= 'Z' || end == 'x') {
+          tQueue->addTask('k', "up");
+        }
       }
     }
   }

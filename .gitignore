@@ -8,3 +8,4 @@ ModuleTests/testDoubleLight/debug_custom.json
 ModuleTests/testDoubleAnalog/debug_custom.json
 ModuleTests/testVoiceCommander/debug_custom.json
 ModuleTests/testI2cDevice/debug_custom.json
+.vscode/*
