@@ -1,4 +1,5 @@
 // Petoi Voice Command Module
+// Doc: https://docs.petoi.com/extensible-modules/voice-command-module
 // use the software serial port on the NyBoard to read the module. connect the module to the grove socket with pin 8 and 9.
 // or use the serial 2 port on the BiBoard to read the module. connect the module to the pin Tx2 and Rx2.
 // if you wire the module up with the USB programmer directly, connect the module's Tx to the programmer's Rx, and Rx to Tx.
@@ -83,9 +84,11 @@ void read_voice() {
     Serial2.println(newCmd);
     while (Serial2.available() && Serial2.read())
       ;
-    if (!strcmp(newCmd, "Ac"))
+    if (!strcmp(newCmd, "Ac"))  // enter "XAc" in the serial monitor or add button "X65,99" in the mobile app to enable voice reactions
+                                // 在串口监视器输入指令“XAc”或在手机app创建按键"X65,99"来激活语音动作
       enableVoiceQ = true;
-    else if (!strcmp(newCmd, "Ad"))
+    else if (!strcmp(newCmd, "Ad"))  // enter "XAd" in the serial monitor or add button "X65,100" in the mobile app to disable voice reactions
+                                     // 在串口监视器输入指令“XAd”或在手机app创建按键"X65,100"来禁用语音动作
       enableVoiceQ = false;
     resetCmd();
   }
@@ -95,9 +98,9 @@ void read_voice() {
     // PTL(raw);
     byte index = (byte)raw[2];  //interpret the 3rd byte as integer
     int shift = -1;
-    if (index == 67)
+    if (index == 67)  //say "play sound" to enable voice reactions / 说“打开音效”激活语音动作
       enableVoiceQ = true;
-    else if (index == 68)
+    else if (index == 68)  //say "be quiet" to disable voice reactions / 说“安静点”禁用语音动作
       enableVoiceQ = false;
     else if (index > 10) {
       if (index < 21) {  //11 ~ 20 are customized commands, and their indexes should be shifted by 11
