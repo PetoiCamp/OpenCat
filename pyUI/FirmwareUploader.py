@@ -8,28 +8,11 @@
 # May.1st, 2022
 
 from commonVar import *
-import logging
 from subprocess import check_call
 import threading
 from tkinter import ttk
 from tkinter import filedialog
 import pathlib
-
-FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
-'''
-Level: The level determines the minimum priority level of messages to log.
-Messages will be logged in order of increasing severity:
-DEBUG is the least threatening,
-INFO is also not very threatening,
-WARNING needs attention,
-ERROR needs immediate attention,
-and CRITICAL means “drop everything and find out what’s wrong.”
-The default starting point is INFO,
-which means that the logging module will automatically filter out any DEBUG messages.
-'''
-#logging.basicConfig(level=logging.DEBUG, format=FORMAT)    # the level defined in ardSerial.py
-logging.basicConfig(level=logging.INFO, format=FORMAT)
-logger = logging.getLogger(__name__)
 
 regularW = 14
 language = languageList['English']
@@ -105,7 +88,7 @@ class Uploader:
 
         lines = []
         try:
-            with open(defaultConfPath, "r") as f:
+            with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
                 f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
@@ -489,15 +472,15 @@ class Uploader:
 
 
     def saveConfigToFile(self,filename):
-        if len(self.configuration) >= 8:
-            config = [self.defaultLan, self.lastSetting[0], self.lastSetting[1], self.lastSetting[2],
-                      self.lastSetting[3], self.lastSetting[4], self.configuration[6], self.configuration[7]]
+        if len(self.configuration) == 6:
+            self.configuration = [self.defaultLan, self.lastSetting[0], self.lastSetting[1], self.lastSetting[2],
+                                  self.lastSetting[3], self.lastSetting[4]]
         else:
-            config = [self.defaultLan,self.lastSetting[0],self.lastSetting[1],self.lastSetting[2],
-                      self.lastSetting[3],self.lastSetting[4]]
-        print(config)
-        with open(filename, "w") as f:
-            lines = '\n'.join(config)+'\n'
+            self.configuration = [self.defaultLan, self.lastSetting[0], self.lastSetting[1], self.lastSetting[2],
+                                  self.lastSetting[3], self.lastSetting[4], self.configuration[6],self.configuration[7]]
+
+        with open(filename, "w", encoding="utf-8") as f:
+            lines = '\n'.join(self.configuration)+'\n'
             f.writelines(lines)
             f.close()
 
@@ -646,6 +629,7 @@ class Uploader:
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
             self.saveConfigToFile(defaultConfPath)
+            logger.info(f"{self.configuration}")
             self.win.destroy()
 
 if __name__ == '__main__':

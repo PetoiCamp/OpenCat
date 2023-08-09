@@ -61,7 +61,7 @@ animalNames = [  # used for memorizing individual frames
     'pig', 'rabbit', 'sheep', 'tiger', 'whale', 'wolf', 'zebra']
 WORDS = animalNames
 
-    
+
 class SkillComposer:
     def __init__(self,model, lan):
         global language
@@ -74,6 +74,39 @@ class SkillComposer:
                 print('Use Bittle as default model')
             time.sleep(0.01)
         self.model = config.model_
+        try:
+            with open(defaultConfPath, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+                f.close()
+            lines = [line.split('\n')[0] for line in lines]  # remove the '\n' at the end of each line
+            num = len(lines)
+            logger.debug(f"len(lines): {num}")
+            self.defaultLan = lines[0]
+            self.defaultPath = lines[2]
+            self.defaultSwVer = lines[3]
+            self.defaultBdVer = lines[4]
+            self.defaultMode = lines[5]
+            if len(lines) >= 8:
+                self.defaultCreator = lines[6]
+                self.defaultLocation = lines[7]
+            else:
+                self.defaultCreator = txt('Nature')
+                self.defaultLocation = txt('Earth')
+
+            self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                                  self.defaultMode, self.defaultCreator, self.defaultLocation]
+
+        except Exception as e:
+            print('Create configuration file')
+            self.defaultLan = 'English'
+            self.defaultPath = releasePath
+            self.defaultSwVer = '2.0'
+            self.defaultBdVer = NyBoard_version
+            self.defaultMode = 'Standard'
+            self.defaultCreator = txt('Nature')
+            self.defaultLocation = txt('Earth')
+            self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                                  self.defaultMode, self.defaultCreator, self.defaultLocation]
         self.postureTable = postureDict[self.model]
         ports = goodPorts
         self.window = Tk()
@@ -89,6 +122,9 @@ class SkillComposer:
         self.creatorInfoAcquired = False
         self.creator = StringVar()
         self.location = StringVar()
+        self.creator.set(txt('Nature'))
+        self.location.set(txt('Earth'))
+
         self.OSname = self.window.call('tk', 'windowingsystem')
         print(self.OSname)
         self.window.geometry('+100+10')
@@ -568,6 +604,8 @@ class SkillComposer:
             global triggerAxis
             inv_triggerAxis = {txt(v): k for k, v in triggerAxis.items()}
             language = languageList[l]
+            self.defaultLan = l
+            logger.debug(f"{self.defaultLan}")
             self.window.title(txt('skillComposerTitle'))
             self.menubar.destroy()
             self.controllerLabels[0].config(text=txt('Joint Controller'))
@@ -1227,25 +1265,13 @@ class SkillComposer:
         self.frameController.update()
         send(ports, ['L', self.frameData[4:20], 0.05])
         
-    def popCreator(self, configuration):
+    def popCreator(self):
         self.creatorWin = Toplevel(self.window)
         self.creatorWin.title(txt("Creator Information"))
         self.creatorWin.geometry('216x110+500+400')
-        self.config = configuration
 
         fmCreInfo = ttk.Frame(self.creatorWin)    # relief=GROOVE to draw border
         fmCreInfo.grid(ipadx=3, ipady=3, padx=3, pady=5, sticky=W + E)
-
-        with open(defaultConfPath, "r") as f:
-            lines = f.readlines()
-            f.close()
-        lines = [line.split('\n')[0] for line in lines]  # remove the '\n' at the end of each line
-        if len(lines) >= 8:
-            self.creator.set(lines[6])
-            self.location.set(lines[7])
-        else:
-            self.creator.set(txt('Nature'))
-            self.location.set(txt('Earth'))
 
         # creator label and entry
         creator_label = Label(fmCreInfo, text=txt('Creator'))
@@ -1273,6 +1299,7 @@ class SkillComposer:
         locationValue = self.location_entry.get()
         if creatorValue == '':
             messagebox.showwarning(txt('Warning'), txt('InputCreator'))
+            self.creatorWin.after(1, lambda: self.creatorWin.focus_force())
             self.creator_entry.focus()  # force the entry to get focus
             return False
         else:
@@ -1280,6 +1307,7 @@ class SkillComposer:
 
         if locationValue == '':
             messagebox.showwarning(txt('Warning'), txt('InputLocation'))
+            self.creatorWin.after(1, lambda: self.creatorWin.focus_force())
             self.location_entry.focus()  # force the entry to get focus
             return False
         else:
@@ -1287,18 +1315,22 @@ class SkillComposer:
 
         print("Creator:", self.creator.get())
         print("Location:", self.location.get())
-        
-        self.config = self.config + [self.creator.get(), self.location.get()]
-        self.saveConfigToFile(defaultConfPath, self.config)
+
+        self.configuration = self.configuration[:6] + [self.creator.get(), self.location.get()]
+
+        self.saveConfigToFile(defaultConfPath)
         self.creatorInfoAcquired = True
         logger.debug(f"saveID, self.creatorInfoAcquired: {self.creatorInfoAcquired}")
         self.creatorWin.destroy()
 
         
-    def saveConfigToFile(self, filename, config):
-        f = open(filename, 'w+')
-        logger.debug(f"config: {config}")
-        lines = '\n'.join(config) + '\n'
+    def saveConfigToFile(self, filename):
+        self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                                  self.defaultMode, self.configuration[6], self.configuration[7]]
+
+        f = open(filename, 'w+', encoding="utf-8")
+        logger.debug(f"config: {self.configuration}")
+        lines = '\n'.join(self.configuration) + '\n'
         f.writelines(lines)
         time.sleep(0.1)
         f.close()
@@ -1306,52 +1338,61 @@ class SkillComposer:
     def getCreatorInfo(self, modifyQ):
         # self.creatorInfoAcquired = True
         try:
-            with open(defaultConfPath, "r") as f:
+            with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
                 f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
-            defaultLan = lines[0]
-            defaultModel = lines[1]
+            defaultLan = self.defaultLan
+            defaultModel = self.model
             defaultPath = lines[2]
             defaultSwVer = lines[3]
             defaultBdVer = lines[4]
             defaultMode = lines[5]
-            if len(lines)>=8 and not modifyQ:
+
+            if len(lines) >= 8:
                 self.creator.set(lines[6])
                 self.location.set(lines[7])
                 self.creatorInfoAcquired = True
+                self.configuration = [defaultLan, defaultModel, defaultPath, defaultSwVer, defaultBdVer, defaultMode,
+                                      lines[6], lines[7]]
                 logger.debug(f"getCreatorInfo, self.creatorInfoAcquired: {self.creatorInfoAcquired}")
+                if modifyQ is True:
+                    self.popCreator()
             else:
+                self.creator.set(self.defaultCreator)
+                self.location.set(self.defaultLocation)
                 self.creatorInfoAcquired = False
-                configuration = [defaultLan, defaultModel, defaultPath, defaultSwVer, defaultBdVer, defaultMode]
-                self.popCreator(configuration)
+                self.configuration = [defaultLan, defaultModel, defaultPath, defaultSwVer, defaultBdVer, defaultMode,
+                                      self.defaultCreator, self.defaultLocation]
+                self.popCreator()
                 
         except Exception as e:
             print(e)
             print('Create configuration file')
-            defaultLan = 'English'
-            defaultModel = "Bittle"
+            defaultLan = self.defaultLan
+            defaultModel = self.model
             defaultPath = releasePath
             defaultSwVer = '2.0'
             defaultBdVer = NyBoard_version
             defaultMode = 'Standard'
-            configuration = [defaultLan, defaultModel, defaultPath, defaultSwVer, defaultBdVer, defaultMode]
-            self.popCreator(configuration)
+            self.configuration = [defaultLan, defaultModel, defaultPath, defaultSwVer, defaultBdVer, defaultMode,
+                                  self.defaultCreator, self.defaultLocation]
+            self.creatorInfoAcquired = False
+            self.popCreator()
         
     def export(self):
         self.getCreatorInfo(False)
         logger.debug(f"export, self.creatorInfoAcquired: {self.creatorInfoAcquired}")
         if not self.creatorInfoAcquired:
             return  # to avoid a bug that the creator window won't open until the file saver is cloesd
-        # print("Creator:", self.creator.get())
-        # print("Location:", self.location.get())
+
         logger.info(f"Creator: {self.creator.get()}")
         logger.info(f"Location: {self.location.get()}")
         files = [('Text Document', '*.md'),
                  ('Python Files', '*.py'),
                  ('All Files', '*.*'),
                  ]
-        file = asksaveasfile(filetypes=files, defaultextension=files)
+        file = asksaveasfile(filetypes=files, defaultextension='.md')
 
         if self.activeFrame + 1 == self.totalFrame:
             self.getWidget(self.activeFrame, cSet).config(text='=',  # +txt('Set')
@@ -1447,7 +1488,7 @@ class SkillComposer:
                 fileData += ('{:>4},' * frameSize).format(*row)
                 fileData += '\n'
             fileData += '};'
-            with open(file.name, 'w+') as f:
+            with open(file.name, 'w+', encoding="utf-8") as f:
                 f.write(fileData)
                 time.sleep(0.1)
                 f.close()
@@ -1768,6 +1809,7 @@ class SkillComposer:
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
+            self.saveConfigToFile(defaultConfPath)
             self.keepChecking = False  # close the background thread for checking serial port
             self.window.destroy()
             closeAllSerial(goodPorts)

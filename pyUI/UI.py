@@ -10,6 +10,7 @@ from FirmwareUploader import *
 from SkillComposer import *
 from Calibrator import *
 from commonVar import *
+from tkinter import PhotoImage
 
 language = languageList['English']
 apps = ['Firmware Uploader', 'Joint Calibrator', 'Skill Composer']  # ,'Task Scheduler']
@@ -24,10 +25,12 @@ class UI:
         global model
         global language
         try:
-            with open(defaultConfPath, "r") as f:
+            with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
                 f.close()
             lines = [line.split('\n')[0] for line in lines]  # remove the '\n' at the end of each line
+            num = len(lines)
+            logger.debug(f"len(lines): {num}")
             self.defaultLan = lines[0]
             model = lines[1]
             self.defaultPath = lines[2]
@@ -65,9 +68,12 @@ class UI:
         if self.OSname == 'win32':
             self.window.iconbitmap(r'./resources/Petoi.ico')
             self.window.geometry('398x270+800+400')
-        else:
+        elif self.OSname == 'aqua':
             self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
+        else:
+            self.window.tk.call('wm', 'iconphoto', self.window._w, "-default", PhotoImage(file='./resources/Petoi.png'))
+            self.window.geometry('+800+400')
 
         self.myFont = tkFont.Font(
             family='Times New Roman', size=20, weight='bold')
@@ -124,17 +130,22 @@ class UI:
             for i in range(len(apps)):
                 self.window.winfo_children()[1 + i].config(text=txt(apps[i]))
 
-    def saveConfigToFile(self, filename, config):
-        print(config)
-        f = open(filename, 'w+')
-        lines = '\n'.join(config) + '\n'
+    def saveConfigToFile(self, filename):
+        if len(self.configuration) == 6:
+            self.configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                         self.defaultMode]
+        else:
+            self.configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+                                  self.defaultMode, self.defaultCreator, self.defaultLocation]
+
+        f = open(filename, 'w+', encoding="utf-8")
+        lines = '\n'.join(self.configuration) + '\n'
         f.writelines(lines)
         f.close()
 
     def utility(self, app):
-        # configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
-        #                  self.defaultMode]    # self.defaultCreator, self.defaultLocation
-        self.saveConfigToFile(defaultConfPath, self.configuration)
+        self.saveConfigToFile(defaultConfPath)
+        logger.info(f"{self.configuration}")
         self.window.destroy()
 
         if app == 'Firmware Uploader':
@@ -152,9 +163,8 @@ class UI:
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):
-            # configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
-            #                  self.defaultMode]    # self.defaultCreator, self.defaultLocation
-            self.saveConfigToFile(defaultConfPath, self.configuration)
+            self.saveConfigToFile(defaultConfPath)
+            logger.info(f"{self.configuration}")
             self.window.destroy()
 
 
