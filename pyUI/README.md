@@ -22,9 +22,13 @@ Before running the app, you need to use the included USB adapter or the Bluetoot
 ## Pre-compiled binaries
 
 You can download the [pre-compiled binaries](https://github.com/PetoiCamp/OpenCat/releases).
-After downloading the Mac version, you must drag it into the Application folder. 
 
-If you see the error message that "Petoi Desktop App" cannot be opened because the developer cannot be verified, you can right-click the icon, hold the **Shift** key and click **Open**.
+Windows users:
+Double-click the exe file to run the app. Keep all the files in the Win folder when moving the app. 
+
+Mac users:
+Double-click the dmg file and drag the app to the Application folder. Go to the Application folder and right-click the Petoi icon. Hold the **shift** key, then click **Open**.
+
 
 ## Run the app from the Terminal 
 In the case of compatibility issues, or if you want to modify the source and test, you can also run the code from the Terminal. 
