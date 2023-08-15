@@ -179,6 +179,7 @@ void get_error()
   diffA3=max(-150,min(150,diffA3));
   error=diffA3-diffA2;
   error=110*atan(error/90); 
+  
 }
 void compute_pid()// get the output;
 {
