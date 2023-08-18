@@ -1,7 +1,8 @@
 #define LIGHT1 A2
 #define LIGHT2 A3
-
-#define advance
+//#define PID
+//#define advance
+#ifdef PID 
 double mean_array_d(double array[],int start, int end,double scar)
 {
  double mean=0;
@@ -350,3 +351,51 @@ void read_doubleLight()//  when using the Photoresistors, add this function to t
   */
   
 }
+#else
+#define READING_COUNT 30
+
+#define MAX_READING 1024
+
+int meanA = 0, meanB = 0, diffA_B = 0, actualOffset = 0, last = 0;
+int tolerance = 20;
+
+
+void doubleLightSetup() {
+  // put your setup code here, to run once:
+  for (int i = 0; i < READING_COUNT; i++) {
+    int a = analogRead(LIGHT1);
+    int b = analogRead(LIGHT2);
+    meanA += (a / READING_COUNT);
+    meanB += (b / READING_COUNT);
+    diffA_B += (a - b) / READING_COUNT;
+    delay(1);
+  }
+}
+
+void read_doubleLight() {
+  int a = analogRead(LIGHT1);
+  int b = analogRead(LIGHT2);
+  a -= meanA;
+  b -= meanB;
+  int offset = b - a;
+  int maxL = max(a, b);
+  int clippedOffset = min(max(offset, -60), 60);
+
+  if (maxL < -50) {
+    tQueue->addTask('k', "bk", 2000);  // jigs when entering this case for the 2nd time. ???
+    tQueue->addTask('k', "up");        // jigs when entering this case for the 2nd time. ???
+    PTL(tQueue->size());
+  } else if (maxL < 300) {
+    actualOffset = (last + clippedOffset) / 2;
+    actualOffset = max(min(actualOffset, 90), -90);
+    token = T_INDEXED_SIMULTANEOUS_BIN;
+    newCmd[0] = 0;
+    newCmd[1] = actualOffset;
+    last = actualOffset;
+    cmdLen = 2;
+    newCmdIdx = 5;
+    PTL(actualOffset);
+  } 
+
+}
+#endif
