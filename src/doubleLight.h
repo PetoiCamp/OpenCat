@@ -1,6 +1,7 @@
 #define LIGHT1 A2
 #define LIGHT2 A3
 
+#define advance
 double mean_array_d(double array[],int start, int end,double scar)
 {
  double mean=0;
@@ -152,7 +153,8 @@ int read_count=24;
 double diffA2=0,diffA3=0,lastdiffA2=0;
 int pid_angle;
 bool disappear_label=0;
-
+double A2_current=0;
+double A3_current=0;
 void init_lightsensor()// init 
 { 
   for(int i=0;i< read_count;i++)
@@ -172,26 +174,51 @@ void setpid_parm(double p,double i,double d)
 }
 void get_error()
 {
-  lastdiffA2=diffA2;
+  
   diffA2=result[0]*analogRead(A2)+result[1]- A2_mean;
   diffA2=max(-150,min(150,diffA2));
   diffA3=analogRead(A3)-A3_mean;
   diffA3=max(-150,min(150,diffA3));
   error=diffA3-diffA2;
   error=110*atan(error/90); 
-  
+
+  lasterror=error;
 }
 void compute_pid()// get the output;
 {
 
-  integral_error=integral_error+error;
-  if(abs(error)>500)
+  differential_error=lasterror-error;
+  
+  #ifdef advance
+  if(abs(error)>150)
+  {
+    setpid_parm(0.1,0.00,0.00);
+  }
+  else
+  {
+     setpid_parm(0.18,0.02,0.03);
+  }
+   if(0<error<10&&(diffA2+diffA3)<20&&(diffA2+diffA3)>5)
+  {
+    A2_current=result[0]*analogRead(A2)+result[1];
+    A3_current=analogRead(A3);
+    error*20*sqrt((A2_mean+A3_mean)/(A2_current+A3_current));
+  }
+  if(0<error<10&&(diffA2+diffA3)<-5)
+  {
+    A2_current=result[0]*analogRead(A2)+result[1];
+    A3_current=analogRead(A3);
+    error*=5*sqrt((A2_mean+A3_mean)/(A2_current+A3_current));
+  }
+  #else
+   if(abs(error)>500)
   {
     integral_error=0;
   }
-
+  #endif
+  integral_error=integral_error+error;
   integral_error=max(-4500,min(4500,integral_error));
-  differential_error=lastdiffA2-diffA2;
+  
   output=kp*error+ki*integral_error+kd*differential_error;
   output=max(-90,min(90,output));
   lasterror=error;
@@ -202,6 +229,11 @@ void actuator()// the actuator operates based on the value of output
   
   pid_angle=int(output);
   calibratedPWM(0,pid_angle);
+  if(token == T_SKILL){
+    tQueue->addTask(T_SKILL,"sit");
+    tQueue->addTask(' '," ");
+  }
+  
 }  
 void pid_reset()
 {
@@ -273,9 +305,9 @@ void light_disappear()
     }
     double boundary1=proportion*A2_max+(1-proportion)*A2_min;
     double boundary2=proportion*A3_max+(1-proportion)*A3_min;
-    if(label1<boundary1&&label2<boundary2)
+    if(label1<boundary1&&label2<boundary2&&label1>A2_min&&label2>A3_min)
     {
-      delay(200);
+      delay(100);
       if(label1<boundary1&&label2<boundary2) // avoid dithering
       {
       disappear_label=1;
@@ -300,7 +332,7 @@ void read_doubleLight()//  when using the Photoresistors, add this function to t
   light_disappear();
   pid_reset();
   //the following code is used for debugging
-  /*
+  
   Serial.print(analogRead(A2)*result[0]+result[1]);
   Serial.print('\t');
   Serial.print(analogRead(A3));
@@ -314,5 +346,5 @@ void read_doubleLight()//  when using the Photoresistors, add this function to t
   Serial.print(output);
   Serial.print('\t');
   Serial.print('\n');
-  */
+  
 }
