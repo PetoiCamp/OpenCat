@@ -333,6 +333,7 @@ void read_doubleLight()//  when using the Photoresistors, add this function to t
   pid_reset();
   //the following code is used for debugging
   
+  /*
   Serial.print(analogRead(A2)*result[0]+result[1]);
   Serial.print('\t');
   Serial.print(analogRead(A3));
@@ -346,5 +347,6 @@ void read_doubleLight()//  when using the Photoresistors, add this function to t
   Serial.print(output);
   Serial.print('\t');
   Serial.print('\n');
+  */
   
 }
