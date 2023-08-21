@@ -68,7 +68,7 @@ class Uploader:
         self.win.configure(menu=self.menuBar)
         
         if self.OSname == 'win32':
-            self.win.iconbitmap(r'./resources/Petoi.ico')
+            self.win.iconbitmap(r'{}Petoi.ico'.format(resourcePath))
         
         self.helpMenu = Menu(self.menuBar, tearoff=0)
         self.helpMenu.add_command(label=txt('labAbout'), command=self.about)
@@ -539,7 +539,7 @@ class Uploader:
                 # t = threading.Thread(target=self.progressiveDots, args=(status,))
                 # t.start()
                 if self.OSname == 'win32':
-                    avrdudePath = './resources/avrdudeWin/'
+                    avrdudePath = resourcePath + 'avrdudeWin/'
                 elif self.OSname == 'x11':     # Linux
                     avrdudePath = '/usr/bin/'
                     path = pathlib.Path(avrdudePath + 'avrdude')
@@ -550,7 +550,7 @@ class Uploader:
                     # avrdudeconfPath = '/etc/avrdude/'      # Fedora / CentOS
                     avrdudeconfPath = '/etc/'            # Debian / Ubuntu
                 else:
-                    avrdudePath = './resources/avrdudeMac/'
+                    avrdudePath = resourcePath + 'avrdudeMac/'
                 print()
                 try:
                     if self.OSname == 'x11':     # Linuxself.OSname == 'x11':     # Linux
@@ -593,10 +593,17 @@ class Uploader:
             print(filename)
             self.strStatus.set(txt('Uploading') + txt('Main function') + '...' )
             self.win.update()
-            if self.OSname == 'win32':
-                esptoolPath = './resources/esptoolWin/'
-            else:
-                esptoolPath = './resources/esptoolMac/'
+            if self.OSname == 'win32':   # Windows
+                esptoolPath = resourcePath + 'esptoolWin/'
+            elif self.OSname == 'x11':  # Linux
+                esptoolPath = '/usr/bin/'
+                path = pathlib.Path(esptoolPath + 'esptool')
+                if not path.exists():
+                    messagebox.showwarning(txt('Warning'), txt('msgNoneEsptool'))
+                    self.force_focus()  # force the main interface to get focus
+                    return False
+            else:    # Mac
+                esptoolPath = resourcePath + 'esptoolMac/'
             print()
             try:
                 check_call(esptoolPath + 'esptool --chip esp32 --port %s --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size 16MB 0x1000 %s 0x8000 %s 0xe000 %s 0x10000 %s' % \

@@ -66,13 +66,13 @@ class UI:
 
         self.OSname = self.window.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
-            self.window.iconbitmap(r'./resources/Petoi.ico')
+            self.window.iconbitmap(r'{}Petoi.ico'.format(resourcePath))
             self.window.geometry('398x270+800+400')
         elif self.OSname == 'aqua':
             self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
         else:
-            self.window.tk.call('wm', 'iconphoto', self.window._w, "-default", PhotoImage(file='./resources/Petoi.png'))
+            self.window.tk.call('wm', 'iconphoto', self.window._w, "-default", PhotoImage(file= resourcePath + 'Petoi.png'))
             self.window.geometry('+800+400')
 
         self.myFont = tkFont.Font(
