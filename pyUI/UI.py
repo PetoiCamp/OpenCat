@@ -72,7 +72,8 @@ class UI:
             self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
         else:
-            self.window.tk.call('wm', 'iconphoto', self.window._w, "-default", PhotoImage(file= resourcePath + 'Petoi.png'))
+            self.window.tk.call('wm', 'iconphoto', self.window._w, "-default",
+                                PhotoImage(file= r'{}Petoi.png'.format(resourcePath)))
             self.window.geometry('+800+400')
 
         self.myFont = tkFont.Font(

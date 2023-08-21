@@ -162,6 +162,7 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
 
     'msgNoneAvrdude': '''There is no avrdude. Please install avrdude at first! For details, please refer to :
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'There is no esptool. Please install esptool at first!',
 
     'titleVersion': 'Version information',
 
@@ -378,6 +379,7 @@ textCN = {
 
     'msgNoneAvrdude': '''没有找到可执行程序文件 avrdude。请先安装 avrdude！详细说明请参考：
     https://docs.petoi.com/v/chinese/zhuo-mian-ying-yong/gu-jian-shang-zai#linux-xi-tong-zhong-an-zhuang-avrdude''',
+    'msgNoneEsptool':'没有找到可执行程序文件 esptool。 请先安装esptool！',
 
     'Uploading': '上传',
     'is successully uploaded':' 上传成功！',
@@ -607,6 +609,7 @@ textCN_TW = {
 
     'msgNoneAvrdude': '''沒有找到可執行程式文件 avrdude。請先安裝 avrdude！詳細說明請參考：
     https://docs.petoi.com/v/chinese/zhuo-mian-ying-yong/gu-jian-shang-zai#linux-xi-tong-zhong-an-zhuang-avrdude''',
+    'msgNoneEsptool':'沒有找到可執行程式文件 esptool。請先安裝 esptool！',
 
     'Uploading': '上傳',
     'is successully uploaded':' 上傳成功！',
@@ -854,6 +857,7 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
 
     'msgNoneAvrdude': '''Es gibt kein Avrdude. Bitte installieren Sie zuerst avrdude! Einzelheiten finden Sie unter :
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'Es gibt kein Esptool. Bitte installieren Sie zuerst esptool!',
 
     'titleVersion': 'Versionsinformation',
 
@@ -1088,6 +1092,7 @@ textTH = {
 
     'msgNoneAvrdude': '''ไม่มี avrdude โปรดติดตั้ง avrdude ในตอนแรก! สำหรับรายละเอียด โปรดดูที่:
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'ไม่มีที่วางมือ โปรดติดตั้ง esptool ในตอนแรก!',
 
     'titleVersion': 'ข้อมูลเวอร์ชัน',
 
@@ -1323,6 +1328,7 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
 
     'msgNoneAvrdude': '''Avrdude n'est pas installé. Veuillez d'abord installer avrdude ! Pour plus de détails, veuillez consulter :
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'Il n\'y a pas d\'estool. Veuillez d\'abord installer esptool!',
 
     'title Version': 'Informations sur la version',
     'msgVersion': 'Version : ' + versionNum + '\n'+
@@ -1541,6 +1547,7 @@ textJP={
     'msgFileDir':'リリースフォルダを選択してください！',
     'msgPort':'正しいシリアルポートを選択してください！',
     'msgNoneAvrdude':'avrdudeがありません。まずavrdudeをインストールしてください！詳細については次を参照してください：https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os',
+    'msgNoneEsptool':'エスプツールはありません。 最初に esptool をインストールしてください。',
     'titleVersion':'バージョン情報',
 
     'msgVersion':'バージョン：' + versionNum + '\n'+
@@ -1764,6 +1771,7 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'msgPort': 'Si prega di scegliere la porta seriale corretta!',
     'msgNoneAvrdude': '''Non c\'è avrdude. Si prega di installare avrdude all\'inizio! Per i dettagli, fare riferimento a:
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
+    'msgNoneEsptool':'Non esiste uno strumento esp. Si prega di installare esptool all\'inizio!',
     'titleVersion': 'Informazioni sulla versione',
     'msgVersion': 'Versione: ' + versionNum + '\n' +
     '''Strumento di caricamento del firmware per OpenCat
