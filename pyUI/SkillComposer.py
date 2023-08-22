@@ -99,7 +99,7 @@ class SkillComposer:
         except Exception as e:
             print('Create configuration file')
             self.defaultLan = 'English'
-            self.defaultPath = releasePath
+            self.defaultPath = releasePath[:-1]
             self.defaultSwVer = '2.0'
             self.defaultBdVer = NyBoard_version
             self.defaultMode = 'Standard'
@@ -1371,7 +1371,7 @@ class SkillComposer:
             print('Create configuration file')
             defaultLan = self.defaultLan
             defaultModel = self.model
-            defaultPath = releasePath
+            defaultPath = releasePath[:-1]
             defaultSwVer = '2.0'
             defaultBdVer = NyBoard_version
             defaultMode = 'Standard'

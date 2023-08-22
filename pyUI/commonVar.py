@@ -2,7 +2,7 @@ from translate import *
 import sys
 sys.path.append('../serialMaster/')
 resourcePath = './resources/'
-releasePath = './release'
+releasePath = './release/'
 sys.path.append(resourcePath)
 from ardSerial import *
 from tkinter import *

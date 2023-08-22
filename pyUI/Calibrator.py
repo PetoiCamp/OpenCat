@@ -22,6 +22,7 @@ class Calibrator:
         self.calibSliders = list()
         self.OSname = self.winCalib.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
+            self.winCalib.iconbitmap(resourcePath + 'Petoi.ico')
             self.calibButtonW = 8
         else:
             self.calibButtonW = 4

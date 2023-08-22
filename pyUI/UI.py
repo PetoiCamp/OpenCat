@@ -51,7 +51,7 @@ class UI:
             print('Create configuration file')
             self.defaultLan = 'English'
             model = 'Bittle'
-            self.defaultPath = releasePath
+            self.defaultPath = releasePath[:-1]
             self.defaultSwVer = '2.0'
             self.defaultBdVer = NyBoard_version
             self.defaultMode = 'Standard'
@@ -66,14 +66,14 @@ class UI:
 
         self.OSname = self.window.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
-            self.window.iconbitmap(r'{}Petoi.ico'.format(resourcePath))
+            self.window.iconbitmap(resourcePath + 'Petoi.ico')
             self.window.geometry('398x270+800+400')
         elif self.OSname == 'aqua':
             self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
         else:
             self.window.tk.call('wm', 'iconphoto', self.window._w, "-default",
-                                PhotoImage(file= r'{}Petoi.png'.format(resourcePath)))
+                                PhotoImage(file= resourcePath + 'Petoi.png'))
             self.window.geometry('+800+400')
 
         self.myFont = tkFont.Font(

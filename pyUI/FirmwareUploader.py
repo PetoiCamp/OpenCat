@@ -68,7 +68,7 @@ class Uploader:
         self.win.configure(menu=self.menuBar)
         
         if self.OSname == 'win32':
-            self.win.iconbitmap(r'{}Petoi.ico'.format(resourcePath))
+            self.win.iconbitmap(resourcePath + 'Petoi.ico')
         
         self.helpMenu = Menu(self.menuBar, tearoff=0)
         self.helpMenu.add_command(label=txt('labAbout'), command=self.about)
@@ -111,7 +111,7 @@ class Uploader:
             print ('Create configuration file')
             self.defaultLan = 'English'
             model = 'Bittle'
-            strDefaultPath = releasePath
+            strDefaultPath = releasePath[:-1]
             strSwVersion = '2.0'
             strBdVersion = NyBoard_version_list[-1]
             mode = 'Standard'
@@ -351,7 +351,7 @@ class Uploader:
         sep = "/"
         listDir = strdir.split("/")
         if (strdir == str(pathlib.Path().resolve())):
-            strdir = sep.join(listDir) + '/release'
+            strdir = sep.join(listDir) + sep + "release"
         else:
             if (listDir[-1].find("release") == -1) and len(listDir) >= 2:
                 while listDir[-1].find("release") == -1 and len(listDir) >= 2:
@@ -366,8 +366,8 @@ class Uploader:
     def open_dir(self):
         # call askdirectory to open file director
         logger.debug(f"{self.strFileDir.get()}")
-        if (self.strFileDir.get()).find(releasePath) != -1:
-            initDir = releasePath
+        if (self.strFileDir.get()).find(releasePath[:-1]) != -1:
+            initDir = releasePath[:-1]
         else:
             initDir = self.strFileDir
         dirpath = filedialog.askdirectory(title=txt('titleFileDir'), initialdir=initDir)
