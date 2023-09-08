@@ -11,7 +11,7 @@ RgbUltrasonic mRUS04(6, 7);  //(signal, RGB)
 long colors[] = { RGB_RED, RGB_PURPLE, RGB_GREEN, RGB_BLUE, RGB_YELLOW, RGB_WHITE };
 long ultraTimer;
 int ultraInterval = 1000;
-int distance;
+float distance;
 void read_ultrasonic() {
   if (millis() - ultraTimer > ultraInterval) {  //|| token == T_SKILL && millis() - ultraTimer > 3000) {
     ultraTimer = millis();
@@ -60,7 +60,7 @@ void read_ultrasonic() {
     else {  //6~40
       distance -= 6;
       if (!manualEyeColorQ)
-        mRUS04.SetRgbColor(E_RGB_ALL, colors[max(min(distance / 7, 5), 0)]);
+        mRUS04.SetRgbColor(E_RGB_ALL, colors[int(max(min(distance / 7, 5), 0))]);
       token = T_LISTED_BIN;
       int mid[] = {
         0,

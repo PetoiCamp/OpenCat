@@ -7,7 +7,7 @@ RgbUltrasonic::RgbUltrasonic(byte signal_pin, byte rgb_pin)
     mRgb = new RGBLed(RgbPin, 6);
 }
 
-uint16_t RgbUltrasonic::GetUltrasonicDistance(void)
+float RgbUltrasonic::GetUltrasonicDistance(void)
 {
   float distance;
   unsigned long Time_Echo_us = 0;

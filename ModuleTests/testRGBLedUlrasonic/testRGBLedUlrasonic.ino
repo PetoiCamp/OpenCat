@@ -37,7 +37,7 @@ void setup() {
   pinMode(BUZZER, OUTPUT);
 }
 void loop() {
-  int distance = mRUS04.GetUltrasonicDistance();
+  float distance = mRUS04.GetUltrasonicDistance();
   Serial.print("distance is :");
   Serial.print(distance);
   Serial.print("cm\t");

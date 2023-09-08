@@ -45,9 +45,9 @@ class RgbUltrasonic
     byte SignalPin, RgbPin;
   public:
     RGBLed *mRgb;
-    uint16_t FrontDistance;
+    float FrontDistance;
     RgbUltrasonic(byte signal_pin, byte rgb_pin);
-    uint16_t GetUltrasonicDistance(void);
+    float GetUltrasonicDistance(void);
     void SetRgbColor(E_RGB_INDEX index, long Color);
     void SetRgbEffect(E_RGB_INDEX index, long Color, uint8_t effect);
 };
