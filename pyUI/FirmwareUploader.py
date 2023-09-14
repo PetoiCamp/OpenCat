@@ -90,7 +90,7 @@ class Uploader:
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                f.close()
+                # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             self.defaultLan = lines[0]
             model = lines[1]
@@ -149,7 +149,7 @@ class Uploader:
 
         cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', font=12)
         # list of product
-        cbProductList = ['Nybble', 'Bittle']
+        cbProductList = ['Nybble', 'Bittle', 'Bittle X']
         # set default value of Combobox
         cbProduct.set(self.lastSetting[0])
         # set list for Combobox
@@ -326,7 +326,14 @@ class Uploader:
         self.updateMode()
 
     def chooseProduct(self, event):
+        if self.strProduct.get() == 'Bittle X':
+            self.strBoardVersion.set(BiBoard_version_list[0])
+            board_version_list = BiBoard_version_list
+        else:
+            board_version_list = NyBoard_version_list + BiBoard_version_list
+        self.cbBoardVersion['values'] = board_version_list
         self.updateMode()
+        self.setActiveOption()
 
     def updateMode(self):
         if self.strProduct.get() == 'Bittle':
@@ -339,6 +346,9 @@ class Uploader:
                 modeList = self.NybbleNyBoardModes
             else:
                 modeList = self.NybbleBiBoardModes
+        if self.strProduct.get() == 'Bittle X':
+            modeList = self.BittleBiBoardModes
+
         self.cbMode['values'] = modeList
 
         if self.strMode.get() not in modeList:
@@ -482,7 +492,7 @@ class Uploader:
         with open(filename, "w", encoding="utf-8") as f:
             lines = '\n'.join(self.configuration)+'\n'
             f.writelines(lines)
-            f.close()
+            # f.close()
 
     def autoupload(self):
         logger.info(f"lastSetting: {self.lastSetting}.")

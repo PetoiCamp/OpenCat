@@ -27,7 +27,7 @@ class UI:
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                f.close()
+                # f.close()
             lines = [line.split('\n')[0] for line in lines]  # remove the '\n' at the end of each line
             num = len(lines)
             logger.debug(f"len(lines): {num}")

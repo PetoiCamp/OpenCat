@@ -77,7 +77,7 @@ class SkillComposer:
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                f.close()
+                # f.close()
             lines = [line.split('\n')[0] for line in lines]  # remove the '\n' at the end of each line
             num = len(lines)
             logger.debug(f"len(lines): {num}")
@@ -1340,7 +1340,7 @@ class SkillComposer:
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
-                f.close()
+                # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             defaultLan = self.defaultLan
             defaultModel = self.model
@@ -1488,10 +1488,19 @@ class SkillComposer:
                 fileData += ('{:>4},' * frameSize).format(*row)
                 fileData += '\n'
             fileData += '};'
-            with open(file.name, 'w+', encoding="utf-8") as f:
-                f.write(fileData)
-                time.sleep(0.1)
-                f.close()
+
+            # the file in the config directory wiill be saved automatically
+            filePathName = configDir + seperation + file.name.split('/')[-1]
+            logger.debug(f"fileName is: {filePathName}")
+
+            filePathList = [file.name, filePathName]
+            for filePath in filePathList:
+                try:
+                    with open(filePath, 'w+', encoding="utf-8") as f:
+                        f.write(fileData)
+                        time.sleep(0.1)
+                except Exception as e:
+                    return False, 'save failed:{}'.format(e)
 
         if self.gaitOrBehavior.get() == txt('Behavior'):
             skillData.insert(0, [loopStructure[0], loopStructure[-1], int(self.loopRepeat.get())])

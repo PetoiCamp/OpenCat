@@ -76,7 +76,7 @@ if platform.system() == "Windows":    # for Windows
     seperation = '\\'
     homeDri = os.getenv('HOMEDRIVE') 
     homePath = os.getenv('HomePath') 
-    configDir = homeDri + '\\' + homePath 
+    configDir = homeDri + homePath
 else:  # for Linux & macOS
     seperation = '/'
     home = os.getenv('HOME') 
