@@ -51,6 +51,8 @@ class Uploader:
         self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
+        self.updateMode()
+        self.setActiveOption()
 
         self.win.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.win.update()
@@ -185,6 +187,10 @@ class Uploader:
         # set default value of Combobox
         self.cbBoardVersion.set(self.lastSetting[3])
         # set list for Combobox
+        if self.strProduct.get() == 'Bittle X':
+            board_version_list = BiBoard_version_list
+        else:
+            board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
         self.cbBoardVersion.grid(row=1, ipadx=5, padx=5, sticky=W)
 
@@ -203,6 +209,9 @@ class Uploader:
                 cbModeList = self.NybbleNyBoardModes
             else:
                 cbModeList = self.NybbleBiBoardModes
+        elif self.strProduct.get() == 'Bittle X':
+            cbModeList = self.BittleBiBoardModes
+
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', font=12)
         # set default value of Combobox
         self.cbMode.set(txt(self.lastSetting[4]))
@@ -515,7 +524,11 @@ class Uploader:
         else:
             pathBoardVersion = strBoardVersion
 
-        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProd + '/' + pathBoardVersion + '/'
+        if strProd == "Bittle X":
+            strProdPath = "Bittle"
+        else:
+            strProdPath = strProd
+        path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProdPath + '/' + pathBoardVersion + '/'
 
         if self.OSname == 'x11' or self.OSname == 'aqua':
             port = '/dev/' + self.strPort.get()
