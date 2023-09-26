@@ -38,6 +38,7 @@ axisDisable = {
 NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
+    'Bittle X': [1, 2, 3, 4, 5, 6, 7],
     'DoF16' : []
 }
 jointConfig = {
@@ -667,6 +668,8 @@ class SkillComposer:
 
     def changeModel(self, modelName):
         if self.ready and modelName != self.model:
+            if 'Bittle' in modelName:
+                modelName = 'Bittle'
             self.model = copy.deepcopy(modelName)
             self.postureTable = postureDict[self.model]
             self.framePosture.destroy()
