@@ -51,6 +51,12 @@ class Uploader:
         self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
+        if self.strProduct.get() == 'Bittle X':
+            self.strBoardVersion.set(BiBoard_version_list[0])
+            board_version_list = BiBoard_version_list
+        else:
+            board_version_list = NyBoard_version_list + BiBoard_version_list
+        self.cbBoardVersion['values'] = board_version_list
         self.updateMode()
         self.setActiveOption()
 
@@ -614,7 +620,7 @@ class Uploader:
 
             filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
             print(filename)
-            self.strStatus.set(txt('Uploading') + txt('Main function') + '...' )
+            self.strStatus.set(txt('Uploading') + txt('Main function') + ', ' + txt('Time consuming') + '...' )
             self.win.update()
             if self.OSname == 'win32':   # Windows
                 esptoolPath = resourcePath + 'esptoolWin/'

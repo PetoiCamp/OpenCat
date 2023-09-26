@@ -41,6 +41,7 @@ except Exception as e:
 NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
+    'Bittle X': [1, 2, 3, 4, 5, 6, 7],
     'DoF16' : []
 }
 scaleNames = [

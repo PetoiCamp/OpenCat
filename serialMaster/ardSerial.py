@@ -635,6 +635,8 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
                 for p in newPort:
                     logger.debug(f"Adding serial port: {p}")
                     portName = p.split('/')[-1]
+                    if platform.system() == "Darwin" and "SLAB_USBtoUART" in portName:
+                        continue
                     portStrList.insert(0, portName)  # remove '/dev/' in the port name
                     tk.messagebox.showinfo(title=txt('Info'), message=txt('New port prompt') + portName)
             updateFunc()

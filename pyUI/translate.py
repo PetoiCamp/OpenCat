@@ -142,6 +142,7 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     'rbnCamera': 'Camera',
     'Parameters':'Parameters',
     'Main function':'Main function',
+    'Time consuming': 'it will take about 1 minute',
     'btnFacReset':'Factory Reset',
     'tipFacReset':''' After factory reset, you need to do joint calibration, please refer to: 
  https://docs.petoi.com/joint-calibration ''',
@@ -420,6 +421,7 @@ textCN = {
     'RandomMind_Ultrasonic':'随机_超声波',
     'Parameters':'参数',
     'Main function':'主程序',
+    'Time consuming': '它将大概需要1分钟',
     'btnFacReset':'恢复出厂设置',
     'tipFacReset':''' 恢复出厂设置后，你需要重新校准关节舵机，请参考：
  https://docs.petoi.com/joint-calibration ''',
@@ -650,6 +652,7 @@ textCN_TW = {
     'RandomMind_Ultrasonic':'随機_超聲波',
     'Parameters':'參數',
     'Main function':'主程序',
+    'Time consuming': '它將大概需要1分鐘',
     'btnFacReset':'恢復出廠設置',
     'tipFacReset':''' 恢復出廠設置後，你需要重新校準關節舵機，請參考：
  https://docs.petoi.com/joint-calibration ''',
@@ -837,6 +840,7 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     'rbnCamera': 'Kamera',
     'Parameters':'Parameter',
     'Main function':'Hauptfunktion',
+    'Time consuming': 'es dauert etwa 1 Minute',
     'btnFacReset':'Werkseinstellungen zurückgesetzt',
     'tipFacReset':''' Nach dem Zurücksetzen auf die Werkseinstellungen müssen Sie eine gemeinsame Kalibrierung durchführen. 
  Weitere Informationen finden Sie unter: https://docs.petoi.com/joint-calibration ''',
@@ -1072,6 +1076,7 @@ textTH = {
     'rbnCamera': 'กล้อง',
     'Parameters':'พารามิเตอร์',
     'Main function':'ฟังก์ชั่นหลัก',
+    'Time consuming': 'จะใช้เวลาประมาณ 1 นาที',
     'btnFacReset':'รีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน',
     'tipFacReset':''' หลังจากการรีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน คุณต้องทำการปรับเทียบร่วม โปรดดูที่: 
  https://docs.petoi.com/joint-calibration ''',
@@ -1308,6 +1313,7 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
     'rbnCamera': 'Caméra',
     'Parameters':'Paramètres',
     'Main function':'Fonction principale',
+    'Time consuming': 'cela prendra environ 1 minute',
     'btnFacReset':'Réinitialisation d\'usine',
     'tipFacReset':''' Après la réinitialisation d'usine, vous devrez effectuer l'étalonnage des articulations. Veuillez vous référer à :
      https://docs.petoi.com/joint-calibration ''',
@@ -1533,6 +1539,7 @@ textJP={
     'rbnCamera': 'カメラ',
     'Parameters': 'パラメーター',
     'Main function': 'メイン機能',
+    'Time consuming': '約1分かかります',
     'btnFacReset': '工場出荷時設定に戻す',
     'tipFacReset':'ファクトリーリセット後、関節のキャリブレーションを行う必要があります。詳細は次を参照してください：https://docs.petoi.com/joint-calibration',
     'btnUpgrade':'ファームウェアのアップグレード',
@@ -1751,6 +1758,7 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'rbnCamera': 'Telecamera',
     'Parameters':'Parametri',
     'Main function':'Funzione principale',
+    'Time consuming': 'ci vorrà circa 1 minuto',
     'btnFacReset':'Ripristino delle impostazioni di fabbrica',
     'tipFacReset':''' Dopo il ripristino delle impostazioni di fabbrica, 
  è necessario eseguire la calibrazione del giunto, fare riferimento a: 
