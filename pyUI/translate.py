@@ -421,7 +421,7 @@ textCN = {
     'RandomMind_Ultrasonic':'随机_超声波',
     'Parameters':'参数',
     'Main function':'主程序',
-    'Time consuming': '它将大概需要1分钟',
+    'Time consuming': '大约需要1分钟',
     'btnFacReset':'恢复出厂设置',
     'tipFacReset':''' 恢复出厂设置后，你需要重新校准关节舵机，请参考：
  https://docs.petoi.com/joint-calibration ''',
@@ -652,7 +652,7 @@ textCN_TW = {
     'RandomMind_Ultrasonic':'随機_超聲波',
     'Parameters':'參數',
     'Main function':'主程序',
-    'Time consuming': '它將大概需要1分鐘',
+    'Time consuming': '大約需要1分鐘',
     'btnFacReset':'恢復出廠設置',
     'tipFacReset':''' 恢復出廠設置後，你需要重新校準關節舵機，請參考：
  https://docs.petoi.com/joint-calibration ''',
