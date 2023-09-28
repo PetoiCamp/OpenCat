@@ -41,7 +41,7 @@ def printH(head, value):
     print(head, end=' ')
     print(value)
 
-printH("ardSerial date: ", "Jun 5, 2023")
+printH("ardSerial date: ", "Sep 26, 2023")
 
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):
