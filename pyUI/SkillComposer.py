@@ -1471,7 +1471,7 @@ class SkillComposer:
         print('};')
 
         if file:
-            print(file.name)
+#            print(file.name)
             x = datetime.datetime.now()
             fileData = '# ' + file.name.split('/')[-1].split('.')[0] + '\n'
             fileData += 'Note: '+'You may add a short description/instruction here.\n\n'
@@ -1492,18 +1492,23 @@ class SkillComposer:
                 fileData += '\n'
             fileData += '};'
 
-            # the file in the config directory wiill be saved automatically
-            filePathName = configDir + seperation + file.name.split('/')[-1]
+            # the file in the config directory will be saved automatically
+            filePathName = configDir + separation + 'SkillLibrary' + separation + self.model + separation + file.name.split('/')[-1]
             logger.debug(f"fileName is: {filePathName}")
 
             filePathList = [file.name, filePathName]
             for filePath in filePathList:
+                if filePath == filePathName:
+                    modelDir = configDir + separation + 'SkillLibrary' + separation + self.model
+                    makeDirectory(modelDir)
                 try:
                     with open(filePath, 'w+', encoding="utf-8") as f:
                         f.write(fileData)
                         time.sleep(0.1)
+                    logger.info(f"save successfully: {filePath}")
                 except Exception as e:
-                    return False, 'save failed:{}'.format(e)
+                    logger.info(f"save failed:{e}")
+                    return False
 
         if self.gaitOrBehavior.get() == txt('Behavior'):
             skillData.insert(0, [loopStructure[0], loopStructure[-1], int(self.loopRepeat.get())])
