@@ -35,7 +35,10 @@ class UI:
             model = lines[1]
             self.defaultPath = lines[2]
             self.defaultSwVer = lines[3]
-            self.defaultBdVer = lines[4]
+            if lines[4] == "BiBoard_V0":
+                self.defaultBdVer = "BiBoard_V0_1"
+            else:
+                self.defaultBdVer = lines[4]
             self.defaultMode = lines[5]
             if len(lines) >= 8:
                 self.defaultCreator = lines[6]

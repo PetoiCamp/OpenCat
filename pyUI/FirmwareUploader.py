@@ -17,7 +17,7 @@ import pathlib
 regularW = 14
 language = languageList['English']
 NyBoard_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1', 'NyBoard_V1_2']
-BiBoard_version_list = ['BiBoard_V0']
+BiBoard_version_list = ['BiBoard_V0_1', 'BiBoard_V0_2']
 
 def txt(key):
     return language.get(key, textEN[key])
@@ -408,7 +408,7 @@ class Uploader:
             return in_str.encode(encoding)
 
     def WriteInstinctPrompts(self, port):
-        ser = Communication(port, 115200, 0.5)
+        serObj = Communication(port, 115200, 0.5)
         logger.info(f"Connect to usb serial port: {port}.")
         strSoftwareVersion = self.strSoftwareVersion.get()
         promptJointCalib = {
@@ -439,8 +439,8 @@ class Uploader:
         prompStr = ""
         while True:
             time.sleep(0.01)
-            if ser.main_engine.in_waiting > 0:
-                x = str(ser.main_engine.readline())
+            if serObj.main_engine.in_waiting > 0:
+                x = str(serObj.main_engine.readline())
                 prompStr = x[2:-1]
                 logger.debug(f"new line:{x}")
                 if x != "":
@@ -454,7 +454,7 @@ class Uploader:
                         elif x.find("Calibrate") != -1:
                             prompt = promptIMU
                         elif x.find("assurance") != -1:    # for BiBoard it need to be modified later
-                            ser.Send_data(self.encode("n"))
+                            serObj.Send_data(self.encode("n"))
                             continue
                         if progress > 0 and retMsg == True:
                             self.strStatus.set(promptList[progress-1]['result'])
@@ -463,9 +463,9 @@ class Uploader:
                         if retMsg:
                             self.strStatus.set(prompt['operating'])
                             self.statusBar.update()
-                            ser.Send_data(self.encode("Y"))
+                            serObj.Send_data(self.encode("Y"))
                         else:
-                            ser.Send_data(self.encode("n"))
+                            serObj.Send_data(self.encode("n"))
                             if progress == len(promptList) - 1:
                                 break
                         progress += 1
@@ -473,6 +473,8 @@ class Uploader:
                         if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
                             self.strStatus.set(promptIMU['result'])
                             self.statusBar.update()
+                            if strBoardVersion in NyBoard_version_list:
+                                messagebox.showinfo(title=None, message=txt('parameterFinish'))
                             break
                     else:
                         if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
@@ -491,7 +493,7 @@ class Uploader:
                         if counter == 10:
                             break
 
-        ser.Close_Engine()
+        serObj.Close_Engine()
         logger.info("close the serial port.")
         self.force_focus()
 
@@ -603,10 +605,6 @@ class Uploader:
 
                 if s == 0:
                     self.WriteInstinctPrompts(port)
-                    if not self.bFacReset:
-                        messagebox.showinfo(title=None, message=txt('parameterFinish'))
-                    else:
-                        pass
                 else:
                     pass
         elif strBoardVersion in BiBoard_version_list:
