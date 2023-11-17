@@ -190,7 +190,7 @@ void testDoubleAnalog(int test) {
   int readMin, readMax, diff;
   if (compatible_3V) {
     readMin = test == 2 ? 25 : 30;
-    readMax = test == 2 ? 45 : 600;
+    readMax = test == 2 ? 45 : 500;
     diff = test == 2 ? 50 : 15;
   } else {
     readMin = test == 2 ? 5 : 30;

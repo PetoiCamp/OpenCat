@@ -29,7 +29,7 @@ void setup() {
 void sendCMD(const char cmd[], int wait = 0) {
   Serial.print(cmd);
   while (true) {
-    if (Serial.available() && toLowerCase(Serial.read()) == cmd[0]) {
+    if (Serial.available() && toLowerCase(Serial.read()) == toLowerCase(cmd[0])) {
       delay(10);
       while (Serial.available() && Serial.read())
         ;
