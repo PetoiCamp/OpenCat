@@ -608,13 +608,22 @@ class Uploader:
                 else:
                     pass
         elif strBoardVersion in BiBoard_version_list:
-            # fnBootLoader = path + 'OpenCatEsp32Standard.ino.bootloader.bin'
-            fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
-            # fnPartitions = path + 'OpenCatEsp32Standard.ino.partitions.bin'
-            fnPartitions = path + 'OpenCatEsp32' + strMode + '.ino.partitions.bin'
+            if strMode == "Standard":
+                modeName = "Standard_Voice"
+                # fnBootLoader = path + 'OpenCatEsp32Standard_Voice.ino.bootloader.bin'
+                fnBootLoader = path + 'OpenCatEsp32' + modeName + '.ino.bootloader.bin'
+                # fnPartitions = path + 'OpenCatEsp32Standard_Voice.ino.partitions.bin'
+                fnPartitions = path + 'OpenCatEsp32' + modeName + '.ino.partitions.bin'
+                # fnMainFunc = path + 'OpenCatEsp32Standard_Voice.ino.bin '
+                fnMainFunc = path + 'OpenCatEsp32' + modeName + '.ino.bin '
+            else:
+                # fnBootLoader = path + 'OpenCatEsp32strMode.ino.bootloader.bin'
+                fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
+                # fnPartitions = path + 'OpenCatEsp32strMode.ino.partitions.bin'
+                fnPartitions = path + 'OpenCatEsp32' + strMode + '.ino.partitions.bin'
+                # fnMainFunc = path + 'OpenCatEsp32strMode.ino.bin '
+                fnMainFunc = path + 'OpenCatEsp32' + strMode + '.ino.bin '
             fnBootApp = path + 'boot_app0.bin'
-            # fnMainFunc = path + 'OpenCatEsp32Standard.ino.bin '
-            fnMainFunc = path + 'OpenCatEsp32' + strMode + '.ino.bin '
 
             filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
             print(filename)
