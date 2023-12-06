@@ -90,6 +90,7 @@ void read_voice() {
     else if (!strcmp(newCmd, "Ad"))  // enter "XAd" in the serial monitor or add button "X65,100" in the mobile app to disable voice reactions
                                      // 在串口监视器输入指令“XAd”或在手机app创建按键"X65,100"来禁用语音动作
       enableVoiceQ = false;
+    PTL(token);
     resetCmd();
   }
 
