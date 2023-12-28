@@ -574,12 +574,11 @@ def testPort(PortList, serialObject, p):
                 waitTime = 3
             else:
                 waitTime = 2
-            result = sendTask(PortList, serialObject, ['b', [20, 50], 0], waitTime)
+            result = sendTask(PortList, serialObject, ['?', 0], waitTime)
             if result != -1:
                 logger.debug(f"Adding in testPort: {p}")
                 PortList.update({serialObject: p})
                 goodPortCount += 1
-                result = sendTask(PortList, serialObject, ['?', 0], waitTime)
                 getModelAndVersion(result)
             else:
                 serialObject.Close_Engine()
