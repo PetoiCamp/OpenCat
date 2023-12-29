@@ -243,7 +243,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define BINARY_COMMAND  //disable the binary commands to save space for the simple random demo
 
 #ifdef BINARY_COMMAND
-#define T_BEEP_BIN 'B'  //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4 \
+#define T_BEEP_BIN 'B'  //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4
 #define T_LISTED_BIN 'L'         //a list of the DOFx joint angles: angle0 angle1 angle2 ... angle15
 // #define T_SERVO_MICROSECOND 'w'  //PWM width modulation
 #define T_TEMP 'T'  //call the last 'K' skill data received from the serial port
