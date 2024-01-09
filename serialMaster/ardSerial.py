@@ -32,7 +32,7 @@ and CRITICAL means “drop everything and find out what’s wrong.”
 The default starting point is INFO, 
 which means that the logging module will automatically filter out any DEBUG messages.
 '''
-#logging.basicConfig(level=logging.DEBUG, format=FORMAT)
+# logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,7 @@ def printH(head, value):
     print(head, end=' ')
     print(value)
 
-printH("ardSerial date: ", "Oct 10, 2023")
+printH("ardSerial date: ", "Dec 28, 2023")
 
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):

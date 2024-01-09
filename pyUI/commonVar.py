@@ -5,10 +5,10 @@ if platform.system() == "Windows":    # for Windows
     sys.path.append('..\\serialMaster\\')
     resourcePath = '.\\resources\\'
     releasePath = '.\\release\\'
-elif platform.system() == "Linux":    # for Linux
-    sys.path.append('/usr/share/petoi-opencat/serialMaster/')
-    resourcePath = '/usr/share/petoi-opencat/resources/'
-    releasePath = '/usr/share/petoi-opencat/release/'
+# elif platform.system() == "Linux":    # for Linux OS already installed the desktop app
+#     sys.path.append('/usr/share/petoi-opencat/serialMaster/')
+#     resourcePath = '/usr/share/petoi-opencat/resources/'
+#     releasePath = '/usr/share/petoi-opencat/release/'
 else:
     sys.path.append('../serialMaster/')
     resourcePath = './resources/'

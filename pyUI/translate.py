@@ -1,5 +1,5 @@
-versionNum = '1.1.5'
-dateStr = '2023-12-06'
+versionNum = '1.1.6'
+dateStr = '2024-01-09'
 
 textEN = {
     'lan':'English',
@@ -169,7 +169,7 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
 
     'msgVersion': 'Version: ' + versionNum + '\n'+
     '''Firmware upload tool for OpenCat
-    Copyright © 2018-2023
+    Copyright © 2018-2024
     All rights reserved Petoi LLC
     https://www.petoi.com\n''' + dateStr,
 
@@ -389,7 +389,7 @@ textCN = {
 
     'msgVersion': '版本：' + versionNum + '\n'+
     '''OpenCat固件上传工具
-    版权所有 © 2018-2023
+    版权所有 © 2018-2024
     派拓艺（深圳）科技有限责任公司
     https://www.petoi.com\n''' + dateStr,
 
@@ -620,7 +620,7 @@ textCN_TW = {
 
     'msgVersion': '版本：' + versionNum + '\n'+
     '''OpenCat固件上傳工具
-    版權所有 © 2018-2023
+    版權所有 © 2018-2024
     派拓藝（深圳）科技有限责任公司
     https://www.petoi.com\n''' + dateStr,
 
@@ -867,7 +867,7 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
 
     'msgVersion': 'Version: ' + versionNum + '\n'+
     '''Firmware-Uploader für OpenCat
-    Copyright © 2018-2023
+    Copyright © 2018-2024
     Alle Rechte vorbehalten
     Petoi LLC
     https://www.petoi.com\n''' + dateStr,
@@ -1103,7 +1103,7 @@ textTH = {
 
     'msgVersion': 'เวอร์ชัน: ' + versionNum + '\n'+
     '''เครื่องมืออัพโหลดเฟิร์มแวร์สำหรับ OpenCat
-    ลิขสิทธิ์ ©  2018-2023
+    ลิขสิทธิ์ ©  2018-2024
     สงวนลิขสิทธิ์ทั้งหมด Petoi LLC
     https://www.petoi.com\n''' + dateStr,
 
@@ -1339,7 +1339,7 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
     'title Version': 'Informations sur la version',
     'msgVersion': 'Version : ' + versionNum + '\n'+
     '''Outil de téléchargement du micrologiciel pour OpenCat
-    Copyright © 2018-2023
+    Copyright © 2018-2024
     Tous droits réservés Petoi LLC
     https://www.petoi.com\n''' + dateStr,
 
@@ -1559,7 +1559,7 @@ textJP={
 
     'msgVersion':'バージョン：' + versionNum + '\n'+
 '''OpenCat用のファームウェアアップロードツール
-著作権 © 2018-2023
+著作権 © 2018-2024
 全著作権 Petoi LLC
 https://www.petoi.com\n''' + dateStr,
 
@@ -1783,7 +1783,7 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'titleVersion': 'Informazioni sulla versione',
     'msgVersion': 'Versione: ' + versionNum + '\n' +
     '''Strumento di caricamento del firmware per OpenCat
-    Diritto d'autore © 2018-2022
+    Diritto d'autore © 2018-2024
     Tutti i diritti riservati Petoi LLC
     https://www.petoi.com\n''' + dateStr,
     'reset joints?': 'Reimpostare gli offset dei giunti? (S/N)',

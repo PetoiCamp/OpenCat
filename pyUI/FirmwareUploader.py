@@ -40,6 +40,7 @@ class Uploader:
         self.win.resizable(False, False)
         self.bParaUpload = True
         self.bFacReset = False
+        self.bModPara = False
         Grid.rowconfigure(self.win, 0, weight=1)
         Grid.columnconfigure(self.win, 0, weight=1)
         self.strProduct = StringVar()
@@ -52,7 +53,6 @@ class Uploader:
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
         if self.strProduct.get() == 'Bittle X':
-            self.strBoardVersion.set(BiBoard_version_list[0])
             board_version_list = BiBoard_version_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
@@ -194,6 +194,8 @@ class Uploader:
         self.cbBoardVersion.set(self.lastSetting[3])
         # set list for Combobox
         if self.strProduct.get() == 'Bittle X':
+            if self.lastSetting[3] in NyBoard_version_list:
+                self.cbBoardVersion.set(BiBoard_version_list[0])
             board_version_list = BiBoard_version_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
@@ -279,6 +281,7 @@ class Uploader:
     def uploadeModeOnly(self):
         self.bParaUpload = False
         self.bFacReset = False
+        self.bModPara = False
         self.autoupload()
 
     def factoryReset(self):
@@ -289,6 +292,7 @@ class Uploader:
     def upgrade(self):
         self.bParaUpload = True
         self.bFacReset = False
+        self.bModPara = True
         self.autoupload()
 
     def updatePortlist(self):
@@ -434,8 +438,9 @@ class Uploader:
         strBoardVersion = self.strBoardVersion.get()
         
         progress = 0
+        bCount = False
+        bResetMode = False
         retMsg = False
-        counter = 0
         prompStr = ""
         while True:
             time.sleep(0.01)
@@ -444,58 +449,110 @@ class Uploader:
                 prompStr = x[2:-1]
                 logger.debug(f"new line:{x}")
                 if x != "":
-                    print(x[2:-1])
+                    print(prompStr)
                     questionMark = "Y/n"
-                    if x.find(questionMark) != -1:
-                        if x.find("joint") != -1:
-                            prompt = promptJointCalib
-                        elif x.find("Instinct") != -1:
-                            prompt = promptInstinct
-                        elif x.find("Calibrate") != -1:
-                            prompt = promptIMU
-                        elif x.find("assurance") != -1:    # for BiBoard it need to be modified later
-                            serObj.Send_data(self.encode("n"))
+                    if self.bFacReset and strBoardVersion in BiBoard_version_list:    # for BiBoard Factory reset
+                        newBoardMark = "Set up the new board"
+                        if prompStr.find(newBoardMark) != -1:
+                            bResetMode = True
+
+                        if not bResetMode and (prompStr.find("Ready!") != -1):
+                            time.sleep(1)
+                            serObj.Send_data(self.encode("!"))
                             continue
-                        if progress > 0 and retMsg == True:
-                            self.strStatus.set(promptList[progress-1]['result'])
-                            self.statusBar.update()
-                        retMsg = messagebox.askyesno(txt('Warning'), prompt['message'])
-                        if retMsg:
-                            self.strStatus.set(prompt['operating'])
-                            self.statusBar.update()
-                            serObj.Send_data(self.encode("Y"))
-                        else:
-                            serObj.Send_data(self.encode("n"))
-                            if progress == len(promptList) - 1:
+
+                        if bResetMode:
+                            if prompStr.find(questionMark) != -1:
+                                if progress > 0:
+                                    self.strStatus.set(promptList[progress-1]['result'])
+                                    self.statusBar.update()
+
+                                if prompStr.find("assurance") != -1:  # for BiBoard
+                                    serObj.Send_data(self.encode("n"))
+                                elif (prompStr.find("joint") != -1):
+                                    prompt = promptJointCalib
+                                    serObj.Send_data(self.encode("Y"))
+                                    self.strStatus.set(prompt['operating'])
+                                    self.statusBar.update()
+                                elif (prompStr.find("Calibrate") != -1):
+                                    prompt = promptIMU
+                                    serObj.Send_data(self.encode("Y"))
+                                    self.strStatus.set(prompt['operating'])
+                                    self.statusBar.update()
+                                progress += 1
+
+                            if prompStr.find("Ready!") != -1:
                                 break
-                        progress += 1
-                    if not self.bFacReset:
-                        if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
-                            self.strStatus.set(promptIMU['result'])
-                            self.statusBar.update()
-                            if strBoardVersion in NyBoard_version_list:
-                                messagebox.showinfo(title=None, message=txt('parameterFinish'))
-                            break
                     else:
-                        if x.find("sent to mpu.setXAccelOffset") != -1 or x.find("Ready!") != -1:
-                            self.strStatus.set(promptIMU['result'])
-                            self.statusBar.update()
-                            if strBoardVersion in BiBoard_version_list:    # for BiBoard it need to be modified later
+                        if prompStr.find(questionMark) != -1:
+                            if self.bModPara:    # for NyBoard and BiBoard upgrade firmware
+                                if progress > 0 and retMsg:
+                                    self.strStatus.set(promptList[progress-1]['result'])
+                                    self.statusBar.update()
+                                if prompStr.find("joint") != -1:
+                                    prompt = promptJointCalib
+                                elif prompStr.find("Instinct") != -1:
+                                    prompt = promptInstinct
+                                elif prompStr.find("Calibrate") != -1:
+                                    prompt = promptIMU
+                                elif prompStr.find("assurance") != -1:
+                                    serObj.Send_data(self.encode("n"))
+                                    continue
+                                retMsg = messagebox.askyesno(txt('Warning'), prompt['message'])
+                                if retMsg:
+                                    self.strStatus.set(prompt['operating'])
+                                    self.statusBar.update()
+                                    serObj.Send_data(self.encode("Y"))
+                                else:
+                                    serObj.Send_data(self.encode("n"))
+                                progress += 1
+                            else:    # for BiBoard update mode only
+                                if prompStr.find("joint") != -1:
+                                    prompt = promptJointCalib
+                                    serObj.Send_data(self.encode("n"))
+                                elif prompStr.find("Instinct") != -1:
+                                    prompt = promptInstinct
+                                    serObj.Send_data(self.encode("n"))
+                                elif prompStr.find("Calibrate") != -1:
+                                    prompt = promptIMU
+                                    serObj.Send_data(self.encode("n"))
+                                elif prompStr.find("assurance") != -1:
+                                    serObj.Send_data(self.encode("n"))
+                                    continue
+                        if prompStr.find("sent to mpu.setXAccelOffset") != -1 or prompStr.find("Ready!") != -1:
+                            if strBoardVersion in NyBoard_version_list:
+                                if retMsg:
+                                    self.strStatus.set(promptList[progress - 1]['result'])
+                                    self.statusBar.update()
+                                if strSoftwareVersion == '2.0':
+                                    continue
+                                else:
+                                    break
+                            else:
                                 break
-                        elif x.find("Calibrated:") != -1:
+                        elif prompStr.find("Calibrated:") != -1:
                             self.strStatus.set(txt('9685 Calibrated'))
                             self.statusBar.update()
                             break
             else:
-                if self.bFacReset:
-                    if prompStr.find("Optional: Connect PWM 3") != -1:
-                        counter += 1
-                        if counter == 10:
+                if self.bFacReset:    # for NyBoard Factory reset
+                    if strBoardVersion in NyBoard_version_list:
+                        if prompStr.find("Optional: Connect PWM 3") != -1 and (not bCount):
+                            bCount = True
+                            start = time.time()
+                            logger.info(f"start timer")
+                        if bCount and (time.time() - start > 5):
                             break
+                else:    # for NyBoard upgrade firmware
+                    if (strBoardVersion in NyBoard_version_list) and (prompStr.find("Optional: Connect PWM 3") != -1):
+                        break
 
         serObj.Close_Engine()
         logger.info("close the serial port.")
         self.force_focus()
+
+        if not self.bFacReset and strBoardVersion in NyBoard_version_list:
+            messagebox.showinfo(title=None, message=txt('parameterFinish'))
 
 
     def saveConfigToFile(self,filename):
