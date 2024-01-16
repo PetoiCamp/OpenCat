@@ -4,6 +4,7 @@
 # modified from https://blog.csdn.net/u013541325/article/details/113062191
 
 import binascii
+import glob
 import os
 import serial  # need to install pyserial first
 import serial.tools.list_ports
@@ -104,7 +105,6 @@ class Communication(object):
         # it classifies the /dev/ttyS0 port as a platform port and therefore won't be queried
         # https://github.com/pyserial/pyserial/issues/489
         if os.name == 'posix' and sys.platform.lower()[:5] == 'linux':
-            import glob
             extra_ports = glob.glob('/dev/ttyS*')
             for port in extra_ports:
                 if port not in port_list_number:
