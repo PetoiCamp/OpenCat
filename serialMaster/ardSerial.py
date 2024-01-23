@@ -110,7 +110,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                 message = list(map(int, var))
                 if token == 'B':
                     for l in range(len(message)//2):
-                        message[l*2+1]*= 2  #change 1 to 8 to save time for tests
+                        message[l*2+1]*= 8  #change 1 to 8 to save time for tests
                         # print(message[l*2],end=",")
                         # print(message[l*2+1],end=",")
                         logger.debug(f"{message[l*2]},{message[l*2+1]}")
