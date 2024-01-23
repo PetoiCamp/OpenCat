@@ -1,3 +1,4 @@
+strLan = 'English'
 model_ = ''
 version_ = ''
 modelList = []

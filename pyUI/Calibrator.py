@@ -10,11 +10,11 @@ def txt(key):
 class Calibrator:
     def __init__(self,model,lan):
         self.calibratorReady = False
+        global language
+        language = lan
 #        global goodPorts
         connectPort(goodPorts)
         self.model = config.model_
-        global language
-        language = lan
         self.winCalib = Tk()
         self.winCalib.title(txt('calibTitle'))
         self.winCalib.geometry('+200+100')

@@ -234,6 +234,9 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     
     'tipImgWiring':'Pay attention to the location and direction of the servo plugs\nLong-press the battery\'s button to turn on the power\nClick \"Calibrate\" to rotate all the servos to the calibration state\nAttach the legs and head perpendicularly\nUse the slider to align the edges of the legs and the reference ruler parallelly',
     'tipImgPosture':'Switch between postures to test the calibration results\nSave the offsets in time\nNo need for calibration in the future',
+    'Boot prompt': 'Boot prompt',
+    'poweronCali':'The robot must be powered by the battery to move the legs.\n\nIt\'s VITAL for correct calibration operations!\n\nThe yellow LED should light up. Otherwise, plug in the battery \n\nand long-press its button for 3 seconds to power on the robot.\n\n',
+    'poweronSkil':'The robot must be powered by the battery to move the legs.\n\nThe yellow LED should light up. Otherwise, plug in the battery and \n\nlong-press its button for 3 seconds to power on the robot.\n\n',
 }
 textCN = {
     'lan':'Simplified Chinese',
@@ -464,6 +467,9 @@ textCN = {
     'tipDel':'删除当前帧',
     'tipImgWiring':'接舵机线时注意插头的位置和正反\n长按电池按钮通电\n点击“校准“使所有舵机旋转到校准位\n按垂直关系安装四肢和头\n控制滑条使大小腿边缘与校准尺平行',
     'tipImgPosture':'在各姿势间切换，检查校准效果\n及时保存修正值\n后续使用无需再校准',
+    'Boot prompt': '开机提醒',
+    'poweronCali':'机器人必须由电池供电才能移动腿部。\n\n这对于正确的校准操作至关重要！黄色 LED 应亮起。\n\n否则，请插入电池，并长按电池上的按钮3秒给机器人开机。\n\n',
+    'poweronSkil':'机器人必须由电池供电才能移动腿部。\n\n黄色 LED 应亮起。否则，请插入电池，\n\n并长按电池上的按钮3秒给机器人开机。\n\n',
 }
 
 textCN_TW = {
@@ -591,7 +597,6 @@ textCN_TW = {
     'uploaderTitle': '上傳者標題',
     'labTrans': '切換語言',
     'title': '標題',
-    'labTrans': '切換語言',
     'labChi': '中文',
     'labEng': '英文',
     'labHelp': '幫助',
@@ -696,6 +701,9 @@ textCN_TW = {
     'tipDel':'刪除當前幀',
     'tipImgWiring':'接舵機線时注意插頭的位置和正反\n長按電池按鈕通電\n點擊“校準“使所有舵機旋轉到校準位\n按垂直關係安装四肢和頭\n控制滑條使大小腿邊緣與校準尺平行',
     'tipImgPosture':'在各姿勢間切换，檢查校準效果\n及時保存修正值\n後續使用無需再校準',
+    'Boot prompt': '開機提醒',
+    'poweronCali':'機器人必須由電池供電才能移動腿部。\n\n這對於正確的校準操作至關重要！黃色 LED 應亮起。\n\n否則，請插入電池，並長按電池上的按鈕3秒給機器人開機。\n\n',
+    'poweronSkil':'機器人必須由電池供電才能移動腿部。\n\n黃色 LED 應亮起。否則，請插入電池，\n\n並長按電池上的按鈕3秒給機器人開機。\n\n'
 }
 
 
@@ -933,6 +941,9 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     'tipDel': 'Lösche den aktuellen Frame',
     'tipImgWiring': 'Achte auf den Standort und die Ausrichtung der Servostecker\nHalte die Taste des Akkus lange gedrückt, um die Stromversorgung einzuschalten\nKlicke auf "Kalibrieren", um alle Servos in den Kalibrierungsmodus zu drehen\nBefestige die Beine und den Kopf senkrecht\nVerwende den Schieberegler, um die Kanten der Beine und der Referenzskala parallel auszurichten',
     'tipImgPosture': 'Wechsle zwischen Haltungen, um die Kalibrierungsergebnisse zu testen\nSpeichere die Abweichungen rechtzeitig\nKeine Notwendigkeit für zukünftige Kalibrierung',
+    'Boot prompt': 'Boot-Eingabeaufforderung',
+    'poweronCali':'Um die Beine bewegen zu können, muss der Roboter mit Strom versorgt werden.\n\nEs ist von entscheidender Bedeutung für korrekte Kalibrierungsvorgänge!\n\nDie gelbe LED sollte aufleuchten. Andernfalls stecken Sie den Akku ein \n\nund drücken Sie die Taste 3 Sekunden lang, um den Roboter einzuschalten.\n\n',
+    'poweronSkil':'Um die Beine bewegen zu können, muss der Roboter mit Strom versorgt werden.\n\nDie gelbe LED sollte aufleuchten. Andernfalls stecken Sie den Akku ein \n\nund drücken Sie die Taste 3 Sekunden lang, um den Roboter einzuschalten.\n\n',
 }
 
 textTH = {
@@ -1169,6 +1180,9 @@ textTH = {
 
     'tipImgWiring':'ระมัดระวังตำแหน่งและทิศทางของตัวเชื่อมต่อเซอร์โว\nกดปุ่มแบตเตอรี่นานเพื่อเปิดเครื่อง\nคลิก "ปรับสอบ" เพื่อหมุนเซอร์โวทั้งหมดให้อยู่ในสถานะการปรับสอบ\nติดตั้งขาและหัวให้ตั้งฉาก\nใช้ตัวเลื่อนเพื่อปรับขอบขาให้สอดคล้องกันและตัวชี้วัดอ้างอิง',
     'tipImgPosture':'สลับระหว่างท่าทางต่าง ๆ เพื่อทดสอบผลการปรับสอบ\nบันทึกค่าออฟเซ็ตในเวลาจริง\nไม่จำเป็นต้องปรับสอบในอนาคต',
+    'Boot prompt': 'พร้อมท์การบูต',
+    'poweronCali':'หุ่นยนต์จะต้องใช้พลังงานจากแบตเตอรี่เพื่อขยับขา. \n\nเป็นสิ่งสำคัญสำหรับการดำเนินการสอบเทียบที่ถูกต้อง! \n\nไฟ LED สีเหลืองควรสว่างขึ้น มิฉะนั้นให้เสียบแบตเตอรี่ \n\nและกดปุ่มค้างไว้เป็นเวลา 3 วินาทีเพื่อเปิดหุ่นยนต์. \n\n',
+    'poweronSkil':'หุ่นยนต์จะต้องใช้พลังงานจากแบตเตอรี่เพื่อขยับขา. \n\nไฟ LED สีเหลืองควรสว่างขึ้น มิฉะนั้นให้เสียบแบตเตอรี่ \n\nและกดปุ่มค้างไว้เป็นเวลา 3 วินาทีเพื่อเปิดหุ่นยนต์. \n\n',
 }
 
 textFR={
@@ -1403,6 +1417,9 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
 
     'tipImgWiring':'Faites attention à l\'emplacement et à la direction des prises de servomoteur\nMaintenez le bouton de la batterie enfoncé pour allumer l\'alimentation\nCliquez sur "Calibrer" pour faire tourner tous les servomoteurs à l\'état de calibration\nFixez les jambes et la tête perpendiculairement\nUtilisez le curseur pour aligner les bords des jambes et la règle de référence parallèlement',
     'tipImgPosture':'Basculez entre les postures pour tester les résultats de calibration\nEnregistrez les offsets à temps\nAucune calibration nécessaire à l\'avenir',
+    'Boot prompt': 'Invite de démarrage',
+    'poweronCali':'Le robot doit être alimenté par la batterie pour bouger les jambes. \n\nC\'est VITAL pour de bonnes opérations de calibrage! \n\nLa LED jaune doit s\'allumer. Sinon, branchez la batterie et appuyez \n\nlonguement sur son bouton pendant 3 secondes pour allumer le robot.\n\n',
+    'poweronSkil':'Le robot doit être alimenté par la batterie pour bouger les jambes. \n\nLa LED jaune doit s\'allumer. Sinon, branchez la batterie et appuyez \n\nlonguement sur son bouton pendant 3 secondes pour allumer le robot.\n\n',
 }
 
 textJP={
@@ -1621,6 +1638,9 @@ https://www.petoi.com\n''' + dateStr,
 
     'tipImgWiring':'サーボプラグの位置と向きに注意してください\nバッテリーのボタンを長押しして電源をオンにします\n「キャリブレーション」をクリックしてすべてのサーボをキャリブレーション状態に回転させます\n脚と頭を垂直に取り付けます\nスライダーを使用して脚のエッジと参照定規を平行に揃えます',
     'tipImgPosture':'ポーズを切り替えてキャリブレーションの結果をテストします\nオフセットをタイムリーに保存します\n将来のキャリブレーションは不要です',
+    'Boot prompt': 'ブートプロンプト',
+    'poweronCali':'ロボットが脚を動かすにはバッテリーから電力を供給する必要があります。\n\n正しいキャリブレーション操作には不可欠です。\n\n黄色の LED が点灯するはずです。 それ以外の場合は、バッテリーを \n\n接続し、ボタンを 3 秒間長押ししてロボットの電源をオンにします。 \n\n',
+    'poweronSkil':'ロボットが脚を動かすにはバッテリーから電力を供給する必要があります。\n\n黄色の LED が点灯するはずです。 それ以外の場合は、バッテリーを \n\n接続し、ボタンを 3 秒間長押ししてロボットの電源をオンにします。 \n\n',
 }
 
 textIT = {
@@ -1846,6 +1866,9 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     
     'tipImgWiring':'Prestare attenzione alla posizione e alla direzione dei connettori dei servi\nPremere a lungo il pulsante della batteria per accendere l\'alimentazione\nFare clic su \"Calibra\" per ruotare tutti i servi allo stato di calibrazione\nAttacca le gambe e la testa perpendicolarmente\nUsa il cursore per allineare parallelamente i bordi delle gambe e il righello di riferimento',
     'tipImgPosture':'Passa da una postura all\'altra per testare i risultati della calibrazione\nSalva gli offset in tempo\nNon c\'è bisogno di calibrazione in futuro',
+    'Boot prompt': 'Richiesta di avvio',
+    'poweronCali':'Il robot deve essere alimentato dalla batteria per muovere le gambe. \n\nE\' VITALE per le corrette operazioni di calibrazione!\n\nIl LED giallo dovrebbe accendersi. Altrimenti, collega la batteria \n\ne premi a lungo il pulsante per 3 secondi per accendere il robot. \n\n',
+    'poweronSkil':'Il robot deve essere alimentato dalla batteria per muovere le gambe. \n\nIl LED giallo dovrebbe accendersi. Altrimenti, collega la batteria \n\ne premi a lungo il pulsante per 3 secondi per accendere il robot. \n\n',
 }
 
 languageList = {

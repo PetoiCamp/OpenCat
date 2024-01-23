@@ -9,7 +9,6 @@
 from FirmwareUploader import *
 from SkillComposer import *
 from Calibrator import *
-from commonVar import *
 from tkinter import PhotoImage
 
 language = languageList['English']
@@ -141,7 +140,8 @@ class UI:
         else:
             self.configuration = [self.defaultLan, model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.defaultCreator, self.defaultLocation]
-
+        config.strLan = self.defaultLan
+        logger.debug(f"save the language as: {config.strLan}.")
         f = open(filename, 'w+', encoding="utf-8")
         lines = '\n'.join(self.configuration) + '\n'
         f.writelines(lines)
@@ -155,11 +155,35 @@ class UI:
         if app == 'Firmware Uploader':
             Uploader(model, language)
         elif app == 'Joint Calibrator':
+            self.showBootPrompt("cali")
             Calibrator(model, language)
         elif app == 'Skill Composer':
+            self.showBootPrompt("skil")
             SkillComposer(model, language)
         elif app == 'Task Scheduler':
             print('schedule')
+
+    def showBootPrompt(self, prom="cali"):
+        window = tk.Tk()
+        window.geometry('+800+500')
+
+        def on_closing():
+            window.destroy()
+
+        window.protocol('WM_DELETE_WINDOW', on_closing)
+        window.title(txt('Boot prompt'))
+
+        labelC = tk.Label(window, font='sans 14 bold', justify='left')
+        if prom == "cali":
+            labelC['text'] = txt('poweronCali')
+        elif prom == "skil":
+            labelC['text'] = txt('poweronSkil')
+        labelC.grid(row=0, column=0)
+        buttonC = tk.Button(window, text=txt('Confirm'), command=on_closing)
+        buttonC.grid(row=1, column=0, pady=10)
+
+        window.focus_force()  # new window gets focus
+        window.mainloop()
 
     def showAbout(self):
         messagebox.showinfo('Petoi Desktop App',

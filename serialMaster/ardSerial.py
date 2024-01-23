@@ -12,14 +12,6 @@ import threading
 import os
 import config
 
-if not config.useMindPlus:
-    import tkinter as tk
-    sys.path.append("../pyUI")
-    from translate import *
-    language = languageList['English']
-    def txt(key):
-        return language.get(key, textEN[key])
-
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
 Level: The level determines the minimum priority level of messages to log. 
@@ -40,6 +32,22 @@ logger = logging.getLogger(__name__)
 def printH(head, value):
     print(head, end=' ')
     print(value)
+
+
+if not config.useMindPlus:
+    import tkinter as tk
+    sys.path.append("../pyUI")
+    from translate import *
+    language = languageList['English']
+
+    def txt(key):
+        global language
+        logger.debug(f"config.strLan is: {config.strLan}.")
+        language = languageList[config.strLan]
+        return language.get(key, textEN[key])
+
+    # printH("txt('lan'):", txt('lan'))
+
 
 printH("ardSerial date: ", "Dec 28, 2023")
 
@@ -102,7 +110,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                 message = list(map(int, var))
                 if token == 'B':
                     for l in range(len(message)//2):
-                        message[l*2+1]*= 8  #change 1 to 8 to save time for tests
+                        message[l*2+1]*= 2  #change 1 to 8 to save time for tests
                         # print(message[l*2],end=",")
                         # print(message[l*2+1],end=",")
                         logger.debug(f"{message[l*2]},{message[l*2+1]}")
@@ -795,6 +803,7 @@ def replug(PortList, needSendTask=True):
             label['text'] = "{} s".format((thres - round(time.time() - start) // 1))
         window.after(100, lambda: countdown(start, ap))
 
+    window.focus_force()  # new window gets focus
     window.mainloop()
     
 def selectList(PortList,ls,win, needSendTask=True):
