@@ -49,7 +49,7 @@ if not config.useMindPlus:
     # printH("txt('lan'):", txt('lan'))
 
 
-printH("ardSerial date: ", "Dec 28, 2023")
+printH("ardSerial date: ", "Jan 23, 2024")
 
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):

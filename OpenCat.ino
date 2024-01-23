@@ -99,10 +99,6 @@ void setup() {
 
 void loop() {
 #ifdef MAIN_SKETCH
-#ifdef VOLTAGE_DETECTION_PIN
-  lowBattery();  //  block the loop if battery is low
-  //  can be disabled to save programming space and reduce the low voltage interruptions
-#endif
 #ifdef GYRO_PIN
   readEnvironment();     //reads the IMU (Inertia Measurement Unit, i.e. acceleration and angles).
                          //May read more sensors in the future
@@ -122,6 +118,10 @@ void loop() {
 #endif
   }
   reaction();  //handle different commands
+#ifdef VOLTAGE_DETECTION_PIN
+  lowBattery();  //  block the loop if battery is low
+  //  can be disabled to save programming space and reduce the low voltage interruptions
+#endif
 #else
   calibratePCA9685();
 #endif
