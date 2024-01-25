@@ -109,6 +109,7 @@ class Calibrator:
         self.winCalib.update()
         self.calibratorReady = True
         self.winCalib.protocol('WM_DELETE_WINDOW', self.closeCalib)
+        self.winCalib.focus_force()    # force the main interface to get focus
         self.winCalib.mainloop()
 
     def calibFun(self, cmd):

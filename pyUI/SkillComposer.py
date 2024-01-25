@@ -209,8 +209,9 @@ class SkillComposer:
         if res != -1 and res[0] == 'G':
             res = send(goodPorts, ['G', 0])
             printH("gyro status:",res )
-        
+        self.window.focus_force()    # force the main interface to get focus
         self.window.mainloop()
+
 
     def createMenu(self):
         self.menubar = Menu(self.window, background='#ff8000', foreground='black', activebackground='white',

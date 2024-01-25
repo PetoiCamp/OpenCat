@@ -68,8 +68,10 @@ class Uploader:
                              args=(goodPorts, lambda: self.keepChecking, False, self.updatePortlist))
         t.daemon = True
         t.start()
+
+        self.win.focus_force()    # force the main interface to get focus
         self.win.mainloop()
-        self.force_focus()  # force the main interface to get focus
+
 
     def buildMenu(self):
         self.menuBar = Menu(self.win)

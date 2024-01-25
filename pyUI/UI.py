@@ -174,10 +174,7 @@ class UI:
         window.title(txt('Boot prompt'))
 
         labelC = tk.Label(window, font='sans 14 bold', justify='left')
-        if prom == "cali":
-            labelC['text'] = txt('poweronCali')
-        elif prom == "skil":
-            labelC['text'] = txt('poweronSkil')
+        labelC['text'] = txt('poweron')
         labelC.grid(row=0, column=0)
         buttonC = tk.Button(window, text=txt('Confirm'), command=on_closing)
         buttonC.grid(row=1, column=0, pady=10)
