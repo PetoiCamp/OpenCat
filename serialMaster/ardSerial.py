@@ -36,6 +36,7 @@ def printH(head, value):
 
 if not config.useMindPlus:
     import tkinter as tk
+    import tkinter.messagebox
     sys.path.append("../pyUI")
     from translate import *
     language = languageList['English']
@@ -49,7 +50,7 @@ if not config.useMindPlus:
     # printH("txt('lan'):", txt('lan'))
 
 
-printH("ardSerial date: ", "Jan 23, 2024")
+printH("ardSerial date: ", "Feb 2, 2024")
 
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):
@@ -743,7 +744,7 @@ def replug(PortList, needSendTask=True):
     labelC['text'] = txt('Replug prompt')
     labelC.grid(row=0, column=0)
     buttonC = tk.Button(window, text=txt('Confirm'), command=bCallback)
-    buttonC.grid(row=1, column=0)
+    buttonC.grid(row=1, column=0, pady=10)
     labelT = tk.Label(window, font='sans 14 bold')
     label = tk.Label(window, font='sans 14 bold')
     def countdown(start,ap):
