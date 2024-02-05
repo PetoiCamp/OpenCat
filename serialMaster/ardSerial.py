@@ -11,6 +11,7 @@ import copy
 import threading
 import os
 import config
+import glob
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
@@ -669,14 +670,19 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
         allPorts = copy.deepcopy(currentPorts)
 
 def showSerialPorts(allPorts):
-    if platform.system() == 'Linux':
-        file = open("/etc/os-release", 'r')
-        line = file.readline()
-        # print("Line:" + line)
-        file.close()
-        target = "Raspbian"
-        if target in line:
-            allPorts.append('/dev/ttyS0')
+    # currently an issue in pyserial where for newer raspiberry pi os
+    # (Kernel version: 6.1, Debian version: 12 (bookworm)) or ubuntus (22.04)
+    # it classifies the /dev/ttyS0 port as a platform port and therefore won't be queried
+    # https://github.com/pyserial/pyserial/issues/489
+    if os.name == 'posix' and sys.platform.lower()[:5] == 'linux':
+        extra_ports = glob.glob('/dev/ttyS*')
+        for port in extra_ports:
+            if port not in allPorts:
+                allPorts.append(port)
+        for item in allPorts:
+            if 'AMA0' in item:
+                allPorts.remove(item)
+        
     allPorts = deleteDuplicatedUsbSerial(allPorts)
     for index in range(len(allPorts)):
         logger.debug(f"port[{index}] is {allPorts[index]} ")
