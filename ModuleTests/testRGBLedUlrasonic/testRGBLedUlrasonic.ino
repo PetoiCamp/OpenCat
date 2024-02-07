@@ -6,7 +6,7 @@
 
 RgbUltrasonic mRUS04(6, 7);//(signal, RGB)
 //RgbUltrasonic mRUS04(8, 9); //(signal, RGB)
-//The RGBLED module should be plugged in teh fourth grove socket with D6, D7
+//The RGBLED module should be plugged in the fourth grove socket with D6, D7
 
 #define BUZZER 5 // the PWM pin the ACTIVE buzzer is attached to
 void beep(int note, float duration = 10, int pause = 0, byte repeat = 1 ) {

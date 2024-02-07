@@ -53,19 +53,18 @@ void RgbUltrasonic::SetRgbEffect(E_RGB_INDEX index, long Color, uint8_t effect)
             for (byte c = 0 ; c<3; c++){
                 rgb[c] = Color>>(2-c)*8 & 0x0000FF;
             }
-            for (byte i = 5; i < 255; i++) {
-//                SetRgbColor(index, (i<<16)|(i<<8)|i);
-                long color = (max(rgb[0]-i,5) << 16) + (max(rgb[1]-i,5) << 8) + max(rgb[2]-i,5);
-                SetRgbColor(index, color);
-                delay((i < 18) ? 18: (256/i));
-            }
             for (byte i = 255; i >= 5; i--) {
 //                SetRgbColor(index, (i<<16)|(i<<8)|i);
                 long color = (max(rgb[0]-i,5) << 16) + (max(rgb[1]-i,5) << 8) + max(rgb[2]-i,5);
                 SetRgbColor(index, color);
                 delay((i < 18) ? 18: (256/i));
             }
-
+            for (byte i = 5; i < 255; i++) {
+//                SetRgbColor(index, (i<<16)|(i<<8)|i);
+                long color = (max(rgb[0]-i,5) << 16) + (max(rgb[1]-i,5) << 8) + max(rgb[2]-i,5);
+                SetRgbColor(index, color);
+                delay((i < 18) ? 18: (256/i));
+            }
             break;
         case E_EFFECT_ROTATE:
             SetRgbColor(E_RGB_ALL, 0);
