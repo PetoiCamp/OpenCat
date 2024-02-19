@@ -96,7 +96,7 @@ class Communication(object):
             for each_port in port_list:
                 port_list_number.append(each_port[0])
                 port_list_name.append(each_port[1])
- 
+
 #        print(port_list_number)
 #        print(port_list_name)
         return port_list_number

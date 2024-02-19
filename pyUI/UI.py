@@ -120,6 +120,8 @@ class UI:
         model = copy.deepcopy(modelName)
         self.modelLabel.configure(text=model)
         print(model)
+        if model == "Bittle X":
+            self.defaultBdVer = "BiBoard_V0_2"
 
     def changeLan(self, l):
         global language

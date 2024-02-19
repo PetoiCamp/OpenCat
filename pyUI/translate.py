@@ -1,5 +1,5 @@
-versionNum = '1.1.7'
-dateStr = '2024-01-24'
+versionNum = '1.1.8'
+dateStr = '2024-02-19'
 
 textEN = {
     'lan':'English',
@@ -102,7 +102,7 @@ textEN = {
     'Replug mode':'Replug mode',
     'Replug prompt':'''WARNING: Connection Failed!\n\n
 * If the main board is NOT connected to the computer:\n
-Click the button below. Connect the USB cable to the main board, then plug the other end to the COMPUTER.\n\n
+Click the button below. Connect the USB cable to the main board, then plug the other end to the COMPUTER. \n\n
 * If the main board is already connected to the computer via a USB cable:\n
 1. Confirm your computer can recognize the USB device.\n
 More details can be found at https://docs.petoi.com/upload-firmware\n
@@ -341,12 +341,12 @@ textCN = {
 
     'Manual mode':'手动模式',
     'Replug mode':'重新拔插',
-    'Replug prompt':'''警告：上传失败！\n\n
+    'Replug prompt':'''警告：连接失败！\n\n
 * 如果主板未连接到计算机：\n
 点击下面的按钮，将USB数据线连接到主板，然后将另一端插入电脑。\n\n
 * 如果主板已经通过USB数据线连接到计算机：\n
 1. 确认您的计算机可以识别 USB 设备。\n
-   更多详情请参考 https://docs.petoi.com/upload-firmware\n
+   更多详情请参考 https://docs.petoi.com/upload-firmware \n
 2. 点击下面的按钮后，从电脑端拔下USB数据线，然后再插回去。
 ''',
     'Confirm':'确认',
@@ -574,12 +574,12 @@ textCN_TW = {
 
     'Manual mode':'手動模式',
     'Replug mode':'重新拔插',
-    'Replug prompt':'''警告：上傳失敗！\n\n
+    'Replug prompt':'''警告：連線失敗！\n\n
 * 如果主機板未連接到電腦：\n
 點擊下面的按鈕後，將USB資料線連接到主機板，然後將另一端插入電腦。\n\n
 * 如果主機板已經通過USB資料線連接到電腦：\n
 1. 確認您的電腦可以識別 USB 設備。\n
-   更多詳情請參考 https://docs.petoi.com/upload-firmware\n
+   更多詳情請參考 https://docs.petoi.com/upload-firmware \n
 2. 點擊下面的按鈕後，從電腦端拔下USB資料線，然後再插回去。
 ''',
     'Confirm':'確認',
@@ -803,13 +803,13 @@ textDE = {
 
     'Manual mode':'Manueller Modus',
     'Replug mode':'Replug-Modus',
-    'Replug prompt':'''WARNUNG: Hochladen fehlgeschlagen!\n\n
+    'Replug prompt':'''WARNUNG: Verbindung fehlgeschlagen! \n\n
 * Wenn die Hauptplatine NICHT mit dem Computer verbunden ist:\n
-Klicken Sie auf die Schaltfläche unten. Verbinden Sie das USB-Kabel mit der Hauptplatine und stecken Sie dann das andere Ende in den COMPUTER.\n\n
+Klicken Sie auf die Schaltfläche unten. Verbinden Sie das USB-Kabel mit der Hauptplatine und stecken Sie dann das andere Ende in den COMPUTER. \n\n
 * Wenn die Hauptplatine bereits über ein USB-Kabel mit dem Computer verbunden ist:\n
 1. Vergewissern Sie sich, dass Ihr Computer das USB-Gerät erkennen kann.\n
 Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
-2. Nachdem Sie auf die Schaltfläche unten geklickt haben, ziehen Sie das USB-Kabel von der COMPUTER-Seite ab und stecken Sie es dann wieder ein.
+2. Nachdem Sie auf die Schaltfläche unten geklickt haben, ziehen Sie das USB-Kabel von der COMPUTER-Seite ab und stecken Sie es dann wieder ein. 
 ''',
     'Confirm':'Bestätigen',
     'Counting down to manual mode: ':'Countdown zum manuellen Modus: ',
@@ -1041,9 +1041,9 @@ textTH = {
 
     'Manual mode':'โหมดแมนนวล',
     'Replug mode':'โหมดเสียบปลั๊ก',
-    'Replug prompt':'''คำเตือน: การอัปโหลดล้มเหลว!\n\n
+    'Replug prompt':'''แจ้งเตือน: การเชื่อมต่อล้มเหลว! \n\n
 * ถ้าเมนบอร์ดไม่ได้เชื่อมต่อกับคอมพิวเตอร์:\n
-คลิกปุ่มด้านล่าง ต่อสาย USB เข้ากับเมนบอร์ด จากนั้นเสียบปลายอีกด้านเข้ากับคอมพิวเตอร์\n\n
+คลิกปุ่มด้านล่าง ต่อสาย USB เข้ากับเมนบอร์ด จากนั้นเสียบปลายอีกด้านเข้ากับคอมพิวเตอร์ \n\n
 * หากเมนบอร์ดเชื่อมต่อกับคอมพิวเตอร์ผ่านสาย USB อยู่แล้ว:\n
 1. ยืนยันว่าคอมพิวเตอร์ของคุณสามารถรู้จักอุปกรณ์ USB ได้\n
 ดูรายละเอียดเพิ่มเติมได้ที่ https://docs.petoi.com/upload-firmware.\n
@@ -1279,13 +1279,12 @@ textFR={
 
     'Manual mode':'Mode manuel',
     'Replug mode':'Mode Replug',
-    'Replug prompt':'''AVERTISSEMENT : Échec de la connexion !
-
-* Si la carte principale N'EST PAS connectée à l'ordinateur :
-Cliquez sur le bouton ci-dessous. Connectez le câble USB à la carte principale, puis branchez l'autre extrémité sur l'ORDINATEUR.
-* Si la carte principale est déjà connectée à l'ordinateur via un câble USB :
-1. Confirmez que votre ordinateur peut reconnaître le périphérique USB.
-Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmware
+    'Replug prompt':'''ATTENTION : Echec de la connexion! \n\n
+* Si la carte principale N'EST PAS connectée à l'ordinateur :\n
+Cliquez sur le bouton ci-dessous. Connectez le câble USB à la carte principale, puis branchez l'autre extrémité sur l'ORDINATEUR. \n\n
+* Si la carte principale est déjà connectée à l'ordinateur via un câble USB :\n
+1. Confirmez que votre ordinateur peut reconnaître le périphérique USB.\n
+Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmware. \n
 2. Après avoir cliqué sur le bouton ci-dessous, débranchez le câble USB du côté de l'ORDINATEUR, puis rebranchez-le.
 ''',
     'Confirm':'Confirmer',
@@ -1515,7 +1514,13 @@ textJP={
 
     'Manual mode':'マニュアルモード',
     'Replug mode':'リプラグモード',
-    'Replug prompt':'警告：接続に失敗しました！\n\n* メインボードがコンピュータに接続されていない場合：\n\n以下のボタンをクリックしてください。 USBケーブルをメインボードに接続し、他の端をコンピュータに接続してください。\n\n* メインボードがすでにUSBケーブルを介してコンピュータに接続されている場合：\n\n1. コンピュータがUSBデバイスを認識できることを確認します。\n詳細は、https://docs.petoi.com/upload-firmwareを参照してください。\n\n2. 以下のボタンをクリックした後、USBケーブルをコンピュータ側から抜き、再び接続します。',
+    'Replug prompt':'''警告：接続に失敗しました！\n\n
+* メインボードがコンピュータに接続されていない場合：\n
+以下のボタンをクリックしてください。 USBケーブルをメインボードに接続し、他の端をコンピュータに接続してください。\n\n
+* メインボードがすでにUSBケーブルを介してコンピュータに接続されている場合：\n
+1. コンピュータがUSBデバイスを認識できることを確認します。\n
+詳細は、https://docs.petoi.com/upload-firmwareを参照してください。\n
+2. 以下のボタンをクリックした後、USBケーブルをコンピュータ側から抜き、再び接続します。''',
     'Confirm':'確認',
     'Counting down to manual mode: ':'マニュアルモードまでのカウントダウン：',
     'Info':'情報',
@@ -1729,9 +1734,9 @@ textIT = {
 
     'Manual mode':'Modalità manuale',
     'Replug mode':'Modalità di ricarica',
-    'Replug prompt':'''ATTENZIONE: caricamento fallito!\n\n
+    'Replug prompt':'''ATTENZIONE: Connessione fallita!\n\n
 * Se la scheda principale NON è collegata al computer:\n
-Fare clic sul pulsante in basso. Collegare il cavo USB alla scheda principale, quindi collegare l\'altra estremità al COMPUTER.\n\n
+Fare clic sul pulsante in basso. Collegare il cavo USB alla scheda principale, quindi collegare l\'altra estremità al COMPUTER. \n\n
 * Se la scheda principale è già collegata al computer tramite un cavo USB:\n
 1. Verificare che il computer sia in grado di riconoscere il dispositivo USB.\n
 Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n

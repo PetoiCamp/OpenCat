@@ -1133,13 +1133,14 @@ class SkillComposer:
     def changeColor(self,i):
         colorTuple = askcolor(title="Tkinter Color Chooser")
         logger.debug(f"colorTuple: {colorTuple}")
+        self.topEye.focus_force()  # the eye color edit window gets focus
         if (colorTuple[0] is not None) and (colorTuple[1] is not None):
             colors = list(colorTuple[0])
             self.colorHex = colorTuple[1]
-    #        for c in range(3):
-    #            colors[c] //= 2    #it's not always returning interger.
-    #        colors = list(map(lambda x:int(x//2),colors)) #colors have to be integer
-    #        printH('RGB: ',colors)
+            # for c in range(3):
+            #     colors[c] //= 2    #it's not always returning interger.
+            colors = list(map(lambda x: int(x), colors))  # colors have to be integer
+            logger.debug(f"RGB: {colors}")
             if self.colorBinderValue.get():
                 self.activeEye = 0
                 self.eyeColors[0]=colors
@@ -1192,10 +1193,10 @@ class SkillComposer:
         width = dia*2 + gap + 2*crd[0]
         self.eyeColors = [[0,0,0],[0,0,0],[0,0,0]]
         self.activeEye = 0
-        topEye = Toplevel(self.window)
-        topEye.title('Eye Color Setter')
-        topEye.geometry(str(width)+'x170+400+200')
-        face = Frame(topEye)
+        self.topEye = Toplevel(self.window)
+        self.topEye.title('Eye Color Setter')
+        self.topEye.geometry(str(width)+'x170+400+200')
+        face = Frame(self.topEye)
         face.grid(row = 0,column = 0)
         self.canvasFace = Canvas(face,height=120)
         self.canvasFace.grid(row = 0,column = 0, columnspan = 2)
@@ -1223,7 +1224,8 @@ class SkillComposer:
         for e in range(len(effectDictionary)):
             Button(btnsEff,text=txt(list(effectDictionary.keys())[e]),width = wValue,command = lambda eff=list(effectDictionary.values())[e]:self.changeEffect(eff)).grid(row = 0,column = e)
         Button(btnsEff,text=txt('Meow'),width = wValue,command = lambda :send(ports, ['u', 0])).grid(row = 0,column = 3)
-
+        self.topEye.focus_force()  # the eye color edit window gets focus
+        self.topEye.mainloop()
 
     def playThread(self):
         self.playStop = False
