@@ -237,6 +237,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define TYPE_DIGITAL 'd'  //            Rd(digital read)  Wd(digital write)
 #endif
 #define T_COLOR 'C'                     //change the eye colors of the RGB ultrasonic sensor
+#define T_DISTANCE 'D'                  //get the distance of the ultrasonic sensor via uart 
 #define T_INDEXED_SIMULTANEOUS_BIN 'I'  //I jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. I0 70 8 -20 9 -20
 #define T_INDEXED_SEQUENTIAL_BIN 'M'    //M jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. M0 70 0 -70 8 -20 9 -20
 
