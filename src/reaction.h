@@ -197,6 +197,17 @@ void reaction() {
           }
           break;
         }
+      
+      case T_DISTANCE:
+        {
+          // get ultrasonic distance
+          float distance = mRUS04.GetUltrasonicDistance();
+
+          // send distance value via uart
+          Serial.print(distance);    
+          break;   
+        }
+      
 #endif
 #ifdef T_SERVO_MICROSECOND
       case ';':
