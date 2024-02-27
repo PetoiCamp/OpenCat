@@ -3,7 +3,7 @@
 //Feb.16, 2021
 
 #include "rgbUltrasonic/RgbUltrasonic.h"
-
+// #define REGULAR_ULTRASONIC
 RgbUltrasonic mRUS04(6, 7);  //(signal, RGB)
 //RgbUltrasonic mRUS04(8, 9);//(signal, RGB)
 //The RGB LED ultrasonic module should be plugged in the fourth grove socket with D6, D7
@@ -12,7 +12,7 @@ long colors[] = { RGB_RED, RGB_PURPLE, RGB_GREEN, RGB_BLUE, RGB_YELLOW, RGB_WHIT
 long ultraTimer;
 int ultraInterval = 1000;
 float distance;
-void read_ultrasonic() {
+void readRGBultrasonic() {
   if (millis() - ultraTimer > ultraInterval) {  //|| token == T_SKILL && millis() - ultraTimer > 3000) {
     ultraTimer = millis();
     ultraInterval = 0;
@@ -93,4 +93,25 @@ void read_ultrasonic() {
       randomInterval = 5000;
     }
   }
+}
+
+float readUltrasonic(int trigger, int echo = -1) {  //give two parameters for the traditional ultrasonic sensor
+                                                    //give one parameter for the one pin ultrasonic sensor that shares the trigger and echo pins
+  if (echo == -1)
+    echo = trigger;
+  int longestDistance = 200;  // 200 cm = 2 meters
+  float farTime = longestDistance * 2 / 0.034;
+  pinMode(trigger, OUTPUT);
+
+  digitalWrite(trigger, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigger, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigger, LOW);
+  pinMode(echo, INPUT);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  long duration = pulseIn(echo, HIGH, farTime);
+  // Calculating the distance
+  return duration * 0.034 / 2;  // 10^-6 * 34000 cm/s
 }

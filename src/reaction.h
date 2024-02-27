@@ -405,6 +405,32 @@ void reaction() {
           }
           break;
         }
+      case EXTENSION:
+        {
+          switch (newCmd[0]) {
+#ifdef VOICE
+            case EXTENSION_VOICE:
+              {
+                set_voice();
+                break;
+              }
+#endif
+#ifdef ULTRASONIC
+            case EXTENSION_TRADITIONAL_ULTRASONIC:
+              {
+                PT('=');
+                PTL(readUltrasonic(6, 7));
+                break;
+              }
+            case EXTENSION_ONE_PIN_ULTRASONIC:
+              {
+                PT('=');
+                PTL(readUltrasonic(6));
+                break;
+              }
+          }
+#endif
+        }
 #ifdef BINARY_COMMAND
       case T_LISTED_BIN:
         {

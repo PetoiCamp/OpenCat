@@ -65,35 +65,34 @@ void voiceSetup() {
   PTL(listLength);
 }
 
+void set_voice() {  // send some control command directly to the module
+                    // XAa: switch English
+                    // XAb: switch Chinese
+                    // XAc: turn on the sound response
+                    // XAd: turn off the sound response
+                    // XAe: start learning
+                    // XAf: stop learning
+                    // XAg: clear the learning data
+  byte c = 0;
+  while (newCmd[c++] != '~')
+    ;
+  newCmd[c - 1] = '\0';
+  // Serial.print('X');
+  // Serial.println(newCmd);
+  Serial2.print('X');
+  Serial2.println(newCmd);
+  while (Serial2.available() && Serial2.read())
+    ;
+  if (!strcmp(newCmd, "Ac"))  // enter "XAc" in the serial monitor or add button "X65,99" in the mobile app to enable voice reactions
+                              // 在串口监视器输入指令“XAc”或在手机app创建按键"X65,99"来激活语音动作
+    enableVoiceQ = true;
+  else if (!strcmp(newCmd, "Ad"))  // enter "XAd" in the serial monitor or add button "X65,100" in the mobile app to disable voice reactions
+                                   // 在串口监视器输入指令“XAd”或在手机app创建按键"X65,100"来禁用语音动作
+    enableVoiceQ = false;
+  PTL(token);
+  resetCmd();
+}
 void read_voice() {
-  if (token == 'X' && newCmd[0] == 'A') {  // send some control command directly to the module
-                                           // XAa: switch English
-                                           // XAb: switch Chinese
-                                           // XAc: turn on the sound response
-                                           // XAd: turn off the sound response
-                                           // XAe: start learning
-                                           // XAf: stop learning
-                                           // XAg: clear the learning data
-    byte c = 0;
-    while (newCmd[c++] != '~')
-      ;
-    newCmd[c - 1] = '\0';
-    // Serial.print('X');
-    // Serial.println(newCmd);
-    Serial2.print('X');
-    Serial2.println(newCmd);
-    while (Serial2.available() && Serial2.read())
-      ;
-    if (!strcmp(newCmd, "Ac"))  // enter "XAc" in the serial monitor or add button "X65,99" in the mobile app to enable voice reactions
-                                // 在串口监视器输入指令“XAc”或在手机app创建按键"X65,99"来激活语音动作
-      enableVoiceQ = true;
-    else if (!strcmp(newCmd, "Ad"))  // enter "XAd" in the serial monitor or add button "X65,100" in the mobile app to disable voice reactions
-                                     // 在串口监视器输入指令“XAd”或在手机app创建按键"X65,100"来禁用语音动作
-      enableVoiceQ = false;
-    PTL(token);
-    resetCmd();
-  }
-
   if (Serial2.available()) {
     String raw = Serial2.readStringUntil('\n');
     // PTL(raw);
