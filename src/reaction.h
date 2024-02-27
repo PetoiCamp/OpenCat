@@ -200,6 +200,8 @@ void reaction() {
       
       case T_DISTANCE:
         {
+          // beep
+          beep(20, 50, 25, 5);
           // get ultrasonic distance
           float distance = mRUS04.GetUltrasonicDistance();
 
