@@ -204,7 +204,7 @@ void reaction() {
           float distance = mRUS04.GetUltrasonicDistance();
 
           // send distance value via uart
-          Serial.print(distance);    
+          PTL(distance);    
           break;   
         }
       
