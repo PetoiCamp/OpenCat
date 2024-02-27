@@ -204,6 +204,7 @@ void reaction() {
           float distance = mRUS04.GetUltrasonicDistance();
 
           // send distance value via uart
+          PT("d:");
           PTL(distance);    
           break;   
         }
