@@ -251,9 +251,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 
 #define EXTENSION 'X'
 #define EXTENSION_VOICE 'A'
-#define EXTENSION_ONE_PIN_ULTRASONIC 'U'
-#define EXTENSION_TRADITIONAL_ULTRASONIC 'u'
-
+#define EXTENSION_ULTRASONIC 'U'
 
 // #define T_TUNER '}'
 

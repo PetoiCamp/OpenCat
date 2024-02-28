@@ -416,16 +416,10 @@ void reaction() {
               }
 #endif
 #ifdef ULTRASONIC
-            case EXTENSION_TRADITIONAL_ULTRASONIC:
+            case EXTENSION_ULTRASONIC:
               {
                 PT('=');
-                PTL(readUltrasonic(6, 7));
-                break;
-              }
-            case EXTENSION_ONE_PIN_ULTRASONIC:
-              {
-                PT('=');
-                PTL(readUltrasonic(6));
+                PTL(readUltrasonic((int8_t)newCmd[1], (int8_t)newCmd[2]));
                 break;
               }
 #endif
