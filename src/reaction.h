@@ -428,8 +428,9 @@ void reaction() {
                 PTL(readUltrasonic(6));
                 break;
               }
-          }
 #endif
+          }
+          break;
         }
 #ifdef BINARY_COMMAND
       case T_LISTED_BIN:
