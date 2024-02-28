@@ -86,7 +86,10 @@ void readSignal() {
     read_camera();
 #endif
 #ifdef ULTRASONIC
-    // read_ultrasonic();
+    float distance = mRUS04.GetUltrasonicDistance();
+    // send distance value via uart
+    PT("d:");
+    PTL(distance);
 #endif
 #ifdef GESTURE
     read_gesture();
