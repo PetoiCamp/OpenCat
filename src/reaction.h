@@ -419,6 +419,27 @@ void reaction() {
           }
           break;
         }
+      case EXTENSION:
+        {
+          switch (newCmd[0]) {
+#ifdef VOICE
+            case EXTENSION_VOICE:
+              {
+                set_voice();
+                break;
+              }
+#endif
+#ifdef ULTRASONIC
+            case EXTENSION_ULTRASONIC:
+              {
+                PT('=');
+                PTL(readUltrasonic((int8_t)newCmd[1], (int8_t)newCmd[2]));
+                break;
+              }
+#endif
+          }
+          break;
+        }
 #ifdef BINARY_COMMAND
       case T_LISTED_BIN:
         {

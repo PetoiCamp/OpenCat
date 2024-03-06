@@ -117,9 +117,9 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
                         # print(message[l*2+1],end=",")
                         logger.debug(f"{message[l*2]},{message[l*2+1]}")
             if token == 'W' or token == 'C':
-                in_str = struct.pack('B' * len(message), *message)
+                in_str = struct.pack('B' * len(message), *message)    # B - unsigned char, e.g. 'B'*3 means 'BBB'
             else:
-                in_str = struct.pack('b' * len(message), *message)
+                in_str = struct.pack('b' * len(message), *message)    # b - signed char, e.g. 'b'*3 means 'bbb'
             in_str = token.encode() + in_str + '~'.encode()
 
         else:#if token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't':
