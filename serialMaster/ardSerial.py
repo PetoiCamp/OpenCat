@@ -862,6 +862,16 @@ def manualSelect(PortList, window, needSendTask=True):
     bu2.grid(row=1, column=1)
     tk.messagebox.showwarning(title=txt('Warning'), message=txt('Manual mode'))
     window.mainloop()
+
+def readFromSerial(port):
+    print(port)
+    p = list(port.keys())
+    print(p)
+    print(p[0])
+
+    response = p[0].Read_Line().decode("utf-8")
+    return response
+    
     
 goodPorts = {}      # goodPorts is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
 portStrList = []    # portStrList is the serial port string list
@@ -887,6 +897,9 @@ if __name__ == '__main__':
             send(goodPorts, [sys.argv[1][0], sys.argv[1:], 1])
         printH('Model list',config.modelList)
         print("You can type 'quit' or 'q' to exit.")
+
+        response = readFromSerial(goodPorts)
+        print(response + '\n')
 
         keepReadingInput(goodPorts)
 
