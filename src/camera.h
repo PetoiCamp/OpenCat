@@ -7,16 +7,26 @@ int imgRangeY = 100;
 
 int8_t lensFactor, proportion, sp, pan, tilt, frontUpX, backUpX, frontDownX, backDownX, frontUpY, backUpY, frontDownY, backDownY, frontUp, backUp, frontDown, backDown;
 
-#ifdef BITTLE 
-int8_t initPars[]={30, 11, 4, 10, 0, 60, 80, 20, 80, 20, 30, 12, 30, 60, 90, 10, -30};
+#ifdef BITTLE
+int8_t initPars[] = {
+  30, 11, 4, 10, 0,
+  60, 80, 20, 80,
+  20, 30, 12, 30,
+  60, 90, 10, -20
+};
 #elif defined NYBBLE
-int8_t initPars[]={30, 11, 4, 10, 0, 60, 80, 20, 80, 20, 30, 12, 30, 6, -66, -70, 66};
+int8_t initPars[] = {
+  30, 11, 4, 10, 15,
+  60, -50, 31, -50,
+  45, -40, 40, -36,
+  25, -60, -60, 16
+};
 #endif
 
-int8_t *par[] = {&lensFactor, &proportion, &sp, &pan, &tilt,
+int8_t *par[] = { &lensFactor, &proportion, &sp, &pan, &tilt,
                   &frontUpX, &backUpX, &frontDownX, &backDownX,
                   &frontUpY, &backUpY, &frontDownY, &backDownY,
-                  &frontUp,  &backUp,  &frontDown,  &backDown};
+                  &frontUp, &backUp, &frontDown, &backDown };
 
 #define MU_CAMERA
 // #define SENTRY1_CAMERA
@@ -33,8 +43,8 @@ void read_Sentry1Camera();
 #endif
 
 void cameraSetup() {
-  for ( byte i=0;i<sizeof(initPars)/sizeof(int8_t);i++)
-    *par[i]=initPars[i];
+  for (byte i = 0; i < sizeof(initPars) / sizeof(int8_t); i++)
+    *par[i] = initPars[i];
   transformSpeed = 0;
   widthCounter = 0;
 #ifdef MU_CAMERA
@@ -130,11 +140,14 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
                     + (feedBackArray[i][0] ? currentX * 10.0 / feedBackArray[i][0] : 0)
                     + (feedBackArray[i][1] ? currentY * 10.0 / feedBackArray[i][1] : 0);
         newCmd[j] = min(125, max(-125, adj));
-
+        // if (i > 13) {
+        // PT(i);
+        // PT('\t');
         // PT(adj);
         // PT('\t');
         // PT(int8_t(newCmd[j]));
         // PTF(",\t");
+        // }
       }
       PTL();
       cmdLen = DOF;
@@ -273,8 +286,7 @@ void read_MuCamera() {
     //-------ball------
     cameraBehavior(xCoord, yCoord, width);
     // FPS();
-  }
-   else if (millis() - noResultTime > 2000) {  // if no object is detected for 2 seconds, switch object
+  } else if (millis() - noResultTime > 2000) {  // if no object is detected for 2 seconds, switch object
     (*Mu).VisionEnd(object[objectIdx]);
     objectIdx = (objectIdx + 1) % (sizeof(object) / 2);
     (*Mu).VisionBegin(object[objectIdx]);
@@ -319,9 +331,9 @@ void sentry1CameraSetup() {
   // writeRegData(0x22, 0x10);  // set vision level: 0x10=Sensitive/Speed 0x20=balance(default if not set) 0x30=accurate ..........[UPDATE]
   delay(1000);
   PTLF("Sentry1 ready");
-  lensFactor = 10; // default value is 30 ..........[UPDATE]
-  proportion = 30; // default value is 20 ..........[UPDATE]
-  pan = 20; // default value is 15 ..........[UPDATE]
+  lensFactor = 10;  // default value is 30 ..........[UPDATE]
+  proportion = 30;  // default value is 20 ..........[UPDATE]
+  pan = 20;         // default value is 15 ..........[UPDATE]
   sp = 1;
 }
 
@@ -329,13 +341,13 @@ char frame_cnt = 0;
 
 void read_Sentry1Camera() {
   //  Serial.println("loop...");
-  
-  char frame_new = readRegData(0x1F); // update frame count ..........[UPDATE]
-  if (frame_new == frame_cnt) { // if frame is unchanged, delay some time and return ..........[UPDATE]
-    delay(10); // ..........[UPDATE]
-    return; //  ..........[UPDATE]
-  } //  ..........[UPDATE]
-  frame_cnt = frame_new; // update frame_cnt ..........[UPDATE]
+
+  char frame_new = readRegData(0x1F);  // update frame count ..........[UPDATE]
+  if (frame_new == frame_cnt) {        // if frame is unchanged, delay some time and return ..........[UPDATE]
+    delay(10);                         // ..........[UPDATE]
+    return;                            //  ..........[UPDATE]
+  }                                    //  ..........[UPDATE]
+  frame_cnt = frame_new;               // update frame_cnt ..........[UPDATE]
 
   char label = readRegData(0x89);  // read label/ value Low Byte, 1=detected, 0=undetected
   //  Serial.print("label: ");

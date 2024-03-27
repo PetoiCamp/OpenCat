@@ -31,7 +31,8 @@ class Tuner:
             self.calibButtonW = 4
 
         self.calibratorReady = True
-        self.setTuner(0, lensFactor)
+#        self.setTuner(0, lensFactor)
+        self.result = send(goodPorts, ['}', 0]) #get the initial values
         pars = self.showPara()
         for i in range(len(parName)):
             ORI = HORIZONTAL
@@ -55,12 +56,12 @@ class Tuner:
                     logger.debug(f"The stt is: {stt}")
             elif i<9:
                 clr = 'light yellow'
-                minScope = 0
+                minScope = -100
                 maxScope = 100
                 interval = 20
             elif i<13:
                 clr = 'light blue'
-                minScope = 0
+                minScope = -100
                 maxScope = 100
                 interval = 20
             else:

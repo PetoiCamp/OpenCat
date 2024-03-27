@@ -319,16 +319,18 @@ void reaction() {
 
 #ifdef T_TUNER
               else if (token == T_TUNER) {
-                *par[target[0]] = target[1];
-                PT(target[0]);
-                PT('\t');
-                PTL(target[1]);
+                if (inLen > 1) {
+                  *par[target[0]] = target[1];
+                  PT(target[0]);
+                  PT('\t');
+                  PTL(target[1]);
+                }
               }
 #endif
             } while (pch != NULL);
 #ifdef T_TUNER
             if (token == T_TUNER) {
-               for (byte p = 0; p < sizeof(initPars)/sizeof(int8_t); p++) {
+              for (byte p = 0; p < sizeof(initPars) / sizeof(int8_t); p++) {
                 PT(*par[p]);
                 PT('\t');
               }
