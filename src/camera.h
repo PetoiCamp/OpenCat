@@ -4,17 +4,23 @@ int xDiff, yDiff;                         //the scaled distance from the center 
 int currentX = 0, currentY = 0;           //the current x y of the camera's direction in the world coordinate
 int imgRangeX = 100;                      //the frame size 0~100 on X and Y direction
 int imgRangeY = 100;
-int f = 30;
-int p = 10;
-int pan = 10;
-int sp = 4;
-int u1 = 6;
-int u2 = 8;
-int d1 = 2;
-int d2 = 8;
+
+int8_t lensFactor, proportion, sp, pan, tilt, frontUpX, backUpX, frontDownX, backDownX, frontUpY, backUpY, frontDownY, backDownY, frontUp, backUp, frontDown, backDown;
+
+#ifdef BITTLE 
+int8_t initPars[]={30, 11, 4, 10, 0, 60, 80, 20, 80, 20, 30, 12, 30, 60, 90, 10, -30};
+#elif defined NYBBLE
+int8_t initPars[]={30, 11, 4, 10, 0, 60, 80, 20, 80, 20, 30, 12, 30, 6, -66, -70, 66};
+#endif
+
+int8_t *par[] = {&lensFactor, &proportion, &sp, &pan, &tilt,
+                  &frontUpX, &backUpX, &frontDownX, &backDownX,
+                  &frontUpY, &backUpY, &frontDownY, &backDownY,
+                  &frontUp,  &backUp,  &frontDown,  &backDown};
 
 #define MU_CAMERA
 // #define SENTRY1_CAMERA
+// #define TALL_TARGET
 
 #ifdef MU_CAMERA
 void muCameraSetup();
@@ -27,26 +33,21 @@ void read_Sentry1Camera();
 #endif
 
 void cameraSetup() {
-  par[0] = &f;
-  par[1] = &p;
-  par[2] = &pan;
-  par[3] = &sp;
-  par[4] = &u1;
-  par[5] = &u2;
-  par[6] = &d1;
-  par[7] = &d2;
+  for ( byte i=0;i<sizeof(initPars)/sizeof(int8_t);i++)
+    *par[i]=initPars[i];
   transformSpeed = 0;
   widthCounter = 0;
 #ifdef MU_CAMERA
   muCameraSetup();
 #endif
 #ifdef SENTRY1_CAMERA
-  f = 10;
-  p = 20;
+  lensFactor = 10;
+  proportion = 20;
   sentry1CameraSetup();
 #endif
   fps = 0;
   loopTimer = millis();
+  tQueue->addTask('k', "sit");
 }
 void showRecognitionResult(int xCoord, int yCoord, int width, int height = -1) {
   PT(xCoord);  // get vision result: x axes value
@@ -64,8 +65,9 @@ void showRecognitionResult(int xCoord, int yCoord, int width, int height = -1) {
 
 // #define WALK  //let the robot move its body to follow people rather than sitting at the original position \
               // it works the best on the table so the robot doesn't need to loop upward.
+// #define ROTATE
 void cameraBehavior(int xCoord, int yCoord, int width) {
-  showRecognitionResult(xCoord, yCoord, width);
+  // showRecognitionResult(xCoord, yCoord, width);
 #ifdef WALK
   if (width > 45 && width != 52)  //52 maybe a noise signal
     widthCounter++;
@@ -85,31 +87,71 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
   } else
 #endif
   {
-    xDiff = (xCoord - imgRangeX / 2) / (f / 10.0);  //max(min((xCoord - imgRangeX / 2) / 3, 32), -32);
-    yDiff = (yCoord - imgRangeY / 2) / (f / 10.0);  //max(min((yCoord - imgRangeY / 2) / 3, 24), -24);
-    currentX = max(min(currentX - xDiff, 90), -90) / (p / 10.0);
-    currentY = max(min(currentY - yDiff, 75), -75) / (p / 10.0);
+    xDiff = (xCoord - imgRangeX / 2.0);  //atan((xCoord - imgRangeX / 2.0) / (imgRangeX / 2.0)) * degPerRad;//almost the same
+    yDiff = (yCoord - imgRangeY / 2.0);  //atan((yCoord - imgRangeY / 2.0) / (imgRangeX / 2.0)) * degPerRad;
     if (abs(xDiff) > 1 || abs(yDiff) > 1) {
-      if (abs(currentX) < 45) {
-        int allParameter[DOF] = { currentX * pan / 10.0, 0, 0, 0,
-                                  0, 0, 0, 0,
-                                  75 - currentY / 2 + currentX / u1, 75 - currentY / 2 - currentX / u1, 90 + currentY / 3 - currentX / u2, 90 + currentY / 3 + currentX / u2,
-                                  int(10 + currentY / 1.2 - currentX / d1), int(10 + currentY / 1.2 + currentX / d1), -30 - currentY / 3 + currentX / d2, -30 - currentY / 3 - currentX / d2 };
-        //      transform(a, 4);
-        cmdLen = DOF;
-        token = T_LISTED_BIN;
-        for (byte i = 0; i < cmdLen; i++)
-          newCmd[i] = (int8_t)min(max(allParameter[i], -125), 125);
-        newCmd[cmdLen] = '~';
-        newCmdIdx = 6;
-        //      printList(newCmd);}
+      xDiff = xDiff / (lensFactor / 10.0);
+      yDiff = yDiff / (lensFactor / 10.0);
+      currentX = max(min(currentX - xDiff, 125), -125) / (proportion / 10.0);
+      currentY = max(min(currentY - yDiff, 125), -125) / (proportion / 10.0);
+
+      // PT('\t');
+      // PT(currentX);
+      // PT('\t');
+      // PTL(currentY);
+
+      // if (abs(currentX) < 60) {
+      int8_t base[] = { 0, 0, 0, 0,
+                        0, 0, 0, 0,
+                        frontUp, frontUp, backUp, backUp,
+                        -frontDown, -frontDown, backDown, backDown };
+      int8_t feedBackArray[][2] = {
+        { pan, 0 },
+        { 0, tilt },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { 0, 0 },
+        { frontUpX, -frontUpY },
+        { -frontUpX, -frontUpY },
+        { -backUpX, backUpY },
+        { backUpX, backUpY },
+        { -frontDownX, frontDownY },
+        { frontDownX, frontDownY },
+        { backDownX, -backDownY },
+        { -backDownX, -backDownY },
+      };
+      transformSpeed = sp;
+      for (int j = 0; j < DOF; j++) {
+        int i = j;
+        float adj = float(base[i])
+                    + (feedBackArray[i][0] ? currentX * 10.0 / feedBackArray[i][0] : 0)
+                    + (feedBackArray[i][1] ? currentY * 10.0 / feedBackArray[i][1] : 0);
+        newCmd[j] = min(125, max(-125, adj));
+
+        // PT(adj);
+        // PT('\t');
+        // PT(int8_t(newCmd[j]));
+        // PTF(",\t");
       }
+      PTL();
+      cmdLen = DOF;
+      token = T_LISTED_BIN;
+
+      newCmd[cmdLen] = '~';
+      newCmdIdx = 6;
+      //      printList(newCmd);}
+      // }
+#ifdef ROTATE
       else {
         tQueue->addTask('k', (currentX < 0 ? "vtR" : "vtL"), abs(currentX) * 40);  //spin its body to follow you
         tQueue->addTask('k', "sit");
         tQueue->addTask('i', "");
         currentX = 0;
       }
+#endif
     }
   }
 }
@@ -197,22 +239,20 @@ void muCameraSetup() {
     }
     delay(1000);
   } while (err != MU_OK);
-  //  shutServos();
-  //  counter = 0;
-  //  motion.loadBySkillName("rest");
-  //  transform(motion.dutyAngles);
+
   (*Mu).VisionBegin(object[objectIdx]);
   noResultTime = millis();
 }
 
 void read_MuCamera() {
   if ((*Mu).GetValue(object[objectIdx], kStatus)) {  // update vision result and get status, 0: undetected, other:
-    //      PTL(objectName[objectIdx]);
+    // PTL(objectName[objectIdx]);
     noResultTime = millis();  //update the timer
     xCoord = (int)(*Mu).GetValue(object[objectIdx], kXValue);
     yCoord = (int)(*Mu).GetValue(object[objectIdx], kYValue);
     width = (int)(*Mu).GetValue(object[objectIdx], kWidthValue);
     // height = (int)(*Mu).GetValue(VISION_BODY_DETECT, kHeightValue);
+    //-------ball------
     if (objectIdx == 1) {
       int ballType = (*Mu).GetValue(object[objectIdx], kLabel);
       if (lastBallType != ballType) {
@@ -230,9 +270,11 @@ void read_MuCamera() {
         lastBallType = ballType;
       }
     }
+    //-------ball------
     cameraBehavior(xCoord, yCoord, width);
-    FPS();
-  } else if (millis() - noResultTime > 2000) {  // if no object is detected for 2 seconds, switch object
+    // FPS();
+  }
+   else if (millis() - noResultTime > 2000) {  // if no object is detected for 2 seconds, switch object
     (*Mu).VisionEnd(object[objectIdx]);
     objectIdx = (objectIdx + 1) % (sizeof(object) / 2);
     (*Mu).VisionBegin(object[objectIdx]);
@@ -274,17 +316,27 @@ void sentry1CameraSetup() {
   PTLF("Setup sentry1");
   writeRegData(0x20, 0x07);  // set vision id: 7 (body for Sentry1)
   writeRegData(0x21, 0x01);  // enable vision
-  writeRegData(0x22, 0x10);  // set vision level: 0x10=Sensitive/Speed 0x20=balance(default if not set) 0x30=accurate
+  // writeRegData(0x22, 0x10);  // set vision level: 0x10=Sensitive/Speed 0x20=balance(default if not set) 0x30=accurate ..........[UPDATE]
   delay(1000);
   PTLF("Sentry1 ready");
-  f = 30;
-  p = 20;
-  // pan = 15;
+  lensFactor = 10; // default value is 30 ..........[UPDATE]
+  proportion = 30; // default value is 20 ..........[UPDATE]
+  pan = 20; // default value is 15 ..........[UPDATE]
   sp = 1;
 }
 
+char frame_cnt = 0;
+
 void read_Sentry1Camera() {
   //  Serial.println("loop...");
+  
+  char frame_new = readRegData(0x1F); // update frame count ..........[UPDATE]
+  if (frame_new == frame_cnt) { // if frame is unchanged, delay some time and return ..........[UPDATE]
+    delay(10); // ..........[UPDATE]
+    return; //  ..........[UPDATE]
+  } //  ..........[UPDATE]
+  frame_cnt = frame_new; // update frame_cnt ..........[UPDATE]
+
   char label = readRegData(0x89);  // read label/ value Low Byte, 1=detected, 0=undetected
   //  Serial.print("label: ");
   //  Serial.println(label);//

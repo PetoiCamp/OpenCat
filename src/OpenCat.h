@@ -301,7 +301,6 @@ int randomInterval = 2000;
 int uptime = -1;
 int frame = 0;
 byte tStep = 1;
-int **par = new int *[8];
 
 char token;
 char lowerToken;
