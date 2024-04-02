@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N_240327"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_240402"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 #define BUZZER 5
@@ -252,8 +252,6 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define EXTENSION 'X'
 #define EXTENSION_VOICE 'A'
 #define EXTENSION_ULTRASONIC 'U'
-
-// #define T_TUNER '}'
 
 
 float degPerRad = 180.0 / M_PI;

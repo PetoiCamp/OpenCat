@@ -1,11 +1,12 @@
 #include <Wire.h>
+#define T_TUNER '}'
 int xCoord, yCoord, width, widthCounter;  //the x y returned by the sensor
 int xDiff, yDiff;                         //the scaled distance from the center of the frame
 int currentX = 0, currentY = 0;           //the current x y of the camera's direction in the world coordinate
 int imgRangeX = 100;                      //the frame size 0~100 on X and Y direction
 int imgRangeY = 100;
 
-int8_t lensFactor, proportion, sp, pan, tilt, frontUpX, backUpX, frontDownX, backDownX, frontUpY, backUpY, frontDownY, backDownY, frontUp, backUp, frontDown, backDown;
+int8_t lensFactor, proportion, tranSpeed, pan, tilt, frontUpX, backUpX, frontDownX, backDownX, frontUpY, backUpY, frontDownY, backDownY, frontUp, backUp, frontDown, backDown;
 
 #ifdef BITTLE
 int8_t initPars[] = {
@@ -19,11 +20,11 @@ int8_t initPars[] = {
   30, 11, 4, 10, 15,
   60, -50, 31, -50,
   45, -40, 40, -36,
-  25, -60, -60, 16
+  25, -60, 60, 16
 };
 #endif
 
-int8_t *par[] = { &lensFactor, &proportion, &sp, &pan, &tilt,
+int8_t *par[] = { &lensFactor, &proportion, &tranSpeed, &pan, &tilt,
                   &frontUpX, &backUpX, &frontDownX, &backDownX,
                   &frontUpY, &backUpY, &frontDownY, &backDownY,
                   &frontUp, &backUp, &frontDown, &backDown };
@@ -114,7 +115,7 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
       int8_t base[] = { 0, 0, 0, 0,
                         0, 0, 0, 0,
                         frontUp, frontUp, backUp, backUp,
-                        -frontDown, -frontDown, backDown, backDown };
+                        frontDown, frontDown, backDown, backDown };
       int8_t feedBackArray[][2] = {
         { pan, 0 },
         { 0, tilt },
@@ -133,7 +134,7 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
         { backDownX, -backDownY },
         { -backDownX, -backDownY },
       };
-      transformSpeed = sp;
+      transformSpeed = tranSpeed;
       for (int j = 0; j < DOF; j++) {
         int i = j;
         float adj = float(base[i])
@@ -149,7 +150,7 @@ void cameraBehavior(int xCoord, int yCoord, int width) {
         // PTF(",\t");
         // }
       }
-      PTL();
+      // PTL();
       cmdLen = DOF;
       token = T_LISTED_BIN;
 
@@ -334,7 +335,7 @@ void sentry1CameraSetup() {
   lensFactor = 10;  // default value is 30 ..........[UPDATE]
   proportion = 30;  // default value is 20 ..........[UPDATE]
   pan = 20;         // default value is 15 ..........[UPDATE]
-  sp = 1;
+  tranSpeed = 1;
 }
 
 char frame_cnt = 0;
