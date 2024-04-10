@@ -12,6 +12,11 @@ long colors[] = { RGB_RED, RGB_PURPLE, RGB_GREEN, RGB_BLUE, RGB_YELLOW, RGB_WHIT
 long ultraTimer;
 int ultraInterval = 1000;
 float distance;
+#ifdef BITTLE
+int feedbackDirection = -1;
+#elif defined NYBBLE
+int feedbackDirection = 1;
+#endif
 void readRGBultrasonic() {
   if (millis() - ultraTimer > ultraInterval) {  //|| token == T_SKILL && millis() - ultraTimer > 3000) {
     ultraTimer = millis();
@@ -28,42 +33,62 @@ void readRGBultrasonic() {
       ultraInterval = 1000;
       //      autoSwitch = true;
       randomInterval = 1000;
-    } else if (distance > 40) {
+    } else if (distance > 60) {
       if (!manualEyeColorQ)
         mRUS04.SetRgbEffect(E_RGB_ALL, RGB_YELLOW, E_EFFECT_ROTATE);
-    } else if (distance < 2) {
-      token = T_SKILL;
-      strcpy(newCmd, "bk");
-      newCmdIdx = 6;
+    } else if (distance > 50) {
+      if (!manualEyeColorQ)
+        mRUS04.SetRgbEffect(E_RGB_ALL, RGB_BLUE, E_EFFECT_FLASH);
+    } else if (distance < 3) {
       ultraInterval = 2000;
       randomInterval = 5000;
-    } else if (distance < 4) {
+      tQueue->addTask('k', "str", 1000);
+      tQueue->addTask('k', "kvtF", 1500);
+      tQueue->addTask('k', "up");
+    } else if (distance < 6) {
       if (!manualEyeColorQ)
         mRUS04.SetRgbEffect(E_RGB_ALL, RGB_RED, E_EFFECT_FLASH);
       meow(random() % 3 + 1, distance * 2);
-      token = T_INDEXED_SIMULTANEOUS_BIN;
-      int8_t allRand[] = { 0, int8_t(currentAng[0] + random() % 20 - 10), 1, int8_t(currentAng[1] + random() % 20 - 10), 2, int8_t(currentAng[2] + random() % 80 - 40) };
-      cmdLen = 6;
+      int8_t allRand[] = { 0, int8_t(currentAng[0] + random() % 20 - 10), 1, int8_t(currentAng[1] + random() % 20 - 10), 2, int8_t(currentAng[2] + random() % 20 - 10) };
       //      for (byte i = 0; i < cmdLen; i++)
       //        newCmd[i] = (int8_t)allRand[i];
       arrayNCPY(newCmd, allRand, cmdLen);
       newCmd[cmdLen] = '~';
-      newCmdIdx = 6;
-    } else if (distance < 6) {
+      tQueue->addTask('I', newCmd);
+      tQueue->addTask('i', "");
+    } else if (distance < 10) {
       if (!manualEyeColorQ)
         mRUS04.SetRgbColor(E_RGB_ALL, RGB_RED);
-      token = T_SKILL;
-      strcpy(newCmd, "sit");
-      newCmdIdx = 6;
+      tQueue->addTask('k', "sit", 2000);
+      tQueue->addTask('k', "up");
     }
 
-    else {  //6~40
-      distance -= 6;
+    else {  //10~50
+      distance -= 9;
       if (!manualEyeColorQ)
-        mRUS04.SetRgbColor(E_RGB_ALL, colors[int(max(min(distance / 7, 5), 0))]);
-      token = T_LISTED_BIN;
+        mRUS04.SetRgbColor(E_RGB_ALL, colors[int(max(min(distance / 10, 5), 0))]);
+#ifdef BITTLE
       int mid[] = {
+        15,
         0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        30,
+        30,
+        90,
+        90,
+        30,
+        30,
+        -30,
+        -30,
+      };
+#elif defined NYBBLE
+      int mid[] = {
+        15,
         0,
         0,
         0,
@@ -80,10 +105,11 @@ void readRGBultrasonic() {
         -30,
         -30,
       };
-      int allParameter[] = { currentAng[0] * 2 / 3 - distance / 2, -10 + currentAng[1] * 2 / 3 + distance / 2, (distance * 3 - 50) * (random() % 50 < 1 ? int(random() % 2 - 1) : 1), 0,
+#endif
+      int allParameter[] = { mid[0] - distance / 2, -10 + distance / 2, distance * (random() % 50 < 1 ? int(random() % 2 - 1) : 1), 0,
                              0, 0, 0, 0,
-                             mid[8] - 15 + distance / 2, mid[9] - 15 + distance / 2, mid[10] - 30 + distance, mid[11] - 30 + distance,
-                             mid[12] + 35 - distance, mid[13] + 35 - distance, mid[14] + 40 - distance, mid[15] + 40 - distance };
+                             mid[8] - 15 + distance / 2, mid[9] - 15 + distance / 2, mid[10] - 30 + distance * feedbackDirection, mid[11] - 30 + distance * feedbackDirection,
+                             mid[12] + 35 - distance, mid[13] + 35 - distance, mid[14] + 40 - distance * feedbackDirection, mid[15] + 40 - distance * feedbackDirection };
       //      printList(allParameter);
       cmdLen = 16;
       for (byte i = 0; i < cmdLen; i++)
@@ -91,6 +117,7 @@ void readRGBultrasonic() {
       newCmd[cmdLen] = '~';
       newCmdIdx = 6;
       randomInterval = 5000;
+      tQueue->addTask('L', newCmd);
     }
   }
 }
