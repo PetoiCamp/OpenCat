@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N_240410"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_240412"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 #define BUZZER 5
@@ -510,7 +510,7 @@ void initRobot() {
   allCalibratedPWM(currentAng);  //soft boot for servos
   delay(500);
   lastCmd[0] = '\0';
-#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH || defined DOUBLE_INFRARED_DISTANCE
+#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH || defined DOUBLE_INFRARED_DISTANCE || defined ULTRASONIC
 #ifdef DOUBLE_INFRARED_DISTANCE
   doubleInfraredDistanceSetup();
 #endif
