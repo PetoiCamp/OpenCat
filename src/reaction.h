@@ -193,7 +193,7 @@ void reaction() {
           else {  // turn on the manual color mode
             manualEyeColorQ = true;
             long color = ((long)(uint8_t(newCmd[0])) << 16) + ((long)(uint8_t(newCmd[1])) << 8) + (long)(uint8_t(newCmd[2]));
-            mRUS04.SetRgbEffect(E_RGB_INDEX(uint8_t(newCmd[3])), color, uint8_t(newCmd[4]));
+            ultrasonic.SetRgbEffect(E_RGB_INDEX(uint8_t(newCmd[3])), color, uint8_t(newCmd[4]));
           }
           break;
         }
