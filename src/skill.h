@@ -329,10 +329,10 @@ public:
         mirror();
       frame = 0;
       transform(dutyAngles + frame * frameSize, angleDataRatio, transformSpeed, firstMotionJoint);
-// #ifdef NYBBLE
-//       for (byte i = 0; i < HEAD_GROUP_LEN; i++)
-//         targetHead[i] = currentAng[i];
-// #endif
+      // #ifdef NYBBLE
+      //       for (byte i = 0; i < HEAD_GROUP_LEN; i++)
+      //         targetHead[i] = currentAng[i];
+      // #endif
     }
   }
 
@@ -400,7 +400,10 @@ public:
       for (byte c = 0; c < abs(period); c++) {  //the last two in the row are transition speed and delay
                                                 //          PT("step "); PTL(c);
                                                 //          printList(dutyAngles + c * frameSize);
-
+        if (Serial.available()) {
+          loadFrame("up");
+          return;
+        }
         transform(dutyAngles + c * frameSize, angleDataRatio, dutyAngles[DOF + c * frameSize] / 4.0);
 
 #ifdef GYRO_PIN  //if opt out the gyro, the calculation can be really fast
