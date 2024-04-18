@@ -8,7 +8,7 @@
 // Jan 12, 2023
 #ifdef VOICE
 #include <SoftwareSerial.h>
-SoftwareSerial Serial2(8, 9);  //Rx, Tx
+SoftwareSerial Serial2(DIGITAL8, DIGITAL9);  //Rx, Tx
 #endif
 #define SERIAL2_BAUD_RATE 9600
 #define MAX_CUSTOMIZED_CMD 10

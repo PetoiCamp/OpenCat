@@ -13,10 +13,6 @@
 #define ADVANCED_PID  //use some compensation to make the robot adapt to different lighting conditions
 
 //-------
-#define MAX_READING 1024.0
-#define BASE_RANGE 1024.0
-#define ANALOG1 A2
-#define ANALOG2 A3
 
 #ifdef ADVANCED_PID
 #define PID
@@ -27,7 +23,7 @@
 #define CLIP_PANNING 60.0
 #define MIN_DIFFERENCE 5.0           // if the difference between two sensors is smaller than MIN_DIFFERENCE, we consider the light source is removed
 #define THRESHOLD_DARK_BRIGHT 120.0  //if the reading is lower than THRESHOLD_DARK_BRIGHT, it's considered as dark condition
-#define MAX_DIFF 150.0               //constrain the error in PID to avoid jumping
+#define MAX_DIFF 150.0               //constrain the errorLight in PID to avoid jumping
 
 double rate = 1.0 * MAX_READING / BASE_RANGE;
 
@@ -165,9 +161,9 @@ double light_correct(int ANALOG1_tocorrect, double result[2]) {
 
 //The following variable is used for the PID
 double result[2];
-double error = 0, lasterror = 0;
+double errorLight = 0, lasterror = 0;
 double integral_error = 0, differential_error = 0;
-double kp = 0, ki = 0, kd = 0;
+double kpLight = 0, kiLight = 0, kdLight = 0;
 double output = 0;  // the output of the controller;
 double ANALOG1_mean = 0, ANALOG2_mean = 0;
 int read_count = 24;
@@ -187,9 +183,9 @@ void init_lightsensor()  // init
   ANALOG2_mean = ANALOG2_mean / read_count;
 }
 void setpid_parm(double p, double i, double d) {
-  kp = p;
-  ki = i;
-  kd = d;
+  kpLight = p;
+  kiLight = i;
+  kdLight = d;
 }
 void get_error() {
 
@@ -197,43 +193,43 @@ void get_error() {
   diffANALOG1 = max(-MAX_DIFF, min(MAX_DIFF, diffANALOG1));
   diffANALOG2 = analogRead(ANALOG2) / rate - ANALOG2_mean;
   diffANALOG2 = max(-MAX_DIFF, min(MAX_DIFF, diffANALOG2));
-  error = diffANALOG2 - diffANALOG1;
-  error = 110 * atan(error / 90);  // the 110 and 90 are the fitting constants to rescale the error
+  errorLight = diffANALOG2 - diffANALOG1;
+  errorLight = 110 * atan(errorLight / 90);  // the 110 and 90 are the fitting constants to rescale the errorLight
 
-  lasterror = error;
+  lasterror = errorLight;
 }
 void compute_pid()  // get the output;
 {
 
-  differential_error = lasterror - error;
+  differential_error = lasterror - errorLight;
 
 #ifdef ADVANCED_PID
-  if (abs(error) > 150) {
+  if (abs(errorLight) > 150) {
     setpid_parm(0.1, 0.00, 0.00);
   } else {
     setpid_parm(0.18, 0.02, 0.03);
   }
-  if (0 < error < 10 && (diffANALOG1 + diffANALOG2) < 20 && (diffANALOG1 + diffANALOG2) > 5) {
+  if (0 < errorLight < 10 && (diffANALOG1 + diffANALOG2) < 20 && (diffANALOG1 + diffANALOG2) > 5) {
     ANALOG1_current = result[0] * analogRead(ANALOG1) / rate + result[1];
     ANALOG2_current = analogRead(ANALOG2) / rate;
-    error * 20 * sqrt((ANALOG1_mean + ANALOG2_mean) / (ANALOG1_current + ANALOG2_current));
+    errorLight * 20 * sqrt((ANALOG1_mean + ANALOG2_mean) / (ANALOG1_current + ANALOG2_current));
   }
-  if (0 < error < 10 && (diffANALOG1 + diffANALOG2) < -5) {
+  if (0 < errorLight < 10 && (diffANALOG1 + diffANALOG2) < -5) {
     ANALOG1_current = result[0] * analogRead(ANALOG1) / rate + result[1];
     ANALOG2_current = analogRead(ANALOG2) / rate;
-    error *= 5 * sqrt((ANALOG1_mean + ANALOG2_mean) / (ANALOG1_current + ANALOG2_current));
+    errorLight *= 5 * sqrt((ANALOG1_mean + ANALOG2_mean) / (ANALOG1_current + ANALOG2_current));
   }
 #else
-  if (abs(error) > 500) {
+  if (abs(errorLight) > 500) {
     integral_error = 0;
   }
 #endif
-  integral_error = integral_error + error;
+  integral_error = integral_error + errorLight;
   integral_error = max(-4500.0, min(4500.0, integral_error));
 
-  output = kp * error + ki * integral_error + kd * differential_error;
+  output = kpLight * errorLight + kiLight * integral_error + kdLight * differential_error;
   output = max(-MAX_PANNING, min(MAX_PANNING, output));
-  lasterror = error;
+  lasterror = errorLight;
   lastdiffANALOG1 = diffANALOG1;
 }
 void actuator()  // the actuator operates based on the value of output
@@ -249,7 +245,7 @@ void pid_reset() {
   if (lightRemovedQ) {
 
     calibratedPWM(0, 0);
-    error = 0;
+    errorLight = 0;
     lasterror = 0;
     integral_error = 0;
     differential_error = 0;
@@ -261,11 +257,11 @@ void reset_itself()// can reset the dog's head withoud using the intensity of th
 //but it destabilizes the PID system in some degree
 //so currently it is not be used until it is improved and well tested;                  
 {
-  if(abs(error)<5)
+  if(abs(errorLight)<5)
   {
     while(1)
     { 
-      double lasterror=error;
+      double lasterror=errorLight;
       double label1=0;
       double label2=0;
       if(pid_angle>0)
@@ -282,7 +278,7 @@ void reset_itself()// can reset the dog's head withoud using the intensity of th
       get_error();
       delay(20);
       //calibratedPWM(0,pid_angle);
-      if(abs(error)>10)
+      if(abs(errorLight)>10)
       {
         break;
       }
@@ -295,7 +291,7 @@ void reset_itself()// can reset the dog's head withoud using the intensity of th
 }
 */
 void light_disappear() {
-  if (error < MIN_DIFFERENCE && lightRemovedQ == 0) {
+  if (errorLight < MIN_DIFFERENCE && lightRemovedQ == 0) {
 
     double label1 = analogRead(ANALOG1) / rate;
     double label2 = analogRead(ANALOG2) / rate;
@@ -344,7 +340,7 @@ void read_doubleLight()  //  when using the Photoresistors, add this function to
   Serial.print('\t');
   Serial.print(ANALOG2_max);
   Serial.print('\t');
-  Serial.print(error);
+  Serial.print(errorLight);
   Serial.print('\t');
   Serial.print(output);
   Serial.print('\t');

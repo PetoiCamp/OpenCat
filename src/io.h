@@ -60,13 +60,15 @@ void read_serial() {
 }
 #ifdef MAIN_SKETCH
 void readSignal() {
+  byte moduleIndex = activeSensorIdx();
 #if defined IR_PIN
   if (!serialDominateQ)  //serial connection will disable infrared receiver
     read_infrared();     //  newCmdIdx = 1
 #endif
   read_serial();  //  newCmdIdx = 2
 #ifdef VOICE
-  read_voice();
+  if (moduleList[moduleIndex] == EXTENSION_VOICE)
+    read_voice();
 #endif
 #ifdef VOICE_LD3320
   read_voice_ld3320();
@@ -82,26 +84,36 @@ void readSignal() {
       ;
   } else if (token != T_CALIBRATE && current - idleTimer > 0) {
     serialDominateQ = false;
+
+    if (moduleIndex == -1)//no active sensor
+      return;
 #ifdef CAMERA
-    read_camera();
+    if (moduleList[moduleIndex] == EXTENSION_CAMERA_MU3)
+      read_camera();
 #endif
 #ifdef ULTRASONIC
-    readRGBultrasonic();
+    if (moduleList[moduleIndex] == EXTENSION_ULTRASONIC)
+      readRGBultrasonic();
 #endif
 #ifdef GESTURE
-    read_gesture();
+    if (moduleList[moduleIndex] == EXTENSION_GESTURE)
+      read_gesture();
 #endif
 #ifdef PIR
-    read_PIR();
+    if (moduleList[moduleIndex] == EXTENSION_PIR)
+      read_PIR();
 #endif
 #ifdef DOUBLE_TOUCH
-    read_doubleTouch();
+    if (moduleList[moduleIndex] == EXTENSION_DOUBLE_TOUCH)
+      read_doubleTouch();
 #endif
 #ifdef DOUBLE_LIGHT
-    read_doubleLight();
+    if (moduleList[moduleIndex] == EXTENSION_DOUBLE_LIGHT)
+      read_doubleLight();
 #endif
 #ifdef DOUBLE_INFRARED_DISTANCE
-    read_doubleInfraredDistance();
+    if (moduleList[moduleIndex] == EXTENSION_DOUBLE_IR_DISTANCE)
+      read_doubleInfraredDistance();
 #endif
 #ifdef RANDOM_MIND
     if (autoSwitch && newCmdIdx == 0)

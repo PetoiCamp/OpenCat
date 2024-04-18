@@ -1,4 +1,4 @@
-#define PIR_PIN 8
+#define PIR_PIN DIGITAL8
 bool previousPIR = false;
 
 void createPirTask() {  //this is an example task
@@ -9,7 +9,9 @@ void createPirTask() {  //this is an example task
   tQueue->addTask('k', "str", 2000);
   tQueue->addTask('k', "up");
 }
-
+void pirSetup() {
+  pinMode(PIR_PIN, INPUT);
+}
 void read_PIR() {
   bool currentPIR = digitalRead(PIR_PIN);
   PTL(currentPIR);

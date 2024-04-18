@@ -1,9 +1,11 @@
-#define TOUCH_PIN_L 6
-#define TOUCH_PIN_R 7
-byte touchIn[2] = { TOUCH_PIN_L, TOUCH_PIN_R };
+byte touchIn[2] = { DIGITAL6, DIGITAL7 };
 bool previousTouchState[2] = { false, false };
 bool currentTouchState[2];
 
+void touchSetup() {
+  pinMode(touchIn[0], INPUT);
+  pinMode(touchIn[1], INPUT);
+}
 void read_doubleTouch() {
   for (byte i = 0; i < 2; i++)
     currentTouchState[i] = digitalRead(touchIn[i]);

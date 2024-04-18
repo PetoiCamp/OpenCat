@@ -4,7 +4,7 @@
 
 #include "rgbUltrasonic/RgbUltrasonic.h"
 // #define REGULAR_ULTRASONIC
-RgbUltrasonic ultrasonic(6, 7);  //(signal, RGB)
+RgbUltrasonic ultrasonic(DIGITAL6, DIGITAL7);  //(signal, RGB)
 //RgbUltrasonic ultrasonic(8, 9);//(signal, RGB)
 //The RGB LED ultrasonic module should be plugged in the fourth grove socket with D6, D7
 

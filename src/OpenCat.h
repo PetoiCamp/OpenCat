@@ -1,7 +1,13 @@
-#define SOFTWARE_VERSION "N_240416"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_240418"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 #define BUZZER 5
+#define DIGITAL6 6
+#define DIGITAL7 7
+#define DIGITAL8 8
+#define DIGITAL9 9
+#define ANALOG1 A2
+#define ANALOG2 A3
 
 //#define SERVO_SLOW_BOOT
 
@@ -250,9 +256,14 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #endif
 
 #define EXTENSION 'X'
-#define EXTENSION_VOICE 'A'
+#define EXTENSION_DOUBLE_TOUCH 'T'
+#define EXTENSION_DOUBLE_LIGHT 'L'
+#define EXTENSION_DOUBLE_IR_DISTANCE 'D'
+#define EXTENSION_PIR 'I'
 #define EXTENSION_ULTRASONIC 'U'
-
+#define EXTENSION_GESTURE 'G'
+#define EXTENSION_CAMERA_MU3 'M'
+#define EXTENSION_VOICE 'A'
 
 float degPerRad = 180.0 / M_PI;
 float radPerDeg = M_PI / 180.0;
@@ -394,32 +405,7 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #define T_TASK_QUEUE 'q'
 #endif
 
-#ifdef VOICE
-#include "voice.h"
-#elif defined VOICE_LD3320
-#include "voiceLD3320.h"
-#elif defined CAMERA
-#include "camera.h"
-#elif defined ULTRASONIC
-#include "ultrasonic.h"
-#elif defined GESTURE
-#include "gesture.h"
-#elif defined PIR
-#include "pir.h"
-#elif defined DOUBLE_TOUCH
-#include "doubleTouch.h"
-#elif defined DOUBLE_LIGHT
-#include "doubleLight.h"
-#elif defined DOUBLE_INFRARED_DISTANCE
-#include "doubleInfraredDistance.h"
-#elif defined GROVE_SERIAL_PASS_THROUGH
-#define ULTRASONIC
-#include "ultrasonic.h"
-#elif defined OTHER_MODULES
-#elif defined ALL_RANDOM
-#else
-#define GYRO_PIN 0
-#endif
+#include "sensorManager.h"
 
 #endif
 
@@ -479,21 +465,22 @@ void initRobot() {
   tQueue = new TaskQueue();
 #endif
 
-#ifdef VOICE
-  voiceSetup();
-#endif
+  initSensorManager();
+// #ifdef VOICE
+//   voiceSetup();
+// #endif
 #ifdef VOICE_LD3320
   voiceLD3320Setup();
 #endif
-#ifdef CAMERA
-  cameraSetup();
-#endif
-#ifdef GESTURE
-  gestureSetup();
-#endif
-#ifdef DOUBLE_LIGHT
-  doubleLightSetup();
-#endif
+// #ifdef CAMERA
+//   cameraSetup();
+// #endif
+// #ifdef GESTURE
+//   gestureSetup();
+// #endif
+// #ifdef DOUBLE_LIGHT
+//   doubleLightSetup();
+// #endif
 #ifdef GYRO_PIN
   for (byte r = 0; r < 50; r++) {  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
     read_IMU();
@@ -511,9 +498,9 @@ void initRobot() {
   delay(500);
   lastCmd[0] = '\0';
 #if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH || defined DOUBLE_INFRARED_DISTANCE || defined ULTRASONIC
-#ifdef DOUBLE_INFRARED_DISTANCE
-  doubleInfraredDistanceSetup();
-#endif
+  // #ifdef DOUBLE_INFRARED_DISTANCE
+  //   doubleInfraredDistanceSetup();
+  // #endif
   skill.loadFrame("sit");  //required by double light
   delay(500);              //use your palm to cover the two light sensors for calibration
 #endif

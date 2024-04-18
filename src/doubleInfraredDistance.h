@@ -19,11 +19,10 @@ Rongzhong Li
 Petoi LLC
 2023 April 17
 */
-#define SENSOR1 A3
-#define SENSOR2 A2
+
 #define READING_COUNT 30
 #define SENSOR_DISPLACEMENT 3.7
-#define MAX_READING 1024
+
 
 #ifdef NyBoard_V1_0
 #define NEOPIXEL_PIN 10  //the code for NeoPixels have to be shrinked to fit in the board
@@ -42,14 +41,14 @@ bool makeSound = true;
 
 
 
-float kp = 0.5;        // Proportional gain
-float ki = 0.1;        // Integral gain
-float kd = 0.2;        // Derivative gain
+float kpDistance = 0.5;        // Proportional gain
+float kiDistance = 0.1;        // Integral gain
+float kdDistance = 0.2;        // Derivative gain
 float setpoint = 0;    // Target value
-float error = 0;       // Difference between setpoint and actual value
+float errorDistance = 0;       // Difference between setpoint and actual value
 float integral = 0;    // Running sum of errors over time
-float derivative = 0;  // Rate of change of error over time
-float last_error = 0;  // Error in the previous iteration
+float derivative = 0;  // Rate of change of errorDistance over time
+float last_error = 0;  // errorDistance in the previous iteration
 float currentX = 0;    // Control signal sent to the sensors
 
 float d = SENSOR_DISPLACEMENT;  // Displacement of sensors on the x-axis
@@ -59,7 +58,7 @@ int meanA = 0, meanB = 0, diffA_B = 0, actualDiff = 0, last = 0;
 int longThres = 20;
 
 void resetPID() {
-  error = 0;
+  errorDistance = 0;
   last_error = 0;
   integral = 0;
   derivative = 0;
@@ -89,25 +88,25 @@ void distanceNaive(float dLeft, float dRight) {  //a simple feedback loop withou
 void distancePID(float dLeft, float dRight) {
   // Read the current distances from the sensors
   if (minD < longThres) {
-    // Calculate the error between the setpoint and the actual values, taking into account the x-axis displacement
-    //error = atan((dLeft - dRight) / SENSOR_DISPLACEMENT) * degPerRad;
-    error = dLeft - dRight - setpoint;
-    if (fabs(error) > 1) {
+    // Calculate the errorDistance between the setpoint and the actual values, taking into account the x-axis displacement
+    //errorDistance = atan((dLeft - dRight) / SENSOR_DISPLACEMENT) * degPerRad;
+    errorDistance = dLeft - dRight - setpoint;
+    if (fabs(errorDistance) > 1) {
       // Calculate the integral and derivative terms
-      integral = max(-900, min(900, integral + error));
-      derivative = error - last_error;
+      integral = max(-900, min(900, integral + errorDistance));
+      derivative = errorDistance - last_error;
 
       // Calculate the control signal using the PID formula
-      currentX = -max(-90, min(90, kp * error + ki * integral + kd * derivative));
+      currentX = -max(-90, min(90, kpDistance * errorDistance + kiDistance * integral + kdDistance * derivative));
 
       // Send the control signal to the sensors to adjust their angles
       calibratedPWM(0, currentX, 0);
-      // Save the current error for use in the next iteration
-      last_error = error;
+      // Save the current errorDistance for use in the next iteration
+      last_error = errorDistance;
     }
   }
   // PT('\t');
-  // PT(error);
+  // PT(errorDistance);
   // PT('\t');
   // PT(integral);
   // PT('\t');
@@ -130,14 +129,14 @@ void doubleInfraredDistanceSetup() {
 }
 
 void readDistancePins() {
-  rawL = analogRead(SENSOR1) - 24;
-  rawR = analogRead(SENSOR2) - 24;
+  rawL = analogRead(ANALOG2) - 24;
+  rawR = analogRead(ANALOG1) - 24;
   dL = rawL < 30 ? rawL / 4.0 : 200.0 / sqrt(MAX_READING - rawL);
   dR = rawR < 30 ? rawR / 4.0 : 200.0 / sqrt(MAX_READING - rawR);
   meanD = (dL + dR) / 2;
   maxD = max(dL, dR);
   minD = min(dL, dR);
-  if (1) {
+  if (0) {
     PT("rL ");
     PT(rawL);
     PT("\trR ");

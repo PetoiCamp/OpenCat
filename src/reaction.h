@@ -409,6 +409,18 @@ void reaction() {
         }
       case EXTENSION:
         {
+          //check if the module is activated
+          int8_t moduleIndex = (cmdLen == 0        // with only 'X'
+                                || newCmd[0] < 48  //if the serial monitor is set to send a newline or carriage return
+                                )
+                                 ? -2                         //want to close the sensors
+                                 : indexOfSensor(newCmd[0]);  //-1 means not found
+                                                              // >0 are existing sensors
+
+          if (moduleIndex == -2 || moduleIndex >= 0 && !sensorActivatedQ[moduleIndex])
+            reconfigureTheActiveModule(moduleIndex);
+
+          //deal with the following command
           switch (newCmd[0]) {
 #ifdef VOICE
             case EXTENSION_VOICE:
@@ -519,6 +531,7 @@ void reaction() {
               ))
         token = T_SKILL;
     }
+    showSensorStatus();
     resetCmd();
   }
 
