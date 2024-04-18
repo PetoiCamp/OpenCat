@@ -514,8 +514,10 @@ void initRobot() {
 #ifdef DOUBLE_INFRARED_DISTANCE
   doubleInfraredDistanceSetup();
 #endif
+#ifndef GROVE_SERIAL_PASS_THROUGH
   skill.loadFrame("sit");  //required by double light
   delay(500);              //use your palm to cover the two light sensors for calibration
+#endif
 #endif
   //----------------------------------
 #else  // ** save parameters to device's static memory
