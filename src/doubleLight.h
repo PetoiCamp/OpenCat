@@ -25,8 +25,6 @@
 #define THRESHOLD_DARK_BRIGHT 120.0  //if the reading is lower than THRESHOLD_DARK_BRIGHT, it's considered as dark condition
 #define MAX_DIFF 150.0               //constrain the errorLight in PID to avoid jumping
 
-double rate = 1.0 * MAX_READING / BASE_RANGE;
-
 #ifdef PID
 double mean_array_d(double array[], int start, int end, double scar) {
   double mean = 0;

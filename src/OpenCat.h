@@ -22,6 +22,10 @@
 //#include "InstinctBittleShortExample.h"
 #endif
 
+#define MAX_READING 1024.0
+#define BASE_RANGE 1024.0
+double rate = 1.0 * MAX_READING / BASE_RANGE;
+
 #define DOF 16
 
 #ifdef NYBBLE

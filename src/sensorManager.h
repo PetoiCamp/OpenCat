@@ -1,6 +1,3 @@
-#define MAX_READING 1024.0
-#define BASE_RANGE 1024.0
-
 #ifdef VOICE
 #include "voice.h"
 #endif

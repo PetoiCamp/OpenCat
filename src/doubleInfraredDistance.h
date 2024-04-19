@@ -131,8 +131,8 @@ void doubleInfraredDistanceSetup() {
 void readDistancePins() {
   rawL = analogRead(ANALOG2) - 24;
   rawR = analogRead(ANALOG1) - 24;
-  dL = rawL < 30 ? rawL / 4.0 : 200.0 / sqrt(MAX_READING - rawL);
-  dR = rawR < 30 ? rawR / 4.0 : 200.0 / sqrt(MAX_READING - rawR);
+  dL = rawL < 30 ? rawL / 4.0 : 200.0 / sqrt(BASE_RANGE - rawL);
+  dR = rawR < 30 ? rawR / 4.0 : 200.0 / sqrt(BASE_RANGE - rawR);
   meanD = (dL + dR) / 2;
   maxD = max(dL, dR);
   minD = min(dL, dR);
