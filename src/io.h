@@ -82,27 +82,37 @@ void readSignal() {
       ;
   } else if (token != T_CALIBRATE && current - idleTimer > 0) {
     serialDominateQ = false;
+    
 #ifdef CAMERA
     read_camera();
 #endif
-#ifndef GROVE_SERIAL_PASS_THROUGH && defined ULTRASONIC
+
+#ifndef GROVE_SERIAL_PASS_THROUGH
+#ifdef ULTRASONIC
     readRGBultrasonic();
 #endif
+#endif
+
 #ifdef GESTURE
     read_gesture();
 #endif
+
 #ifdef PIR
     read_PIR();
 #endif
+
 #ifdef DOUBLE_TOUCH
     read_doubleTouch();
 #endif
+
 #ifdef DOUBLE_LIGHT
     read_doubleLight();
 #endif
+
 #ifdef DOUBLE_INFRARED_DISTANCE
     read_doubleInfraredDistance();
 #endif
+
 #ifdef RANDOM_MIND
     if (autoSwitch && newCmdIdx == 0)
       randomMind();  //make the robot do random demos
