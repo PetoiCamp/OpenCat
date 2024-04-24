@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N_240416"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_240424"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 #define BUZZER 5
@@ -295,7 +295,7 @@ float currentAdjust[DOF] = {};
 #define IDLE_TIME 3000
 long idleTimer = 0;
 int randomInterval = 2000;
-#define CHECK_BATTERY_PERIOD 5000  //every 10 seconds. 60 mins -> 3600 seconds
+#define CHECK_BATTERY_PERIOD 10000  //every 10 seconds. 60 mins -> 3600 seconds
 int uptime = -1;
 int frame = 0;
 byte tStep = 1;
@@ -433,7 +433,6 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 
 #ifdef GROVE_SERIAL_PASS_THROUGH
 #undef IR_PIN
-#undef BUZZER
 #endif
 
 #include "skill.h"

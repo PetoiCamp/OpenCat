@@ -21,11 +21,14 @@ bool lowBattery() {
   if (currentTime > uptime) {
     uptime = currentTime;
     int voltage = analogRead(VOLTAGE_DETECTION_PIN);
-    if (voltage < LOW_VOLTAGE && (voltage == lastVoltage || uptime < 2)) {  //if battery voltage < threshold, it needs to be recharged
+    if (voltage < LOW_VOLTAGE && (voltage == lastVoltage || uptime < 2)) {  // if the battery still holds charges but fluctuates during moving, it will only alarm for the first two times
+                                                                            //if battery voltage < threshold, it needs to be recharged
       //give the robot a break when voltage drops after sprint
       //adjust the thresholds according to your batteries' voltage
       //if set too high, the robot will stop working when the battery still has power.
       //If too low, the robot may not alarm before the battery shuts off
+
+
       PTF("Low power:");
       PT(voltage / 99);
       PTL('V');
@@ -45,7 +48,6 @@ bool lowBattery() {
       //        bStep = -1;
       //      delay(5);
       //    }
-      delay(2000);
       lastVoltage = voltage;
       return true;
     }
@@ -417,7 +419,7 @@ void reaction() {
                 break;
               }
 #endif
-#ifdef ULTRASONIC
+#ifdef GROVE_SERIAL_PASS_THROUGH
             case EXTENSION_ULTRASONIC:
               {
                 PT('=');
