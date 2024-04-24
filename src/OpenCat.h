@@ -413,7 +413,6 @@ float protectiveShift;  //reduce the wearing of the potentiometer
 #elif defined DOUBLE_INFRARED_DISTANCE
 #include "doubleInfraredDistance.h"
 #elif defined GROVE_SERIAL_PASS_THROUGH
-#define ULTRASONIC
 #include "ultrasonic.h"
 #elif defined OTHER_MODULES
 #elif defined ALL_RANDOM

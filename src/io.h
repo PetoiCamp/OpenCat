@@ -85,7 +85,7 @@ void readSignal() {
 #ifdef CAMERA
     read_camera();
 #endif
-#ifndef GROVE_SERIAL_PASS_THROUGH && defined ULTRASONIC
+#ifdef ULTRASONIC
     readRGBultrasonic();
 #endif
 #ifdef GESTURE
