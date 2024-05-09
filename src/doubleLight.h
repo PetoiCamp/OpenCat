@@ -199,8 +199,6 @@ void get_error() {
   diffANALOG2 = max(-MAX_DIFF, min(MAX_DIFF, diffANALOG2));
   error = diffANALOG2 - diffANALOG1;
   error = 110 * atan(error / 90);  // the 110 and 90 are the fitting constants to rescale the error
-
-  lasterror = error;
 }
 void compute_pid()  // get the output;
 {
@@ -216,12 +214,12 @@ void compute_pid()  // get the output;
   if (0 < error < 10 && (diffANALOG1 + diffANALOG2) < 20 && (diffANALOG1 + diffANALOG2) > 5) {
     ANALOG1_current = result[0] * analogRead(ANALOG1) / rate + result[1];
     ANALOG2_current = analogRead(ANALOG2) / rate;
-    error * 20 * sqrt((ANALOG1_mean + ANALOG2_mean) / (ANALOG1_current + ANALOG2_current));
+    error *= 5 * sqrt((ANALOG1_mean + ANALOG2_mean) / (ANALOG1_current + ANALOG2_current));
   }
   if (0 < error < 10 && (diffANALOG1 + diffANALOG2) < -5) {
     ANALOG1_current = result[0] * analogRead(ANALOG1) / rate + result[1];
     ANALOG2_current = analogRead(ANALOG2) / rate;
-    error *= 5 * sqrt((ANALOG1_mean + ANALOG2_mean) / (ANALOG1_current + ANALOG2_current));
+    error *= 3 * sqrt((ANALOG1_mean + ANALOG2_mean) / (ANALOG1_current + ANALOG2_current));
   }
 #else
   if (abs(error) > 500) {
