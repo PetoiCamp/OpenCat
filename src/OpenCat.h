@@ -489,6 +489,17 @@ void initRobot() {
 #ifdef GESTURE
   gestureSetup();
 #endif
+
+#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH || defined DOUBLE_INFRARED_DISTANCE || defined ULTRASONIC
+#ifdef DOUBLE_INFRARED_DISTANCE
+  doubleInfraredDistanceSetup();
+#endif
+#ifndef GROVE_SERIAL_PASS_THROUGH
+  skill.loadFrame("sit");  //required by double light
+  delay(500);              //use your palm to cover the two light sensors for calibration
+#endif
+#endif
+
 #ifdef DOUBLE_LIGHT
   doubleLightSetup();
 #endif
@@ -508,16 +519,7 @@ void initRobot() {
   allCalibratedPWM(currentAng);  //soft boot for servos
   delay(500);
   lastCmd[0] = '\0';
-#if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH || defined DOUBLE_INFRARED_DISTANCE || defined ULTRASONIC
-#ifdef DOUBLE_INFRARED_DISTANCE
-  doubleInfraredDistanceSetup();
-#endif
-#ifndef GROVE_SERIAL_PASS_THROUGH
-  skill.loadFrame("sit");  //required by double light
-  delay(500);              //use your palm to cover the two light sensors for calibration
-#endif
-#endif
-  //----------------------------------
+//----------------------------------
 #else  // ** save parameters to device's static memory
   configureEEPROM();
   servoSetup();  //servo needs to be after configureEEPROM and before imuSetup

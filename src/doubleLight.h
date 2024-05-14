@@ -245,7 +245,6 @@ void actuator()  // the actuator operates based on the value of output
 }
 void pid_reset() {
   if (lightRemovedQ) {
-
     calibratedPWM(0, 0);
     error = 0;
     lasterror = 0;
