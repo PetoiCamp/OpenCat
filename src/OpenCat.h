@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N_240509"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_240514"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 #define BUZZER 5
@@ -491,18 +491,18 @@ void initRobot() {
 #endif
 
 #if defined DOUBLE_LIGHT || defined DOUBLE_TOUCH || defined DOUBLE_INFRARED_DISTANCE || defined ULTRASONIC
-#ifdef DOUBLE_INFRARED_DISTANCE
-  doubleInfraredDistanceSetup();
-#endif
 #ifndef GROVE_SERIAL_PASS_THROUGH
   skill.loadFrame("sit");  //required by double light
   delay(500);              //use your palm to cover the two light sensors for calibration
 #endif
+#ifdef DOUBLE_INFRARED_DISTANCE
+  doubleInfraredDistanceSetup();
 #endif
-
 #ifdef DOUBLE_LIGHT
   doubleLightSetup();
 #endif
+#endif
+
 #ifdef GYRO_PIN
   for (byte r = 0; r < 50; r++) {  //ypr is slow when starting up. leave enough time between IMU initialization and this reading
     read_IMU();
