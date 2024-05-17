@@ -777,10 +777,14 @@ const int8_t zz[] PROGMEM = {
 #if !defined(MAIN_SKETCH) || !defined(I2C_EEPROM)
 		//if it's not the main sketch to save data or there's no external EEPROM, 
 		//the list should always contain all information.
+
+//For the BiBoard with ESP32, there is plenty of flash RAM so MAIN_SKETCH is never defined and the skills are in flash RAM, not in EEPROM.  -ee
   const int8_t* progmemPointer[] = {bdF, bk, bkL, crF, crL, jpF, phF, phL, trF, trL, vtF, vtL, wkF, wkL, balance, buttUp, calib, dropped, lifted, lnd, rest, sit, str, up, zero, ang, bf, bx, chr, ck, cmh, dg, ff, fiv, gdb, hds, hg, hi, hsk, hu, jmp, kc, mw, nd, pd, pee, pu, pu1, rc, rl, scrh, snf, tbl, ts, wh, zz, };
+
 #else	//only need to know the pointers to newbilities, because the intuitions have been saved onto external EEPROM,
 	//while the newbilities on progmem are assigned to new addresses
   const int8_t* progmemPointer[] = {zero, };
+
 #endif
 //the total byte of instincts is 7677
 //the maximal array size is 317 bytes of wkF. 
