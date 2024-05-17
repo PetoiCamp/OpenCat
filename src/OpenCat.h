@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N_240514"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_240517"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 #define BUZZER 5
@@ -332,7 +332,7 @@ bool fineAdjust = true;
 bool gyroBalanceQ = true;
 bool printGyro = false;
 bool walkingQ = false;
-bool serialDominateQ = false;
+// bool serialDominateQ = false;
 bool manualHeadQ = false;
 bool nonHeadJointQ = false;
 bool hardServoQ = true;

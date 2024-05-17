@@ -12,7 +12,7 @@ char getUserInputChar() {  //take only the first character, allow "no line endin
 
 void read_serial() {
   if (Serial.available() > 0) {
-    serialDominateQ = true;
+    // serialDominateQ = true;
     token = Serial.read();
     lowerToken = tolower(token);
     newCmdIdx = 2;
@@ -61,8 +61,8 @@ void read_serial() {
 #ifdef MAIN_SKETCH
 void readSignal() {
 #if defined IR_PIN
-  if (!serialDominateQ)  //serial connection will disable infrared receiver
-    read_infrared();     //  newCmdIdx = 1
+  // if (!serialDominateQ)  //serial connection will disable infrared receiver
+  read_infrared();  //  newCmdIdx = 1
 #endif
   read_serial();  //  newCmdIdx = 2
 #ifdef VOICE
@@ -81,7 +81,7 @@ void readSignal() {
 #endif
       ;
   } else if (token != T_CALIBRATE && current - idleTimer > 0) {
-    serialDominateQ = false;
+    // serialDominateQ = false;
 #ifdef CAMERA
     read_camera();
 #endif
