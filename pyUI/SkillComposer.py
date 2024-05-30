@@ -206,7 +206,7 @@ class SkillComposer:
         time.sleep(2)
         res = send(goodPorts, ['G', 0])
         printH("gyro status:",res )
-        if res != -1 and res[0] == 'G':
+        if res != -1 and res[0][0] == 'G':
             res = send(goodPorts, ['G', 0])
             printH("gyro status:",res )
         self.window.focus_force()    # force the main interface to get focus

@@ -51,7 +51,7 @@ if not config.useMindPlus:
     # printH("txt('lan'):", txt('lan'))
 
 
-printH("ardSerial date: ", "Feb 2, 2024")
+printH("ardSerial date: ", "May. 23, 2024")
 
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):
@@ -621,6 +621,7 @@ def checkPortList(PortList, allPorts, needTesting=True):
             if t.is_alive():
                 t.join(8)
 
+
 def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None):
     # portList is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
     # allPorts is a string list which delete the duplicated port(Reserve the name of the serial port that contains the usbmodem)
@@ -698,7 +699,7 @@ def showSerialPorts(allPorts):
                     print(p, end='\n\n')
 
                 
-def connectPort(PortList, needTesting=True, needSendTask=True):
+def connectPort(PortList, needTesting=True, needSendTask=True, needOpenPort=True):
     global initialized
     global goodPortCount
     allPorts = Communication.Print_Used_Com()
@@ -706,21 +707,32 @@ def connectPort(PortList, needTesting=True, needSendTask=True):
 
     if len(allPorts) > 0:
         goodPortCount = 0
-        checkPortList(PortList, allPorts, needTesting)
+        if needOpenPort is True:
+            checkPortList(PortList, allPorts, needTesting)
     initialized = True
-    if len(PortList) == 0:
-        print('No port found! Please make sure the serial port can be recognized by the computer first.')
-        if not config.useMindPlus:
-            print('Replug mode')
-            replug(PortList, needSendTask)
+    if needOpenPort is True:
+        if len(PortList) == 0:
+            print('No port found! Please make sure the serial port can be recognized by the computer first.')
+            if not config.useMindPlus:
+                print('Replug mode')
+                replug(PortList, needSendTask, needOpenPort)
+        else:
+            logger.info(f"Connect to serial port list:")
+            for p in PortList:
+                logger.debug(f"datatype of p : {type(p)}")
+                logger.info(f"{PortList[p]}")
+                portStrList.append(PortList[p])
     else:
-        logger.info(f"Connect to serial port list:")
-        for p in PortList:
-            logger.debug(f"datatype of p : {type(p)}")
-            logger.info(f"{PortList[p]}")
-            portStrList.append(PortList[p])
+        if len(allPorts) == 0 or len(allPorts) > 1:
+            print('Replug mode')
+            replug(PortList, needSendTask, needOpenPort)
+        else:   # len(allPorts) == 1
+            portName = allPorts[0].split('/')[-1]
+            portStrList.insert(0, portName)    # remove '/dev/' in the port name
+
+
                                 
-def replug(PortList, needSendTask=True):
+def replug(PortList, needSendTask=True, needOpenPort=True):
     global timePassed
     print('Please disconnect and reconnect the device from the COMPUTER side')
     
@@ -771,18 +783,22 @@ def replug(PortList, needSendTask=True):
             else:
                 dif = list(set(curPorts)-set(ap))
                 dif = deleteDuplicatedUsbSerial(dif)
+                print("diff:",end=" ")
+                print(dif)
                 
                 success = False
                 for p in dif:
                     try:
-                        serialObject = Communication(p, 115200, 1)
                         portName = p.split('/')[-1]
-                        PortList.update({serialObject: portName})
+                        if needOpenPort is True:
+                            logger.info(f"Connected to serial port: {p}")
+                            serialObject = Communication(p, 115200, 1)
+                            PortList.update({serialObject: portName})
                         portStrList.insert(0, portName)  # remove '/dev/' in the port name
                         goodPortCount += 1
-                        logger.info(f"Connected to serial port: {p}")
                         tk.messagebox.showinfo(title=txt('Info'), message=txt('New port prompt') + portName)
-                        if needSendTask is True:
+
+                        if (needOpenPort is True) and (needSendTask is True):
                             time.sleep(2)
                             result = sendTask(PortList, serialObject, ['?', 0])
                             getModelAndVersion(result)
@@ -791,19 +807,23 @@ def replug(PortList, needSendTask=True):
                     except Exception as e:
                         raise e
                         print("Cannot open {}".format(p))
+                for p in ap:
+                    # logger.debug(f"datatype of p : {type(p)}")
+                    # logger.info(f"{PortList[p]}")
+                    portStrList.append(p)
 
                 if success:
                     window.destroy()
                 else:
                     labelT.destroy()
                     label.destroy()
-                    manualSelect(PortList, window, needSendTask)
+                    manualSelect(PortList, window, needSendTask, needOpenPort)
                 return
 
         if time.time() - start > thres:
             labelT.destroy()
             label.destroy()
-            manualSelect(PortList, window, needSendTask)
+            manualSelect(PortList, window, needSendTask, needOpenPort)
             return
         elif (time.time() - start) % 1 < 0.1:
             print(thres - round(time.time() - start) // 1)
@@ -813,7 +833,7 @@ def replug(PortList, needSendTask=True):
     window.focus_force()  # new window gets focus
     window.mainloop()
     
-def selectList(PortList,ls,win, needSendTask=True):
+def selectList(PortList,ls,win, needSendTask=True, needOpenPort=True):
     
     global goodPortCount
     for i in ls.curselection():
@@ -821,24 +841,26 @@ def selectList(PortList,ls,win, needSendTask=True):
         try:
             print(p)
             print(p.split('/')[-1])
-            serialObject = Communication(p, 115200, 1)
-            PortList.update({serialObject: p.split('/')[-1]})
+            if needOpenPort is True:
+                serialObject = Communication(p, 115200, 1)
+                PortList.update({serialObject: p.split('/')[-1]})
             portStrList.append(p.split('/')[-1])
             goodPortCount += 1
             logger.info(f"Connected to serial port: {p}")
             
-            if needSendTask is True:
+            if (needOpenPort is True) and (needSendTask is True):
                 time.sleep(2)
                 result = sendTask(PortList, serialObject, ['?', 0])
                 getModelAndVersion(result)
-            win.destroy()
+            win.withdraw()
 
         except Exception as e:
             tk.messagebox.showwarning(title=txt('Warning'), message=txt('* Port ') + p + txt(' cannot be opened'))
             print("Cannot open {}".format(p))
             raise e
+    win.destroy()
 
-def manualSelect(PortList, window, needSendTask=True):
+def manualSelect(PortList, window, needSendTask=True, needOpenPort=True):
     allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
     window.title(txt('Manual mode'))
     l1 = tk.Label(window, font = 'sans 14 bold')
@@ -856,14 +878,16 @@ def manualSelect(PortList, window, needSendTask=True):
             ls.insert(tk.END,p)
     for p in allPorts:
         ls.insert(tk.END,p)
-    bu = tk.Button(window, text=txt('OK'), command=lambda:selectList(PortList, ls, window, needSendTask))
+    bu = tk.Button(window, text=txt('OK'), command=lambda:selectList(PortList, ls, window, needSendTask, needOpenPort))
     bu.grid(row=2, column=1)
     bu2 = tk.Button(window, text=txt('Refresh'), command=lambda:refreshBox(ls))
     bu2.grid(row=1, column=1)
     tk.messagebox.showwarning(title=txt('Warning'), message=txt('Manual mode'))
     window.mainloop()
-    
+
+#if need to open serial port, use objects goodPorts
 goodPorts = {}      # goodPorts is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
+
 portStrList = []    # portStrList is the serial port string list
 initialized = False
 goodPortCount = 0

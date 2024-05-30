@@ -24,8 +24,8 @@ def txt(key):
     
 class Uploader:
     def __init__(self,model,lan):
-        connectPort(goodPorts, needTesting=False, needSendTask=False)
-        closeAllSerial(goodPorts, clearPorts=False)
+        connectPort(goodPorts, needTesting=False, needSendTask=False, needOpenPort=False)
+        # closeAllSerial(goodPorts, clearPorts=False)
         self.win = Tk()
         self.OSname = self.win.call('tk', 'windowingsystem')
         self.shellOption = True
@@ -41,15 +41,23 @@ class Uploader:
         self.bParaUpload = True
         self.bFacReset = False
         self.bModPara = False
+        self.bIMUerror = False
         Grid.rowconfigure(self.win, 0, weight=1)
         Grid.columnconfigure(self.win, 0, weight=1)
         self.strProduct = StringVar()
         global language
         language = lan
-        self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Camera','Mind+']))
-        self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'RandomMind', 'Voice', 'Ultrasonic', 'RandomMind_Ultrasonic','Mind+']))
-        self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
-        self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
+        # self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera','Ultrasonic', 'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture', 'InfraredDistance']))
+        # self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera','Ultrasonic', 'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture', 'InfraredDistance']))
+        # for NyBoard, the mode is the same between Bittle and Nybble now
+        self.NyBoardModes = list(map(lambda x: txt(x),
+                                           ['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera', 'Ultrasonic',
+                                            'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture',
+                                            'InfraredDistance']))
+        # self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'Camera','Ultrasonic','PIR','Touch','Light','Gesture']))
+        # self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
+        # for BiBoard, the mode is the same between Bittle and Nybble now
+        self.BiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
         if self.strProduct.get() == 'Bittle X':
@@ -209,18 +217,13 @@ class Uploader:
         self.labMode = ttk.Label(fmMode, text=txt('labMode'), font=('Arial', 16))
         self.labMode.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
-        if self.strProduct.get() == 'Bittle':
+        if self.strProduct.get() == 'Bittle' or self.strProduct.get() == 'Nybble':
             if 'NyBoard' in self.strBoardVersion.get():
-                cbModeList = self.BittleNyBoardModes
+                cbModeList = self.NyBoardModes
             else:
-                cbModeList = self.BittleBiBoardModes
-        elif self.strProduct.get() == 'Nybble':
-            if 'NyBoard' in self.strBoardVersion.get():
-                cbModeList = self.NybbleNyBoardModes
-            else:
-                cbModeList = self.NybbleBiBoardModes
+                cbModeList = self.BiBoardModes
         elif self.strProduct.get() == 'Bittle X':
-            cbModeList = self.BittleBiBoardModes
+            cbModeList = self.BiBoardModes
 
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', font=12)
         # set default value of Combobox
@@ -357,18 +360,13 @@ class Uploader:
         self.setActiveOption()
 
     def updateMode(self):
-        if self.strProduct.get() == 'Bittle':
+        if self.strProduct.get() == 'Bittle' or self.strProduct.get() == 'Nybble':
             if 'NyBoard' in self.strBoardVersion.get():
-                modeList = self.BittleNyBoardModes
+                modeList = self.NyBoardModes
             else:
-                modeList = self.BittleBiBoardModes
-        elif self.strProduct.get() == 'Nybble':
-            if 'NyBoard' in self.strBoardVersion.get():
-                modeList = self.NybbleNyBoardModes
-            else:
-                modeList = self.NybbleBiBoardModes
-        if self.strProduct.get() == 'Bittle X':
-            modeList = self.BittleBiBoardModes
+                modeList = self.BiBoardModes
+        elif self.strProduct.get() == 'Bittle X':
+            modeList = self.BiBoardModes
 
         self.cbMode['values'] = modeList
 
@@ -443,7 +441,9 @@ class Uploader:
         bCount = False
         bResetMode = False
         retMsg = False
+        self.bIMUerror = False
         prompStr = ""
+        counterIMU = 0
         while True:
             time.sleep(0.01)
             if serObj.main_engine.in_waiting > 0:
@@ -521,6 +521,18 @@ class Uploader:
                                 elif prompStr.find("assurance") != -1:
                                     serObj.Send_data(self.encode("n"))
                                     continue
+                        elif prompStr.find(questionMark) == -1 and self.bModPara:
+                            if prompStr[:3] == "IMU":
+                                if progress > 0 and retMsg:
+                                    self.strStatus.set(promptList[progress - 1]['result'])
+                                    self.statusBar.update()
+                                counterIMU += 1
+                                if counterIMU == 3:
+                                    self.bIMUerror = True
+                                    self.strStatus.set(txt('caliIMUerrorStatus'))
+                                    self.statusBar.update()
+                                    break
+
                         if prompStr.find("sent to mpu.setXAccelOffset") != -1 or prompStr.find("Ready!") != -1:
                             if strBoardVersion in NyBoard_version_list:
                                 if retMsg:
@@ -552,6 +564,10 @@ class Uploader:
         serObj.Close_Engine()
         logger.info("close the serial port.")
         self.force_focus()
+
+        if self.bIMUerror and strBoardVersion in NyBoard_version_list:
+            messagebox.showwarning(txt('Warning'), message=txt('caliIMUerrorMessage'))
+            return
 
         if not self.bFacReset and strBoardVersion in NyBoard_version_list:
             messagebox.showinfo(title=None, message=txt('parameterFinish'))
@@ -620,8 +636,13 @@ class Uploader:
             uploadStage = ['Parameters', 'Main function']
             for s in range(len(uploadStage)):
                 # if s == 0 and self.bParaUploaded and self.currentSetting[:4] == self.lastSetting[:4]:
+                # for NyBoard uplod mode only
                 if s == 0 and (not self.bParaUpload):
-                    continue
+                    continue               # no need upload configuration firmware
+                # if calibrate IMU failed
+                elif s == 1 and self.bIMUerror:
+                    continue               # no need upload main function firmware
+
                 self.strStatus.set(txt('Uploading') + txt(uploadStage[s]) + '...' )
                 self.win.update()
                 # self.inProgress = True
@@ -641,14 +662,18 @@ class Uploader:
                     avrdudeconfPath = '/etc/'            # Debian / Ubuntu
                 else:
                     avrdudePath = resourcePath + 'avrdudeMac/'
-                print()
+
                 try:
-                    if self.OSname == 'x11':     # Linuxself.OSname == 'x11':     # Linux
-                        check_call(avrdudePath + 'avrdude -C' + avrdudeconfPath + 'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
-                                (port, filename[s]), shell=self.shellOption)
+                    # for NyBoard factory reset or upgrade firmware
+                    if s == 0 and self.bIMUerror:    # alread upload configuration firmware,but calibrate IMU failed
+                        pass                         # no need upload configuration firmware again
                     else:
-                        check_call(avrdudePath+'avrdude -C'+avrdudePath+'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
-                                (port, filename[s]), shell=self.shellOption)
+                        if self.OSname == 'x11':     # Linuxself.OSname == 'x11':     # Linux
+                            check_call(avrdudePath + 'avrdude -C' + avrdudeconfPath + 'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+                                    (port, filename[s]), shell=self.shellOption)
+                        else:
+                            check_call(avrdudePath + 'avrdude -C' + avrdudePath + 'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+                                    (port, filename[s]), shell=self.shellOption)
                 # self.inProgress = False
                 except:
                     status = txt(uploadStage[s]) + txt('failed to upload')
@@ -667,21 +692,28 @@ class Uploader:
                 else:
                     pass
         elif strBoardVersion in BiBoard_version_list:
-            if strMode == "Standard":
-                modeName = "Standard_Voice"
-                # fnBootLoader = path + 'OpenCatEsp32Standard_Voice.ino.bootloader.bin'
-                fnBootLoader = path + 'OpenCatEsp32' + modeName + '.ino.bootloader.bin'
-                # fnPartitions = path + 'OpenCatEsp32Standard_Voice.ino.partitions.bin'
-                fnPartitions = path + 'OpenCatEsp32' + modeName + '.ino.partitions.bin'
-                # fnMainFunc = path + 'OpenCatEsp32Standard_Voice.ino.bin '
-                fnMainFunc = path + 'OpenCatEsp32' + modeName + '.ino.bin '
-            else:
-                # fnBootLoader = path + 'OpenCatEsp32strMode.ino.bootloader.bin'
-                fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
-                # fnPartitions = path + 'OpenCatEsp32strMode.ino.partitions.bin'
-                fnPartitions = path + 'OpenCatEsp32' + strMode + '.ino.partitions.bin'
-                # fnMainFunc = path + 'OpenCatEsp32strMode.ino.bin '
-                fnMainFunc = path + 'OpenCatEsp32' + strMode + '.ino.bin '
+            modeName = "Standard"
+            # fnBootLoader = path + 'OpenCatEsp32Standard.ino.bootloader.bin'
+            fnBootLoader = path + 'OpenCatEsp32' + modeName + '.ino.bootloader.bin'
+            # fnPartitions = path + 'OpenCatEsp32Standard.ino.partitions.bin'
+            fnPartitions = path + 'OpenCatEsp32' + modeName + '.ino.partitions.bin'
+            # fnMainFunc = path + 'OpenCatEsp32Standard.ino.bin '
+            fnMainFunc = path + 'OpenCatEsp32' + modeName + '.ino.bin '
+            # if strMode == "Standard":
+            #     modeName = "Standard_Voice"
+            #     # fnBootLoader = path + 'OpenCatEsp32Standard_Voice.ino.bootloader.bin'
+            #     fnBootLoader = path + 'OpenCatEsp32' + modeName + '.ino.bootloader.bin'
+            #     # fnPartitions = path + 'OpenCatEsp32Standard_Voice.ino.partitions.bin'
+            #     fnPartitions = path + 'OpenCatEsp32' + modeName + '.ino.partitions.bin'
+            #     # fnMainFunc = path + 'OpenCatEsp32Standard_Voice.ino.bin '
+            #     fnMainFunc = path + 'OpenCatEsp32' + modeName + '.ino.bin '
+            # else:
+            #     # fnBootLoader = path + 'OpenCatEsp32strMode.ino.bootloader.bin'
+            #     fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
+            #     # fnPartitions = path + 'OpenCatEsp32strMode.ino.partitions.bin'
+            #     fnPartitions = path + 'OpenCatEsp32' + strMode + '.ino.partitions.bin'
+            #     # fnMainFunc = path + 'OpenCatEsp32strMode.ino.bin '
+            #     fnMainFunc = path + 'OpenCatEsp32' + strMode + '.ino.bin '
             fnBootApp = path + 'boot_app0.bin'
 
             filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
@@ -720,8 +752,10 @@ class Uploader:
             self.strMode.set(txt('Standard'))
         self.saveConfigToFile(defaultConfPath)
             
-        print('Finish!')
-        messagebox.showinfo(title=None, message=txt('msgFinish'))
+        # for there is no calibrate IMU error
+        if not self.bIMUerror:
+            print('Finish!')
+            messagebox.showinfo(title=None, message=txt('msgFinish'))
         self.force_focus()  # force the main interface to get focus
         return True
         

@@ -1,5 +1,5 @@
-versionNum = '1.1.9'
-dateStr = '2024-03-01'
+versionNum = '1.2.0'
+dateStr = '2024-05-30'
 
 textEN = {
     'lan':'English',
@@ -100,7 +100,8 @@ textEN = {
 
     'Manual mode':'Manual mode',
     'Replug mode':'Replug mode',
-    'Replug prompt':'''WARNING: Connection Failed!\n\n
+    # 'Replug prompt':'''WARNING: Connection Failed!\n\n
+    'Replug prompt':'''WARNING: \n\n
 * If the main board is NOT connected to the computer:\n
 Click the button below. Connect the USB cable to the main board, then plug the other end to the COMPUTER. \n\n
 * If the main board is already connected to the computer via a USB cable:\n
@@ -185,12 +186,16 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     Note: Lay the mainboard FLAT on a table!''',
     'calibrating IMU': 'Calibrating IMU...',
     'IMU calibrated': 'Calibrate IMU complete!',
-    
+    'caliIMUerrorStatus':'IMU Calibration Error!',
+
     'parameterFinish': '''Parameters initialized!
      The next step is uploading the Main Function!''',
     '9685 Calibrated':'PCA9685 has been calibrated successfully!',
     'msgFinish': 'Firmware upload complete!',
     'msgMode': 'Invalide, please select another mode!',
+    'caliIMUerrorMessage': '''Please dial the I2C switch to the Arduino side! for more details, refer to:\n
+https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
+Then re-upgrade the firmware.\n''',
 
     'Standard':'Standard',
     'RandomMind':'RandomMind',
@@ -199,6 +204,11 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     'Camera':'Camera',
     'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'RandomMind_Ultrasonic',
+    'PIR':'PIR',
+    'Touch':'Touch',
+    'Light':'Light',
+    'Gesture':'Gesture',
+    'InfraredDistance':'InfraredDistance',
     
     'Breath':'Breath',
     'Rotate':'Rotate',
@@ -341,7 +351,8 @@ textCN = {
 
     'Manual mode':'手动模式',
     'Replug mode':'重新拔插',
-    'Replug prompt':'''警告：连接失败！\n\n
+    # 'Replug prompt':'''警告：连接失败！\n\n
+    'Replug prompt':'''警告：\n\n
 * 如果主板未连接到计算机：\n
 点击下面的按钮，将USB数据线连接到主板，然后将另一端插入电脑。\n\n
 * 如果主板已经通过USB数据线连接到计算机：\n
@@ -407,13 +418,17 @@ textCN = {
             注意: 请务必将主板保持水平放置！''' ,
     'calibrating IMU': 'IMU校准中...',
     'IMU calibrated': 'IMU校准完成！',
-            
+    'caliIMUerrorStatus':'IMU 校准错误！',
             
     'parameterFinish': '''参数初始化完成！
                        接下来将开始上传主程序！''',
     '9685 Calibrated':'PCA9685校准完成！',
     'msgFinish': '固件上传完成！',
     'msgMode': '无效模式，请选择其他模式！',
+    'caliIMUerrorMessage': '''请将 I2C 开关拨到 Arduino 侧。有关更多详细信息，请参阅:\n
+https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
+然后，重新升级固件。\n''',
+
     'Standard':'标准',
     'RandomMind':'随机',
     'Ultrasonic':'超声波',
@@ -421,6 +436,11 @@ textCN = {
     'Camera':'摄像头',
     'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'随机_超声波',
+	'PIR':'人体移动',
+    'Touch':'触摸',
+    'Light':'光敏',
+    'Gesture':'手势',
+    'InfraredDistance':'红外测距',
     'Parameters':'参数',
     'Main function':'主程序',
     'Time consuming': '大约需要30秒',
@@ -574,7 +594,8 @@ textCN_TW = {
 
     'Manual mode':'手動模式',
     'Replug mode':'重新拔插',
-    'Replug prompt':'''警告：連線失敗！\n\n
+    # 'Replug prompt':'''警告：連線失敗！\n\n
+    'Replug prompt':'''警告：\n\n
 * 如果主機板未連接到電腦：\n
 點擊下面的按鈕後，將USB資料線連接到主機板，然後將另一端插入電腦。\n\n
 * 如果主機板已經通過USB資料線連接到電腦：\n
@@ -639,13 +660,17 @@ textCN_TW = {
             注意: 請務必將主板保持水平放置！''' ,
     'calibrating IMU': 'IMU校準中......',
     'IMU calibrated': 'IMU校準完成！',
-            
+    'caliIMUerrorStatus':'IMU 校正錯誤！',
             
     'parameterFinish': '''參數初始化完成！
                        接下來將開始上傳主程序！''',
     '9685 Calibrated':'PCA9685校準完成！',
     'msgFinish': '固件上傳完成!',
     'msgMode': '無效模式，請選擇其他模式!',
+    'caliIMUerrorMessage': '''請將 I2C 開關撥到 Arduino 側。有关更多详细信息，請參閱:\n
+https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
+然後，重新升級韌體。\n''',
+
     'Standard':'標準',
     'RandomMind':'随機',
     'Ultrasonic':'超聲波',
@@ -653,6 +678,11 @@ textCN_TW = {
     'Camera':'鏡頭',
     'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'随機_超聲波',
+	'PIR':'人體移動',
+    'Touch':'觸摸',
+    'Light':'光敏',
+    'Gesture':'手勢',
+    'InfraredDistance':'紅外線測距',
     'Parameters':'參數',
     'Main function':'主程序',
     'Time consuming': '大約需要30秒',
@@ -803,7 +833,8 @@ textDE = {
 
     'Manual mode':'Manueller Modus',
     'Replug mode':'Replug-Modus',
-    'Replug prompt':'''WARNUNG: Verbindung fehlgeschlagen! \n\n
+    # 'Replug prompt':'''WARNUNG: Verbindung fehlgeschlagen! \n\n
+    'Replug prompt':'''WARNUNG: \n\n
 * Wenn die Hauptplatine NICHT mit dem Computer verbunden ist:\n
 Klicken Sie auf die Schaltfläche unten. Verbinden Sie das USB-Kabel mit der Hauptplatine und stecken Sie dann das andere Ende in den COMPUTER. \n\n
 * Wenn die Hauptplatine bereits über ein USB-Kabel mit dem Computer verbunden ist:\n
@@ -889,12 +920,16 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     Hinweis: Legen Sie das Mainboard FLACH auf einen Tisch!''',
     'calibrating IMU': 'IMU wird kalibriert...',
     'IMU calibrated': 'IMU erfolgreich kalibriert!',
+    'caliIMUerrorStatus':'IMU-Kalibrierungsfehler!',
 
     'parameterFinish': '''Parameter initialisiert!
     Der nächste Schritt ist das Hochladen der Hauptfunktion!''',
     '9685 Calibrated':'PCA9685 wurde erfolgreich kalibriert!',
     'msgFinish': 'Firmware-Hochladen abgeschlossen!',
     'msgMode': 'Ungültig, bitte wählen Sie einen anderen Modus!',
+    'caliIMUerrorMessage': '''Bitte schalten Sie den I2C-Schalter auf die Arduino-Seite. Weitere Informationen finden Sie unter:\n
+https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
+Aktualisieren Sie dann die Firmware erneut.\n''',
 
     'Standard':'Standard',
     'RandomMind':'Zufallsmodus',
@@ -903,6 +938,11 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     'Camera':'Kamera',
     'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'Zufallsmodus_Ultraschall',
+	'PIR':'Passiv-infrarot',
+    'Touch':'Berührung',
+    'Light':'Licht',
+    'Gesture':'Geste',
+    'InfraredDistance':'Infrarot-Entfernung',
 
     'Breath':'Atmen',
     'Rotate':'Drehen',
@@ -1041,7 +1081,8 @@ textTH = {
 
     'Manual mode':'โหมดแมนนวล',
     'Replug mode':'โหมดเสียบปลั๊ก',
-    'Replug prompt':'''แจ้งเตือน: การเชื่อมต่อล้มเหลว! \n\n
+    # 'Replug prompt':'''แจ้งเตือน: การเชื่อมต่อล้มเหลว! \n\n
+    'Replug prompt':'''แจ้งเตือน: \n\n
 * ถ้าเมนบอร์ดไม่ได้เชื่อมต่อกับคอมพิวเตอร์:\n
 คลิกปุ่มด้านล่าง ต่อสาย USB เข้ากับเมนบอร์ด จากนั้นเสียบปลายอีกด้านเข้ากับคอมพิวเตอร์ \n\n
 * หากเมนบอร์ดเชื่อมต่อกับคอมพิวเตอร์ผ่านสาย USB อยู่แล้ว:\n
@@ -1126,12 +1167,16 @@ textTH = {
     หมายเหตุ: วางเมนบอร์ดให้ราบไปกับบนโต๊ะ!''',
     'calibrating IMU': 'กำลังปรับแต่ง IMU...',
     'IMU calibrated': 'ปรับแต่ง IMU เสร็จสมบูรณ์!',
+    'caliIMUerrorStatus':'ข้อผิดพลาดในการ калиเบรท IMU!',
 
     'parameterFinish': '''ตั้งค่าพารามิเตอร์เสร็จแล้ว!
      ขั้นตอนถัดไปคือการโหลดฟังก์ชันหลัก!''',
     '9685 Calibrated':'PCA9685 ได้รับการปรับเทียบเรียบร้อยแล้ว!',
     'msgFinish': 'การโหลดเฟิร์มแวร์เสร็จสมบูรณ์!',
     'msgMode': 'ไม่ถูกต้อง โปรดเลือกโหมดอื่น!',
+    'caliIMUerrorMessage': '''โปรดเปลี่ยนสวิตช์ I2C ไปที่ด้าน Arduino สำหรับรายละเอียดเพิ่มเติม โปรดดูที่:\n
+https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
+จากนั้นอัปเกรดเฟิร์姆แวร์ใหม่อีกครั้ง\n''',
 
     'Standard':'มาตรฐาน',
     'RandomMind':'จิตใจสุ่ม',
@@ -1140,6 +1185,11 @@ textTH = {
     'Camera':'กล้อง',
     'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'จิตใจสุ่ม_อัลตราโซนิก',
+	'PIR':'อินฟราเรดแบบพาสซีฟ',
+    'Touch':'สัมผัส',
+    'Light':'แสง',
+    'Gesture':'ท่าทาง',
+    'InfraredDistance':'ระยะทางอินฟราเรด',
 
     'Breath':'หายใจ',
     'Rotate':'หมุน',
@@ -1279,7 +1329,8 @@ textFR={
 
     'Manual mode':'Mode manuel',
     'Replug mode':'Mode Replug',
-    'Replug prompt':'''ATTENTION : Echec de la connexion! \n\n
+    # 'Replug prompt':'''ATTENTION: Echec de la connexion! \n\n
+    'Replug prompt':'''ATTENTION: \n\n
 * Si la carte principale N'EST PAS connectée à l'ordinateur :\n
 Cliquez sur le bouton ci-dessous. Connectez le câble USB à la carte principale, puis branchez l'autre extrémité sur l'ORDINATEUR. \n\n
 * Si la carte principale est déjà connectée à l'ordinateur via un câble USB :\n
@@ -1363,11 +1414,16 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
         Remarque : Placez la carte principale À PLAT sur une table !''',
     'calibrating IMU': 'Calibration de l\'IMU en cours...',
     'IMU calibrated': 'Calibration de l\'IMU terminée !',
+    'caliIMUerrorStatus':'Erreur de calibrage IMU!',
+
      'parameterFinish': '''Paramètres initialisés !
      La prochaine étape consiste à télécharger la Fonction Principale !''',
     '9685 Calibrated':'PCA9685 a été calibré avec succès !',
     'msgFinish': 'Téléchargement du micrologiciel terminé !',
     'msgMode': 'Mode invalide, veuillez sélectionner un autre mode !',
+    'caliIMUerrorMessage': '''Veuillez mettre le commutateur I2C sur le côté Arduino. Pour plus de détails, veuillez vous référer à:\n
+https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
+Puis, re-mettez à niveau le firmware.\n''',
 
     'Standard':'Standard',
     'RandomMind':'RandomMind',
@@ -1376,6 +1432,11 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
     'Camera':'Caméra',
     'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'RandomMind_Ultrasonic',
+	'PIR':'Infrarouge passif',
+    'Touch':'Toucher',
+    'Light':'Lumière',
+    'Gesture':'Geste',
+    'InfraredDistance':'Distance infrarouge',
 
     'Breath':'Respiration',
     'Rotate':'Rotation',
@@ -1514,7 +1575,8 @@ textJP={
 
     'Manual mode':'マニュアルモード',
     'Replug mode':'リプラグモード',
-    'Replug prompt':'''警告：接続に失敗しました！\n\n
+    # 'Replug prompt':'''警告：接続に失敗しました！\n\n
+    'Replug prompt':'''警告：\n\n
 * メインボードがコンピュータに接続されていない場合：\n
 以下のボタンをクリックしてください。 USBケーブルをメインボードに接続し、他の端をコンピュータに接続してください。\n\n
 * メインボードがすでにUSBケーブルを介してコンピュータに接続されている場合：\n
@@ -1590,10 +1652,16 @@ https://www.petoi.com\n''' + dateStr,
     'calibrate IMU?':'IMUをキャリブレーションしますか？（Y/N）\n注：メインボードをテーブルの上に平らに置いてください！',
     'calibrating IMU':'IMUをキャリブレーション中...',
     'IMU calibrated':'IMUのキャリブレーションが完了しました！',
+    'caliIMUerrorStatus':'IMUキャリブレーションエラー!',
+
     'parameterFinish':'パラメータが初期化されました！次のステップはメイン機能のアップロードです！',
     '9685 Calibrated':'PCA9685が正常にキャリブレーションされました！',
     'msgFinish':'ファームウェアのアップロードが完了しました！',
     'msgMode':'無効です。別のモードを選択してください！',
+    'caliIMUerrorMessage': '''I2C スイッチを Arduino 側に切り替えてください。 詳細については、\n
+https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
+を参照してください。
+それから、ファームウェアを再アップグレードしてください。\n''',
    
     'Standard':'標準',
     'RandomMind':'ランダムマインド',
@@ -1602,6 +1670,11 @@ https://www.petoi.com\n''' + dateStr,
     'Camera':'カメラ',
     'Mind+':'マインド+',
     'RandomMind_Ultrasonic':'ランダムマインド_超音波',
+	'PIR':'パッシブ赤外線',
+    'Touch':'タッチ',
+    'Light':'光',
+    'Gesture':'ジェスチャー',
+    'InfraredDistance':'赤外線距離',
 
     'Breath':'呼吸',
     'Rotate':'回転',
@@ -1734,7 +1807,8 @@ textIT = {
 
     'Manual mode':'Modalità manuale',
     'Replug mode':'Modalità di ricarica',
-    'Replug prompt':'''ATTENZIONE: Connessione fallita!\n\n
+    # 'Replug prompt':'''ATTENZIONE: Connessione fallita!\n\n
+    'Replug prompt':'''ATTENZIONE: \n\n
 * Se la scheda principale NON è collegata al computer:\n
 Fare clic sul pulsante in basso. Collegare il cavo USB alla scheda principale, quindi collegare l\'altra estremità al COMPUTER. \n\n
 * Se la scheda principale è già collegata al computer tramite un cavo USB:\n
@@ -1816,12 +1890,17 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     Nota: Appoggia la scheda madre PIATTA su un tavolo!''',
     'calibrating IMU': 'Taratura dell\'IMU...',
     'IMU calibrated': 'Calibrazione IMU completata!',
-    
+    'caliIMUerrorStatus':'Errore di calibrazione IMU!',
+
     'parameterFinish': '''Parametri inizializzati!
      Il prossimo passo è caricare la funzione principale!''',
     '9685 Calibrated':'PCA9685 è stato calibrato con successo!',
     'msgFinish': 'Caricamento del firmware completato!',
     'msgMode': 'Non valido, selezionare un\'altra modalità!',
+    'caliIMUerrorMessage': '''Si prega di spostare l'interruttore I2C sul lato Arduino. Per maggiori dettagli, consultare:\n
+https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
+Quindi, aggiornare nuovamente il firmware.\n''',
+
     'Standard':'Standard',
     'RandomMind':'MenteCasuale',
     'Ultrasonic':'Ultrasonico',
@@ -1829,6 +1908,11 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'Camera':'Telecamera',
     'Mind+':'Mind+',
     'RandomMind_Ultrasonic':'MenteCasuale_Ultrasonico',
+	'PIR':'Infrarosso passivo',
+    'Touch':'Tatto',
+    'Light':'Luce',
+    'Gesture':'Gesto',
+    'InfraredDistance':'Distanza infrarossa',
     
     'Breath':'Respiro',
     'Rotate':'Ruotare',
