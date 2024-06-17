@@ -14,6 +14,8 @@ void loop() {
 
   Serial.print("0 1024 ");
   Serial.print(analogRead(IN1));
+  delay(5);
   Serial.print('\t');
   Serial.println(analogRead(IN2));
+  delay(5);
 }

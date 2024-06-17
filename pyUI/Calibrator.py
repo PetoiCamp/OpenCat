@@ -82,12 +82,11 @@ class Calibrator:
                 ORI = VERTICAL
                 LEN = 150
                 ALIGN = 'sw'
-
+            stt = NORMAL
             if i in NaJoints[self.model]:
-                stt = DISABLED
+#                stt = DISABLED
                 clr = 'light yellow'
             else:
-                stt = NORMAL
                 clr = 'yellow'
             if i in range(8, 12):
                 sideLabel = txt(sideNames[i % 8]) + '\n'

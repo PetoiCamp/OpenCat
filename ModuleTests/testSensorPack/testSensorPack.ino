@@ -214,6 +214,7 @@ void testDoubleAnalog(int test) {
     int brightness = 255 * sensorReading / 1024;
     strip.setPixelColor(thisSensor + 5, strip.Color(brightness, brightness, brightness));
     strip.show();
+    delay(10);
   }
   if (printValue)
     Serial.print(sen[0] - sen[1]);

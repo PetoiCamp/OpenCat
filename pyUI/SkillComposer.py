@@ -287,12 +287,11 @@ class SkillComposer:
                     COL = centerWidth + 2 + i // 4
                 ORI = VERTICAL
                 LEN = 150
-
+            stt = NORMAL
             if i in NaJoints[self.model]:
-                stt = DISABLED
+#                stt = DISABLED
                 clr = 'light yellow'
             else:
-                stt = NORMAL
                 clr = 'yellow'
             if i in range(8, 12):
                 sideLabel = txt(sideNames[i % 8]) + '\n'
@@ -678,7 +677,7 @@ class SkillComposer:
 
             for i in range(16):
                 if i in NaJoints[self.model]:
-                    stt = DISABLED
+#                    stt = DISABLED
                     clr = 'light yellow'
                 else:
                     stt = NORMAL
@@ -1592,6 +1591,7 @@ class SkillComposer:
                     send(ports, ['I', [idx, value], 0.05])
                 else:
                     send(ports, ['i', [idx, value], 0.05])
+                    
             else:
                 diff = value - self.frameData[4 + idx]
                 indexedList = list()
@@ -1604,7 +1604,7 @@ class SkillComposer:
                     send(ports, ['L', self.frameData[4:20], 0.05])
                 elif len(indexedList):
                     send(ports, ['I', indexedList, 0.05])
-
+                    
             self.indicateEdit()
             self.updateSliders(self.frameData)
 
