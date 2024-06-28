@@ -9,10 +9,11 @@
 from FirmwareUploader import *
 from SkillComposer import *
 from Calibrator import *
+from Debugger import *
 from tkinter import PhotoImage
 
 language = languageList['English']
-apps = ['Firmware Uploader', 'Joint Calibrator', 'Skill Composer']  # ,'Task Scheduler']
+apps = ['Firmware Uploader', 'Joint Calibrator', 'Skill Composer', 'Debugger']  # ,'Task Scheduler']
 
 
 def txt(key):
@@ -69,7 +70,7 @@ class UI:
         self.OSname = self.window.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
             self.window.iconbitmap(resourcePath + 'Petoi.ico')
-            self.window.geometry('398x270+800+400')
+            self.window.geometry('398x360+800+400')
         elif self.OSname == 'aqua':
             self.window.geometry('+800+400')
             self.backgroundColor = 'gray'
@@ -162,6 +163,8 @@ class UI:
         elif app == 'Skill Composer':
             self.showBootPrompt("skil")
             SkillComposer(model, language)
+        elif app == 'Debugger':
+            Debugger(model, language)
         elif app == 'Task Scheduler':
             print('schedule')
 

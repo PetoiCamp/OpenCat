@@ -1,5 +1,5 @@
-versionNum = '1.2.0'
-dateStr = '2024-05-30'
+versionNum = '1.2.1'
+dateStr = '2024-06-25'
 
 textEN = {
     'lan':'English',
@@ -15,6 +15,7 @@ textEN = {
     'Task Scheduler':'Task Scheduler',
     'Scheduler':'Scheduler',
     'Firmware Uploader':'Firmware Uploader',
+    'Debugger': 'Debugger',
     'Eye color picker':'Eye color picker',
     'Creator Information':'Creator Information',
     'Creator':'Creator',
@@ -71,6 +72,17 @@ textEN = {
     'Random':'Random',
     'Send':'Send',
     'Postures':'Preset Postures',
+    'balance': 'stand',
+    'buttUp': 'butt up',
+    'dropped': 'dropped',
+    'lifted': 'lifted',
+    'rest': 'rest',
+    'sit': 'sit',
+    'str': 'stretch',
+    'zero':'zero',
+    'flat':'flat',
+    'table':'table',
+
     'Skill Editor':'Skill Editor',
     'Play':'Play',
     'Pause':'Pause',
@@ -116,6 +128,18 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     'Please select the port from the list':'Please select the port from the list',
     '* Port ':'* Port ',
     ' cannot be opened':' cannot be opened',
+
+    'Reset voice module':'Reset voice module',
+    'Voice indicates':'''Do you hear the melody "1-3-5"?\n
+If yes, press the button "Yes" to continue; 
+If no, press the button "No" to quit, and check the dial switch 
+on the bottom of the BiBoard extension hat is dialed to Voice, not UART2.
+https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'Yes': 'Yes',
+    'No': 'No',
+    'Reset successfully': 'Reset successfully!',
+    'checkLogfile':'''Please check the log file: logfile.log \n
+If you can not fix the issue, please send the log to support@petoi.com for help.''',
 
     'Calibrate':'Calibrate',
     'Rest':'Rest',
@@ -261,6 +285,7 @@ textCN = {
     'Joint Calibrator':'关节校准',
     'Scheduler':'时序器',
     'Firmware Uploader':'固件上载',
+    'Debugger': '调试器',
     'Eye color picker':'眼色选择器',
     'Creator Information':'创作者信息',
     'Creator':'创作者',
@@ -318,6 +343,17 @@ textCN = {
     'Random':'随机行为',
     'Send':'发送',
     'Postures':'预设姿态',
+    'balance': '站立',
+    'buttUp': '撅屁股',
+    'dropped': '下落',
+    'lifted': '举手',
+    'rest': '休息',
+    'sit': '坐下',
+    'str': '伸懒腰',
+    'zero':'零位',
+    'flat':'平铺',
+    'table':'桌子',
+    
     'Skill Editor':'技能编辑器',
     'Play':'播放',
     'Import':'导入',
@@ -367,6 +403,17 @@ textCN = {
     'Please select the port from the list':'请从列表中选择串口名称',
     '* Port ':'* 端口 ',
     ' cannot be opened':' 无法打开',
+
+    'Reset voice module':'重置语音模块',
+    'Voice indicates':'''您能听到“1-3-5”的旋律吗？
+是的话，请按“是”按钮继续；
+否的话，请按“否”按钮退出，并检查 BiBoard 扩展帽底部的拨动开关是否拨到“语音”，而不是“UART2”。
+https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'Yes': '是',
+    'No': '否',
+    'Reset successfully': '重置成功！',
+    'checkLogfile':'''请检查日志文件：logfile.log \n
+如果您无法解决问题，请发送日志到 support@petoi.com 以寻求帮助。''',
 
     'Do you want to save the offsets?':'要保存校准值吗？',
     'Need to manually select the model type (Nybble/Bittle)':'请手动选择型号(Nybble/Bittle)',
@@ -504,6 +551,7 @@ textCN_TW = {
     'Joint Calibrator':'關節校準',
     'Scheduler':'排程器',
     'Firmware Uploader':'固件上傳',
+    'Debugger': '調試器',
     'Eye color picker':'眼睛顏色選擇器',
     'Creator Information':'創作者信息',
     'Creator':'創作者',
@@ -561,6 +609,17 @@ textCN_TW = {
     'Random':'随機行為',
     'Send':'發送',
     'Postures':'預設姿態',
+    'balance': '站立',
+    'buttUp': '撅屁股',
+    'dropped': '下落',
+    'lifted': '舉手',
+    'rest': '休息',
+    'sit': '坐下',
+    'str': '伸懶腰',
+    'zero':'零位',
+    'flat':'平鋪',
+    'table':'桌子',
+
     'Skill Editor':'技能编輯器',
     'Play':'播放',
     'Import':'導入',
@@ -610,6 +669,17 @@ textCN_TW = {
     'Please select the port from the list':'請從列表中選擇串口名稱',
     '* Port ':'* 埠 ',
     ' cannot be opened':' 無法打開',
+
+    'Reset voice module':'重設語音模組',
+    'Voice indicates':'''您能聽到「1-3-5」的旋律嗎？
+是的話，請按「是」按鈕繼續；
+否的話，請按「否」按鈕退出，並檢查 BiBoard 擴展帽底部的撥動開關是否撥到「語音」，而不是「UART2」。
+https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'Yes': '是',
+    'No': '否',
+    'Reset successfully': '重設成功！',
+    'checkLogfile':'''請檢查日志文件：logfile.log \n
+如果您無法修復問題，請將日志發送到 support@petoi.com 以尋求幫助。''',
 
     'Do you want to save the offsets?':'要保存校準值嗎？',
     'Need to manually select the model type (Nybble/Bittle)':'請手動選擇型號(Nybble/Bittle)',
@@ -748,6 +818,7 @@ textDE = {
     'Task Scheduler':'Aufgabenplaner',
     'Scheduler':'Planer',
     'Firmware Uploader':'Firmware-Uploader',
+    'Debugger': 'Debugger',
     'Eye color picker':'Augenfarbauswahl',
     'Creator Information':'Erstellerinformationen',
     'Creator':'Schöpfer',
@@ -804,6 +875,17 @@ textDE = {
     'Random':'Zufällig',
     'Send':'Schicken',
     'Postures':'Voreingestellte Haltungen',
+    'balance': 'Ständer',
+    'buttUp': 'Gesäß hochheben',
+    'dropped': 'gefallen',
+    'lifted': 'gehoben',
+    'rest': 'liegen',
+    'sit': 'sitzen',
+    'str': 'sich strecken',
+    'zero':'Neutralhaltung',
+    'flat':'flach liegend',
+    'table':'Tisch',
+
     'Skill Editor':'Skill-Editor',
     'Play':'Abspielen',
     'Pause':'Pausieren',
@@ -849,6 +931,18 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
     'Please select the port from the list':'Bitte wählen Sie den Port aus der Liste aus',
     '* Port ':'* Hafen ',
     ' cannot be opened':' Kann nicht geöffnet werden',
+
+    'Reset voice module':'Sprachmodul zurücksetzen',
+    'Voice indicates':'''Hören Sie die Melodie "1-3-5"?
+Wenn ja, drücken Sie die Taste "Ja", um fortzufahren.
+Wenn nein, drücken Sie die Taste "Nein", um zu beenden, und überprüfen Sie, ob der 
+Drehschalter an der Unterseite des BiBoard-Erweiterungshuts auf "Sprache" und nicht auf "UART2" eingestellt ist.
+https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'Yes': 'Ja',
+    'No': 'Nein',
+    'Reset successfully': 'Reset erfolgreich!',
+    'checkLogfile':'''Bitte überprüfen Sie die Protokolldatei: logfile.log \n
+Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur Hilfe an support@petoi.com.''',
 
     'Calibrate':'Kalibrieren',
     'Rest':'Ruhe',
@@ -996,6 +1090,7 @@ textTH = {
     'Task Scheduler':'ตัวจัดตารางงาน',
     'Scheduler':'ตัวจัดตาราง',
     'Firmware Uploader':'ตัวอัปโหลดเฟิร์มแวร์',
+    'Debugger': 'ดีบักเกอร์ ',
     'Eye color picker':'ตัวเลือกสีตา',
     'Creator Information':'ข้อมูลผู้สร้าง',
     'Creator':'ผู้สร้าง',
@@ -1052,6 +1147,17 @@ textTH = {
     'Random':'สุ่ม',
     'Send':'ส่ง',
     'Postures':'ท่าทางที่ตั้งค่าไว้',
+    'balance': 'ขาตั้ง',
+    'buttUp': 'ยกสะโพกขึ้น',
+    'dropped': 'หล่น',
+    'lifted': 'ยก',
+    'rest': 'นอน',
+    'sit': 'นั่ง',
+    'str': 'ยืด',
+    'zero':'ท่าทางปกติ',
+    'flat':'ราบ',
+    'table':'โต๊ะ',
+
     'Skill Editor':'ตัวแก้ไขสกิล',
     'Play':'เล่น',
     'Pause':'หยุดชั่วคราว',
@@ -1097,6 +1203,17 @@ textTH = {
     'Please select the port from the list':'โปรดเลือกพอร์ตจากรายการ',
     '* Port ':'* ท่าเรือ ',
     ' cannot be opened':' ไม่สามารถเปิดได้',
+
+    'Reset voice module':'รีเซ็ตโมดูลเสียง',
+    'Voice indicates':'''คุณได้ยินท่วงทำนอง "1-3-5" หรือไม่?
+ใช่: กดปุ่ม "ใช่" เพื่อดำเนินการต่อ
+ไม่ใช่: กดปุ่ม "ไม่ใช่" เพื่อออก และตรวจสอบสวิตช์หมุนที่ด้านล่างของหมวกเสริม BiBoard ว่าหมุนไปที่ "เสียง" ไม่ใช่ "UART2"
+https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'Yes': 'ใช่',
+    'No': 'ไม่ใช่',
+    'Reset successfully': 'รีเซ็ตสำเร็จ!',
+    'checkLogfile':'''กรุณาตรวจสอบไฟล์บันทึก: logfile.log \n
+หากคุณไม่สามารถแก้ไขปัญหาได้ โปรดส่งไฟล์บันทึกไปยัง support@petoi.com เพื่อขอความช่วยเหลือ''',
 
     'Calibrate':'ปรับสอดคล้อง',
     'Rest':'พัก',
@@ -1244,6 +1361,7 @@ textFR={
     'Task Scheduler':'Planificateur de tâches',
     'Scheduler':'Planificateur',
     'Firmware Uploader':'Chargeur de firmware',
+    'Debugger': 'Débogueur',
     'Eye color picker':'Sélecteur de couleur des yeux',
     'Creator Information':'Informations sur le créateur',
     'Creator':'Créateur',
@@ -1300,6 +1418,17 @@ textFR={
     'Random':'Aléatoire',
     'Send':'Envoyer',
     'Postures':'Postures prédéfinies',
+    'balance': 'Support',
+    'buttUp': 'Soulever les fesses',
+    'dropped': 'tombé',
+    'lifted': 'soulevé',
+    'rest': 'se reposer',
+    'sit': 's\'asseoir',
+    'str': 's\'étirer',
+    'zero':'Position neutre',
+    'flat':'à plat ventre',
+    'table':'Table',
+
     'Skill Editor':'Éditeur de compétences',
     'Play':'Lecture',
     'Pause':'Pause',
@@ -1345,6 +1474,18 @@ Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmw
     'Please select the port from the list':'Veuillez sélectionner le port dans la liste',
     '* Port ':'* Port ',
     ' cannot be opened':' ne peut pas être ouvert',
+
+    'Reset voice module':'Réinitialiser le module vocal',
+    'Voice indicates':'''Entendez-vous la mélodie "1-3-5" ?
+Si oui, appuyez sur le bouton "Oui" pour continuer.
+Si non, appuyez sur le bouton "Non" pour quitter et vérifiez que le 
+commutateur rotatif situé en bas du chapeau d\'extension BiBoard est réglé sur "Voix", et non sur "UART2".
+https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'Yes': 'Oui',
+    'No': 'Non',
+    'Reset successfully': 'Réinitialisation réussie !',
+    'checkLogfile':'''Veuillez vérifier le fichier journal: logfile.log \n 
+Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal à support@petoi.com pour obtenir de l\'aide.''',
     
     'Calibrate':'Calibrer',
     'Rest':'Repos',
@@ -1490,6 +1631,7 @@ textJP={
     'Task Scheduler':'タスクスケジューラ',
     'Scheduler':'スケジューラ',
     'Firmware Uploader':'ファームウェアアップローダ',
+    'Debugger': 'デバッガー',
     'Eye color picker':'目の色選択',
     'Creator Information':'制作者情報',
     'Creator':'制作者',
@@ -1546,6 +1688,17 @@ textJP={
     'Random':'ランダム',
     'Send':'送信',
     'Postures':'プリセットポーズ',
+    'balance': 'スタンド',
+    'buttUp': 'お尻を上げる',
+    'dropped': '落とした',
+    'lifted': '持ち上げた',
+    'rest': '休む',
+    'sit': '座る',
+    'str': '伸びる',
+    'zero':'ニュートラルポジション',
+    'flat':'腹ばい',
+    'table':'テーブル',
+
     'Skill Editor':'スキルエディタ',
     'Play':'再生',
     'Pause':'一時停止',
@@ -1590,6 +1743,18 @@ textJP={
     'Please select the port from the list':'リストからポートを選択してください',
     '* Port ':'* ポート ',
     ' cannot be opened':' は開けません',
+
+    'Reset voice module':'音声モジュールをリセットする',
+    'Voice indicates':'''メロディー「1-3-5」が聞こえますか？
+はい (« はい » ボタンを押して続行)
+いいえ (« いいえ » ボタンを押して終了し、BiBoard 拡張ハットの底にあるダイヤル 
+スイッチが「音声」ではなく「UART2」に設定されていないことを確認してください)
+https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'Yes': 'はい',
+    'No': 'いいえ',
+    'Reset successfully': 'リセットが成功しました！',
+    'checkLogfile':'''ログファイル: logfile.log を確認してください \n
+問題を解決できない場合は、ログを support@petoi.com に送信してサポートを受けてください。''',
 
     'Calibrate':'キャリブレーション',
     'Rest':'リセット',
@@ -1728,6 +1893,7 @@ textIT = {
     'Task Scheduler':'Agenda',
     'Scheduler':'Sequenza',
     'Firmware Uploader':'Caricatore di firmware',
+    'Debugger': 'Debugger',
     'Eye color picker':'Selettore del colore degli occhi',
     'Creator Information':'Informazioni sul creatore',
     'Creator':'Creatore',
@@ -1784,6 +1950,17 @@ textIT = {
     'Random':'Random',
     'Send':'Inviare',
     'Postures':'Posizioni Preset',
+    'balance': 'Supporto',
+    'buttUp': 'Sollevare i glutei',
+    'dropped': 'caduto',
+    'lifted': 'sollevato',
+    'rest': 'riposare',
+    'sit': 'sedere',
+    'str': 'stirarsi',
+    'zero':'Posizione neutra',
+    'flat':'piatto a terra',
+    'table':'Tavolo',
+
     'Skill Editor':'Skill Editor',
     'Play':'Start',
     'Pause':'Pausa',
@@ -1823,6 +2000,18 @@ Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
     'Please select the port from the list':'Seleziona la porta dall\'elenco',
     '* Port ':'* Porta ',
     ' cannot be opened':' non può essere aperto',
+
+    'Reset voice module':'Ripristina modulo vocale',
+    'Voice indicates':'''Senti la melodia "1-3-5"?
+Se sì, premi il pulsante "Sì" per continuare.
+Se no, premi il pulsante "No" per uscire e controlla che l\'interruttore 
+rotativo sul fondo del cappello di estensione BiBoard sia ruotato su "Voce", non su "UART2".
+https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'Yes': 'Sì',
+    'No': 'No',
+    'Reset successfully': 'Ripristino riuscito!',
+    'checkLogfile':'''Controlla il file di registro: logfile.log \n 
+Se non riesci a risolvere il problema, invia il registro a support@petoi.com per chiedere aiuto.''',
     
     'Calibrate':'Calibrate',
     'Rest':'Riposo',

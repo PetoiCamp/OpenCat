@@ -144,6 +144,7 @@ class SkillComposer:
 
             self.sixW = 6
             self.sliderW = 320
+            # self.buttonW = 20
             self.buttonW = 10
             self.calibButtonW = 8
             self.canvasW = 330
@@ -164,6 +165,7 @@ class SkillComposer:
 
             self.sixW = 5
             self.sliderW = 338
+            # self.buttonW = 18
             self.buttonW = 8
             self.calibButtonW = 6
             self.canvasW = 420
@@ -483,9 +485,9 @@ class SkillComposer:
         labelPosture.grid(row=0, column=0, columnspan=4)
         i = 0
         for pose in self.postureTable:
-            button = Button(self.framePosture, text=pose, fg='blue', width=self.buttonW,
+            button = Button(self.framePosture, text=txt(pose), fg='blue', width=self.buttonW,
                             command=lambda p=pose: self.setPose(p))
-            button.grid(row=i // 4 + 1, column=i % 4, padx=3)
+            button.grid(row=i // 3 + 1, column=i % 3, padx=3)
             i += 1
 
     def createSkillEditor(self):
@@ -1591,7 +1593,6 @@ class SkillComposer:
                     send(ports, ['I', [idx, value], 0.05])
                 else:
                     send(ports, ['i', [idx, value], 0.05])
-                    
             else:
                 diff = value - self.frameData[4 + idx]
                 indexedList = list()
@@ -1604,7 +1605,7 @@ class SkillComposer:
                     send(ports, ['L', self.frameData[4:20], 0.05])
                 elif len(indexedList):
                     send(ports, ['I', indexedList, 0.05])
-                    
+
             self.indicateEdit()
             self.updateSliders(self.frameData)
 

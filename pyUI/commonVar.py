@@ -28,7 +28,7 @@ import os
 NyBoard_version = 'NyBoard_V1_2'
 verNumber = sys.version.split('(')[0].split()[0]
 verNumber = verNumber.split('.')
-print(verNumber)
+logger.info(f"Python version is {verNumber}")
 #verNumber = [2,1,1] #for testing
 supportHoverTip = True
 if int(verNumber[0])<3 or int(verNumber[1])<7:

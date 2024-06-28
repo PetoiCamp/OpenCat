@@ -26,7 +26,7 @@ The default starting point is INFO,
 which means that the logging module will automatically filter out any DEBUG messages.
 '''
 # logging.basicConfig(level=logging.DEBUG, format=FORMAT)
-logging.basicConfig(level=logging.INFO, format=FORMAT)
+logging.basicConfig(filename='./logfile.log', filemode='a+', level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
 
@@ -50,8 +50,9 @@ if not config.useMindPlus:
 
     # printH("txt('lan'):", txt('lan'))
 
-
-printH("ardSerial date: ", "May. 23, 2024")
+with open("./logfile.log", "w+", encoding="utf-8") as logfile:
+    pass
+logger.info("ardSerial date: Jun. 20, 2024")
 
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):
@@ -157,7 +158,7 @@ def serialWriteByte(port, var=None):
             var.insert(1, var[0][1:])
         var[1:] = list(map(int, var[1:]))
         in_str = token.encode() + struct.pack('b' * (len(var) - 1), *var[1:]) + '~'.encode()
-    elif token == 'w' or token == 'k':
+    elif token == 'w' or token == 'k' or token == 'X':
         in_str = var[0] + '\n'
     else:
         in_str = token + '\n'
@@ -402,8 +403,10 @@ zeroNybble = [
 postureTableBittle = {
     "balance": balance,
     "buttUp": buttUp,
-    "dropped": dropped,
-    "lifted": lifted,
+    # "dropped": dropped,
+    # "lifted": lifted,
+    # 'flat': flat,
+    # 'table': table,
     "rest": rest,
     "sit": sit,
     "str": stretch,
@@ -413,8 +416,10 @@ postureTableBittle = {
 postureTableNybble = {
     "balance": balanceNybble,
     "buttUp": buttUpNybble,
-    "dropped": droppedNybble,
-    "lifted": liftedNybble,
+    # "dropped": droppedNybble,
+    # "lifted": liftedNybble,
+    # 'flat': flatNybble,
+    # 'table': tableNybble,
     "rest": restNybble,
     "sit": sitNybble,
     "str": strNybble,
@@ -422,13 +427,15 @@ postureTableNybble = {
 }
 postureTableDoF16 = {
     "balance": balance,
+    "buttUp": buttUp,
+    # "dropped": dropped,
+    # "lifted": lifted,
+    # 'flat': flat,
+    # 'table': table,
     "rest": rest,
-    "zero": zero,
     "sit": sit,
     "str": stretch,
-    "dropped": dropped,
-    "buttUp": buttUp,
-    "lifted": lifted,
+    "zero": zero
 }
 
 postureDict = {
@@ -687,8 +694,11 @@ def showSerialPorts(allPorts):
     allPorts = deleteDuplicatedUsbSerial(allPorts)
     for index in range(len(allPorts)):
         logger.debug(f"port[{index}] is {allPorts[index]} ")
-    print("\n*** Available serial ports: ***")
-    print(*allPorts, sep = "\n")
+    logger.info(f"*** Available serial ports: ***")
+    # print(*allPorts, sep = "\n")
+    for index in range(len(allPorts)):
+        logger.info(f"{allPorts[index]} ")
+
     if platform.system() != "Windows":
         for p in allPorts:
              if 'cu.usb' in p:

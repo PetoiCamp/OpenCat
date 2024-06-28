@@ -8,11 +8,13 @@
 # May.1st, 2022
 
 from commonVar import *
-from subprocess import check_call
+# from subprocess import check_call
+import subprocess
 import threading
 from tkinter import ttk
 from tkinter import filedialog
 import pathlib
+
 
 regularW = 14
 language = languageList['English']
@@ -452,6 +454,7 @@ class Uploader:
                 logger.debug(f"new line:{x}")
                 if x != "":
                     print(prompStr)
+                    logger.info(prompStr)
                     questionMark = "Y/n"
                     if self.bFacReset and strBoardVersion in BiBoard_version_list:    # for BiBoard Factory reset
                         newBoardMark = "Set up the new board"
@@ -617,7 +620,7 @@ class Uploader:
             port = '/dev/' + self.strPort.get()
         else:
             port = self.strPort.get()
-        print(self.strPort.get())
+        logger.info(f"{self.strPort.get()}")
         if port == ' ' or port == '':
             messagebox.showwarning(txt('Warning'), txt('msgPort'))
             self.force_focus()
@@ -632,7 +635,7 @@ class Uploader:
                 fnWriteI = path + 'WriteInstinct.ino.hex'
                 fnOpenCat = path + 'OpenCat' + strMode + '.ino.hex'
             filename = [fnWriteI, fnOpenCat]
-            print(filename)
+            logger.info(f"{filename}")
             uploadStage = ['Parameters', 'Main function']
             for s in range(len(uploadStage)):
                 # if s == 0 and self.bParaUploaded and self.currentSetting[:4] == self.lastSetting[:4]:
@@ -669,11 +672,48 @@ class Uploader:
                         pass                         # no need upload configuration firmware again
                     else:
                         if self.OSname == 'x11':     # Linuxself.OSname == 'x11':     # Linux
-                            check_call(avrdudePath + 'avrdude -C' + avrdudeconfPath + 'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
-                                    (port, filename[s]), shell=self.shellOption)
+                            # check_call(avrdudePath + 'avrdude -C' + avrdudeconfPath + 'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
+                            #         (port, filename[s]), shell=self.shellOption)
+                            cmd = avrdudePath + 'avrdude -C' + avrdudeconfPath + 'avrdude.conf -v -V -patmega328p -carduino -P' + port + ' -b115200 -D -Uflash:w:' + \
+                                  filename[s] + ':i'
                         else:
-                            check_call(avrdudePath + 'avrdude -C' + avrdudePath + 'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i' % \
-                                    (port, filename[s]), shell=self.shellOption)
+                            # check_call(avrdudePath + 'avrdude -C' + avrdudePath + 'avrdude.conf -v -V -patmega328p -carduino -P%s -b115200 -D -Uflash:w:%s:i > ./avrdude_log.txt 2> ./avrdude_errors.txt' % \
+                            #         (port, filename[s]), shell=self.shellOption)
+                            cmd = avrdudePath + 'avrdude -C' + avrdudePath + 'avrdude.conf -v -V -patmega328p -carduino -P' + port + ' -b115200 -D -Uflash:w:' + \
+                                  filename[s] + ':i'
+
+                        # Run the program and capture output
+                        process = subprocess.Popen(cmd,shell = self.shellOption, stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
+                        output, error = process.communicate()  # Wait for the program to finish
+                        # printH("error:", error)
+                        # printH("output:", output)
+
+                        # Check for errors (optional)
+                        if error:
+                            logger.info(f"Error running program: {error}")
+                        else:
+                            # Write captured output to a file
+                            with open("./logfile.log", "a+", encoding="utf-8") as logfile:
+                                logfile.write(output.decode())  # Decode bytes to string
+                                # time.sleep(5)
+                                # lines = logfile.readlines()
+                            # print(lines)
+                            file = open('./logfile.log', 'r+')
+                            lines = file.readlines()
+                            file.close()
+
+                            for line in lines:
+                                line = line.strip()  # remove the line break from each line
+                                logger.debug(f"{line}")
+                                if ("programmer is not responding" in line) or \
+                                    ("can\'t open device" in line) or \
+                                    ("attempt" in line):
+                                    status = txt(uploadStage[s]) + txt('failed to upload')
+                                    self.strStatus.set(status)
+                                    self.statusBar.update()
+                                    messagebox.showinfo('Petoi Desktop App',txt('checkLogfile'))
+                                    return False
+
                 # self.inProgress = False
                 except:
                     status = txt(uploadStage[s]) + txt('failed to upload')
@@ -717,7 +757,7 @@ class Uploader:
             fnBootApp = path + 'boot_app0.bin'
 
             filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
-            print(filename)
+            logger.info(f"{filename}")
             self.strStatus.set(txt('Uploading') + txt('Main function') + ', ' + txt('Time consuming') + '...' )
             self.win.update()
             if self.OSname == 'win32':   # Windows
@@ -731,10 +771,48 @@ class Uploader:
                     return False
             else:    # Mac
                 esptoolPath = resourcePath + 'esptoolMac/'
-            print()
+            # print()
             try:
-                check_call(esptoolPath + 'esptool --chip esp32 --port %s --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size 16MB 0x1000 %s 0x8000 %s 0xe000 %s 0x10000 %s' % \
-                (port, filename[0], filename[1], filename[2], filename[3]), shell=self.shellOption)
+                # check_call(esptoolPath + 'esptool --chip esp32 --port %s --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size 16MB 0x1000 %s 0x8000 %s 0xe000 %s 0x10000 %s' % \
+                # (port, filename[0], filename[1], filename[2], filename[3]), shell=self.shellOption)
+                # subprocess.check_call(esptoolPath + 'esptool --chip esp32 --port %s --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size 4MB 0x1000 %s 0x8000 %s 0xe000 %s 0x10000 %s' % \
+                #     (port, filename[0], filename[1], filename[2], filename[3]), shell=self.shellOption)
+                cmd = esptoolPath + 'esptool --chip esp32 --port ' + port + ' --baud 921600 --before default_reset --after hard_reset write_flash -z --flash_mode dio --flash_freq 80m --flash_size 4MB 0x1000 ' \
+                      + filename[0] + \
+                      ' 0x8000 ' + filename[1] + \
+                      ' 0xe000 ' + filename[2] + \
+                      ' 0x10000 ' + filename[3]
+                # Run the program and capture output
+                process = subprocess.Popen(cmd, shell=self.shellOption, stdout=subprocess.PIPE,
+                                           stderr=subprocess.STDOUT)
+                output, error = process.communicate()  # Wait for the program to finish
+                # printH("error:", error)
+                # printH("output:", output)
+
+                # Check for errors (optional)
+                if error:
+                    logger.info(f"Error running program: {error}")
+                else:
+                    # Write captured output to a file
+                    with open("./logfile.log", "a+", encoding="utf-8") as logfile:
+                        logfile.write(output.decode())  # Decode bytes to string
+                        # time.sleep(5)
+                        # lines = logfile.readlines()
+                    # print(lines)
+                    file = open('./logfile.log', 'r+')
+                    lines = file.readlines()
+                    file.close()
+
+                    for line in lines:
+                        line = line.strip()  # remove the line break from each line
+                        logger.debug(f"{line}")
+                        if ("Traceback" in line):
+                            status = txt('Main function') + txt('failed to upload')
+                            self.strStatus.set(status)
+                            self.statusBar.update()
+                            messagebox.showinfo('Petoi Desktop App', txt('checkLogfile'))
+                            return False
+
             except:
                 status = txt('Main function') + txt('failed to upload')
                 self.strStatus.set(status)
