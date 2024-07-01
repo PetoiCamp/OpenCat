@@ -1443,6 +1443,7 @@ class SkillComposer:
             self.changeButtonState(f)
             self.frameController.update()
             skillData.append(self.frameData[copyFrom: copyFrom + frameSize])
+        print(skillData)
         if period == 1:
             print(self.frameData[4:20])
             send(ports, ['L', self.frameData[4:20], 0.05])
