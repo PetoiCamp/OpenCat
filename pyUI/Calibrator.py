@@ -84,7 +84,6 @@ class Calibrator:
                 ALIGN = 'sw'
             stt = NORMAL
             if i in NaJoints[self.model]:
-#                stt = DISABLED
                 clr = 'light yellow'
             else:
                 clr = 'yellow'

@@ -291,7 +291,6 @@ class SkillComposer:
                 LEN = 150
             stt = NORMAL
             if i in NaJoints[self.model]:
-#                stt = DISABLED
                 clr = 'light yellow'
             else:
                 clr = 'yellow'
@@ -676,13 +675,11 @@ class SkillComposer:
             self.postureTable = postureDict[self.model]
             self.framePosture.destroy()
             self.frameImage.destroy()
-
+            stt = NORMAL
             for i in range(16):
                 if i in NaJoints[self.model]:
-#                    stt = DISABLED
                     clr = 'light yellow'
                 else:
-                    stt = NORMAL
                     clr = 'yellow'
                 self.sliders[i].config(state=stt, bg=clr)
                 self.binderButton[i * 2].config(state=stt)
