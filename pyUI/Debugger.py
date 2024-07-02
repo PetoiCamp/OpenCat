@@ -94,13 +94,18 @@ class Debugger:
         self.voiceResetWin.destroy()  # Destroy the window
         if self.debuggerReady == 1:
             if self.voiceReturn == True:
-                cmdList = ["XAb", "XAa"]
-                for cmd in cmdList:
+                if 'Chinese'in txt('lan'):
+                    cmd = "XAb"
                     send(goodPorts, [cmd, 0])
-                    if cmd == "XAb":
-                        time.sleep(2)
-                    else:
-                        messagebox.showinfo(None, txt('Reset successfully'))
+                    messagebox.showinfo(None, txt('Reset successfully'))
+                else:
+                    cmdList = ["XAb", "XAa"]
+                    for cmd in cmdList:
+                        send(goodPorts, [cmd, 0])
+                        if cmd == "XAb":
+                            time.sleep(2)
+                        else:
+                            messagebox.showinfo(None, txt('Reset successfully'))
 
 
     def on_closing(self):
