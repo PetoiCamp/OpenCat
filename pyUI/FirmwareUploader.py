@@ -806,7 +806,9 @@ class Uploader:
                     for line in lines:
                         line = line.strip()  # remove the line break from each line
                         logger.debug(f"{line}")
-                        if ("Traceback" in line):
+                        if ("Traceback" in line) or \
+                            ("Failed to connect to ESP32" in line) or \
+                            ("error occurred" in line):
                             status = txt('Main function') + txt('failed to upload')
                             self.strStatus.set(status)
                             self.statusBar.update()
