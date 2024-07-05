@@ -14,7 +14,14 @@ class Calibrator:
         language = lan
 #        global goodPorts
         connectPort(goodPorts)
+        start = time.time()
+        while config.model_ == '':
+            if time.time() - start > 5:
+                config.model_ = model
+                print('Use the model set in the UI interface.')
+            time.sleep(0.01)
         self.model = config.model_
+
         self.winCalib = Tk()
         self.winCalib.title(txt('calibTitle'))
         self.winCalib.geometry('+200+100')
@@ -174,6 +181,7 @@ if __name__ == '__main__':
         #        if len(goodPorts)>0:
         #            t=threading.Thread(target=keepReadingSerial,args=(goodPorts,))
         #            t.start()
+        model = "Bittle"
         Calibrator(model,language)
         closeAllSerial(goodPorts)
         os._exit(0)

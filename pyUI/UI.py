@@ -87,8 +87,11 @@ class UI:
         self.modelLabel = Label(self.window, text=model, font=self.myFont)
         self.modelLabel.grid(row=0, column=0, pady=10)
         for i in range(len(apps)):
-            Button(self.window, text=txt(apps[i]), font=self.myFont, fg='blue', width=bw, relief='raised',
-                   command=lambda app=apps[i]: self.utility(app)).grid(row=1 + i, column=0, padx=10, pady=(0, 10))
+            self.moduleButton = Button(self.window, text=txt(apps[i]), font=self.myFont, fg='blue', width=bw, relief='raised',
+                   command=lambda app=apps[i]: self.utility(app))
+            self.moduleButton.grid(row=1 + i, column=0, padx=10, pady=(0, 10))
+            if apps[i] == 'Debugger':
+                tip(self.moduleButton, txt('tipDebugger'))
 
         self.ready = True
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
@@ -135,6 +138,9 @@ class UI:
             self.window.title(txt('uiTitle'))
             for i in range(len(apps)):
                 self.window.winfo_children()[1 + i].config(text=txt(apps[i]))
+                if apps[i] == 'Debugger':
+                    tip(self.window.winfo_children()[1 + i], txt('tipDebugger'))
+
 
     def saveConfigToFile(self, filename):
         if len(self.configuration) == 6:
@@ -151,6 +157,9 @@ class UI:
         f.close()
 
     def utility(self, app):
+        global model
+        global language
+
         self.saveConfigToFile(defaultConfPath)
         logger.info(f"{self.configuration}")
         self.window.destroy()
@@ -190,6 +199,7 @@ class UI:
     def showAbout(self):
         messagebox.showinfo('Petoi Desktop App',
                             u'Petoi Desktop App\nOpen Source on GitHub\nCopyright © Petoi LLC\nwww.petoi.com')
+        self.window.focus_force()
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):

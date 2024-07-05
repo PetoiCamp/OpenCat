@@ -1,5 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
+
+# Junfeng Wang
+# Petoi LLC
+# Jun. 26th, 2024
+
+
 from commonVar import *
 
 language = languageList['English']
@@ -9,38 +15,95 @@ def txt(key):
     
 class Debugger:
     def __init__(self,model,lan):
-        self.debuggerReady = False
         global language
         language = lan
 #        global goodPorts
-
+        connectPort(goodPorts)
+        start = time.time()
+        while config.model_ == '':
+            if time.time() - start > 5:
+                config.model_ = model
+                print('Use the model set in the UI interface.')
+            time.sleep(0.01)
         self.model = config.model_
+
         self.winDebug = Tk()
-        self.winDebug.title(txt('Debugger'))
-        self.winDebug.geometry('296x56+200+100')
-        self.winDebug.resizable(False, False)
-        # self.calibSliders = list()
+        self.debuggerReady = False
+
         self.OSname = self.winDebug.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
             self.winDebug.iconbitmap(resourcePath + 'Petoi.ico')
-            self.voiceResetButtonW = 30
+            self.winDebug.geometry('398x150+800+400')
+        elif self.OSname == 'aqua':
+            self.winDebug.geometry('+800+400')
+            self.backgroundColor = 'gray'
         else:
-            self.voiceResetButtonW = 20
-        self.frameDebugButtons = Frame(self.winDebug)
-        self.frameDebugButtons.grid(row=0, column=0)
-        self.myFont = tkFont.Font(family='Times New Roman', size=12, weight='bold')
-        voiceResetButton = Button(self.frameDebugButtons, text=txt('Reset voice module'), font=self.myFont, fg = 'blue', width=self.voiceResetButtonW,command=lambda: self.resetVoice())
-        voiceResetButton.grid(row=0, column=0, padx=8, pady=(10, 10))
+            self.winDebug.tk.call('wm', 'iconphoto', self.winDebug._w, "-default",
+                                PhotoImage(file= resourcePath + 'Petoi.png'))
+            self.winDebug.geometry('+800+400')
 
-        self.winDebug.protocol('WM_DELETE_WINDOW', self.on_closing)
+        self.myFont = tkFont.Font(
+            family='Times New Roman', size=20, weight='bold')
+        self.winDebug.title(txt('Debugger'))
+        self.createMenu()
+        bw = 23
+        self.modelLabel = Label(self.winDebug, text=self.model, font=self.myFont)
+        self.modelLabel.grid(row=0, column=0, pady=10)
+        voiceResetButton = Button(self.winDebug, text=txt('Reset voice module'), font=self.myFont, fg='blue', width=bw, relief='raised',
+                   command=lambda: self.resetVoice())
+        voiceResetButton.grid(row=1, column=0, padx=10, pady=(0, 10))
+        tip(voiceResetButton, txt('tipRstVoice'))
 
-        connectPort(goodPorts)
         self.debuggerReady = True
-
+        self.winDebug.protocol('WM_DELETE_WINDOW', self.on_closing)
+        self.winDebug.update()
+        self.winDebug.resizable(False, False)
         self.winDebug.focus_force()    # force the main interface to get focus
         self.winDebug.mainloop()
+        
+    
+    def createMenu(self):
+        self.menubar = Menu(self.winDebug, background='#ff8000', foreground='black', activebackground='white',
+                            activeforeground='black')
+        file = Menu(self.menubar, tearoff=0, background='#ffcc99', foreground='black')
+        for key in NaJoints:
+            file.add_command(label=key, command=lambda model=key: self.changeModel(model))
+        self.menubar.add_cascade(label=txt('Model'), menu=file)
+
+        lan = Menu(self.menubar, tearoff=0)
+        for l in languageList:
+            lan.add_command(label=languageList[l]['lanOption'], command=lambda lanChoice=l: self.changeLan(lanChoice))
+        self.menubar.add_cascade(label=txt('lanMenu'), menu=lan)
+
+        helpMenu = Menu(self.menubar, tearoff=0)
+        helpMenu.add_command(label=txt('About'), command=self.showAbout)
+        self.menubar.add_cascade(label=txt('Help'), menu=helpMenu)
+
+        self.winDebug.config(menu=self.menubar)
 
 
+    def changeModel(self, modelName):
+        self.model = copy.deepcopy(modelName)
+        self.modelLabel.configure(text=self.model)
+        print(self.model)
+        
+    
+    def changeLan(self, l):
+        global language
+        if self.debuggerReady and txt('lan') != l:
+            language = copy.deepcopy(languageList[l])
+            self.menubar.destroy()
+            self.createMenu()
+            self.winDebug.title(txt('Debugger'))
+            self.winDebug.winfo_children()[1].config(text=txt('Reset voice module'))
+            tip(self.winDebug.winfo_children()[1], txt('tipRstVoice'))
+            
+    
+    def showAbout(self):
+        messagebox.showinfo(txt('titleVersion'), txt('msgVersion'))
+        self.winDebug.focus_force()
+
+            
     def createImage(self, frame, imgFile, imgW):
         img = Image.open(imgFile)
 
@@ -59,7 +122,7 @@ class Debugger:
             self.showDialog()
 
     def showDialog(self):
-        # # Declare a global variable to access it within the function
+        # Declare a global variable to access it within the function
         # Create the dialog window
         self.voiceResetWin = Toplevel(self.winDebug)
         self.voiceResetWin.title(txt('Warning'))
@@ -90,22 +153,21 @@ class Debugger:
     def getButtonClick(self, buttonValue):
         """Function to handle button clicks and close the window."""
         self.voiceReturn = buttonValue  # Assign the button value to the global variable
-        logger.info(f"voiceReturn is {self.voiceReturn}")    # debug
+        logger.debug(f"voiceReturn is {self.voiceReturn}")
         self.voiceResetWin.destroy()  # Destroy the window
         if self.debuggerReady == 1:
             if self.voiceReturn == True:
                 if 'Chinese'in txt('lan'):
-                    cmd = "XAb"
-                    send(goodPorts, [cmd, 0])
-                    messagebox.showinfo(None, txt('Reset successfully'))
+                    cmdList = ["XAa", "XAb"]
                 else:
                     cmdList = ["XAb", "XAa"]
-                    for cmd in cmdList:
-                        send(goodPorts, [cmd, 0])
-                        if cmd == "XAb":
-                            time.sleep(2)
-                        else:
-                            messagebox.showinfo(None, txt('Reset successfully'))
+
+                for cmd in cmdList:
+                    send(goodPorts, [cmd, 0])
+                    if cmd == cmdList[0]:
+                        time.sleep(2)
+                    else:
+                        messagebox.showinfo(None, txt('Reset successfully'))
 
 
     def on_closing(self):
@@ -119,6 +181,7 @@ class Debugger:
 if __name__ == '__main__':
     goodPorts = {}
     try:
+        model = "Bittle"
         Debugger(model,language)
         closeAllSerial(goodPorts)
         os._exit(0)

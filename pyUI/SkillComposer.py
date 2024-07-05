@@ -71,8 +71,8 @@ class SkillComposer:
         start = time.time()
         while config.model_ == '':
             if time.time()-start > 5:
-                config.model_ = 'Bittle'
-                print('Use Bittle as default model')
+                config.model_ = model
+                print('Use the model set in the UI interface.')
             time.sleep(0.01)
         self.model = config.model_
         try:
@@ -666,6 +666,7 @@ class SkillComposer:
     def showAbout(self):
         messagebox.showinfo('Petoi Controller UI',
                             u'Petoi Controller for OpenCat\nOpen Source on GitHub\nCopyright © Petoi LLC\nwww.petoi.com')
+        self.window.focus_force()
 
     def changeModel(self, modelName):
         if self.ready and modelName != self.model:
@@ -1843,6 +1844,7 @@ if __name__ == '__main__':
         #        if len(goodPorts)>0:
         #            t=threading.Thread(target=keepReadingSerial,args=(goodPorts,))
         #            t.start()
+        model = "Bittle"
         SkillComposer(model, language)
         closeAllSerial(goodPorts)
         os._exit(0)
