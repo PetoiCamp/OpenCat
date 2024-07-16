@@ -17,7 +17,7 @@ textEN = {
     'Firmware Uploader':'Firmware Uploader',
     'Debugger': 'Debugger',
     'tipDebugger':'Provide convinient tools to debug the robot.',
-    'tipRstVoice':'Click this button to reset the voice module.',
+
     'Eye color picker':'Eye color picker',
     'Creator Information':'Creator Information',
     'Creator':'Creator',
@@ -132,6 +132,10 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     ' cannot be opened':' cannot be opened',
 
     'Reset voice module':'Reset voice module',
+    'tipRstVoice':'Click this button to reset the voice module.',
+    'BiBoard Config':'BiBoard Config',
+    'tipbiboardConfig':'Click this button to configure BiBoard.',
+
     'Voice indicates':'''Do you hear the melody "1-3-5"?\n
 If yes, press the button "Yes" to continue; 
 If no, press the button "No" to quit, and check the dial switch 

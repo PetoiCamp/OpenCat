@@ -33,7 +33,7 @@ class Debugger:
         self.OSname = self.winDebug.call('tk', 'windowingsystem')
         if self.OSname == 'win32':
             self.winDebug.iconbitmap(resourcePath + 'Petoi.ico')
-            self.winDebug.geometry('398x150+800+400')
+            self.winDebug.geometry('398x300+800+400')
         elif self.OSname == 'aqua':
             self.winDebug.geometry('+800+400')
             self.backgroundColor = 'gray'
@@ -53,6 +53,12 @@ class Debugger:
                    command=lambda: self.resetVoice())
         voiceResetButton.grid(row=1, column=0, padx=10, pady=(0, 10))
         tip(voiceResetButton, txt('tipRstVoice'))
+
+        biboardConfigButton = Button(self.winDebug, text=txt('BiBoard Config'), font=self.myFont, fg='blue', width=bw,
+                                  relief='raised',
+                                  command=lambda: self.biboardConfig())
+        biboardConfigButton.grid(row=2, column=0, padx=10, pady=(0, 10))
+        tip(voiceResetButton, txt('tipbiboardConfig'))
 
         self.debuggerReady = True
         self.winDebug.protocol('WM_DELETE_WINDOW', self.on_closing)

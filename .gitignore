@@ -1,4 +1,6 @@
-
+.idea/*
+pyUI/.idea/*
+pyUI/logfile.log
 *.DS_Store
 *.pyc
 pyUI/defaultConfig.txt

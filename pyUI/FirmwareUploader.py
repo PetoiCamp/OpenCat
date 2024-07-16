@@ -20,6 +20,7 @@ regularW = 14
 language = languageList['English']
 NyBoard_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1', 'NyBoard_V1_2']
 BiBoard_version_list = ['BiBoard_V0_1', 'BiBoard_V0_2']
+Hunter_Board_list = ['BiBoard_V1_0']
 
 def txt(key):
     return language.get(key, textEN[key])
@@ -64,6 +65,8 @@ class Uploader:
         self.initWidgets()
         if self.strProduct.get() == 'Bittle X':
             board_version_list = BiBoard_version_list
+        elif self.strProduct.get() == 'Hunter':
+            board_version_list = Hunter_Board_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
@@ -169,7 +172,7 @@ class Uploader:
 
         cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', font=12)
         # list of product
-        cbProductList = ['Nybble', 'Bittle', 'Bittle X']
+        cbProductList = ['Nybble', 'Bittle', 'Bittle X', 'Hunter']
         # set default value of Combobox
         cbProduct.set(self.lastSetting[0])
         # set list for Combobox
@@ -209,6 +212,10 @@ class Uploader:
             if self.lastSetting[3] in NyBoard_version_list:
                 self.cbBoardVersion.set(BiBoard_version_list[0])
             board_version_list = BiBoard_version_list
+        elif self.strProduct.get() == 'Hunter':
+            if self.lastSetting[3] in NyBoard_version_list:
+                self.cbBoardVersion.set(Hunter_Board_list[0])
+            board_version_list = Hunter_Board_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
@@ -224,7 +231,7 @@ class Uploader:
                 cbModeList = self.NyBoardModes
             else:
                 cbModeList = self.BiBoardModes
-        elif self.strProduct.get() == 'Bittle X':
+        elif self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Hunter':
             cbModeList = self.BiBoardModes
 
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', font=12)
@@ -339,7 +346,7 @@ class Uploader:
         self.setActiveMode()
 
     def setActiveOption(self):
-        if self.cbBoardVersion.get() in BiBoard_version_list:
+        if self.cbBoardVersion.get() in BiBoard_version_list or self.cbBoardVersion.get() in Hunter_Board_list:
             stt = DISABLED
             self.strSoftwareVersion.set('2.0')
         else:
@@ -355,6 +362,9 @@ class Uploader:
         if self.strProduct.get() == 'Bittle X':
             self.strBoardVersion.set(BiBoard_version_list[0])
             board_version_list = BiBoard_version_list
+        elif self.strProduct.get() == 'Hunter':
+            self.cbBoardVersion.set(Hunter_Board_list[0])
+            board_version_list = Hunter_Board_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
@@ -367,7 +377,7 @@ class Uploader:
                 modeList = self.NyBoardModes
             else:
                 modeList = self.BiBoardModes
-        elif self.strProduct.get() == 'Bittle X':
+        elif self.strProduct.get() == 'Bittle X'or self.strProduct.get() == 'Hunter':
             modeList = self.BiBoardModes
 
         self.cbMode['values'] = modeList
@@ -731,7 +741,7 @@ class Uploader:
                     self.WriteInstinctPrompts(port)
                 else:
                     pass
-        elif strBoardVersion in BiBoard_version_list:
+        elif strBoardVersion in BiBoard_version_list or strBoardVersion in Hunter_Board_list:
             modeName = "Standard"
             # fnBootLoader = path + 'OpenCatEsp32Standard.ino.bootloader.bin'
             fnBootLoader = path + 'OpenCatEsp32' + modeName + '.ino.bootloader.bin'

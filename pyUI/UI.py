@@ -126,6 +126,8 @@ class UI:
         print(model)
         if model == "Bittle X":
             self.defaultBdVer = "BiBoard_V0_2"
+        elif model == "Hunter":
+            self.defaultBdVer = "BiBoard_V1_0"
 
     def changeLan(self, l):
         global language
