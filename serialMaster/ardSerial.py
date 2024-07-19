@@ -550,7 +550,7 @@ def getModelAndVersion(result):
     if result != -1:
         parse = result[1].replace('\r','').split('\n')
         for l in range(len(parse)):
-            if 'Nybble' in parse[l] or 'Bittle' in parse[l] or 'DoF16' in parse[l]:
+            if 'Nybble' in parse[l] or 'Bittle' in parse[l] or 'DoF16' in parse[l] or 'Hunter' in parse[l]:
                 config.model_ = parse[l]
                 config.version_ = parse [l+1]
                 config.modelList += [config.model_]

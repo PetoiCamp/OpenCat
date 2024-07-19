@@ -50,7 +50,11 @@ class Calibrator:
         abortButton.grid(row=11, column=2)
 #        quitButton.grid(row=11, column=2)
 
-        imageW = 250
+        # imageW = 250
+        if self.model == 'Hunter':
+            imageW = 360
+        else:
+            imageW = 250
         self.imgWiring = createImage(self.frameCalibButtons, resourcePath + self.model + 'Wire.jpeg', imageW)
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
@@ -64,14 +68,20 @@ class Calibrator:
                 if i < 2:
                     ROW = 0
                 else:
-                    ROW = 11
+                    if self.model == 'Hunter':
+                        ROW = 2
+                    else:
+                        ROW = 11
                 if 0 < i < 3:
                     COL = 4
                 else:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                LEN = 200
+                if self.model == 'Hunter':
+                    LEN = 220
+                else:
+                    LEN = 200
                 ALIGN = 'we'
 
             else:
@@ -81,13 +91,19 @@ class Calibrator:
                 upperQ = i / 4 < 3
 
                 rSPAN = 3
-                ROW = 2 + (1 - frontQ) * (rSPAN + 2)
+                if self.model == 'Hunter':
+                    ROW = 4 + (1 - frontQ) * (rSPAN + 2)
+                else:
+                    ROW = 2 + (1 - frontQ) * (rSPAN + 2)
                 if leftQ:
                     COL = 3 - i // 4
                 else:
                     COL = 3 + i // 4
                 ORI = VERTICAL
-                LEN = 150
+                if self.model == 'Hunter':
+                    LEN = 260
+                else:
+                    LEN = 150
                 ALIGN = 'sw'
             stt = NORMAL
             if i in NaJoints[self.model]:
@@ -119,7 +135,11 @@ class Calibrator:
 
     def calibFun(self, cmd):
 #        global ports
-        imageW = 250
+#         imageW = 250
+        if self.model == 'Hunter':
+            imageW = 360
+        else:
+            imageW = 250
         self.imgPosture.destroy()
         if cmd == 'c':
             self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', imageW)
