@@ -32,15 +32,16 @@ cLoop, cSet, cStep,  cTrig, cAngle, cDelay, cNote, cDel, cAdd = range(len(labelS
 axisDisable = {
     'Nybble': [0, 5],
     'Bittle': [0, 5],
+    'Hunter': [0, 5],
     'DoF16' : []
 
 }
-NaJoints = {
-    'Nybble': [3, 4, 5, 6, 7],
-    'Bittle': [1, 2, 3, 4, 5, 6, 7],
-    'Bittle X': [1, 2, 3, 4, 5, 6, 7],
-    'DoF16' : []
-}
+# NaJoints = {
+#     'Nybble': [3, 4, 5, 6, 7],
+#     'Bittle': [1, 2, 3, 4, 5, 6, 7],
+#     'Bittle X': [1, 2, 3, 4, 5, 6, 7],
+#     'DoF16' : []
+# }
 jointConfig = {
     'Nybble': '><',
     'Bittle': '>>',
@@ -139,11 +140,38 @@ class SkillComposer:
         if self.OSname == 'win32':
             self.window.iconbitmap(resourcePath + 'Petoi.ico')
             # global frameItemWidth
-            self.frameItemWidth = [2, 4, 3, 5, 4, 4, 7, 3, 3]
+            self.frameItemWidth = [2, 4, 3, 5, 4, 4, 10, 3, 3]
             self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-            self.sixW = 6
-            self.sliderW = 320
+            if self.model == 'Hunter':
+                self.sliderW = 380          # The width of the slider rail corresponding to joint numbers 0 to 3
+                self.sixW = 10              # The width of six IMU Axis Names lable
+                self.rowUnbindButton = 12   # The row number where the unbind button is located
+                self.rowJoint1 = 2          # The row number of the label with joint number 2 and 3
+                self.sliderLen = 260        # The length of the slider rail corresponding to joint numbers 4 to 15
+                self.rSpan = 4              # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+                self.rowJoint2 = 4          # The row number of the label with joint number 4 or 15 is located
+                self.rowFrameImu = 13       # The row number of the IMU button frame is located
+                self.imuSliderLen = 220     # The length of the IMU slider rail
+                self.schedulerHeight = 580  # The height of action frame scheduler
+                self.rowFrameImage = 5      # The row number of the image frame is located
+                self.imgWidth = 320         # The width of image
+                self.imgRowSpan = 7         # The number of lines occupied by the image frame
+            else:
+                self.sliderW = 320
+                self.sixW = 6
+                self.rowUnbindButton = 5
+                self.rowJoint1 = 11
+                self.sliderLen = 150
+                self.rSpan = 3
+                self.rowJoint2 = 2
+                self.rowFrameImu = 6
+                self.imuSliderLen = 125
+                self.schedulerHeight = 310
+                self.rowFrameImage = 3
+                self.imgWidth = 200
+                self.imgRowSpan = 2
+
             # self.buttonW = 20
             self.buttonW = 10
             self.calibButtonW = 8
@@ -156,12 +184,11 @@ class SkillComposer:
             self.dialPad = 2
         else:
             if self.OSname == 'aqua':
-                self.frameItemWidth = [2, 2, 3,  4, 3, 3,4, 1, 1]
+                self.frameItemWidth = [2, 2, 3, 4, 3, 3, 4, 1, 1]
                 self.headerOffset = [2, 2, 2, 2, 2, 2, 2, 2, 2]
-
             else:
                 self.frameItemWidth = [2, 2, 3, 4, 4, 4, 5, 2, 2]
-                self.headerOffset = [0, 0, 1,  1, 0,0, 0, 0, 1]
+                self.headerOffset = [0, 0, 1, 1, 0, 0, 0, 0, 1]
 
             self.sixW = 5
             self.sliderW = 338
@@ -223,7 +250,6 @@ class SkillComposer:
             file.add_command(label=key, command=lambda model=key: self.changeModel(model))
         self.menubar.add_cascade(label=txt('Model'), menu=file)
 
-
         lan = Menu(self.menubar, tearoff=0)
         for l in languageList:
             lan.add_command(label=languageList[l]['lanOption'], command=lambda lanChoice=l: self.changeLan(lanChoice))
@@ -254,7 +280,8 @@ class SkillComposer:
         label.grid(row=0, column=0, columnspan=8)
         self.controllerLabels.append(label)
         unbindButton = Button(self.frameController, text=txt('Unbind All'), fg='blue', command=self.unbindAll)
-        unbindButton.grid(row=5, column=3, columnspan=2)
+        rowUnbindButton = self.rowUnbindButton    # The row number where the unbind button is located
+        unbindButton.grid(row=rowUnbindButton, column=3, columnspan=2)
         self.controllerLabels.append(unbindButton)
         
         centerWidth = 2
@@ -266,7 +293,8 @@ class SkillComposer:
                 if i < 2:
                     ROW = 0
                 else:
-                    ROW = 11
+                    ROW = self.rowJoint1    # The row number of the label with joint number 2 and 3
+
                 if 0 < i < 3:
                     COL = 4
                 else:
@@ -274,21 +302,22 @@ class SkillComposer:
                 rSPAN = 1
                 ORI = HORIZONTAL
                 LEN = self.sliderW
-
             else:
                 tickDirection = -1
                 leftQ = (i - 1) % 4 > 1
                 frontQ = i % 4 < 2
-                upperQ = i / 4 < 3
+                # upperQ = i / 4 < 3
 
-                rSPAN = 3
-                ROW = 2 + (1 - frontQ) * (rSPAN + 2)
+                LEN = self.sliderLen    # The length of the slider rail corresponding to joint numbers 4 to 15
+                rSPAN = self.rSpan    # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+                ROW = self.rowJoint2 + (1 - frontQ) * (rSPAN + 2)    # The row number of the label with joint number 4 or 15 is located
+
                 if leftQ:
                     COL = 3 - i // 4
                 else:
                     COL = centerWidth + 2 + i // 4
                 ORI = VERTICAL
-                LEN = 150
+
             stt = NORMAL
             if i in NaJoints[self.model]:
                 clr = 'light yellow'
@@ -336,7 +365,9 @@ class SkillComposer:
                 self.binderValue.append(binderValue)
 
         self.frameImu = Frame(self.frameController)
-        self.frameImu.grid(row=6, column=3, rowspan=6, columnspan=2)
+        rowFrameImu = self.rowFrameImu    # The row number of the IMU button frame is located
+        sliderLen = self.imuSliderLen     # The length of the IMU slider rail
+        self.frameImu.grid(row=rowFrameImu, column=3, rowspan=6, columnspan=2)
         for i in range(6):
             frm = -40
             to2 = 40
@@ -361,7 +392,7 @@ class SkillComposer:
 
             value = DoubleVar()
             sliderBar = Scale(self.frameImu, state=stt, fg='blue', bg=clr, variable=value, orient=HORIZONTAL,
-                              borderwidth=2, relief='flat', width=10, from_=frm, to=to2, length=125, resolution=1,
+                              borderwidth=2, relief='flat', width=10, from_=frm, to=to2, length=sliderLen, resolution=1,
                               command=lambda ang, idx=i: self.set6Axis(idx, ang))  # tickinterval=(to2-frm)//4,
             sliderBar.set(0)
             label.grid(row=i, column=0)
@@ -369,6 +400,7 @@ class SkillComposer:
             self.sliders.append(sliderBar)
             self.values.append(value)
             self.controllerLabels.append(label)
+
 
     def createDial(self):
         self.frameDial = Frame(self.window)
@@ -411,7 +443,6 @@ class SkillComposer:
         button = Button(self.frameDial,text=txt('Send'),fg='blue',width=self.dialW-2,command=self.sendCmd)
         button.grid(row=2, column=4, padx=3)
         entryCmd.bind('<Return>',self.sendCmd)
-        
 
 
     def createPortMenu(self):
@@ -569,7 +600,8 @@ class SkillComposer:
             if tipSkillEditor[i]:
                 tip(label, txt(tipSkillEditor[i]))
 
-        canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=310, bd=0)
+        schedulerHeight = self.schedulerHeight    # The height of action frame scheduler
+        canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=schedulerHeight, bd=0)
         scrollbar = Scrollbar(self.frameRowScheduler, orient='vertical', cursor='double_arrow', troughcolor='yellow',
                               width=15, command=canvas.yview)
         self.scrollable_frame = Frame(canvas)
@@ -592,13 +624,16 @@ class SkillComposer:
         ratio = img.size[0] / imgW
         img = img.resize((imgW, round(img.size[1] / ratio)))
         image = ImageTk.PhotoImage(img)
-        imageFrame = Label(frame, image=image)
+        imageFrame = Label(frame, image=image)    # borderwidth=2, relief='raised'
         imageFrame.image = image
         return imageFrame
 
     def placeProductImage(self):
-        self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', 200)
-        self.frameImage.grid(row=3, column=3, rowspan=2, columnspan=2)
+        rowFrameImage = self.rowFrameImage    # The row number of the image frame is located
+        imgWidth = self.imgWidth              # The width of image
+        rowSpan = self.imgRowSpan             # The number of lines occupied by the image frame
+        self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', imgWidth)
+        self.frameImage.grid(row=rowFrameImage, column=3, rowspan=rowSpan, columnspan=2)
 
     def changeLan(self, l):
         global language

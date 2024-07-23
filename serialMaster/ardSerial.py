@@ -413,6 +413,19 @@ postureTableBittle = {
     "zero": zero
 }
 
+postureTableHunter = {
+    "balance": balance,
+    "buttUp": buttUp,
+    # "dropped": dropped,
+    # "lifted": lifted,
+    # 'flat': flat,
+    # 'table': table,
+    "rest": rest,
+    "sit": sit,
+    "str": stretch,
+    "zero": zero
+}
+
 postureTableNybble = {
     "balance": balanceNybble,
     "buttUp": buttUpNybble,
@@ -442,6 +455,7 @@ postureDict = {
     'Nybble': postureTableNybble,
     'Bittle': postureTableBittle,
     'Bittle X': postureTableBittle,
+    'Hunter': postureTableHunter,
     'DoF16': postureTableDoF16
 }
 

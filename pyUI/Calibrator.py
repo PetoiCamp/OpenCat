@@ -50,15 +50,23 @@ class Calibrator:
         abortButton.grid(row=11, column=2)
 #        quitButton.grid(row=11, column=2)
 
-        # imageW = 250
         if self.model == 'Hunter':
-            imageW = 360
+            self.imageW = 360       # The width of image
+            self.sliderW = 220      # The width of the slider rail corresponding to joint numbers 0 to 3
+            self.rowJoint1 = 2      # The row number of the label with joint number 2 and 3
+            self.sliderLen = 260    # The length of the slider rail corresponding to joint numbers 4 to 15
+            self.rowJoint2 = 4      # The row number of the label with joint number 4 or 15 is located
         else:
-            imageW = 250
-        self.imgWiring = createImage(self.frameCalibButtons, resourcePath + self.model + 'Wire.jpeg', imageW)
+            self.imageW = 250
+            self.sliderW = 200
+            self.rowJoint1 = 11
+            self.sliderLen = 150
+            self.rowJoint2 = 2
+
+        self.imgWiring = createImage(self.frameCalibButtons, resourcePath + self.model + 'Wire.jpeg', self.imageW)
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
-        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', imageW)
+        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', self.imageW)
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
 
         for i in range(16):
@@ -68,20 +76,15 @@ class Calibrator:
                 if i < 2:
                     ROW = 0
                 else:
-                    if self.model == 'Hunter':
-                        ROW = 2
-                    else:
-                        ROW = 11
+                    ROW = self.rowJoint1
+
                 if 0 < i < 3:
                     COL = 4
                 else:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                if self.model == 'Hunter':
-                    LEN = 220
-                else:
-                    LEN = 200
+                LEN = self.sliderW
                 ALIGN = 'we'
 
             else:
@@ -91,19 +94,14 @@ class Calibrator:
                 upperQ = i / 4 < 3
 
                 rSPAN = 3
-                if self.model == 'Hunter':
-                    ROW = 4 + (1 - frontQ) * (rSPAN + 2)
-                else:
-                    ROW = 2 + (1 - frontQ) * (rSPAN + 2)
+                ROW = self.rowJoint2 + (1 - frontQ) * (rSPAN + 2)
+
                 if leftQ:
                     COL = 3 - i // 4
                 else:
                     COL = 3 + i // 4
                 ORI = VERTICAL
-                if self.model == 'Hunter':
-                    LEN = 260
-                else:
-                    LEN = 150
+                LEN = self.sliderLen
                 ALIGN = 'sw'
             stt = NORMAL
             if i in NaJoints[self.model]:
@@ -135,11 +133,8 @@ class Calibrator:
 
     def calibFun(self, cmd):
 #        global ports
-#         imageW = 250
-        if self.model == 'Hunter':
-            imageW = 360
-        else:
-            imageW = 250
+        imageW = self.imageW
+
         self.imgPosture.destroy()
         if cmd == 'c':
             self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', imageW)
