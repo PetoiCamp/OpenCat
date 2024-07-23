@@ -55,6 +55,79 @@ triggerAxis = {
     -2: '-Roll',
 }
 
+HunterWinSet = {
+    "sliderW": 380,           # The width of the slider rail corresponding to joint numbers 0 to 3
+    "sixW": 10,               # The width of six IMU Axis Names lable
+    "rowUnbindButton": 12,   # The row number where the unbind button is located
+    "rowJoint1": 2,          # The row number of the label with joint number 2 and 3
+    "sliderLen": 260,        # The length of the slider rail corresponding to joint numbers 4 to 15
+    "rSpan": 4,              # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+    "rowJoint2": 4,          # The row number of the label with joint number 4 or 15 is located
+    "rowFrameImu": 13,       # The row number of the IMU button frame is located
+    "imuSliderLen": 220,     # The length of the IMU slider rail
+    "schedulerHeight": 580,  # The height of action frame scheduler
+    "rowFrameImage": 5,      # The row number of the image frame is located
+    "imgWidth": 320,         # The width of image
+    "imgRowSpan": 7          # The number of lines occupied by the image frame
+}
+
+HunterMacSet = {
+    "sliderW": 380,           # The width of the slider rail corresponding to joint numbers 0 to 3
+    "sixW": 10,               # The width of six IMU Axis Names lable
+    "rowUnbindButton": 12,   # The row number where the unbind button is located
+    "rowJoint1": 2,          # The row number of the label with joint number 2 and 3
+    "sliderLen": 260,        # The length of the slider rail corresponding to joint numbers 4 to 15
+    "rSpan": 4,              # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+    "rowJoint2": 4,          # The row number of the label with joint number 4 or 15 is located
+    "rowFrameImu": 13,       # The row number of the IMU button frame is located
+    "imuSliderLen": 220,     # The length of the IMU slider rail
+    "schedulerHeight": 580,  # The height of action frame scheduler
+    "rowFrameImage": 5,      # The row number of the image frame is located
+    "imgWidth": 320,         # The width of image
+    "imgRowSpan": 7          # The number of lines occupied by the image frame
+}
+
+RegularWinSet = {
+    "sliderW": 320,
+    "sixW": 6,
+    "rowUnbindButton": 5,
+    "rowJoint1": 11,
+    "sliderLen": 150,
+    "rSpan": 3,
+    "rowJoint2": 2,
+    "rowFrameImu": 6,
+    "imuSliderLen": 125,
+    "schedulerHeight": 310,
+    "rowFrameImage": 3,
+    "imgWidth": 200,
+    "imgRowSpan": 2
+}
+
+RegularMacSet = {
+    "sliderW": 338,
+    "sixW": 5,
+    "rowUnbindButton": 5,
+    "rowJoint1": 11,
+    "sliderLen": 150,
+    "rSpan": 3,
+    "rowJoint2": 2,
+    "rowFrameImu": 6,
+    "imuSliderLen": 125,
+    "schedulerHeight": 310,
+    "rowFrameImage": 3,
+    "imgWidth": 200,
+    "imgRowSpan": 2
+}
+paraemterWinSet = {
+    "Regular": RegularWinSet,
+    "Hunter": HunterWinSet
+}
+
+paraemterMacSet = {
+    "Regular": RegularMacSet,
+    "Hunter": HunterMacSet
+}
+
 # word_file = '/usr/share/dict/words'
 # WORDS = open(word_file).read().splitlines()
 animalNames = [  # used for memorizing individual frames
@@ -144,33 +217,9 @@ class SkillComposer:
             self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
             if self.model == 'Hunter':
-                self.sliderW = 380          # The width of the slider rail corresponding to joint numbers 0 to 3
-                self.sixW = 10              # The width of six IMU Axis Names lable
-                self.rowUnbindButton = 12   # The row number where the unbind button is located
-                self.rowJoint1 = 2          # The row number of the label with joint number 2 and 3
-                self.sliderLen = 260        # The length of the slider rail corresponding to joint numbers 4 to 15
-                self.rSpan = 4              # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
-                self.rowJoint2 = 4          # The row number of the label with joint number 4 or 15 is located
-                self.rowFrameImu = 13       # The row number of the IMU button frame is located
-                self.imuSliderLen = 220     # The length of the IMU slider rail
-                self.schedulerHeight = 580  # The height of action frame scheduler
-                self.rowFrameImage = 5      # The row number of the image frame is located
-                self.imgWidth = 320         # The width of image
-                self.imgRowSpan = 7         # The number of lines occupied by the image frame
+                self.paraemterSet = paraemterWinSet['Hunter']
             else:
-                self.sliderW = 320
-                self.sixW = 6
-                self.rowUnbindButton = 5
-                self.rowJoint1 = 11
-                self.sliderLen = 150
-                self.rSpan = 3
-                self.rowJoint2 = 2
-                self.rowFrameImu = 6
-                self.imuSliderLen = 125
-                self.schedulerHeight = 310
-                self.rowFrameImage = 3
-                self.imgWidth = 200
-                self.imgRowSpan = 2
+                self.paraemterSet = paraemterWinSet['Regular']
 
             # self.buttonW = 20
             self.buttonW = 10
@@ -190,8 +239,11 @@ class SkillComposer:
                 self.frameItemWidth = [2, 2, 3, 4, 4, 4, 5, 2, 2]
                 self.headerOffset = [0, 0, 1, 1, 0, 0, 0, 0, 1]
 
-            self.sixW = 5
-            self.sliderW = 338
+            if self.model == 'Hunter':
+                self.paraemterSet = paraemterMacSet['Hunter']
+            else:
+                self.paraemterSet = paraemterMacSet['Regular']
+
             # self.buttonW = 18
             self.buttonW = 8
             self.calibButtonW = 6
@@ -280,7 +332,7 @@ class SkillComposer:
         label.grid(row=0, column=0, columnspan=8)
         self.controllerLabels.append(label)
         unbindButton = Button(self.frameController, text=txt('Unbind All'), fg='blue', command=self.unbindAll)
-        rowUnbindButton = self.rowUnbindButton    # The row number where the unbind button is located
+        rowUnbindButton = self.paraemterSet['rowUnbindButton']    # The row number where the unbind button is located
         unbindButton.grid(row=rowUnbindButton, column=3, columnspan=2)
         self.controllerLabels.append(unbindButton)
         
@@ -293,7 +345,7 @@ class SkillComposer:
                 if i < 2:
                     ROW = 0
                 else:
-                    ROW = self.rowJoint1    # The row number of the label with joint number 2 and 3
+                    ROW = self.paraemterSet['rowJoint1']    # The row number of the label with joint number 2 and 3
 
                 if 0 < i < 3:
                     COL = 4
@@ -301,16 +353,16 @@ class SkillComposer:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                LEN = self.sliderW
+                LEN = self.paraemterSet['sliderW']
             else:
                 tickDirection = -1
                 leftQ = (i - 1) % 4 > 1
                 frontQ = i % 4 < 2
                 # upperQ = i / 4 < 3
 
-                LEN = self.sliderLen    # The length of the slider rail corresponding to joint numbers 4 to 15
-                rSPAN = self.rSpan    # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
-                ROW = self.rowJoint2 + (1 - frontQ) * (rSPAN + 2)    # The row number of the label with joint number 4 or 15 is located
+                LEN = self.paraemterSet['sliderLen']    # The length of the slider rail corresponding to joint numbers 4 to 15
+                rSPAN = self.paraemterSet['rSpan']    # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+                ROW = self.paraemterSet['rowJoint2'] + (1 - frontQ) * (rSPAN + 2)    # The row number of the label with joint number 4 or 15 is located
 
                 if leftQ:
                     COL = 3 - i // 4
@@ -365,8 +417,8 @@ class SkillComposer:
                 self.binderValue.append(binderValue)
 
         self.frameImu = Frame(self.frameController)
-        rowFrameImu = self.rowFrameImu    # The row number of the IMU button frame is located
-        sliderLen = self.imuSliderLen     # The length of the IMU slider rail
+        rowFrameImu = self.paraemterSet['rowFrameImu']    # The row number of the IMU button frame is located
+        sliderLen = self.paraemterSet['imuSliderLen']     # The length of the IMU slider rail
         self.frameImu.grid(row=rowFrameImu, column=3, rowspan=6, columnspan=2)
         for i in range(6):
             frm = -40
@@ -387,7 +439,7 @@ class SkillComposer:
                 frm = -50
                 to2 = 40
 
-            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width=self.sixW, height=2, fg='blue',
+            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width=self.paraemterSet['sixW'], height=2, fg='blue',
                           bg='Light Blue')
 
             value = DoubleVar()
@@ -600,7 +652,7 @@ class SkillComposer:
             if tipSkillEditor[i]:
                 tip(label, txt(tipSkillEditor[i]))
 
-        schedulerHeight = self.schedulerHeight    # The height of action frame scheduler
+        schedulerHeight = self.paraemterSet['schedulerHeight']    # The height of action frame scheduler
         canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=schedulerHeight, bd=0)
         scrollbar = Scrollbar(self.frameRowScheduler, orient='vertical', cursor='double_arrow', troughcolor='yellow',
                               width=15, command=canvas.yview)
@@ -629,9 +681,9 @@ class SkillComposer:
         return imageFrame
 
     def placeProductImage(self):
-        rowFrameImage = self.rowFrameImage    # The row number of the image frame is located
-        imgWidth = self.imgWidth              # The width of image
-        rowSpan = self.imgRowSpan             # The number of lines occupied by the image frame
+        rowFrameImage = self.paraemterSet['rowFrameImage']    # The row number of the image frame is located
+        imgWidth = self.paraemterSet['imgWidth']              # The width of image
+        rowSpan = self.paraemterSet['imgRowSpan']             # The number of lines occupied by the image frame
         self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', imgWidth)
         self.frameImage.grid(row=rowFrameImage, column=3, rowspan=rowSpan, columnspan=2)
 

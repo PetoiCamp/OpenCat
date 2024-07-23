@@ -4,6 +4,27 @@ from commonVar import *
 
 language = languageList['English']
 
+HunterSet = {
+    "imageW": 360,       # The width of image
+    "sliderW": 220,      # The width of the slider rail corresponding to joint numbers 0 to 3
+    "rowJoint1": 2,      # The row number of the label with joint number 2 and 3
+    "sliderLen": 260,    # The length of the slider rail corresponding to joint numbers 4 to 15
+    "rowJoint2": 4       # The row number of the label with joint number 4 or 15 is located
+}
+
+RegularSet = {
+    "imageW": 250,
+    "sliderW": 200,
+    "rowJoint1": 11,
+    "sliderLen": 150,
+    "rowJoint2": 2
+}
+
+paraemterSet = {
+    "Regular": RegularSet,
+    "Hunter": HunterSet
+}
+
 def txt(key):
     return language.get(key, textEN[key])
     
@@ -51,22 +72,14 @@ class Calibrator:
 #        quitButton.grid(row=11, column=2)
 
         if self.model == 'Hunter':
-            self.imageW = 360       # The width of image
-            self.sliderW = 220      # The width of the slider rail corresponding to joint numbers 0 to 3
-            self.rowJoint1 = 2      # The row number of the label with joint number 2 and 3
-            self.sliderLen = 260    # The length of the slider rail corresponding to joint numbers 4 to 15
-            self.rowJoint2 = 4      # The row number of the label with joint number 4 or 15 is located
+            self.paraemterSet = paraemterSet['Hunter']
         else:
-            self.imageW = 250
-            self.sliderW = 200
-            self.rowJoint1 = 11
-            self.sliderLen = 150
-            self.rowJoint2 = 2
+            self.paraemterSet = paraemterSet['Regular']
 
-        self.imgWiring = createImage(self.frameCalibButtons, resourcePath + self.model + 'Wire.jpeg', self.imageW)
+        self.imgWiring = createImage(self.frameCalibButtons, resourcePath + self.model + 'Wire.jpeg', self.paraemterSet['imageW'])
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
-        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', self.imageW)
+        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', self.paraemterSet['imageW'])
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
 
         for i in range(16):
@@ -76,7 +89,7 @@ class Calibrator:
                 if i < 2:
                     ROW = 0
                 else:
-                    ROW = self.rowJoint1
+                    ROW = self.paraemterSet['rowJoint1']
 
                 if 0 < i < 3:
                     COL = 4
@@ -84,7 +97,7 @@ class Calibrator:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                LEN = self.sliderW
+                LEN = self.paraemterSet['sliderW']
                 ALIGN = 'we'
 
             else:
@@ -94,14 +107,14 @@ class Calibrator:
                 upperQ = i / 4 < 3
 
                 rSPAN = 3
-                ROW = self.rowJoint2 + (1 - frontQ) * (rSPAN + 2)
+                ROW = self.paraemterSet['rowJoint2'] + (1 - frontQ) * (rSPAN + 2)
 
                 if leftQ:
                     COL = 3 - i // 4
                 else:
                     COL = 3 + i // 4
                 ORI = VERTICAL
-                LEN = self.sliderLen
+                LEN = self.paraemterSet['sliderLen']
                 ALIGN = 'sw'
             stt = NORMAL
             if i in NaJoints[self.model]:
@@ -133,7 +146,7 @@ class Calibrator:
 
     def calibFun(self, cmd):
 #        global ports
-        imageW = self.imageW
+        imageW = self.paraemterSet['imageW']
 
         self.imgPosture.destroy()
         if cmd == 'c':
