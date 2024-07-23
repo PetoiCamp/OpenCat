@@ -33,7 +33,7 @@ Our users have deployed many robotics/AI/IoT applications:
 
 We've successfully crowdfunded these two mini robot kits and shipped thousands of units worldwide. 
 
-With our customized Arduino board and servos coordinating all instinctive and sophisticated movements(walking, running, jumping, backflipping), one can clip on [various sensors](https://www.petoi.com/products/petoi-sensor-pack) and [camera](https://www.petoi.com/products/intelligent-camera-module) to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips(such as Nvidia Jetson Nano) through wired/wireless connections. 
+With our [customized Arduino-Uno board](https://www.petoi.com/products/nyboard-customized-arduino-board) and [high-performance servos](https://www.petoi.com/products/quadruped-robot-dog-bittle-servo-set) coordinating all instinctive and sophisticated movements(walking, running, jumping, backflipping), one can clip on [various sensors](https://www.petoi.com/products/petoi-sensor-pack) and [camera](https://www.petoi.com/products/intelligent-camera-module) to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips(such as Nvidia Jetson Nano) through wired/wireless connections. 
  
 Please see [Petoi FAQs](https://www.petoi.com/pages/faq?utm_source=github&utm_medium=code&utm_campaign=faq) for more info.
 
