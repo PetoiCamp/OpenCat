@@ -145,6 +145,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': 'No',
     'Reset successfully': 'Reset successfully!',
     'checkLogfile':'''Please check the log file: logfile.log \n
+For more details, please refer to https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 If you can not fix the issue, please send the log to support@petoi.com for help.''',
 
     'Calibrate':'Calibrate',
@@ -218,8 +219,9 @@ If you can not fix the issue, please send the log to support@petoi.com for help.
     'IMU calibrated': 'Calibrate IMU complete!',
     'caliIMUerrorStatus':'IMU Calibration Error!',
 
-    'parameterFinish': '''Parameters initialized!
-     The next step is uploading the Main Function!''',
+    'parameterFinish': '''Parameters initialized! \n
+After clicking the "OK" button, the main function firmware will be automatically uploaded.''',
+
     '9685 Calibrated':'PCA9685 has been calibrated successfully!',
     'msgFinish': 'Firmware upload complete!',
     'msgMode': 'Invalide, please select another mode!',
@@ -421,6 +423,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': '否',
     'Reset successfully': '重置成功！',
     'checkLogfile':'''请检查日志文件：logfile.log \n
+相关详细信息，请参阅 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您无法解决问题，请发送日志到 support@petoi.com 以寻求帮助。''',
 
     'Do you want to save the offsets?':'要保存校准值吗？',
@@ -475,8 +478,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'IMU calibrated': 'IMU校准完成！',
     'caliIMUerrorStatus':'IMU 校准错误！',
             
-    'parameterFinish': '''参数初始化完成！
-                       接下来将开始上传主程序！''',
+    'parameterFinish': '''参数初始化完成！\n
+点击“确定”按钮后，将自动上传主功能固件。''',
     '9685 Calibrated':'PCA9685校准完成！',
     'msgFinish': '固件上传完成！',
     'msgMode': '无效模式，请选择其他模式！',
@@ -689,6 +692,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': '否',
     'Reset successfully': '重設成功！',
     'checkLogfile':'''請檢查日志文件：logfile.log \n
+相關详细信息，請參閱 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您無法修復問題，請將日志發送到 support@petoi.com 以尋求幫助。''',
 
     'Do you want to save the offsets?':'要保存校準值嗎？',
@@ -742,8 +746,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'IMU calibrated': 'IMU校準完成！',
     'caliIMUerrorStatus':'IMU 校正錯誤！',
             
-    'parameterFinish': '''參數初始化完成！
-                       接下來將開始上傳主程序！''',
+    'parameterFinish': '''參數初始化完成！\n
+點擊「確定」按鈕後，主功能韌體將自動上傳。''',
     '9685 Calibrated':'PCA9685校準完成！',
     'msgFinish': '固件上傳完成!',
     'msgMode': '無效模式，請選擇其他模式!',
@@ -954,6 +958,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': 'Nein',
     'Reset successfully': 'Reset erfolgreich!',
     'checkLogfile':'''Bitte überprüfen Sie die Protokolldatei: logfile.log \n
+Weitere Einzelheiten finden Sie unter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur Hilfe an support@petoi.com.''',
 
     'Calibrate':'Kalibrieren',
@@ -1028,8 +1033,8 @@ Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur H
     'IMU calibrated': 'IMU erfolgreich kalibriert!',
     'caliIMUerrorStatus':'IMU-Kalibrierungsfehler!',
 
-    'parameterFinish': '''Parameter initialisiert!
-    Der nächste Schritt ist das Hochladen der Hauptfunktion!''',
+    'parameterFinish': '''Parameter initialisiert! \n
+Nach Klicken auf den "OK"-Button wird die Hauptfunktionsfirmware automatisch hochgeladen.''',
     '9685 Calibrated':'PCA9685 wurde erfolgreich kalibriert!',
     'msgFinish': 'Firmware-Hochladen abgeschlossen!',
     'msgMode': 'Ungültig, bitte wählen Sie einen anderen Modus!',
@@ -1227,6 +1232,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': 'ไม่ใช่',
     'Reset successfully': 'รีเซ็ตสำเร็จ!',
     'checkLogfile':'''กรุณาตรวจสอบไฟล์บันทึก: logfile.log \n
+สำหรับรายละเอียดเพิ่มเติม โปรดดูที่ https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 หากคุณไม่สามารถแก้ไขปัญหาได้ โปรดส่งไฟล์บันทึกไปยัง support@petoi.com เพื่อขอความช่วยเหลือ''',
 
     'Calibrate':'ปรับสอดคล้อง',
@@ -1300,8 +1306,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'IMU calibrated': 'ปรับแต่ง IMU เสร็จสมบูรณ์!',
     'caliIMUerrorStatus':'ข้อผิดพลาดในการ калиเบรท IMU!',
 
-    'parameterFinish': '''ตั้งค่าพารามิเตอร์เสร็จแล้ว!
-     ขั้นตอนถัดไปคือการโหลดฟังก์ชันหลัก!''',
+    'parameterFinish': '''ตั้งค่าพารามิเตอร์เสร็จแล้ว! \n
+หลังจากคลิกปุ่ม "ตกลง" แล้ว เฟิร์มแวร์ฟังก์ชันหลักจะถูกอัปโหลดโดยอัตโนมัติ ''',
     '9685 Calibrated':'PCA9685 ได้รับการปรับเทียบเรียบร้อยแล้ว!',
     'msgFinish': 'การโหลดเฟิร์มแวร์เสร็จสมบูรณ์!',
     'msgMode': 'ไม่ถูกต้อง โปรดเลือกโหมดอื่น!',
@@ -1500,7 +1506,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Oui',
     'No': 'Non',
     'Reset successfully': 'Réinitialisation réussie !',
-    'checkLogfile':'''Veuillez vérifier le fichier journal: logfile.log \n 
+    'checkLogfile':'''Veuillez vérifier le fichier journal: logfile.log \n
+Pour plus de détails, veuillez consulter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal à support@petoi.com pour obtenir de l\'aide.''',
     
     'Calibrate':'Calibrer',
@@ -1573,8 +1580,8 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     'IMU calibrated': 'Calibration de l\'IMU terminée !',
     'caliIMUerrorStatus':'Erreur de calibrage IMU!',
 
-     'parameterFinish': '''Paramètres initialisés !
-     La prochaine étape consiste à télécharger la Fonction Principale !''',
+     'parameterFinish': '''Paramètres initialisés ! \n
+Après avoir cliqué sur le bouton "OK", le firmware de la fonction principale sera automatiquement téléchargé.''',
     '9685 Calibrated':'PCA9685 a été calibré avec succès !',
     'msgFinish': 'Téléchargement du micrologiciel terminé !',
     'msgMode': 'Mode invalide, veuillez sélectionner un autre mode !',
@@ -1772,6 +1779,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': 'いいえ',
     'Reset successfully': 'リセットが成功しました！',
     'checkLogfile':'''ログファイル: logfile.log を確認してください \n
+詳細については、https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file を参照してください \n
 問題を解決できない場合は、ログを support@petoi.com に送信してサポートを受けてください。''',
 
     'Calibrate':'キャリブレーション',
@@ -1837,7 +1845,8 @@ https://www.petoi.com\n''' + dateStr,
     'IMU calibrated':'IMUのキャリブレーションが完了しました！',
     'caliIMUerrorStatus':'IMUキャリブレーションエラー!',
 
-    'parameterFinish':'パラメータが初期化されました！次のステップはメイン機能のアップロードです！',
+    'parameterFinish':'''パラメータが初期化されました！\n
+ 「OK」ボタンをクリックすると、メイン機能のファームウェアが自動的にアップロードされます。''',
     '9685 Calibrated':'PCA9685が正常にキャリブレーションされました！',
     'msgFinish':'ファームウェアのアップロードが完了しました！',
     'msgMode':'無効です。別のモードを選択してください！',
@@ -2030,7 +2039,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Sì',
     'No': 'No',
     'Reset successfully': 'Ripristino riuscito!',
-    'checkLogfile':'''Controlla il file di registro: logfile.log \n 
+    'checkLogfile':'''Controlla il file di registro: logfile.log \n
+Per ulteriori dettagli, consultare https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Se non riesci a risolvere il problema, invia il registro a support@petoi.com per chiedere aiuto.''',
     
     'Calibrate':'Calibrate',
@@ -2101,8 +2111,8 @@ Se non riesci a risolvere il problema, invia il registro a support@petoi.com per
     'IMU calibrated': 'Calibrazione IMU completata!',
     'caliIMUerrorStatus':'Errore di calibrazione IMU!',
 
-    'parameterFinish': '''Parametri inizializzati!
-     Il prossimo passo è caricare la funzione principale!''',
+    'parameterFinish': '''Parametri inizializzati! \n
+Dopo aver cliccato sul pulsante "OK", il firmware della funzione principale verrà caricato automaticamente.''',
     '9685 Calibrated':'PCA9685 è stato calibrato con successo!',
     'msgFinish': 'Caricamento del firmware completato!',
     'msgMode': 'Non valido, selezionare un\'altra modalità!',

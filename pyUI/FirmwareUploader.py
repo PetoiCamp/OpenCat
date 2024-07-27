@@ -14,7 +14,7 @@ import threading
 from tkinter import ttk
 from tkinter import filedialog
 import pathlib
-
+import webbrowser
 
 regularW = 14
 language = languageList['English']
@@ -599,7 +599,40 @@ class Uploader:
             f.writelines(lines)
             # f.close()
 
+
+    def showMessage(self,sta):
+        self.strStatus.set(sta)
+        self.statusBar.update()
+        messagebox.showinfo('Petoi Desktop App', txt('checkLogfile'))
+
+        if self.OSname == 'aqua':    # for macOS
+            folder_path = "file:///Applications/Petoi Desktop App.app/Contents/Resources"
+            # folder_path = "file:////./"  # Replace with the actual folder path
+        else:    # for Windows or Linux
+            path = os.getcwd()
+            folder_path = "file://" + path  # Replace with the actual folder path
+            # os.startfile(path)
+        print(folder_path)
+        # Open the folder in the default file browser
+        webbrowser.open_new_tab(folder_path)
+
+
     def autoupload(self):
+        file = open('./logfile.log', 'r+')
+        lines = file.readlines()
+        # Read the first three lines
+        first_three_lines = lines[:3]
+        file.close()
+
+        for line in lines:
+            line = line.strip()  # remove the line break from each line
+            logger.debug(f"{line}")
+            if (".ino.hex" in line) or \
+                    (".ino.bin" in line):
+                with open("./logfile.log", "w+", encoding="utf-8") as logfile:
+                    for line in first_three_lines:
+                        logfile.write(line)
+                break
         logger.info(f"lastSetting: {self.lastSetting}.")
         strProd = self.strProduct.get()
         strDefaultPath = self.strFileDir.get()
@@ -717,11 +750,10 @@ class Uploader:
                                 logger.debug(f"{line}")
                                 if ("programmer is not responding" in line) or \
                                     ("can\'t open device" in line) or \
-                                    ("attempt" in line):
+                                    ("attempt" in line) or \
+                                    ("error" in line) or ("Errno" in line):
                                     status = txt(uploadStage[s]) + txt('failed to upload')
-                                    self.strStatus.set(status)
-                                    self.statusBar.update()
-                                    messagebox.showinfo('Petoi Desktop App',txt('checkLogfile'))
+                                    self.showMessage(status)
                                     return False
 
                 # self.inProgress = False
@@ -818,11 +850,9 @@ class Uploader:
                         logger.debug(f"{line}")
                         if ("Traceback" in line) or \
                             ("Failed to connect to ESP32" in line) or \
-                            ("error occurred" in line):
+                            ("error" in line) or ("Errno" in line):
                             status = txt('Main function') + txt('failed to upload')
-                            self.strStatus.set(status)
-                            self.statusBar.update()
-                            messagebox.showinfo('Petoi Desktop App', txt('checkLogfile'))
+                            self.showMessage(status)
                             return False
 
             except:
