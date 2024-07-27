@@ -52,14 +52,22 @@ NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
     'Bittle X': [1, 2, 3, 4, 5, 6, 7],
-    'Hunter': [2, 4, 5, 6, 7],
+    'Hunter': [3, 4, 5, 6, 7],
     'DoF16' : []
 }
-scaleNames = [
+
+HunterScaleNames = [
+    'Claw Pan', 'Claw Lift', 'Claw Open', 'N/A',
+    'Shoulder', 'Shoulder', 'Shoulder', 'Shoulder',
+    'Arm', 'Arm', 'Arm', 'Arm',
+    'Knee', 'Knee', 'Knee', 'Knee']
+
+RegularScaleNames = [
     'Head Pan', 'Head Tilt', 'Tail Pan', 'N/A',
     'Shoulder', 'Shoulder', 'Shoulder', 'Shoulder',
     'Arm', 'Arm', 'Arm', 'Arm',
     'Knee', 'Knee', 'Knee', 'Knee']
+
 sideNames = ['Left Front', 'Right Front', 'Right Back', 'Left Back']
 
 ports = []

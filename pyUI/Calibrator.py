@@ -73,14 +73,18 @@ class Calibrator:
 
         if self.model == 'Hunter':
             self.paraemterSet = paraemterSet['Hunter']
+            scaleNames = HunterScaleNames
         else:
             self.paraemterSet = paraemterSet['Regular']
+            scaleNames = RegularScaleNames
 
         self.imgWiring = createImage(self.frameCalibButtons, resourcePath + self.model + 'Wire.jpeg', self.paraemterSet['imageW'])
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
         if "Bittle" in self.model:
             self.picName = "Bittle"
+        else:
+            self.picName = self.model
         self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.picName + 'Ruler.jpeg', self.paraemterSet['imageW'])
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
 
@@ -121,6 +125,8 @@ class Calibrator:
             stt = NORMAL
             if self.model == "BittleX":
                 modelName = "Bittle X"
+            else:
+                modelName = self.model
             if i in NaJoints[modelName]:
                 clr = 'light yellow'
             else:
