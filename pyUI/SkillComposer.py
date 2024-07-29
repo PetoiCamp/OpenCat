@@ -182,7 +182,15 @@ class SkillComposer:
             self.defaultLocation = txt('Earth')
             self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.defaultCreator, self.defaultLocation]
-        self.postureTable = postureDict[self.model]
+        if "Bittle" in self.model:
+            self.modelName = "Bittle"
+        else:
+            self.modelName = self.model
+        self.postureTable = postureDict[self.modelName]
+        if self.model == 'Hunter':
+            self.scaleNames = HunterScaleNames
+        else:
+            self.scaleNames = RegularScaleNames
         ports = goodPorts
         self.window = Tk()
         self.sliders = list()
@@ -371,7 +379,7 @@ class SkillComposer:
                 ORI = VERTICAL
 
             stt = NORMAL
-            if i in NaJoints[self.model]:
+            if i in NaJoints[self.modelName]:
                 clr = 'light yellow'
             else:
                 clr = 'yellow'
@@ -380,7 +388,7 @@ class SkillComposer:
             else:
                 sideLabel = ''
             label = Label(self.frameController,
-                          text=sideLabel + '(' + str(i) + ')\n' + txt(scaleNames[i]))
+                          text=sideLabel + '(' + str(i) + ')\n' + txt(self.scaleNames[i]))
 
             value = DoubleVar()
             sliderBar = Scale(self.frameController, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
@@ -423,7 +431,7 @@ class SkillComposer:
         for i in range(6):
             frm = -40
             to2 = 40
-            if i in axisDisable[self.model]:
+            if i in axisDisable[self.modelName]:
                 stt = DISABLED
                 clr = 'light yellow'
             else:
@@ -684,7 +692,7 @@ class SkillComposer:
         rowFrameImage = self.paraemterSet['rowFrameImage']    # The row number of the image frame is located
         imgWidth = self.paraemterSet['imgWidth']              # The width of image
         rowSpan = self.paraemterSet['imgRowSpan']             # The number of lines occupied by the image frame
-        self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', imgWidth)
+        self.frameImage = self.createImage(self.frameController, resourcePath + self.modelName + '.jpeg', imgWidth)
         self.frameImage.grid(row=rowFrameImage, column=3, rowspan=rowSpan, columnspan=2)
 
     def changeLan(self, l):
@@ -706,7 +714,7 @@ class SkillComposer:
                     sideLabel = txt(sideNames[i % 8]) + '\n'
                 else:
                     sideLabel = '\n'
-                self.controllerLabels[2 + i].config(text=sideLabel + '(' + str(i) + ')\n' + txt(scaleNames[i]))
+                self.controllerLabels[2 + i].config(text=sideLabel + '(' + str(i) + ')\n' + txt(self.scaleNames[i]))
 
                 for d in range(2):
                     if d == 0:
