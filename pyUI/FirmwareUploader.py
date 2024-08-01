@@ -475,29 +475,6 @@ class Uploader:
 
                         if bResetMode:
                             if prompStr.find(questionMark) != -1:
-                                if progress > 0:
-                                    self.strStatus.set(promptList[progress-1]['result'])
-                                    self.statusBar.update()
-
-                                if prompStr.find("assurance") != -1:  # for BiBoard
-                                    serObj.Send_data(self.encode("n"))
-                                elif (prompStr.find("joint") != -1):
-                                    prompt = promptJointCalib
-                                    serObj.Send_data(self.encode("Y"))
-                                    self.strStatus.set(prompt['operating'])
-                                    self.statusBar.update()
-                                elif (prompStr.find("Calibrate") != -1):
-                                    prompt = promptIMU
-                                    serObj.Send_data(self.encode("Y"))
-                                    self.strStatus.set(prompt['operating'])
-                                    self.statusBar.update()
-                                progress += 1
-
-                            if prompStr.find("Ready!") != -1:
-                                break
-                    else:
-                        if prompStr.find(questionMark) != -1:
-                            if self.bParaUpload:    # for NyBoard and BiBoard upgrade firmware
                                 if progress > 0 and retMsg:
                                     self.strStatus.set(promptList[progress-1]['result'])
                                     self.statusBar.update()
@@ -518,7 +495,32 @@ class Uploader:
                                 else:
                                     serObj.Send_data(self.encode("n"))
                                 progress += 1
-                            else:    # for BiBoard update mode only
+                            if prompStr.find("Ready!") != -1:
+                                break
+                    else:
+                        if prompStr.find(questionMark) != -1:
+                            if self.bParaUpload and strBoardVersion in NyBoard_version_list:    # for NyBoard upgrade firmware
+                                if progress > 0 and retMsg:
+                                    self.strStatus.set(promptList[progress-1]['result'])
+                                    self.statusBar.update()
+                                if prompStr.find("joint") != -1:
+                                    prompt = promptJointCalib
+                                elif prompStr.find("Instinct") != -1:
+                                    prompt = promptInstinct
+                                elif prompStr.find("Calibrate") != -1:
+                                    prompt = promptIMU
+                                elif prompStr.find("assurance") != -1:
+                                    serObj.Send_data(self.encode("n"))
+                                    continue
+                                retMsg = messagebox.askyesno(txt('Warning'), prompt['message'])
+                                if retMsg:
+                                    self.strStatus.set(prompt['operating'])
+                                    self.statusBar.update()
+                                    serObj.Send_data(self.encode("Y"))
+                                else:
+                                    serObj.Send_data(self.encode("n"))
+                                progress += 1
+                            else:    # for BiBoard upgrade firmware
                                 if prompStr.find("joint") != -1:
                                     prompt = promptJointCalib
                                     serObj.Send_data(self.encode("n"))
