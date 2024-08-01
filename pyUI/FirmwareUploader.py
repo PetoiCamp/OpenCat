@@ -43,7 +43,6 @@ class Uploader:
         self.win.resizable(False, False)
         self.bParaUpload = True
         self.bFacReset = False
-        self.bModPara = False
         self.bIMUerror = False
         Grid.rowconfigure(self.win, 0, weight=1)
         Grid.columnconfigure(self.win, 0, weight=1)
@@ -295,7 +294,6 @@ class Uploader:
     def uploadeModeOnly(self):
         self.bParaUpload = False
         self.bFacReset = False
-        self.bModPara = False
         self.autoupload()
 
     def factoryReset(self):
@@ -306,7 +304,6 @@ class Uploader:
     def upgrade(self):
         self.bParaUpload = True
         self.bFacReset = False
-        self.bModPara = True
         self.autoupload()
 
     def updatePortlist(self):
@@ -500,7 +497,7 @@ class Uploader:
                                 break
                     else:
                         if prompStr.find(questionMark) != -1:
-                            if self.bModPara:    # for NyBoard and BiBoard upgrade firmware
+                            if self.bParaUpload:    # for NyBoard and BiBoard upgrade firmware
                                 if progress > 0 and retMsg:
                                     self.strStatus.set(promptList[progress-1]['result'])
                                     self.statusBar.update()
@@ -534,7 +531,7 @@ class Uploader:
                                 elif prompStr.find("assurance") != -1:
                                     serObj.Send_data(self.encode("n"))
                                     continue
-                        elif prompStr.find(questionMark) == -1 and self.bModPara:
+                        elif prompStr.find(questionMark) == -1 and self.bParaUpload:
                             if prompStr[:3] == "IMU":
                                 if progress > 0 and retMsg:
                                     self.strStatus.set(promptList[progress - 1]['result'])
@@ -781,21 +778,6 @@ class Uploader:
             fnPartitions = path + 'OpenCatEsp32' + modeName + '.ino.partitions.bin'
             # fnMainFunc = path + 'OpenCatEsp32Standard.ino.bin '
             fnMainFunc = path + 'OpenCatEsp32' + modeName + '.ino.bin '
-            # if strMode == "Standard":
-            #     modeName = "Standard_Voice"
-            #     # fnBootLoader = path + 'OpenCatEsp32Standard_Voice.ino.bootloader.bin'
-            #     fnBootLoader = path + 'OpenCatEsp32' + modeName + '.ino.bootloader.bin'
-            #     # fnPartitions = path + 'OpenCatEsp32Standard_Voice.ino.partitions.bin'
-            #     fnPartitions = path + 'OpenCatEsp32' + modeName + '.ino.partitions.bin'
-            #     # fnMainFunc = path + 'OpenCatEsp32Standard_Voice.ino.bin '
-            #     fnMainFunc = path + 'OpenCatEsp32' + modeName + '.ino.bin '
-            # else:
-            #     # fnBootLoader = path + 'OpenCatEsp32strMode.ino.bootloader.bin'
-            #     fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
-            #     # fnPartitions = path + 'OpenCatEsp32strMode.ino.partitions.bin'
-            #     fnPartitions = path + 'OpenCatEsp32' + strMode + '.ino.partitions.bin'
-            #     # fnMainFunc = path + 'OpenCatEsp32strMode.ino.bin '
-            #     fnMainFunc = path + 'OpenCatEsp32' + strMode + '.ino.bin '
             fnBootApp = path + 'boot_app0.bin'
 
             filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
