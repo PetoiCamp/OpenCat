@@ -6,18 +6,26 @@ OpenCat is the open-source Arduino and Raspberry Pi-based quadruped robotic pet 
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/run.gif?raw=true)
 
-Inspired by Boston Dynamics' Big Dog and Spot Mini, Dr. Rongzhong Li started the project in his dorm in 2016. After one year of R&D, he founded Petoi LLC and devoted all his resources to the startup. 
+Inspired by Boston Dynamics' Big Dog and Spot Mini, Dr. Rongzhong Li started the project in his dorm at Wake Forest University in 2016. After one year of R&D, he founded Petoi LLC and devoted all his resources to developing open source robots. 
 
-The goal is to foster collaboration in quadruped(four-legged) robotic research, education, and engineering development of agile and affordable quadruped robot pets, bring STEM concepts to the mass and inspire newcomers (including many kids and adults) to join the robotic AI revolution to create more applications.
+The goal is to foster collaboration in quadruped(four-legged) robotic research, education, and engineering development of agile and affordable quadruped robot pets, bring STEM concepts to the mass, and inspire newcomers (including many kids and adults) to join the robotic AI revolution to create more applications.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/slope.gif?raw=true)
 
-The project is still [a complex quadruped robot system](https://www.petoi.com/pages/petoi-programmable-quadruped-robot-system) only for skilled makers. Yet we want to share our design and work with the community by mass production and bring down the hardware and software costs. OpenCat has been deployed on Petoi's bionic palm-sized, realistic lifelike [cute robot cat Nybble](https://www.petoi.com/collections/robots/products/petoi-nybble-robot-cat?utm_source=github&utm_medium=code&utm_campaign=nybble) and
+The project is [a complex quadruped robot system](https://www.petoi.com/pages/petoi-programmable-quadruped-robot-system) for anyone exploring quadruped robotics. We want to share our design and work with the community and bring down the hardware and software costs with mass production. OpenCat has been deployed on all Petoi's bionic palm-sized, realistic lifelike [cute robot cat Nybble](https://www.petoi.com/collections/robots/products/petoi-nybble-robot-cat?utm_source=github&utm_medium=code&utm_campaign=nybble) and
 [high-performance robot dog Bittle](https://www.petoi.com/collections/robots/products/petoi-bittle-robot-dog?utm_source=github&utm_medium=code&utm_campaign=bittle). We now have established a production line and can ship these [affordable robotic kits and accessories](https://www.petoi.com/store?utm_source=github&utm_medium=code&utm_campaign=store) worldwide.
 
-This project provides a base open-source platform to create amazing programmable gaits, locomotion, and deployment of inverse kinematics quadruped robots and bring simulations to the real world via C/C++/Python programming languages.  
-Our users have deployed [NVIDIA Issac simulations and reinforcement learning on our robots](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg), [developed visual and lidar-based SLAM with ROS using Bittle and Raspberry Pi](https://www.youtube.com/watch?v=uXpQUIF_Jyk&list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg&index=6) and [imitation learning using Tiny Machine Learning Models with Petoi Bittle and Raspberry Pi](https://www.learnwitharobot.com/p/imitation-learning-with-petoi-bittle).  
-Our users have also successfully deployed OpenCat on their [DIY 3D-print robot pets](https://www.petoi.com/pages/3d-printed-robot-dog-robot-cat) and developed many robotics projects & applications, such as using [IoT automation of a robot fleet with AWS to improve worker safety](https://www.petoi.com/blogs/blog/aws-iot-robot-fleet-demo-with-petoi-bittle).
+This project provides a base open source platform to create amazing programmable gaits, locomotion, and deployment of inverse kinematics quadruped robots and bring simulations to the real world via block-based coding/C/C++/Python programming languages.  
+
+Our users have deployed many robotics/AI/IoT applications:
+- [robot dog with autonomous movement & object detection](https://www.petoi.com/blogs/blog/reid-graves-robotics-ai-applications-with-bittle-robot-dog-raspberry-pi)
+- [Raspberry Pi robotics projects](https://www.petoi.com/blogs/blog/raspberry-pi-robotics-projects-with-petoi-open-source-quadruped-robots)
+- [NVIDIA Issac simulations and reinforcement learning on our robots](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg)
+- [developed visual and lidar-based SLAM with ROS using Bittle and Raspberry Pi](https://www.youtube.com/watch?v=uXpQUIF_Jyk&list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg&index=6)
+- [imitation learning using Tiny Machine Learning Models with Petoi Bittle and Raspberry Pi](https://www.learnwitharobot.com/p/imitation-learning-with-petoi-bittle)
+- [IoT automation of a robot fleet with AWS to improve worker safety](https://www.petoi.com/blogs/blog/aws-iot-robot-fleet-demo-with-petoi-bittle)
+- [3D-Printed Accessories](https://www.petoi.com/blogs/blog/petoi-bittle-bittle-x-robots-3d-printed-robot-accessories)
+- build their own [DIY 3D-print robot pets](https://www.petoi.com/pages/3d-printed-robot-dog-robot-cat) powered by OpenCat
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/stand.gif?raw=true)
 
@@ -25,7 +33,7 @@ Our users have also successfully deployed OpenCat on their [DIY 3D-print robot p
 
 We've successfully crowdfunded these two mini robot kits and shipped thousands of units worldwide. 
 
-With our customized Arduino board and servos coordinating all instinctive and sophisticated movements(walking, running, jumping, backflipping), one can clip on [various sensors](https://www.petoi.com/products/petoi-sensor-pack) and [camera](https://www.petoi.com/products/intelligent-camera-module) to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips(such as Nvidia Jetson Nano) through wired/wireless connections. 
+With our [customized Arduino-Uno board](https://www.petoi.com/products/nyboard-customized-arduino-board) and [high-performance servos](https://www.petoi.com/products/quadruped-robot-dog-bittle-servo-set) coordinating all instinctive and sophisticated movements(walking, running, jumping, backflipping), one can clip on [various sensors](https://www.petoi.com/products/petoi-sensor-pack) and [camera](https://www.petoi.com/products/intelligent-camera-module) to bring in perception and inject artificial intelligence capabilities by mounting a Raspberry Pi or other AI chips(such as Nvidia Jetson Nano) through wired/wireless connections. 
  
 Please see [Petoi FAQs](https://www.petoi.com/pages/faq?utm_source=github&utm_medium=code&utm_campaign=faq) for more info.
 
@@ -108,16 +116,21 @@ You can refer to the calibration section in the user manual (https://bittle.peto
 
 For updates:
 * star this repository to receive timely notifications on changes.
-* visit www.petoi.com and subscribe to our official newsletters for project announcements. We also host a forum at [petoi.camp](https://www.petoi.com/forum).
-* follow us on [Twitter](https://twitter.com/petoicamp), [Instagram](https://www.instagram.com/petoicamp/), and [YouTube channel](https://www.youtube.com/c/rongzhongli) for fun videos and community activities.
+* visit www.petoi.com and [subscribe to our official newsletters](https://www.petoi.com/pages/subscribe-petoi-newsletter) for project announcements. We also host a forum at [petoi.camp](https://www.petoi.com/forum).
+* follow us on [Twitter](https://twitter.com/petoicamp), [Instagram](https://www.instagram.com/petoicamp/), [Facebook](https://www.facebook.com/PetoiCamp/), [Linkedin](https://www.linkedin.com/company/33449768/admin/dashboard/), and [YouTube channel](https://www.youtube.com/c/rongzhongli) for fun videos and community activities.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/backflip.gif?raw=true)
 
 ## Resources:
-* [STEM Curriculum & Educational Robots for Teaching Coding Robotics](https://www.petoi.com/pages/resources-curriculum-stem-coding-robot)
 * [Advanced tutorials made by users](https://www.youtube.com/playlist?list=PLHMFXft_rV6MWNGyofDzRhpatxZuUZMdg)
 * [Review, open-box, and demos by users](https://www.youtube.com/playlist?list=PLHMFXft_rV6PSS3Qu5yQ-0iPW-ohu1sM3)
 * [OpenCat robot showcase by users](https://www.petoi.com/pages/petoi-open-source-extensions-user-demos-and-hacks)
 * [OpenCat robot gallery](https://www.petoi.com/pages/robot-pet-gallery)
 
-The [old repository for OpenCat](https://github.com/PetoiCamp/OpenCat-Old) is too redundant with large image logs and is obsolete without further updates.
+OpenCat robots have been used in robotics education for K12 schools and colleges to teach students about STEM, coding, and robotics:
+- [robotics education showcases](https://www.petoi.com/blogs/blog/tagged/showcase+education)
+- [STEM & Robotics Curriculum & Resources for Teaching Coding & Robotics](https://www.petoi.com/pages/resources-curriculum-stem-coding-robot)
+- [Robotics competitions](https://www.petoi.com/blogs/blog/robot-competitions-with-petoi)
+- [Petoi robotics contest](https://www.petoi.com/blogs/blog/petoi-spring-2024-robotics-contest-winners)
+
+The [old repository for OpenCat](https://github.com/PetoiCamp/OpenCat-Old) is too redundant with large image logs and is obsolete with no further updates.

@@ -38,7 +38,7 @@
 #define PTL(s) Serial.println(s)
 #define SIZE 65536/8
 #define START 65536/8-200
-//#define CLEAR
+// #define CLEAR '$'
 #define WRITE
 
 
@@ -153,7 +153,7 @@ void setup()
 #ifdef CLEAR  //clear memory for a new write and read test
   PTL("Takes time. Wait for next message...");
   for (int i = 0; i < SIZE; i++)  {
-    i2c_eeprom_write_byte( i, '#');
+    i2c_eeprom_write_byte( i, CLEAR);
     delay(4);
   }
   PTL("Done clearing!");
