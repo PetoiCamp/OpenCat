@@ -32,7 +32,7 @@ cLoop, cSet, cStep,  cTrig, cAngle, cDelay, cNote, cDel, cAdd = range(len(labelS
 axisDisable = {
     'Nybble': [0, 5],
     'Bittle': [0, 5],
-    'BittleX': [0, 5],
+    # 'BittleX': [0, 5],
     'BittleR': [0, 5],
     'DoF16' : []
 
@@ -117,7 +117,7 @@ RegularMacSet = {
 paraemterWinSet = {
     "Nybble": RegularWinSet,
     "Bittle": RegularWinSet,
-    "BittleX": RegularWinSet,
+    # "BittleX": RegularWinSet,
     "BittleR": BittleRWinSet,
     "DoF16": RegularWinSet,
 }
@@ -125,7 +125,7 @@ paraemterWinSet = {
 paraemterMacSet = {
     "Nybble": RegularMacSet,
     "Bittle": RegularMacSet,
-    "BittleX": RegularMacSet,
+    # "BittleX": RegularMacSet,
     "BittleR": BittleRMacSet,
     "DoF16": RegularMacSet,
 }
@@ -150,6 +150,7 @@ class SkillComposer:
                 config.model_ = model
                 print('Use the model set in the UI interface.')
             time.sleep(0.01)
+        self.configName = config.model_
         config.model_ = config.model_.replace(' ','')
         if 'Bittle' in config.model_ and config.model_!= 'BittleR':
             self.model = 'Bittle'
@@ -174,7 +175,7 @@ class SkillComposer:
                 self.defaultCreator = txt('Nature')
                 self.defaultLocation = txt('Earth')
 
-            self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+            self.configuration = [self.defaultLan, self.configName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.defaultCreator, self.defaultLocation]
 
         except Exception as e:
@@ -186,7 +187,7 @@ class SkillComposer:
             self.defaultMode = 'Standard'
             self.defaultCreator = txt('Nature')
             self.defaultLocation = txt('Earth')
-            self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+            self.configuration = [self.defaultLan, self.configName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.defaultCreator, self.defaultLocation]
 
         self.postureTable = postureDict[self.model]
@@ -200,7 +201,7 @@ class SkillComposer:
         self.controllerLabels = list()
         self.binderValue = list()
         self.binderButton = list()
-        self.previousBinderValue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
+        self.previousBinderValue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.keepChecking = True
         self.ready = 0
         self.creatorInfoAcquired = False
@@ -306,7 +307,6 @@ class SkillComposer:
 
         lan = Menu(self.menubar, tearoff=0)
         for l in languageList:
-            print("a002")
             lan.add_command(label=languageList[l]['lanOption'], command=lambda lanChoice=l: self.changeLan(lanChoice))
         self.menubar.add_cascade(label=txt('lanMenu'), menu=lan)
 
@@ -374,7 +374,13 @@ class SkillComposer:
                 ORI = VERTICAL
 
             stt = NORMAL
-            if i in NaJoints[self.model]:
+            if self.model == "BittleX":
+                modelName = "Bittle X"
+            elif self.model == "BittleR":
+                modelName = "Bittle R"
+            else:
+                modelName = self.model
+            if i in NaJoints[modelName]:
                 clr = 'light yellow'
             else:
                 clr = 'yellow'
@@ -700,12 +706,11 @@ class SkillComposer:
             language = languageList[l]
             self.defaultLan = l
             logger.debug(f"{self.defaultLan}")
-            print(self.defaultLan)
+            # print(self.defaultLan)
             self.window.title(txt('skillComposerTitle'))
             self.menubar.destroy()
             self.createMenu()
-            print("a001")
-            print(self.controllerLabels)
+            # print(self.controllerLabels)
             self.controllerLabels[0].config(text=txt('Joint Controller'))
             self.controllerLabels[1].config(text=txt('Unbind All'))
             for i in range(6):
@@ -765,6 +770,8 @@ class SkillComposer:
 
     def changeModel(self, model):
         if self.ready and model != self.model:
+            self.configName = model
+            model = model.replace(' ', '')
             if 'Bittle' in model and model != "BittleR": # Bittle or Bittle X will be Bittle
                 model = 'Bittle'
             self.model = copy.deepcopy(model)
@@ -773,7 +780,10 @@ class SkillComposer:
             self.frameImage.destroy()
             self.frameController.destroy()
             self.sliders=list()
+            self.values = list()
             self.controllerLabels = list()
+            self.previousBinderValue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.binderValue = list()
             self.binderButton=list()
             if self.OSname == 'win32':
                 self.paraemterSet = paraemterWinSet[self.model]
@@ -786,7 +796,6 @@ class SkillComposer:
                 self.scaleNames = RegularScaleNames
 
             self.createController()
-            print(self.sliders)
 
 #            stt = NORMAL
 #            for i in range(16):
@@ -1013,12 +1022,12 @@ class SkillComposer:
                 frameSize = 16
                 copyFrom = 4
             else:  # gait
-                if self.model == 'Nybble' or 'Bittle' or 'BittleX':
-                    frameSize = 8
-                    copyFrom = 12
-                else:
+                if self.model == 'DoF16':
                     frameSize = 12
                     copyFrom = 8
+                else:
+                    frameSize = 8
+                    copyFrom = 12
             self.gaitOrBehavior.set(txt('Gait'))
         if (len(skillData) - header) % abs(skillData[0]) != 0 or frameSize != (len(skillData) - header) // abs(
                 skillData[0]):
@@ -1065,8 +1074,8 @@ class SkillComposer:
         if self.totalFrame == 1:
             self.activeFrame = -1
         self.setFrame(0)
+
     def loadSkill(self,skillData):
-        
         print(skillData)
         self.restartSkillEditor()
         if skillData[0] < 0:
@@ -1082,12 +1091,12 @@ class SkillComposer:
                 frameSize = 16
                 copyFrom = 4
             else:  # gait
-                if 'Nybble' in self.model or 'Bittle' in self.model:
-                    frameSize = 8
-                    copyFrom = 12
-                else:
+                if self.model == 'DoF16':
                     frameSize = 12
                     copyFrom = 8
+                else:
+                    frameSize = 8
+                    copyFrom = 12
             self.gaitOrBehavior.set(txt('Gait'))
         if (len(skillData) - header) % abs(skillData[0]) != 0 or frameSize != (len(skillData) - header) // abs(
                 skillData[0]):
@@ -1444,7 +1453,7 @@ class SkillComposer:
 
         
     def saveConfigToFile(self, filename):
-        self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+        self.configuration = [self.defaultLan, self.configName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.configuration[6], self.configuration[7]]
 
         f = open(filename, 'w+', encoding="utf-8")
@@ -1462,7 +1471,7 @@ class SkillComposer:
                 # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             defaultLan = self.defaultLan
-            defaultModel = self.model
+            defaultModel = self.configName
             defaultPath = lines[2]
             defaultSwVer = lines[3]
             defaultBdVer = lines[4]
@@ -1489,7 +1498,7 @@ class SkillComposer:
             print(e)
             print('Create configuration file')
             defaultLan = self.defaultLan
-            defaultModel = self.model
+            defaultModel = self.configName
             defaultPath = releasePath[:-1]
             defaultSwVer = '2.0'
             defaultBdVer = NyBoard_version
@@ -1521,12 +1530,12 @@ class SkillComposer:
         skillData = list()
         loopStructure = list()
         period = self.totalFrame - self.activeFrame
-        if 'Nybble' in self.model or 'Bittle' in self.model:
-            copyFrom = 12
-            frameSize = 8
-        else:
-            copyFrom = 8
+        if self.model == 'DoF16':
             frameSize = 12
+            copyFrom = 8
+        else:
+            frameSize = 8
+            copyFrom = 12
         if self.gaitOrBehavior.get() == txt('Behavior'):
             period = -period
             copyFrom = 4
@@ -1590,9 +1599,10 @@ class SkillComposer:
         if file:
 #            print(file.name)
             x = datetime.datetime.now()
+            modeName = self.model
             fileData = '# ' + file.name.split('/')[-1].split('.')[0] + '\n'
             fileData += 'Note: '+'You may add a short description/instruction here.\n\n'
-            fileData += 'Model: ' + self.model + '\n\n'
+            fileData += 'Model: ' + modeName + '\n\n'
             fileData += 'Creator: ' + self.creator.get() + '\n\n'
             fileData += 'Location: ' + self.location.get() + '\n\n'
             fileData += 'Date: ' + x.strftime("%b")+' '+x.strftime("%d")+', '+x.strftime("%Y") + '\n\n'
@@ -1610,8 +1620,6 @@ class SkillComposer:
             fileData += '};'
 
             # the file in the config directory will be saved automatically
-
-            modeName = self.model
             filePathName = configDir + separation + 'SkillLibrary' + separation + modeName + separation + file.name.split('/')[-1]
             logger.debug(f"fileName is: {filePathName}")
 
@@ -1650,7 +1658,6 @@ class SkillComposer:
         self.activeFrame = 0
         self.addFrame(0)
         self.vRepeat.set(0)
-
     #        self.window.update()
     #        self.setPose('calib')
 
@@ -1742,21 +1749,21 @@ class SkillComposer:
                 positiveGroup = []
                 negativeGroup = []
             elif i == 1:  # pitch
-                if jointConfig[self.model] == '>>':
+                if jointConfig[model] == '>>':
                     positiveGroup = [1, 4, 5, 8, 9, 14, 15]
                     negativeGroup = [2, 6, 7, 10, 11, 12, 13]
                 else:
                     positiveGroup = [1, 4, 5, 8, 9, 10, 11,]
                     negativeGroup = [6, 7, 12, 13, 14, 15]
             elif i == 2:  # roll
-                if jointConfig[self.model] == '>>':
+                if jointConfig[model] == '>>':
                     positiveGroup = [4, 7, 8, 11, 13, 14]
                     negativeGroup = [0, 5, 6, 9, 10, 12, 15]
                 else:
                     positiveGroup = [4, 7, 8, 10, 13, 15]
                     negativeGroup = [0, 2, 5, 6, 9, 11, 12, 14]
             elif i == 3:  # Spinal
-                if jointConfig[self.model] == '>>':
+                if jointConfig[model] == '>>':
                     positiveGroup = [8, 9, 10, 11, 12, 13, 14, 15]
                     negativeGroup = []
                 else:
@@ -1764,14 +1771,14 @@ class SkillComposer:
                     negativeGroup = []
 
             elif i == 4:  # Height
-                if jointConfig[self.model] == '>>':
+                if jointConfig[model] == '>>':
                     positiveGroup = [12, 13, 14, 15]
                     negativeGroup = [8, 9, 10, 11, ]
                 else:
                     positiveGroup = [12, 13, 10, 11, ]
                     negativeGroup = [8, 9, 14, 15]
             elif i == 5:  # Sideway
-                if jointConfig[self.model] == '>>':
+                if jointConfig[model] == '>>':
                     positiveGroup = []
                     negativeGroup = []
 
@@ -1786,7 +1793,7 @@ class SkillComposer:
                     else:
                         factor = 1
                     if i == 1:
-                        if jointConfig[self.model] == '>>':
+                        if jointConfig[model] == '>>':
                             if upperQ:
                                 if frontQ:
                                     if value < 0:
@@ -1794,7 +1801,7 @@ class SkillComposer:
                                 else:
                                     factor *= 2
                                     
-                        if jointConfig[self.model] == '><':
+                        if jointConfig[model] == '><':
                             if upperQ:
                                 factor /= 3
                             

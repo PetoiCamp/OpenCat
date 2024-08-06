@@ -454,7 +454,7 @@ postureTableDoF16 = {
 postureDict = {
     'Nybble': postureTableNybble,
     'Bittle': postureTableBittle,
-    'BittleX': postureTableBittle,
+    # 'BittleX': postureTableBittle,
     'BittleR': postureTableBittleR,
     'DoF16': postureTableDoF16
 }

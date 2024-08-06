@@ -4,7 +4,7 @@ from commonVar import *
 
 language = languageList['English']
 
-HunterSet = {
+BittleRSet = {
     "imageW": 360,       # The width of image
     "sliderW": 220,      # The width of the slider rail corresponding to joint numbers 0 to 3
     "rowJoint1": 2,      # The row number of the label with joint number 2 and 3
@@ -22,7 +22,7 @@ RegularSet = {
 
 paraemterSet = {
     "Regular": RegularSet,
-    "Hunter": HunterSet
+    "BittleR": BittleRSet
 }
 
 def txt(key):
@@ -41,6 +41,7 @@ class Calibrator:
                 config.model_ = model
                 print('Use the model set in the UI interface.')
             time.sleep(0.01)
+        config.model_ = config.model_.replace(' ', '')
         self.model = config.model_
 
         self.winCalib = Tk()
@@ -72,8 +73,8 @@ class Calibrator:
 #        quitButton.grid(row=11, column=2)
 
         if self.model == 'BittleR':
-            self.paraemterSet = paraemterSet['Hunter']
-            scaleNames = HunterScaleNames
+            self.paraemterSet = paraemterSet['BittleR']
+            scaleNames = BittleRScaleNames
         else:
             self.paraemterSet = paraemterSet['Regular']
             scaleNames = RegularScaleNames
@@ -82,8 +83,8 @@ class Calibrator:
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
 
-        if self.model == 'Bittle' or self.model == 'BittleX':
-            self.picName = "Bittle"
+        if 'Bittle' in self.model and self.model != "BittleR":  # Bittle or Bittle X will be Bittle
+            self.picName = 'Bittle'
         else:
             self.picName = self.model
         self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.picName + 'Ruler.jpeg', self.paraemterSet['imageW'])
@@ -126,6 +127,8 @@ class Calibrator:
             stt = NORMAL
             if self.model == "BittleX":
                 modelName = "Bittle X"
+            elif self.model == "BittleR":
+                modelName = "Bittle R"
             else:
                 modelName = self.model
             if i in NaJoints[modelName]:
