@@ -301,8 +301,8 @@ class SkillComposer:
         self.menubar = Menu(self.window, background='#ff8000', foreground='black', activebackground='white',
                             activeforeground='black')
         file = Menu(self.menubar, tearoff=0, background='#ffcc99', foreground='black')
-        for key in NaJoints:
-            file.add_command(label=key, command=lambda model=key: self.changeModel(model))
+        for m in modelOptions:
+            file.add_command(label=m, command=lambda model=m: self.changeModel(model))
         self.menubar.add_cascade(label=txt('Model'), menu=file)
 
         lan = Menu(self.menubar, tearoff=0)
@@ -374,13 +374,7 @@ class SkillComposer:
                 ORI = VERTICAL
 
             stt = NORMAL
-            if self.model == "BittleX":
-                modelName = "Bittle X"
-            elif self.model == "BittleR":
-                modelName = "Bittle R"
-            else:
-                modelName = self.model
-            if i in NaJoints[modelName]:
+            if i in NaJoints[self.model]:
                 clr = 'light yellow'
             else:
                 clr = 'yellow'
@@ -1741,29 +1735,27 @@ class SkillComposer:
             positiveGroup = []
             negativeGroup = []
             if 'Bittle' in self.model:
-                model = 'Bittle'
-            else:
-                model = self.model
+                self.model = 'Bittle'
 
             if i == 0:  # ypr
                 positiveGroup = []
                 negativeGroup = []
             elif i == 1:  # pitch
-                if jointConfig[model] == '>>':
+                if jointConfig[self.model] == '>>':
                     positiveGroup = [1, 4, 5, 8, 9, 14, 15]
                     negativeGroup = [2, 6, 7, 10, 11, 12, 13]
                 else:
                     positiveGroup = [1, 4, 5, 8, 9, 10, 11,]
                     negativeGroup = [6, 7, 12, 13, 14, 15]
             elif i == 2:  # roll
-                if jointConfig[model] == '>>':
+                if jointConfig[self.model] == '>>':
                     positiveGroup = [4, 7, 8, 11, 13, 14]
                     negativeGroup = [0, 5, 6, 9, 10, 12, 15]
                 else:
                     positiveGroup = [4, 7, 8, 10, 13, 15]
                     negativeGroup = [0, 2, 5, 6, 9, 11, 12, 14]
             elif i == 3:  # Spinal
-                if jointConfig[model] == '>>':
+                if jointConfig[self.model] == '>>':
                     positiveGroup = [8, 9, 10, 11, 12, 13, 14, 15]
                     negativeGroup = []
                 else:
@@ -1771,14 +1763,14 @@ class SkillComposer:
                     negativeGroup = []
 
             elif i == 4:  # Height
-                if jointConfig[model] == '>>':
+                if jointConfig[self.model] == '>>':
                     positiveGroup = [12, 13, 14, 15]
                     negativeGroup = [8, 9, 10, 11, ]
                 else:
                     positiveGroup = [12, 13, 10, 11, ]
                     negativeGroup = [8, 9, 14, 15]
             elif i == 5:  # Sideway
-                if jointConfig[model] == '>>':
+                if jointConfig[self.model] == '>>':
                     positiveGroup = []
                     negativeGroup = []
 
@@ -1793,7 +1785,7 @@ class SkillComposer:
                     else:
                         factor = 1
                     if i == 1:
-                        if jointConfig[model] == '>>':
+                        if jointConfig[self.model] == '>>':
                             if upperQ:
                                 if frontQ:
                                     if value < 0:
@@ -1801,7 +1793,7 @@ class SkillComposer:
                                 else:
                                     factor *= 2
                                     
-                        if jointConfig[model] == '><':
+                        if jointConfig[self.model] == '><':
                             if upperQ:
                                 factor /= 3
                             

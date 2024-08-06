@@ -47,15 +47,21 @@ except Exception as e:
     logger.info("Cannot import hovertip!")
     raise e
     
+modelOptions = [
+    'Nybble',
+    'Bittle',
+    'Bittle X',
+    'Bittle R',
+    'DoF16'
+]
 
 NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
-    'Bittle X': [1, 2, 3, 4, 5, 6, 7],
-    'Bittle R': [3, 4, 5, 6, 7],
+#    'BittleX': [1, 2, 3, 4, 5, 6, 7],
+    'BittleR': [3, 4, 5, 6, 7],
     'DoF16' : []
 }
-
 
 BittleRScaleNames = [
     'Claw Pan', 'Claw Lift', 'Claw Open', 'N/A',
@@ -72,7 +78,6 @@ RegularScaleNames = [
 scaleNames = {
     'Nybble': RegularScaleNames,
     'Bittle': RegularScaleNames,
-    # 'BittleX': RegularScaleNames,
     'BittleR': BittleRScaleNames
 }
 

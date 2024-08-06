@@ -104,8 +104,8 @@ class UI:
         self.menubar = Menu(self.window, background='#ff8000', foreground='black', activebackground='white',
                             activeforeground='black')
         file = Menu(self.menubar, tearoff=0, background='#ffcc99', foreground='black')
-        for key in NaJoints:
-            file.add_command(label=key, command=lambda model=key: self.changeModel(model))
+        for m in modelOptions:
+            file.add_command(label=m, command=lambda model=m: self.changeModel(model))
         self.menubar.add_cascade(label=txt('Model'), menu=file)
 
         lan = Menu(self.menubar, tearoff=0)
