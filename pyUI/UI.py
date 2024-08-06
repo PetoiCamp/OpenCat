@@ -15,10 +15,8 @@ from tkinter import PhotoImage
 language = languageList['English']
 apps = ['Firmware Uploader', 'Joint Calibrator', 'Skill Composer', 'Debugger']  # ,'Task Scheduler']
 
-
 def txt(key):
     return language.get(key, textEN[key])
-
 
 class UI:
     def __init__(self):
@@ -84,7 +82,7 @@ class UI:
         self.window.title(txt('uiTitle'))
         self.createMenu()
         bw = 23
-        self.modelLabel = Label(self.window, text=model, font=self.myFont)
+        self.modelLabel = Label(self.window, text=displayName(model), font=self.myFont)
         self.modelLabel.grid(row=0, column=0, pady=10)
         for i in range(len(apps)):
             self.moduleButton = Button(self.window, text=txt(apps[i]), font=self.myFont, fg='blue', width=bw, relief='raised',

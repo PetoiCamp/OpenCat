@@ -114,7 +114,7 @@ RegularMacSet = {
     "imgWidth": 200,
     "imgRowSpan": 2
 }
-paraemterWinSet = {
+parameterWinSet = {
     "Nybble": RegularWinSet,
     "Bittle": RegularWinSet,
     # "BittleX": RegularWinSet,
@@ -122,7 +122,7 @@ paraemterWinSet = {
     "DoF16": RegularWinSet,
 }
 
-paraemterMacSet = {
+parameterMacSet = {
     "Nybble": RegularMacSet,
     "Bittle": RegularMacSet,
     # "BittleX": RegularMacSet,
@@ -226,7 +226,7 @@ class SkillComposer:
             self.frameItemWidth = [2, 4, 3, 5, 4, 4, 10, 3, 3]
             self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-            self.paraemterSet = paraemterWinSet[self.model]
+            self.parameterSet = parameterWinSet[self.model]
             # self.buttonW = 20
             self.buttonW = 10
             self.calibButtonW = 8
@@ -245,7 +245,7 @@ class SkillComposer:
                 self.frameItemWidth = [2, 2, 3, 4, 4, 4, 5, 2, 2]
                 self.headerOffset = [0, 0, 1, 1, 0, 0, 0, 0, 1]
 
-            self.paraemterSet = paraemterMacSet[self.model]
+            self.parameterSet = parameterMacSet[self.model]
 
             # self.buttonW = 18
             self.buttonW = 8
@@ -335,7 +335,7 @@ class SkillComposer:
         label.grid(row=0, column=0, columnspan=8)
         self.controllerLabels.append(label)
         unbindButton = Button(self.frameController, text=txt('Unbind All'), fg='blue', command=self.unbindAll)
-        rowUnbindButton = self.paraemterSet['rowUnbindButton']    # The row number where the unbind button is located
+        rowUnbindButton = self.parameterSet['rowUnbindButton']    # The row number where the unbind button is located
         unbindButton.grid(row=rowUnbindButton, column=3, columnspan=2)
         self.controllerLabels.append(unbindButton)
         
@@ -348,7 +348,7 @@ class SkillComposer:
                 if i < 2:
                     ROW = 0
                 else:
-                    ROW = self.paraemterSet['rowJoint1']    # The row number of the label with joint number 2 and 3
+                    ROW = self.parameterSet['rowJoint1']    # The row number of the label with joint number 2 and 3
 
                 if 0 < i < 3:
                     COL = 4
@@ -356,16 +356,16 @@ class SkillComposer:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                LEN = self.paraemterSet['sliderW']
+                LEN = self.parameterSet['sliderW']
             else:
                 tickDirection = -1
                 leftQ = (i - 1) % 4 > 1
                 frontQ = i % 4 < 2
                 # upperQ = i / 4 < 3
 
-                LEN = self.paraemterSet['sliderLen']    # The length of the slider rail corresponding to joint numbers 4 to 15
-                rSPAN = self.paraemterSet['rSpan']    # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
-                ROW = self.paraemterSet['rowJoint2'] + (1 - frontQ) * (rSPAN + 2)    # The row number of the label with joint number 4 or 15 is located
+                LEN = self.parameterSet['sliderLen']    # The length of the slider rail corresponding to joint numbers 4 to 15
+                rSPAN = self.parameterSet['rSpan']    # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+                ROW = self.parameterSet['rowJoint2'] + (1 - frontQ) * (rSPAN + 2)    # The row number of the label with joint number 4 or 15 is located
 
                 if leftQ:
                     COL = 3 - i // 4
@@ -420,8 +420,8 @@ class SkillComposer:
                 self.binderValue.append(binderValue)
 
         self.frameImu = Frame(self.frameController)
-        rowFrameImu = self.paraemterSet['rowFrameImu']    # The row number of the IMU button frame is located
-        sliderLen = self.paraemterSet['imuSliderLen']     # The length of the IMU slider rail
+        rowFrameImu = self.parameterSet['rowFrameImu']    # The row number of the IMU button frame is located
+        sliderLen = self.parameterSet['imuSliderLen']     # The length of the IMU slider rail
         self.frameImu.grid(row=rowFrameImu, column=3, rowspan=6, columnspan=2)
         for i in range(6):
             frm = -40
@@ -442,7 +442,7 @@ class SkillComposer:
                 frm = -50
                 to2 = 40
 
-            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width=self.paraemterSet['sixW'], height=2, fg='blue',
+            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width=self.parameterSet['sixW'], height=2, fg='blue',
                           bg='Light Blue')
 
             value = DoubleVar()
@@ -655,7 +655,7 @@ class SkillComposer:
             if tipSkillEditor[i]:
                 tip(label, txt(tipSkillEditor[i]))
 
-        schedulerHeight = self.paraemterSet['schedulerHeight']    # The height of action frame scheduler
+        schedulerHeight = self.parameterSet['schedulerHeight']    # The height of action frame scheduler
         canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=schedulerHeight, bd=0)
         scrollbar = Scrollbar(self.frameRowScheduler, orient='vertical', cursor='double_arrow', troughcolor='yellow',
                               width=15, command=canvas.yview)
@@ -684,9 +684,9 @@ class SkillComposer:
         return imageFrame
 
     def placeProductImage(self):
-        rowFrameImage = self.paraemterSet['rowFrameImage']    # The row number of the image frame is located
-        imgWidth = self.paraemterSet['imgWidth']              # The width of image
-        rowSpan = self.paraemterSet['imgRowSpan']             # The number of lines occupied by the image frame
+        rowFrameImage = self.parameterSet['rowFrameImage']    # The row number of the image frame is located
+        imgWidth = self.parameterSet['imgWidth']              # The width of image
+        rowSpan = self.parameterSet['imgRowSpan']             # The number of lines occupied by the image frame
 
         self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', imgWidth)
 
@@ -780,9 +780,9 @@ class SkillComposer:
             self.binderValue = list()
             self.binderButton=list()
             if self.OSname == 'win32':
-                self.paraemterSet = paraemterWinSet[self.model]
+                self.parameterSet = parameterWinSet[self.model]
             else:
-                self.paraemterSet = paraemterMacSet[self.model]
+                self.parameterSet = parameterMacSet[self.model]
 
             if self.model == 'BittleR':
                 self.scaleNames = BittleRScaleNames

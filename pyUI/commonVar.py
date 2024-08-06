@@ -85,6 +85,12 @@ sideNames = ['Left Front', 'Right Front', 'Right Back', 'Left Back']
 
 ports = []
 
+def displayName(name):
+    if 'Bittle' in name and 'Bittle' != name:
+        s = name.replace(' ','')
+        name = 'Bittle'+' '+s[6:]
+    return name
+
 def makeDirectory(path):
     # delete spaces in the path string
     path = path.strip()
