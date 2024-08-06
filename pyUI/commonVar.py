@@ -51,12 +51,13 @@ except Exception as e:
 NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
-    'Bittle X': [1, 2, 3, 4, 5, 6, 7],
-    'Bittle R': [3, 4, 5, 6, 7],
+    'BittleX': [1, 2, 3, 4, 5, 6, 7],
+    'BittleR': [3, 4, 5, 6, 7],
     'DoF16' : []
 }
 
-HunterScaleNames = [
+
+BittleRScaleNames = [
     'Claw Pan', 'Claw Lift', 'Claw Open', 'N/A',
     'Shoulder', 'Shoulder', 'Shoulder', 'Shoulder',
     'Arm', 'Arm', 'Arm', 'Arm',
@@ -67,6 +68,13 @@ RegularScaleNames = [
     'Shoulder', 'Shoulder', 'Shoulder', 'Shoulder',
     'Arm', 'Arm', 'Arm', 'Arm',
     'Knee', 'Knee', 'Knee', 'Knee']
+
+scaleNames = {
+    'Nybble': RegularScaleNames,
+    'Bittle': RegularScaleNames,
+    'BittleX': RegularScaleNames,
+    'BittleR': BittleRScaleNames
+}
 
 sideNames = ['Left Front', 'Right Front', 'Right Back', 'Left Back']
 
