@@ -126,7 +126,7 @@ class UI:
         print(model)
         if model == "Bittle X":
             self.defaultBdVer = "BiBoard_V0_2"
-        elif model == "Hunter":
+        elif model == "Bittle R":
             self.defaultBdVer = "BiBoard_V1_0"
 
     def changeLan(self, l):

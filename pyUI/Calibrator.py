@@ -71,7 +71,7 @@ class Calibrator:
         abortButton.grid(row=11, column=2)
 #        quitButton.grid(row=11, column=2)
 
-        if self.model == 'Hunter':
+        if self.model == 'BittleR':
             self.paraemterSet = paraemterSet['Hunter']
             scaleNames = HunterScaleNames
         else:
@@ -81,7 +81,8 @@ class Calibrator:
         self.imgWiring = createImage(self.frameCalibButtons, resourcePath + self.model + 'Wire.jpeg', self.paraemterSet['imageW'])
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
-        if "Bittle" in self.model:
+
+        if self.model == 'Bittle' or self.model == 'BittleX':
             self.picName = "Bittle"
         else:
             self.picName = self.model

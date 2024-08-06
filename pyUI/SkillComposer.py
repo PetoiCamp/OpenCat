@@ -32,7 +32,8 @@ cLoop, cSet, cStep,  cTrig, cAngle, cDelay, cNote, cDel, cAdd = range(len(labelS
 axisDisable = {
     'Nybble': [0, 5],
     'Bittle': [0, 5],
-    'Hunter': [0, 5],
+    'Bittle X': [0, 5],
+    'Bittle R': [0, 5],
     'DoF16' : []
 
 }
@@ -149,6 +150,13 @@ class SkillComposer:
                 print('Use the model set in the UI interface.')
             time.sleep(0.01)
         self.model = config.model_
+
+        if self.model == "BittleX" :
+            self.modelName = "Bittle X"
+        elif self.model == "BittleR" :
+            self.modelName = "Bittle R"
+        else:
+            self.modelName = self.model
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
@@ -168,7 +176,7 @@ class SkillComposer:
                 self.defaultCreator = txt('Nature')
                 self.defaultLocation = txt('Earth')
 
-            self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+            self.configuration = [self.defaultLan, self.modelName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.defaultCreator, self.defaultLocation]
 
         except Exception as e:
@@ -180,14 +188,12 @@ class SkillComposer:
             self.defaultMode = 'Standard'
             self.defaultCreator = txt('Nature')
             self.defaultLocation = txt('Earth')
-            self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+            self.configuration = [self.defaultLan, self.modelName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.defaultCreator, self.defaultLocation]
-        if "Bittle" in self.model:
-            self.modelName = "Bittle"
-        else:
-            self.modelName = self.model
+
         self.postureTable = postureDict[self.modelName]
-        if self.model == 'Hunter':
+
+        if self.modelName == 'Bittle R':
             self.scaleNames = HunterScaleNames
         else:
             self.scaleNames = RegularScaleNames
@@ -224,7 +230,7 @@ class SkillComposer:
             self.frameItemWidth = [2, 4, 3, 5, 4, 4, 10, 3, 3]
             self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-            if self.model == 'Hunter':
+            if self.modelName == 'Bittle R':
                 self.paraemterSet = paraemterWinSet['Hunter']
             else:
                 self.paraemterSet = paraemterWinSet['Regular']
@@ -247,7 +253,7 @@ class SkillComposer:
                 self.frameItemWidth = [2, 2, 3, 4, 4, 4, 5, 2, 2]
                 self.headerOffset = [0, 0, 1, 1, 0, 0, 0, 0, 1]
 
-            if self.model == 'Hunter':
+            if self.modelName == 'Bittle R':
                 self.paraemterSet = paraemterMacSet['Hunter']
             else:
                 self.paraemterSet = paraemterMacSet['Regular']
@@ -312,6 +318,7 @@ class SkillComposer:
 
         lan = Menu(self.menubar, tearoff=0)
         for l in languageList:
+            print("a002")
             lan.add_command(label=languageList[l]['lanOption'], command=lambda lanChoice=l: self.changeLan(lanChoice))
         self.menubar.add_cascade(label=txt('lanMenu'), menu=lan)
 
@@ -692,7 +699,13 @@ class SkillComposer:
         rowFrameImage = self.paraemterSet['rowFrameImage']    # The row number of the image frame is located
         imgWidth = self.paraemterSet['imgWidth']              # The width of image
         rowSpan = self.paraemterSet['imgRowSpan']             # The number of lines occupied by the image frame
-        self.frameImage = self.createImage(self.frameController, resourcePath + self.modelName + '.jpeg', imgWidth)
+        if self.modelName == 'Bittle R':
+            picName = 'BittleR'
+        elif self.modelName == 'Bittle X':
+            picName = 'Bittle'
+        else:
+            picName = self.modelName
+        self.frameImage = self.createImage(self.frameController, resourcePath + picName + '.jpeg', imgWidth)
         self.frameImage.grid(row=rowFrameImage, column=3, rowspan=rowSpan, columnspan=2)
 
     def changeLan(self, l):
@@ -703,8 +716,11 @@ class SkillComposer:
             language = languageList[l]
             self.defaultLan = l
             logger.debug(f"{self.defaultLan}")
+            print(self.defaultLan)
             self.window.title(txt('skillComposerTitle'))
             self.menubar.destroy()
+            self.createMenu()
+            print("a001")
             self.controllerLabels[0].config(text=txt('Joint Controller'))
             self.controllerLabels[1].config(text=txt('Unbind All'))
             for i in range(6):
@@ -725,7 +741,6 @@ class SkillComposer:
             self.frameDial.destroy()
             self.framePosture.destroy()
             self.frameSkillEditor.destroy()
-            self.createMenu()
             self.createDial()
             self.createPosture()
             self.createSkillEditor()
@@ -764,22 +779,45 @@ class SkillComposer:
         self.window.focus_force()
 
     def changeModel(self, modelName):
-        if self.ready and modelName != self.model:
-            if 'Bittle' in modelName:
-                modelName = 'Bittle'
-            self.model = copy.deepcopy(modelName)
-            self.postureTable = postureDict[self.model]
+        if self.ready and modelName != self.modelName:
+            # if  modelName == 'Bittle X':
+            #     modelName = 'Bittle'
+            # elif modelName == 'Bittle R':
+            #     modelName = 'BittleR'
+            self.modelName = copy.deepcopy(modelName)
+            self.postureTable = postureDict[self.modelName]
             self.framePosture.destroy()
             self.frameImage.destroy()
-            stt = NORMAL
-            for i in range(16):
-                if i in NaJoints[self.model]:
-                    clr = 'light yellow'
+            self.frameController.destroy()
+
+            if self.OSname == 'win32':
+                if self.modelName == 'Bittle R':
+                    self.paraemterSet = paraemterWinSet['Hunter']
                 else:
-                    clr = 'yellow'
-                self.sliders[i].config(state=stt, bg=clr)
-                self.binderButton[i * 2].config(state=stt)
-                self.binderButton[i * 2 + 1].config(state=stt)
+                    self.paraemterSet = paraemterWinSet['Regular']
+            else:
+                if self.modelName == 'Bittle R':
+                    self.paraemterSet = paraemterMacSet['Hunter']
+                else:
+                    self.paraemterSet = paraemterMacSet['Regular']
+
+            if self.modelName == 'Bittle R':
+                self.scaleNames = HunterScaleNames
+            else:
+                self.scaleNames = RegularScaleNames
+
+            self.createController()
+
+            # stt = NORMAL
+            # for i in range(16):
+            #     if i in NaJoints[self.modelName]:
+            #         clr = 'light yellow'
+            #     else:
+            #         clr = 'yellow'
+            #     self.sliders[i].config(state=stt, bg=clr)
+            #     self.binderButton[i * 2].config(state=stt)
+            #     self.binderButton[i * 2 + 1].config(state=stt)
+
             self.createPosture()
             self.placeProductImage()
             self.restartSkillEditor()
@@ -994,7 +1032,7 @@ class SkillComposer:
                 frameSize = 16
                 copyFrom = 4
             else:  # gait
-                if self.model == 'Nybble' or 'Bittle':
+                if self.modelName == 'Nybble' or 'Bittle' or 'Bittle X':
                     frameSize = 8
                     copyFrom = 12
                 else:
@@ -1063,7 +1101,7 @@ class SkillComposer:
                 frameSize = 16
                 copyFrom = 4
             else:  # gait
-                if self.model == 'Nybble' or 'Bittle':
+                if 'Nybble' in self.modelName or 'Bittle' in self.modelName:
                     frameSize = 8
                     copyFrom = 12
                 else:
@@ -1425,7 +1463,7 @@ class SkillComposer:
 
         
     def saveConfigToFile(self, filename):
-        self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+        self.configuration = [self.defaultLan, self.modelName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.configuration[6], self.configuration[7]]
 
         f = open(filename, 'w+', encoding="utf-8")
@@ -1443,7 +1481,7 @@ class SkillComposer:
                 # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             defaultLan = self.defaultLan
-            defaultModel = self.model
+            defaultModel = self.modelName
             defaultPath = lines[2]
             defaultSwVer = lines[3]
             defaultBdVer = lines[4]
@@ -1470,7 +1508,7 @@ class SkillComposer:
             print(e)
             print('Create configuration file')
             defaultLan = self.defaultLan
-            defaultModel = self.model
+            defaultModel = self.modelName
             defaultPath = releasePath[:-1]
             defaultSwVer = '2.0'
             defaultBdVer = NyBoard_version
@@ -1502,7 +1540,7 @@ class SkillComposer:
         skillData = list()
         loopStructure = list()
         period = self.totalFrame - self.activeFrame
-        if self.model == 'Nybble' or self.model == 'Bittle':
+        if 'Nybble' in self.modelName or 'Bittle' in self.modelName:
             copyFrom = 12
             frameSize = 8
         else:
@@ -1573,7 +1611,7 @@ class SkillComposer:
             x = datetime.datetime.now()
             fileData = '# ' + file.name.split('/')[-1].split('.')[0] + '\n'
             fileData += 'Note: '+'You may add a short description/instruction here.\n\n'
-            fileData += 'Model: ' + self.model + '\n\n'
+            fileData += 'Model: ' + self.modelName + '\n\n'
             fileData += 'Creator: ' + self.creator.get() + '\n\n'
             fileData += 'Location: ' + self.location.get() + '\n\n'
             fileData += 'Date: ' + x.strftime("%b")+' '+x.strftime("%d")+', '+x.strftime("%Y") + '\n\n'
@@ -1591,13 +1629,19 @@ class SkillComposer:
             fileData += '};'
 
             # the file in the config directory will be saved automatically
-            filePathName = configDir + separation + 'SkillLibrary' + separation + self.model + separation + file.name.split('/')[-1]
+            if self.modelName == 'Bittle X':
+                modeName = 'BittleX'
+            elif self.modelName == 'Bittle R':
+                modeName = 'BittleR'
+            else:
+                modeName = self.modelName
+            filePathName = configDir + separation + 'SkillLibrary' + separation + modeName + separation + file.name.split('/')[-1]
             logger.debug(f"fileName is: {filePathName}")
 
             filePathList = [file.name, filePathName]
             for filePath in filePathList:
                 if filePath == filePathName:
-                    modelDir = configDir + separation + 'SkillLibrary' + separation + self.model
+                    modelDir = configDir + separation + 'SkillLibrary' + separation + modeName
                     makeDirectory(modelDir)
                 try:
                     with open(filePath, 'w+', encoding="utf-8") as f:
@@ -1712,25 +1756,30 @@ class SkillComposer:
                 self.originalAngle[0] = 1
             positiveGroup = []
             negativeGroup = []
+            if 'Bittle' in self.modelName:
+                modelName = 'Bittle'
+            else:
+                modelName = self.modelName
+
             if i == 0:  # ypr
                 positiveGroup = []
                 negativeGroup = []
             elif i == 1:  # pitch
-                if jointConfig[self.model] == '>>':
+                if jointConfig[modelName] == '>>':
                     positiveGroup = [1, 4, 5, 8, 9, 14, 15]
                     negativeGroup = [2, 6, 7, 10, 11, 12, 13]
                 else:
                     positiveGroup = [1, 4, 5, 8, 9, 10, 11,]
                     negativeGroup = [6, 7, 12, 13, 14, 15]
             elif i == 2:  # roll
-                if jointConfig[self.model] == '>>':
+                if jointConfig[modelName] == '>>':
                     positiveGroup = [4, 7, 8, 11, 13, 14]
                     negativeGroup = [0, 5, 6, 9, 10, 12, 15]
                 else:
                     positiveGroup = [4, 7, 8, 10, 13, 15]
                     negativeGroup = [0, 2, 5, 6, 9, 11, 12, 14]
             elif i == 3:  # Spinal
-                if jointConfig[self.model] == '>>':
+                if jointConfig[modelName] == '>>':
                     positiveGroup = [8, 9, 10, 11, 12, 13, 14, 15]
                     negativeGroup = []
                 else:
@@ -1738,14 +1787,14 @@ class SkillComposer:
                     negativeGroup = []
 
             elif i == 4:  # Height
-                if jointConfig[self.model] == '>>':
+                if jointConfig[modelName] == '>>':
                     positiveGroup = [12, 13, 14, 15]
                     negativeGroup = [8, 9, 10, 11, ]
                 else:
                     positiveGroup = [12, 13, 10, 11, ]
                     negativeGroup = [8, 9, 14, 15]
             elif i == 5:  # Sideway
-                if jointConfig[self.model] == '>>':
+                if jointConfig[modelName] == '>>':
                     positiveGroup = []
                     negativeGroup = []
 
@@ -1760,7 +1809,7 @@ class SkillComposer:
                     else:
                         factor = 1
                     if i == 1:
-                        if jointConfig[self.model] == '>>':
+                        if jointConfig[modelName] == '>>':
                             if upperQ:
                                 if frontQ:
                                     if value < 0:
@@ -1768,7 +1817,7 @@ class SkillComposer:
                                 else:
                                     factor *= 2
                                     
-                        if jointConfig[self.model] == '><':
+                        if jointConfig[modelName] == '><':
                             if upperQ:
                                 factor /= 3
                             

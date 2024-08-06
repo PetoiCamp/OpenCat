@@ -1,6 +1,6 @@
 .idea/*
 pyUI/.idea/*
-pyUI/logfile.log
+pyUI/logfile*
 pyUI/genApp4Mac/*
 pyUI/lib/*
 *.DS_Store

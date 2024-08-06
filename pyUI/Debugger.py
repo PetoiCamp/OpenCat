@@ -47,7 +47,13 @@ class Debugger:
         self.winDebug.title(txt('Debugger'))
         self.createMenu()
         bw = 23
-        self.modelLabel = Label(self.winDebug, text=self.model, font=self.myFont)
+        if self.model == "BittleX":
+            modelName = "Bittle X"
+        elif self.model == "BittleR":
+            modelName = "Bittle R"
+        else:
+            modelName = self.model
+        self.modelLabel = Label(self.winDebug, text=modelName, font=self.myFont)
         self.modelLabel.grid(row=0, column=0, pady=10)
         voiceResetButton = Button(self.winDebug, text=txt('Reset voice module'), font=self.myFont, fg='blue', width=bw, relief='raised',
                    command=lambda: self.resetVoice())
@@ -89,9 +95,7 @@ class Debugger:
 
 
     def changeModel(self, modelName):
-        self.model = copy.deepcopy(modelName)
-        self.modelLabel.configure(text=self.model)
-        print(self.model)
+        self.modelLabel.configure(text=modelName)
         
     
     def changeLan(self, l):
