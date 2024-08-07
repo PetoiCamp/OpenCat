@@ -29,6 +29,7 @@ class Uploader:
     def __init__(self,model,lan):
         connectPort(goodPorts, needTesting=False, needSendTask=False, needOpenPort=False)
         # closeAllSerial(goodPorts, clearPorts=False)
+        self.configName = model
         self.win = Tk()
         self.OSname = self.win.call('tk', 'windowingsystem')
         self.shellOption = True
@@ -115,7 +116,7 @@ class Uploader:
                 # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             self.defaultLan = lines[0]
-            model = lines[1]
+            self.configName = lines[1]
             strDefaultPath = lines[2]
             strSwVersion = lines[3]
             strBdVersion = lines[4]
@@ -123,25 +124,24 @@ class Uploader:
             if len(lines) >= 8:
                 strCreator = lines[6]
                 strLocation = lines[7]
-                self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion,
+                self.configuration = [self.defaultLan, self.configName, strDefaultPath, strSwVersion, strBdVersion,
                                       mode, strCreator, strLocation]
             else:
-                self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion, mode]
+                self.configuration = [self.defaultLan, self.configName, strDefaultPath, strSwVersion, strBdVersion, mode]
 
                 
         except Exception as e:
             print ('Create configuration file')
             self.defaultLan = 'English'
-            model = 'Bittle'
             strDefaultPath = releasePath[:-1]
             strSwVersion = '2.0'
             strBdVersion = NyBoard_version_list[-1]
             mode = 'Standard'
-            self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion, mode]
+            self.configuration = [self.defaultLan, self.configName, strDefaultPath, strSwVersion, strBdVersion, mode]
             
         num = len(lines)
         logger.debug(f"len(lines): {num}")
-        self.lastSetting = [model,strDefaultPath,strSwVersion,strBdVersion,mode]
+        self.lastSetting = [self.configName,strDefaultPath,strSwVersion,strBdVersion,mode]
         self.currentSetting = []
         
         logger.info(f"The firmware file folder is {strDefaultPath}")
@@ -875,4 +875,5 @@ class Uploader:
             self.win.destroy()
 
 if __name__ == '__main__':
+    model = 'Bittle'
     Uploader = Uploader(model, language)
