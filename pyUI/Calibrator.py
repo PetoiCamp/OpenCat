@@ -39,9 +39,11 @@ class Calibrator:
         while config.model_ == '':
             if time.time() - start > 5:
                 config.model_ = model
+                config.version_ = "N_210101"
                 print('Use the model set in the UI interface.')
             time.sleep(0.01)
         self.configName = config.model_
+        self.boardVersion = config.version_
         config.model_ = config.model_.replace(' ', '')
         if 'Bittle' in config.model_ and config.model_!= 'BittleR':
             self.model = 'Bittle'
@@ -83,7 +85,15 @@ class Calibrator:
             self.paraemterSet = paraemterSet['Regular']
             scaleNames = RegularScaleNames
 
-        self.imgWiring = createImage(self.frameCalibButtons, resourcePath + config.model_ + 'Wire.jpeg', self.paraemterSet['imageW'])
+        if "B" in self.boardVersion and config.model_ = 'BittleR':
+            self.imgWiring = createImage(self.frameCalibButtons,
+                                         resourcePath + config.model_ + self.boardVersion[1] + 'Wire.jpeg',
+                                         self.paraemterSet['imageW'])
+        else:
+            self.imgWiring = createImage(self.frameCalibButtons,
+                                         resourcePath + config.model_ + 'Wire.jpeg',
+                                         self.paraemterSet['imageW'])
+
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
 
