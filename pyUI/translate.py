@@ -17,7 +17,7 @@ textEN = {
     'Firmware Uploader':'Firmware Uploader',
     'Debugger': 'Debugger',
     'tipDebugger':'Provide convinient tools to debug the robot.',
-    'tipRstVoice':'Click this button to reset the voice module.',
+
     'Eye color picker':'Eye color picker',
     'Creator Information':'Creator Information',
     'Creator':'Creator',
@@ -55,6 +55,9 @@ textEN = {
     'Head Pan':'Head Pan',
     'Head Tilt':'Head Tilt',
     'Tail Pan':'Tail Pan',
+    'Claw Pan': 'Claw Pan',
+    'Claw Lift': 'Claw Lift',
+    'Claw Open': 'Claw Open',
     'N/A':'N/A',
     'Left Front':'Left Front',
     'Right Front':'Right Front',
@@ -132,6 +135,10 @@ More details can be found at https://docs.petoi.com/upload-firmware\n
     ' cannot be opened':' cannot be opened',
 
     'Reset voice module':'Reset voice module',
+    'tipRstVoice':'Click this button to reset the voice module.',
+    'BiBoard Config':'BiBoard Config',
+    'tipbiboardConfig':'Click this button to configure BiBoard.',
+
     'Voice indicates':'''Do you hear the melody "1-3-5"?\n
 If yes, press the button "Yes" to continue; 
 If no, press the button "No" to quit, and check the dial switch 
@@ -141,6 +148,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': 'No',
     'Reset successfully': 'Reset successfully!',
     'checkLogfile':'''Please check the log file: logfile.log \n
+For more details, please refer to https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 If you can not fix the issue, please send the log to support@petoi.com for help.''',
 
     'Calibrate':'Calibrate',
@@ -214,8 +222,9 @@ If you can not fix the issue, please send the log to support@petoi.com for help.
     'IMU calibrated': 'Calibrate IMU complete!',
     'caliIMUerrorStatus':'IMU Calibration Error!',
 
-    'parameterFinish': '''Parameters initialized!
-     The next step is uploading the Main Function!''',
+    'parameterFinish': '''Parameters initialized! \n
+After clicking the "OK" button, the main function firmware will be automatically uploaded.''',
+
     '9685 Calibrated':'PCA9685 has been calibrated successfully!',
     'msgFinish': 'Firmware upload complete!',
     'msgMode': 'Invalide, please select another mode!',
@@ -258,7 +267,7 @@ Then re-upgrade the firmware.\n''',
     'tipMirrorXport':'Mirror the whole skill when exporting\n* Effective when exporting the whole skill',
     'tipGorB':'A behavior interpolates between the key frames and excutes only once\nA gait loops over all the frames without any smoothing',
     'tipLoop':'Set the starting and ending frames for looping\n* Effective when exporting the whole skill',
-    'tipRepeat':'Enter the number of loops\n-1 for inifinite loop. Only the \"reset\" button can break the loop!\n* Effective when exporting the whole skill',
+    'tipRepeat':'Enter the number of loops\n-1 for inifinite loop. Only the "reset" button can break the loop!\n* Effective when exporting the whole skill',
     'tipSet':'Jump to/save the current frame',
     'tipStep':'Unit: degree/step\n* Effective when exporting the whole skill',
     'tipDelay':'Unit: milisecond\nDelay after the current frame, before entering the next frame\nIf the trigger is valid, the delay starts after the trigger\n* Effective when exporting the whole skill',
@@ -268,7 +277,7 @@ Then re-upgrade the firmware.\n''',
     'tipAdd':'Copy the active frame and\ninsert it to the next row',
     'tipDel':'Delete the current frame',
     
-    'tipImgWiring':'Pay attention to the location and direction of the servo plugs\nLong-press the battery\'s button to turn on the power\nClick \"Calibrate\" to rotate all the servos to the calibration state\nAttach the legs and head perpendicularly\nUse the slider to align the edges of the legs and the reference ruler parallelly',
+    'tipImgWiring':'Pay attention to the location and direction of the servo plugs\nLong-press the battery\'s button to turn on the power\nClick "Calibrate" to rotate all the servos to the calibration state\nAttach the legs and head perpendicularly\nUse the slider to align the edges of the legs and the reference ruler parallelly',
     'tipImgPosture':'Switch between postures to test the calibration results\nSave the offsets in time\nNo need for calibration in the future',
     'Boot prompt': 'Boot prompt',
     'poweron':'The robot must be powered by a battery to rotate its joints, \n\nIt\'s VITAL for controlling joint movement!\n\nThe yellow LED on the mainboard should light up, \n\notherwise, plug in the battery and long-press its \n\nbutton for 3 seconds to power on the robot.\n\n',
@@ -327,6 +336,9 @@ textCN = {
     'Head Pan':'头部平转',
     'Head Tilt':'头部俯仰',
     'Tail Pan':'尾巴平转',
+    'Claw Pan': '爪旋转',
+    'Claw Lift': '爪升降',
+    'Claw Open': '爪开合',
     'N/A':'闲置',
     'Left Front':'左前',
     'Right Front':'右前',
@@ -387,7 +399,7 @@ textCN = {
     'Stand Up':'站立',
     'Walk':'行走',
     'Abort':'放弃',
-    "Refresh":"刷新",
+    'Refresh':'刷新',
 
     'Manual mode':'手动模式',
     'Replug mode':'重新拔插',
@@ -417,6 +429,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': '否',
     'Reset successfully': '重置成功！',
     'checkLogfile':'''请检查日志文件：logfile.log \n
+相关详细信息，请参阅 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您无法解决问题，请发送日志到 support@petoi.com 以寻求帮助。''',
 
     'Do you want to save the offsets?':'要保存校准值吗？',
@@ -438,7 +451,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'labBoardVersion': '主板型号',
     'labProduct': '产品',
     'labMode': '模式',
-    'Warning': "警告",
+    'Warning': '警告',
     'msgFileDir': '请选择release文件夹！',
     'msgPort': '请选择正确的串口！',
 
@@ -471,8 +484,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'IMU calibrated': 'IMU校准完成！',
     'caliIMUerrorStatus':'IMU 校准错误！',
             
-    'parameterFinish': '''参数初始化完成！
-                       接下来将开始上传主程序！''',
+    'parameterFinish': '''参数初始化完成！\n
+点击“确定”按钮后，将自动上传主功能固件。''',
     '9685 Calibrated':'PCA9685校准完成！',
     'msgFinish': '固件上传完成！',
     'msgMode': '无效模式，请选择其他模式！',
@@ -595,6 +608,9 @@ textCN_TW = {
     'Head Pan':'頭部平轉',
     'Head Tilt':'頭部俯仰',
     'Tail Pan':'尾巴平轉',
+	'Claw Pan': '爪旋轉',
+    'Claw Lift': '爪升降',
+    'Claw Open': '爪開合',
     'N/A':'閒置',
     'Left Front':'左前',
     'Right Front':'右前',
@@ -685,6 +701,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': '否',
     'Reset successfully': '重設成功！',
     'checkLogfile':'''請檢查日志文件：logfile.log \n
+相關详细信息，請參閱 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您無法修復問題，請將日志發送到 support@petoi.com 以尋求幫助。''',
 
     'Do you want to save the offsets?':'要保存校準值嗎？',
@@ -738,8 +755,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'IMU calibrated': 'IMU校準完成！',
     'caliIMUerrorStatus':'IMU 校正錯誤！',
             
-    'parameterFinish': '''參數初始化完成！
-                       接下來將開始上傳主程序！''',
+    'parameterFinish': '''參數初始化完成！\n
+點擊「確定」按鈕後，主功能韌體將自動上傳。''',
     '9685 Calibrated':'PCA9685校準完成！',
     'msgFinish': '固件上傳完成!',
     'msgMode': '無效模式，請選擇其他模式!',
@@ -864,6 +881,9 @@ textDE = {
     'Head Pan':'Kopf-Pan',
     'Head Tilt':'Kopf-Neigung',
     'Tail Pan':'Schwanz-Pan',
+    'Claw Pan': 'Greifer drehen',
+    'Claw Lift': 'Greifer heben',
+    'Claw Open': 'Greifer öffnen',
     'N/A':'N/V',
     'Left Front':'Links vorne',
     'Right Front':'Rechts vorne',
@@ -950,6 +970,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': 'Nein',
     'Reset successfully': 'Reset erfolgreich!',
     'checkLogfile':'''Bitte überprüfen Sie die Protokolldatei: logfile.log \n
+Weitere Einzelheiten finden Sie unter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur Hilfe an support@petoi.com.''',
 
     'Calibrate':'Kalibrieren',
@@ -1024,8 +1045,8 @@ Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur H
     'IMU calibrated': 'IMU erfolgreich kalibriert!',
     'caliIMUerrorStatus':'IMU-Kalibrierungsfehler!',
 
-    'parameterFinish': '''Parameter initialisiert!
-    Der nächste Schritt ist das Hochladen der Hauptfunktion!''',
+    'parameterFinish': '''Parameter initialisiert! \n
+Nach Klicken auf den "OK"-Button wird die Hauptfunktionsfirmware automatisch hochgeladen.''',
     '9685 Calibrated':'PCA9685 wurde erfolgreich kalibriert!',
     'msgFinish': 'Firmware-Hochladen abgeschlossen!',
     'msgMode': 'Ungültig, bitte wählen Sie einen anderen Modus!',
@@ -1138,6 +1159,9 @@ textTH = {
     'Head Pan':'หมุนศีรษะ',
     'Head Tilt':'เอียงศีรษะ',
     'Tail Pan':'หมุนหาง',
+    'Claw Pan': 'หมุนกรงเล็บ',
+    'Claw Lift': 'ยกกรงเล็บ',
+    'Claw Open': 'เปิดกรงเล็บ',
     'N/A':'N/A',
     'Left Front':'ด้านหน้าซ้าย',
     'Right Front':'ด้านหน้าขวา',
@@ -1179,7 +1203,7 @@ textTH = {
     'Open File':'เปิดไฟล์',
     'Cancel':'ยกเลิก',
     'OK':'ตกลง',
-    'Refresh':"รีเฟรช",
+    'Refresh':'รีเฟรช',
     'Multiple':'หลายตัว',
     'Skill List':'รายการสกิล',
     'Type of skill':'ประเภทของสกิล',
@@ -1223,6 +1247,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': 'ไม่ใช่',
     'Reset successfully': 'รีเซ็ตสำเร็จ!',
     'checkLogfile':'''กรุณาตรวจสอบไฟล์บันทึก: logfile.log \n
+สำหรับรายละเอียดเพิ่มเติม โปรดดูที่ https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 หากคุณไม่สามารถแก้ไขปัญหาได้ โปรดส่งไฟล์บันทึกไปยัง support@petoi.com เพื่อขอความช่วยเหลือ''',
 
     'Calibrate':'ปรับสอดคล้อง',
@@ -1296,8 +1321,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'IMU calibrated': 'ปรับแต่ง IMU เสร็จสมบูรณ์!',
     'caliIMUerrorStatus':'ข้อผิดพลาดในการ калиเบรท IMU!',
 
-    'parameterFinish': '''ตั้งค่าพารามิเตอร์เสร็จแล้ว!
-     ขั้นตอนถัดไปคือการโหลดฟังก์ชันหลัก!''',
+    'parameterFinish': '''ตั้งค่าพารามิเตอร์เสร็จแล้ว! \n
+หลังจากคลิกปุ่ม "ตกลง" แล้ว เฟิร์มแวร์ฟังก์ชันหลักจะถูกอัปโหลดโดยอัตโนมัติ ''',
     '9685 Calibrated':'PCA9685 ได้รับการปรับเทียบเรียบร้อยแล้ว!',
     'msgFinish': 'การโหลดเฟิร์มแวร์เสร็จสมบูรณ์!',
     'msgMode': 'ไม่ถูกต้อง โปรดเลือกโหมดอื่น!',
@@ -1411,6 +1436,9 @@ textFR={
     'Head Pan':'Rotation de la tête',
     'Head Tilt':'Inclinaison de la tête',
     'Tail Pan':'Rotation de la queue',
+    'Claw Pan': 'Faire tourner la pince',
+    'Claw Lift': 'Lever la pince',
+    'Claw Open': 'Ouvrir la pince',
     'N/A':'N/A',
     'Left Front':'Avant gauche',
     'Right Front':'Avant droit',
@@ -1496,7 +1524,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Oui',
     'No': 'Non',
     'Reset successfully': 'Réinitialisation réussie !',
-    'checkLogfile':'''Veuillez vérifier le fichier journal: logfile.log \n 
+    'checkLogfile':'''Veuillez vérifier le fichier journal: logfile.log \n
+Pour plus de détails, veuillez consulter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal à support@petoi.com pour obtenir de l\'aide.''',
     
     'Calibrate':'Calibrer',
@@ -1569,8 +1598,8 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     'IMU calibrated': 'Calibration de l\'IMU terminée !',
     'caliIMUerrorStatus':'Erreur de calibrage IMU!',
 
-     'parameterFinish': '''Paramètres initialisés !
-     La prochaine étape consiste à télécharger la Fonction Principale !''',
+     'parameterFinish': '''Paramètres initialisés ! \n
+Après avoir cliqué sur le bouton "OK", le firmware de la fonction principale sera automatiquement téléchargé.''',
     '9685 Calibrated':'PCA9685 a été calibré avec succès !',
     'msgFinish': 'Téléchargement du micrologiciel terminé !',
     'msgMode': 'Mode invalide, veuillez sélectionner un autre mode !',
@@ -1683,6 +1712,9 @@ textJP={
     'Head Pan':'ヘッドパン',
     'Head Tilt':'ヘッドチルト',
     'Tail Pan':'テールパン',
+    'Claw Pan': 'クロー回転',
+    'Claw Lift': 'クロー上昇',
+    'Claw Open': 'クローを開く',
     'N/A':'N/A',
     'Left Front':'左前',
     'Right Front':'右前',
@@ -1768,6 +1800,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'No': 'いいえ',
     'Reset successfully': 'リセットが成功しました！',
     'checkLogfile':'''ログファイル: logfile.log を確認してください \n
+詳細については、https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file を参照してください \n
 問題を解決できない場合は、ログを support@petoi.com に送信してサポートを受けてください。''',
 
     'Calibrate':'キャリブレーション',
@@ -1833,7 +1866,8 @@ https://www.petoi.com\n''' + dateStr,
     'IMU calibrated':'IMUのキャリブレーションが完了しました！',
     'caliIMUerrorStatus':'IMUキャリブレーションエラー!',
 
-    'parameterFinish':'パラメータが初期化されました！次のステップはメイン機能のアップロードです！',
+    'parameterFinish':'''パラメータが初期化されました！\n
+ 「OK」ボタンをクリックすると、メイン機能のファームウェアが自動的にアップロードされます。''',
     '9685 Calibrated':'PCA9685が正常にキャリブレーションされました！',
     'msgFinish':'ファームウェアのアップロードが完了しました！',
     'msgMode':'無効です。別のモードを選択してください！',
@@ -1947,6 +1981,9 @@ textIT = {
     'Head Pan':'Rotazione testa',
     'Head Tilt':'Inclinazione testa',
     'Tail Pan':'Scodinzolo',
+    'Claw Pan': 'Ruotare pinza',
+    'Claw Lift': 'Solleva pinza',
+    'Claw Open': 'Apri pinza',
     'N/A':'N/A',
     'Left Front':'Sinistra Frontale',
     'Right Front':'Destra Frontale',
@@ -2026,7 +2063,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Sì',
     'No': 'No',
     'Reset successfully': 'Ripristino riuscito!',
-    'checkLogfile':'''Controlla il file di registro: logfile.log \n 
+    'checkLogfile':'''Controlla il file di registro: logfile.log \n
+Per ulteriori dettagli, consultare https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Se non riesci a risolvere il problema, invia il registro a support@petoi.com per chiedere aiuto.''',
     
     'Calibrate':'Calibrate',
@@ -2097,8 +2135,8 @@ Se non riesci a risolvere il problema, invia il registro a support@petoi.com per
     'IMU calibrated': 'Calibrazione IMU completata!',
     'caliIMUerrorStatus':'Errore di calibrazione IMU!',
 
-    'parameterFinish': '''Parametri inizializzati!
-     Il prossimo passo è caricare la funzione principale!''',
+    'parameterFinish': '''Parametri inizializzati! \n
+Dopo aver cliccato sul pulsante "OK", il firmware della funzione principale verrà caricato automaticamente.''',
     '9685 Calibrated':'PCA9685 è stato calibrato con successo!',
     'msgFinish': 'Caricamento del firmware completato!',
     'msgMode': 'Non valido, selezionare un\'altra modalità!',
@@ -2141,7 +2179,7 @@ Quindi, aggiornare nuovamente il firmware.\n''',
     'tipMirrorXport':'Rispecchia l\'intera abilità durante l\'esportazione\n* Efficace quando si esporta l\'intera abilità',
     'tipGorB':'Un comportamento esegue l\'interpolazione tra i fotogrammi chiave ed esegue una sola volta\nUn\'andatura scorre su tutti i fotogrammi senza alcuna levigatura',
     'tipLoop':'Imposta i fotogrammi iniziale e finale per il looping\n* Efficace quando si esporta l\'intera abilità',
-    'tipRepeat':'Immettere il numero di loop\n-1 per loop infinito. Solo il pulsante \"reset\" può interrompere il loop!\n* Efficace quando si esporta l\'intera abilità',
+    'tipRepeat':'Immettere il numero di loop\n-1 per loop infinito. Solo il pulsante "reset" può interrompere il loop!\n* Efficace quando si esporta l\'intera abilità',
     'tipSet':'Passa a/salva il fotogramma corrente',
     'tipStep':'Unità: grado/passo\n* Efficace quando si esporta l\'intera abilità',
     'tipDelay':'Unità: millisecondi\nRitardo dopo il fotogramma corrente, prima di entrare nel fotogramma successivo\nSe il trigger è valido, il ritardo inizia dopo il trigger\n* Efficace quando si esporta l\'intera abilità',
@@ -2151,7 +2189,7 @@ Quindi, aggiornare nuovamente il firmware.\n''',
     'tipAdd':'Copia il frame attivo e\ninseriscilo nella riga successiva',
     'tipDel':'Elimina il fotogramma corrente',
     
-    'tipImgWiring':'Prestare attenzione alla posizione e alla direzione dei connettori dei servi\nPremere a lungo il pulsante della batteria per accendere l\'alimentazione\nFare clic su \"Calibra\" per ruotare tutti i servi allo stato di calibrazione\nAttacca le gambe e la testa perpendicolarmente\nUsa il cursore per allineare parallelamente i bordi delle gambe e il righello di riferimento',
+    'tipImgWiring':'Prestare attenzione alla posizione e alla direzione dei connettori dei servi\nPremere a lungo il pulsante della batteria per accendere l\'alimentazione\nFare clic su "Calibra" per ruotare tutti i servi allo stato di calibrazione\nAttacca le gambe e la testa perpendicolarmente\nUsa il cursore per allineare parallelamente i bordi delle gambe e il righello di riferimento',
     'tipImgPosture':'Passa da una postura all\'altra per testare i risultati della calibrazione\nSalva gli offset in tempo\nNon c\'è bisogno di calibrazione in futuro',
     'Boot prompt': 'Richiesta di avvio',
     'poweron':'Il robot deve essere alimentato a una batteria per ruotare le sue articolazioni, \n\nQuesto è fondamentale per il controllo del movimento delle articolazioni! \n\nLa spia LED gialla sulla scheda madre dovrebbe essere accesa, \n\naltrimenti, collega la batteria e premi a lungo il \n\npulsante per 3 secondi per accendere il robot. \n\n',

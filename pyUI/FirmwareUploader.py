@@ -14,12 +14,13 @@ import threading
 from tkinter import ttk
 from tkinter import filedialog
 import pathlib
-
+import webbrowser
 
 regularW = 14
 language = languageList['English']
 NyBoard_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1', 'NyBoard_V1_2']
-BiBoard_version_list = ['BiBoard_V0_1', 'BiBoard_V0_2']
+BiBoard_version_list = ['BiBoard_V0_1', 'BiBoard_V0_2', 'BiBoard_V1_0']
+# Hunter_Board_list = ['BiBoard_V1_0']
 
 def txt(key):
     return language.get(key, textEN[key])
@@ -28,6 +29,7 @@ class Uploader:
     def __init__(self,model,lan):
         connectPort(goodPorts, needTesting=False, needSendTask=False, needOpenPort=False)
         # closeAllSerial(goodPorts, clearPorts=False)
+        self.configName = model
         self.win = Tk()
         self.OSname = self.win.call('tk', 'windowingsystem')
         self.shellOption = True
@@ -42,7 +44,6 @@ class Uploader:
         self.win.resizable(False, False)
         self.bParaUpload = True
         self.bFacReset = False
-        self.bModPara = False
         self.bIMUerror = False
         Grid.rowconfigure(self.win, 0, weight=1)
         Grid.columnconfigure(self.win, 0, weight=1)
@@ -62,8 +63,10 @@ class Uploader:
         self.BiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
-        if self.strProduct.get() == 'Bittle X':
+        if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
             board_version_list = BiBoard_version_list
+        # elif self.strProduct.get() == 'Hunter':
+        #     board_version_list = Hunter_Board_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
@@ -113,7 +116,7 @@ class Uploader:
                 # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             self.defaultLan = lines[0]
-            model = lines[1]
+            self.configName = lines[1]
             strDefaultPath = lines[2]
             strSwVersion = lines[3]
             strBdVersion = lines[4]
@@ -121,25 +124,24 @@ class Uploader:
             if len(lines) >= 8:
                 strCreator = lines[6]
                 strLocation = lines[7]
-                self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion,
+                self.configuration = [self.defaultLan, self.configName, strDefaultPath, strSwVersion, strBdVersion,
                                       mode, strCreator, strLocation]
             else:
-                self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion, mode]
+                self.configuration = [self.defaultLan, self.configName, strDefaultPath, strSwVersion, strBdVersion, mode]
 
                 
         except Exception as e:
             print ('Create configuration file')
             self.defaultLan = 'English'
-            model = 'Bittle'
             strDefaultPath = releasePath[:-1]
             strSwVersion = '2.0'
             strBdVersion = NyBoard_version_list[-1]
             mode = 'Standard'
-            self.configuration = [self.defaultLan, model, strDefaultPath, strSwVersion, strBdVersion, mode]
+            self.configuration = [self.defaultLan, self.configName, strDefaultPath, strSwVersion, strBdVersion, mode]
             
         num = len(lines)
         logger.debug(f"len(lines): {num}")
-        self.lastSetting = [model,strDefaultPath,strSwVersion,strBdVersion,mode]
+        self.lastSetting = [self.configName,strDefaultPath,strSwVersion,strBdVersion,mode]
         self.currentSetting = []
         
         logger.info(f"The firmware file folder is {strDefaultPath}")
@@ -169,7 +171,7 @@ class Uploader:
 
         cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', font=12)
         # list of product
-        cbProductList = ['Nybble', 'Bittle', 'Bittle X']
+        cbProductList = ['Nybble', 'Bittle', 'Bittle X', 'Bittle R']
         # set default value of Combobox
         cbProduct.set(self.lastSetting[0])
         # set list for Combobox
@@ -209,6 +211,10 @@ class Uploader:
             if self.lastSetting[3] in NyBoard_version_list:
                 self.cbBoardVersion.set(BiBoard_version_list[0])
             board_version_list = BiBoard_version_list
+        elif self.strProduct.get() == 'Bittle R':
+            if self.lastSetting[3] in NyBoard_version_list:
+                self.cbBoardVersion.set(BiBoard_version_list[2])
+            board_version_list = BiBoard_version_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
@@ -224,7 +230,7 @@ class Uploader:
                 cbModeList = self.NyBoardModes
             else:
                 cbModeList = self.BiBoardModes
-        elif self.strProduct.get() == 'Bittle X':
+        elif self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
             cbModeList = self.BiBoardModes
 
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', font=12)
@@ -288,7 +294,6 @@ class Uploader:
     def uploadeModeOnly(self):
         self.bParaUpload = False
         self.bFacReset = False
-        self.bModPara = False
         self.autoupload()
 
     def factoryReset(self):
@@ -299,7 +304,6 @@ class Uploader:
     def upgrade(self):
         self.bParaUpload = True
         self.bFacReset = False
-        self.bModPara = True
         self.autoupload()
 
     def updatePortlist(self):
@@ -352,9 +356,12 @@ class Uploader:
         self.updateMode()
 
     def chooseProduct(self, event):
-        if self.strProduct.get() == 'Bittle X':
+        if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
             self.strBoardVersion.set(BiBoard_version_list[0])
             board_version_list = BiBoard_version_list
+        # elif self.strProduct.get() == 'Bittle R':
+        #     self.cbBoardVersion.set(Hunter_Board_list[0])
+        #     board_version_list = Hunter_Board_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
@@ -367,7 +374,7 @@ class Uploader:
                 modeList = self.NyBoardModes
             else:
                 modeList = self.BiBoardModes
-        elif self.strProduct.get() == 'Bittle X':
+        elif self.strProduct.get() == 'Bittle X'or self.strProduct.get() == 'Bittle R':
             modeList = self.BiBoardModes
 
         self.cbMode['values'] = modeList
@@ -468,29 +475,6 @@ class Uploader:
 
                         if bResetMode:
                             if prompStr.find(questionMark) != -1:
-                                if progress > 0:
-                                    self.strStatus.set(promptList[progress-1]['result'])
-                                    self.statusBar.update()
-
-                                if prompStr.find("assurance") != -1:  # for BiBoard
-                                    serObj.Send_data(self.encode("n"))
-                                elif (prompStr.find("joint") != -1):
-                                    prompt = promptJointCalib
-                                    serObj.Send_data(self.encode("Y"))
-                                    self.strStatus.set(prompt['operating'])
-                                    self.statusBar.update()
-                                elif (prompStr.find("Calibrate") != -1):
-                                    prompt = promptIMU
-                                    serObj.Send_data(self.encode("Y"))
-                                    self.strStatus.set(prompt['operating'])
-                                    self.statusBar.update()
-                                progress += 1
-
-                            if prompStr.find("Ready!") != -1:
-                                break
-                    else:
-                        if prompStr.find(questionMark) != -1:
-                            if self.bModPara:    # for NyBoard and BiBoard upgrade firmware
                                 if progress > 0 and retMsg:
                                     self.strStatus.set(promptList[progress-1]['result'])
                                     self.statusBar.update()
@@ -511,7 +495,32 @@ class Uploader:
                                 else:
                                     serObj.Send_data(self.encode("n"))
                                 progress += 1
-                            else:    # for BiBoard update mode only
+                            if prompStr.find("Ready!") != -1:
+                                break
+                    else:
+                        if prompStr.find(questionMark) != -1:
+                            if self.bParaUpload and strBoardVersion in NyBoard_version_list:    # for NyBoard upgrade firmware
+                                if progress > 0 and retMsg:
+                                    self.strStatus.set(promptList[progress-1]['result'])
+                                    self.statusBar.update()
+                                if prompStr.find("joint") != -1:
+                                    prompt = promptJointCalib
+                                elif prompStr.find("Instinct") != -1:
+                                    prompt = promptInstinct
+                                elif prompStr.find("Calibrate") != -1:
+                                    prompt = promptIMU
+                                elif prompStr.find("assurance") != -1:
+                                    serObj.Send_data(self.encode("n"))
+                                    continue
+                                retMsg = messagebox.askyesno(txt('Warning'), prompt['message'])
+                                if retMsg:
+                                    self.strStatus.set(prompt['operating'])
+                                    self.statusBar.update()
+                                    serObj.Send_data(self.encode("Y"))
+                                else:
+                                    serObj.Send_data(self.encode("n"))
+                                progress += 1
+                            else:    # for BiBoard upgrade firmware
                                 if prompStr.find("joint") != -1:
                                     prompt = promptJointCalib
                                     serObj.Send_data(self.encode("n"))
@@ -524,7 +533,7 @@ class Uploader:
                                 elif prompStr.find("assurance") != -1:
                                     serObj.Send_data(self.encode("n"))
                                     continue
-                        elif prompStr.find(questionMark) == -1 and self.bModPara:
+                        elif prompStr.find(questionMark) == -1 and self.bParaUpload:
                             if prompStr[:3] == "IMU":
                                 if progress > 0 and retMsg:
                                     self.strStatus.set(promptList[progress - 1]['result'])
@@ -589,7 +598,40 @@ class Uploader:
             f.writelines(lines)
             # f.close()
 
+
+    def showMessage(self,sta):
+        self.strStatus.set(sta)
+        self.statusBar.update()
+        messagebox.showinfo('Petoi Desktop App', txt('checkLogfile'))
+
+        if self.OSname == 'aqua':    # for macOS
+            folder_path = "file:///Applications/Petoi Desktop App.app/Contents/Resources"
+            # folder_path = "file:////./"  # Replace with the actual folder path
+        else:    # for Windows or Linux
+            path = os.getcwd()
+            folder_path = "file://" + path  # Replace with the actual folder path
+            # os.startfile(path)
+        print(folder_path)
+        # Open the folder in the default file browser
+        webbrowser.open_new_tab(folder_path)
+
+
     def autoupload(self):
+        file = open('./logfile.log', 'r+')
+        lines = file.readlines()
+        # Read the first three lines
+        first_three_lines = lines[:3]
+        file.close()
+
+        for line in lines:
+            line = line.strip()  # remove the line break from each line
+            logger.debug(f"{line}")
+            if (".ino.hex" in line) or \
+                    (".ino.bin" in line):
+                with open("./logfile.log", "w+", encoding="utf-8") as logfile:
+                    for line in first_three_lines:
+                        logfile.write(line)
+                break
         logger.info(f"lastSetting: {self.lastSetting}.")
         strProd = self.strProduct.get()
         strDefaultPath = self.strFileDir.get()
@@ -612,6 +654,8 @@ class Uploader:
 
         if strProd == "Bittle X":
             strProdPath = "Bittle"
+        elif strProd == "Bittle R":
+            strProdPath = "BittleR"
         else:
             strProdPath = strProd
         path = self.strFileDir.get() + '/' + strSoftwareVersion + '/' + strProdPath + '/' + pathBoardVersion + '/'
@@ -707,11 +751,10 @@ class Uploader:
                                 logger.debug(f"{line}")
                                 if ("programmer is not responding" in line) or \
                                     ("can\'t open device" in line) or \
-                                    ("attempt" in line):
+                                    ("attempt" in line) or \
+                                    ("error" in line) or ("Errno" in line):
                                     status = txt(uploadStage[s]) + txt('failed to upload')
-                                    self.strStatus.set(status)
-                                    self.statusBar.update()
-                                    messagebox.showinfo('Petoi Desktop App',txt('checkLogfile'))
+                                    self.showMessage(status)
                                     return False
 
                 # self.inProgress = False
@@ -739,21 +782,6 @@ class Uploader:
             fnPartitions = path + 'OpenCatEsp32' + modeName + '.ino.partitions.bin'
             # fnMainFunc = path + 'OpenCatEsp32Standard.ino.bin '
             fnMainFunc = path + 'OpenCatEsp32' + modeName + '.ino.bin '
-            # if strMode == "Standard":
-            #     modeName = "Standard_Voice"
-            #     # fnBootLoader = path + 'OpenCatEsp32Standard_Voice.ino.bootloader.bin'
-            #     fnBootLoader = path + 'OpenCatEsp32' + modeName + '.ino.bootloader.bin'
-            #     # fnPartitions = path + 'OpenCatEsp32Standard_Voice.ino.partitions.bin'
-            #     fnPartitions = path + 'OpenCatEsp32' + modeName + '.ino.partitions.bin'
-            #     # fnMainFunc = path + 'OpenCatEsp32Standard_Voice.ino.bin '
-            #     fnMainFunc = path + 'OpenCatEsp32' + modeName + '.ino.bin '
-            # else:
-            #     # fnBootLoader = path + 'OpenCatEsp32strMode.ino.bootloader.bin'
-            #     fnBootLoader = path + 'OpenCatEsp32' + strMode + '.ino.bootloader.bin'
-            #     # fnPartitions = path + 'OpenCatEsp32strMode.ino.partitions.bin'
-            #     fnPartitions = path + 'OpenCatEsp32' + strMode + '.ino.partitions.bin'
-            #     # fnMainFunc = path + 'OpenCatEsp32strMode.ino.bin '
-            #     fnMainFunc = path + 'OpenCatEsp32' + strMode + '.ino.bin '
             fnBootApp = path + 'boot_app0.bin'
 
             filename = [fnBootLoader, fnPartitions, fnBootApp, fnMainFunc]
@@ -808,11 +836,9 @@ class Uploader:
                         logger.debug(f"{line}")
                         if ("Traceback" in line) or \
                             ("Failed to connect to ESP32" in line) or \
-                            ("error occurred" in line):
+                            ("error" in line) or ("Errno" in line):
                             status = txt('Main function') + txt('failed to upload')
-                            self.strStatus.set(status)
-                            self.statusBar.update()
-                            messagebox.showinfo('Petoi Desktop App', txt('checkLogfile'))
+                            self.showMessage(status)
                             return False
 
             except:
@@ -849,4 +875,5 @@ class Uploader:
             self.win.destroy()
 
 if __name__ == '__main__':
+    model = 'Bittle'
     Uploader = Uploader(model, language)
