@@ -86,7 +86,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
         angleRatio = 1
         for row in range(abs(period)):
             for angle in var[skillHeader + row * frameSize:skillHeader + row * frameSize + min(16,frameSize)]:
-                if angle > 125 or angle<-125:
+                if angle > 125 or angle < -125:
                     angleRatio = 2
                     break
             if angleRatio ==2:
@@ -172,8 +172,8 @@ def printSerialMessage(port, token, timeout=0):
         threshold = 4
     else:
         threshold = 3
-    #    if token == 'K':
-    #        timeout = 1
+    if 'X' in token:
+        token = 'X'
     startTime = time.time()
     allPrints = ''
     while True:

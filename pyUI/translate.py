@@ -182,12 +182,14 @@ If you can not fix the issue, please send the log to support@petoi.com for help.
     'tipFacReset':''' After factory reset, you need to do joint calibration, please refer to: 
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Upgrade the Firmware',
-    'tipUpgrade':''' Upgrade both the parameters and the main function. 
+    'tipUpgradeNyBoard':''' Upgrade both the parameters and the main function. 
  * Mandatory if you just downloaded a new version of this software. 
  * You can select \'N\' to preserve the calibration values. ''',
+    'tipUpgradeBiBoard':' Upgrade the main function. ',
     'btnUpdateMode': 'Update the Mode Only',
     'tipUpdateMode':''' If you have upgraded the firmware at least once after a new download, 
  it\'s faster to only switch the modes without refreshing the parameters. ''',
+    'tipSwitchMode':'You can switch the working mode.',
     'Warning': 'Warning',
     'Uploading': 'Uploading ',
     'is successully uploaded':' is successully uploaded',
@@ -244,6 +246,9 @@ Then re-upgrade the firmware.\n''',
     'Light':'Light',
     'Gesture':'Gesture',
     'InfraredDistance':'InfraredDistance',
+    'QuickDemo':'QuickDemo',
+    'Serial2': 'Serial2',
+    'WorkingMode':'WorkingMode',
     
     'Breath':'Breath',
     'Rotate':'Rotate',
@@ -512,7 +517,7 @@ https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
     'tipFacReset':''' 恢复出厂设置后，你需要重新校准关节舵机，请参考：
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'升级固件',
-    'tipUpgrade':''' 升级参数固件和主程序固件。
+    'tipUpgradeNyBoard':''' 升级参数固件和主程序固件。
  * 如果您初次下载了该软件的新版本，则必须点击此按钮升级固件。
  * 您可以选择 “N” 来保留校准值。''',
     'btnUpdateMode': '只更新模式',
@@ -783,7 +788,7 @@ https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
     'tipFacReset':''' 恢復出廠設置後，你需要重新校準關節舵機，請參考：
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'升級固件',
-    'tipUpgrade':''' 升級參數固件和主程序固件。
+    'tipUpgradeNyBoard':''' 升級參數固件和主程序固件。
  * 如果您初次下載了該軟體的新版本，則必須點擊此按鈕升級固件。
  * 您可以選擇 “N” 來保留校準值。''',
     'btnUpdateMode': '僅更新模式',
@@ -1004,9 +1009,9 @@ Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur H
     'tipFacReset':''' Nach dem Zurücksetzen auf die Werkseinstellungen müssen Sie eine gemeinsame Kalibrierung durchführen. 
  Weitere Informationen finden Sie unter: https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Aktualisieren Sie die Firmware',
-    'tipUpgrade':''' Aktualisieren Sie sowohl die Parameter als auch die Hauptfunktion. 
+    'tipUpgradeNyBoard':''' Aktualisieren Sie sowohl die Parameter als auch die Hauptfunktion. 
  * Obligatorisch, wenn Sie gerade eine neue Version dieser Software heruntergeladen haben. 
- * Sie können „N“ wählen, um die Kalibrierungswerte beizubehalten. ''',
+ * Sie können "N" wählen, um die Kalibrierungswerte beizubehalten. ''',
     'btnUpdateMode': 'Aktualisieren Sie nur den Modus',
     'tipUpdateMode':''' Wenn Sie die Firmware nach einem erneuten Download mindestens einmal aktualisiert haben, 
  Es ist schneller, nur die Modi zu wechseln, ohne die Parameter zu aktualisieren. ''',
@@ -1281,9 +1286,9 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'tipFacReset':''' หลังจากการรีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน คุณต้องทำการปรับเทียบร่วม โปรดดูที่: 
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'อัพเกรดเฟิร์มแวร์',
-    'tipUpgrade':''' อัปเกรดทั้งพารามิเตอร์และฟังก์ชันหลัก 
+    'tipUpgradeNyBoard':''' อัปเกรดทั้งพารามิเตอร์และฟังก์ชันหลัก 
  * จำเป็นหากคุณเพิ่งดาวน์โหลดเวอร์ชันใหม่ของซอฟต์แวร์นี้ 
- * คุณสามารถเลือก 'N' เพื่อรักษาค่าการสอบเทียบ ''',
+ * คุณสามารถเลือก "N" เพื่อรักษาค่าการสอบเทียบ ''',
     'btnUpdateMode': 'อัปเดตโหมดเท่านั้น',
     'tipUpdateMode':''' หากคุณได้อัปเกรดเฟิร์มแวร์อย่างน้อยหนึ่งครั้งหลังจากดาวน์โหลดใหม่ 
  การสลับโหมดเพียงอย่างเดียวโดยไม่รีเฟรชพารามิเตอร์จะเร็วกว่า ''',
@@ -1559,9 +1564,9 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     'tipFacReset':''' Après la réinitialisation d'usine, vous devrez effectuer l'étalonnage des articulations. Veuillez vous référer à :
      https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Mettre à jour le micrologiciel',
-    'tipUpgrade':''' Met à jour à la fois les paramètres et la fonction principale.
+    'tipUpgradeNyBoard':''' Met à jour à la fois les paramètres et la fonction principale.
      * Obligatoire si vous venez de télécharger une nouvelle version de ce logiciel.
-     * Vous pouvez sélectionner 'N' pour conserver les valeurs d'étalonnage. ''',
+     * Vous pouvez sélectionner "N" pour conserver les valeurs d'étalonnage. ''',
     'btnUpdateMode': 'Mettre à jour uniquement le mode',
     'tipUpdateMode':''' Si vous avez déjà mis à jour le micrologiciel au moins une fois après un nouveau téléchargement,
      il est plus rapide de simplement passer d'un mode à l'autre sans rafraîchir les paramètres. ''',
@@ -1833,7 +1838,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'btnFacReset': '工場出荷時設定に戻す',
     'tipFacReset':'ファクトリーリセット後、関節のキャリブレーションを行う必要があります。詳細は次を参照してください：https://docs.petoi.com/joint-calibration',
     'btnUpgrade':'ファームウェアのアップグレード',
-    'tipUpgrade':'パラメータとメイン機能の両方をアップグレードします。ソフトウェアの新しいバージョンをダウンロードした場合は必須です。キャリブレーション値を保持する場合は、\'N\'を選択できます。',
+    'tipUpgradeNyBoard':'パラメータとメイン機能の両方をアップグレードします。ソフトウェアの新しいバージョンをダウンロードした場合は必須です。キャリブレーション値を保持する場合は、\'N\'を選択できます。',
     'btnUpdateMode':'モードのみを更新',
     'tipUpdateMode':'新しいダウンロード後、ファームウェアを少なくとも1回アップグレードした場合、パラメータをリフレッシュせずにモードのみを切り替える方が速くなります。',
     'Warning':'警告',
@@ -2099,7 +2104,7 @@ Se non riesci a risolvere il problema, invia il registro a support@petoi.com per
  è necessario eseguire la calibrazione del giunto, fare riferimento a: 
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Aggiorna il firmware',
-    'tipUpgrade':''' Aggiorna sia i parametri che la funzione principale. 
+    'tipUpgradeNyBoard':''' Aggiorna sia i parametri che la funzione principale. 
  * Obbligatorio se hai appena scaricato una nuova versione di questo software. 
  * È possibile selezionare \'N\' per conservare i valori di calibrazione. ''',
     'btnUpdateMode': 'Aggiorna solo la modalità',
