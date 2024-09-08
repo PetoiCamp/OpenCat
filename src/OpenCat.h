@@ -164,7 +164,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 
 #elif defined BITTLE
 #ifdef ROBOT_ARM
-#define MODEL "Bittle R"
+#define MODEL "Bittle RN"
 #else
 #define MODEL "Bittle"
 #endif
