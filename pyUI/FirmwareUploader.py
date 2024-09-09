@@ -53,10 +53,14 @@ class Uploader:
         # self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera','Ultrasonic', 'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture', 'InfraredDistance']))
         # self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera','Ultrasonic', 'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture', 'InfraredDistance']))
         # for NyBoard, the mode is the same between Bittle and Nybble now
-        self.NyBoardModes = list(map(lambda x: txt(x),
+        self.BittleNyBoardModes = list(map(lambda x: txt(x),
                                            ['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera', 'Ultrasonic',
                                             'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture',
-                                            'InfraredDistance']))
+                                            'InfraredDistance','Voice_RobotArm']))
+        self.NybbleNyBoardModes = list(map(lambda x: txt(x),
+                                     ['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera', 'Ultrasonic',
+                                      'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture',
+                                      'InfraredDistance']))
         # self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'Camera','Ultrasonic','PIR','Touch','Light','Gesture']))
         # self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         # for BiBoard, the mode is the same between Bittle and Nybble now
@@ -227,7 +231,10 @@ class Uploader:
 
         if self.strProduct.get() == 'Bittle' or self.strProduct.get() == 'Nybble':
             if 'NyBoard' in self.strBoardVersion.get():
-                cbModeList = self.NyBoardModes
+                if self.strProduct.get() == 'Bittle':
+                    cbModeList = self.BittleNyBoardModes
+                else:
+                    cbModeList = self.NybbleNyBoardModes
             else:
                 cbModeList = self.BiBoardModes
         elif self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
@@ -318,6 +325,7 @@ class Uploader:
                 logger.debug(f"{portName}")
                 port_number_list.append(portName)
             logger.debug(f"port_number_list is {port_number_list}")
+            printH("Discover the serial port: ", port_number_list[0])
         self.cbPort.set(port_number_list[0])
         # set list for Combobox
         self.cbPort['values'] = port_number_list
@@ -371,10 +379,13 @@ class Uploader:
     def updateMode(self):
         if self.strProduct.get() == 'Bittle' or self.strProduct.get() == 'Nybble':
             if 'NyBoard' in self.strBoardVersion.get():
-                modeList = self.NyBoardModes
+                if self.strProduct.get() == 'Bittle':
+                    modeList = self.BittleNyBoardModes
+                else:
+                    modeList = self.NybbleNyBoardModes
             else:
                 modeList = self.BiBoardModes
-        elif self.strProduct.get() == 'Bittle X'or self.strProduct.get() == 'Bittle R':
+        elif self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
             modeList = self.BiBoardModes
 
         self.cbMode['values'] = modeList
@@ -617,7 +628,7 @@ class Uploader:
 
 
     def autoupload(self):
-        file = open('./logfile.log', 'r+')
+        file = open('./logfile.log', 'r+', encoding="ISO-8859-1")
         lines = file.readlines()
         # Read the first three lines
         first_three_lines = lines[:3]
@@ -628,7 +639,7 @@ class Uploader:
             logger.debug(f"{line}")
             if (".ino.hex" in line) or \
                     (".ino.bin" in line):
-                with open("./logfile.log", "w+", encoding="utf-8") as logfile:
+                with open("./logfile.log", "w+", encoding="ISO-8859-1") as logfile:
                     for line in first_three_lines:
                         logfile.write(line)
                 break
@@ -737,7 +748,7 @@ class Uploader:
                             logger.info(f"Error running program: {error}")
                         else:
                             # Write captured output to a file
-                            with open("./logfile.log", "a+", encoding="utf-8") as logfile:
+                            with open("./logfile.log", "a+", encoding="ISO-8859-1") as logfile:
                                 logfile.write(output.decode())  # Decode bytes to string
                                 # time.sleep(5)
                                 # lines = logfile.readlines()
@@ -822,12 +833,12 @@ class Uploader:
                     logger.info(f"Error running program: {error}")
                 else:
                     # Write captured output to a file
-                    with open("./logfile.log", "a+", encoding="utf-8") as logfile:
+                    with open("./logfile.log", "a+", encoding="ISO-8859-1") as logfile:
                         logfile.write(output.decode())  # Decode bytes to string
                         # time.sleep(5)
                         # lines = logfile.readlines()
                     # print(lines)
-                    file = open('./logfile.log', 'r+')
+                    file = open('./logfile.log', 'r+', encoding="ISO-8859-1")
                     lines = file.readlines()
                     file.close()
 
@@ -841,10 +852,11 @@ class Uploader:
                             self.showMessage(status)
                             return False
 
-            except:
+            except Exception as e:
+                printH("Excep:", e)
+                logger.info(f"Excep: {e}")
                 status = txt('Main function') + txt('failed to upload')
-                self.strStatus.set(status)
-                self.statusBar.update()
+                self.showMessage(status)
                 return False
             else:
                 status = txt('Main function') + txt('is successully uploaded')

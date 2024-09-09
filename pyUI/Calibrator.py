@@ -45,8 +45,10 @@ class Calibrator:
         self.configName = config.model_
         self.boardVersion = config.version_
         config.model_ = config.model_.replace(' ', '')
-        if 'Bittle' in config.model_ and config.model_!= 'BittleR':
+        if config.model_ == 'BittleX':
             self.model = 'Bittle'
+        elif config.model_ == 'BittleRN':
+            self.model = 'BittleR'
         else:
             self.model = config.model_
 
@@ -87,17 +89,17 @@ class Calibrator:
 
         if "B" in self.boardVersion and config.model_ == 'BittleR':
             self.imgWiring = createImage(self.frameCalibButtons,
-                                         resourcePath + config.model_ + self.boardVersion[1] + 'Wire.jpeg',
+                                         resourcePath + config.model_ + self.boardVersion[1] + '_Wire.jpeg',
                                          self.paraemterSet['imageW'])
         else:
             self.imgWiring = createImage(self.frameCalibButtons,
-                                         resourcePath + config.model_ + 'Wire.jpeg',
+                                         resourcePath + config.model_ + '_Wire.jpeg',
                                          self.paraemterSet['imageW'])
 
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
 
-        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', self.paraemterSet['imageW'])
+        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Ruler.jpeg', self.paraemterSet['imageW'])
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
 
         for i in range(16):
@@ -168,7 +170,7 @@ class Calibrator:
 
         self.imgPosture.destroy()
         if cmd == 'c':
-            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Ruler.jpeg', imageW)
+            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Ruler.jpeg', imageW)
             result = send(goodPorts, ['c', 0])
             if result != -1:
                 offsets = result[1]
@@ -186,13 +188,13 @@ class Calibrator:
                 self.calibSliders[i].set(offsets[i])
 
         elif cmd == 'd':
-            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Rest.jpeg', imageW)
+            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Rest.jpeg', imageW)
             send(goodPorts, ['d', 0])
         elif cmd == 'balance':
-            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Stand.jpeg', imageW)
+            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Stand.jpeg', imageW)
             send(goodPorts, ['kbalance', 0])
         elif cmd == 'walk':
-            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + 'Walk.jpeg', imageW)
+            self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Walk.jpeg', imageW)
             send(goodPorts, ['kwkF', 0])
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
         Hovertip(self.imgPosture, txt('tipImgPosture'))

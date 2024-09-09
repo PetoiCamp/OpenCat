@@ -152,7 +152,9 @@ class SkillComposer:
             time.sleep(0.01)
         self.configName = config.model_
         config.model_ = config.model_.replace(' ','')
-        if 'Bittle' in config.model_ and config.model_!= 'BittleR':
+        if 'BittleR' in config.model_:
+            self.model = 'BittleR'
+        elif config.model_== 'BittleX':
             self.model = 'Bittle'
         else:
             self.model = config.model_
