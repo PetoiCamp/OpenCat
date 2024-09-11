@@ -87,7 +87,7 @@ class Calibrator:
             self.paraemterSet = paraemterSet['Regular']
             scaleNames = RegularScaleNames
 
-        if "B" in self.boardVersion and config.model_ == 'BittleR':
+        if "B" in self.boardVersion:    # and config.model_ == 'BittleR'
             self.imgWiring = createImage(self.frameCalibButtons,
                                          resourcePath + config.model_ + self.boardVersion[1] + '_Wire.jpeg',
                                          self.paraemterSet['imageW'])
