@@ -22,10 +22,10 @@ class Debugger:
         start = time.time()
         while config.model_ == '':
             if time.time() - start > 5:
-                config.model_ = model
-                print('Use the model set in the UI interface.')
+                config.model_ = model    # If can not get the model name, use the model set in the UI interface.
             time.sleep(0.01)
-        self.model = config.model_
+        self.configName = config.model_
+
 
         self.winDebug = Tk()
         self.debuggerReady = False
@@ -47,7 +47,7 @@ class Debugger:
         self.winDebug.title(txt('Debugger'))
         self.createMenu()
         bw = 23
-        self.modelLabel = Label(self.winDebug, text=self.model, font=self.myFont)
+        self.modelLabel = Label(self.winDebug, text=displayName(self.configName), font=self.myFont)
         self.modelLabel.grid(row=0, column=0, pady=10)
         voiceResetButton = Button(self.winDebug, text=txt('Reset voice module'), font=self.myFont, fg='blue', width=bw, relief='raised',
                    command=lambda: self.resetVoice())
@@ -66,8 +66,8 @@ class Debugger:
         self.menubar = Menu(self.winDebug, background='#ff8000', foreground='black', activebackground='white',
                             activeforeground='black')
         file = Menu(self.menubar, tearoff=0, background='#ffcc99', foreground='black')
-        for key in NaJoints:
-            file.add_command(label=key, command=lambda model=key: self.changeModel(model))
+        for m in modelOptions:
+            file.add_command(label=m, command=lambda model=m: self.changeModel(model))
         self.menubar.add_cascade(label=txt('Model'), menu=file)
 
         lan = Menu(self.menubar, tearoff=0)
@@ -83,9 +83,7 @@ class Debugger:
 
 
     def changeModel(self, modelName):
-        self.model = copy.deepcopy(modelName)
-        self.modelLabel.configure(text=self.model)
-        print(self.model)
+        self.modelLabel.configure(text=modelName)
         
     
     def changeLan(self, l):
