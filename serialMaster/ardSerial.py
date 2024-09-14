@@ -147,6 +147,7 @@ def serialWriteByte(port, var=None):
     if var is None:
         var = []
     token = var[0][0]
+    # printH("token:",token)
     # print var
     if (token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't') and len(var) >= 2:
         in_str = ""
@@ -163,6 +164,7 @@ def serialWriteByte(port, var=None):
     else:
         in_str = token + '\n'
     logger.debug(f"!!!!!!! {in_str}")
+    # printH("in_str:", in_str)
     port.Send_data(encode(in_str))
     time.sleep(0.01)
 
@@ -208,6 +210,7 @@ def printSerialMessage(port, token, timeout=0):
 
 def sendTask(PortList, port, task, timeout=0):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
+    # printH("task:",task)
     global returnValue
     #    global sync
     #    print(task)

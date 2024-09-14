@@ -152,6 +152,8 @@ For more details, please refer to https://docs.petoi.com/desktop-app/firmware-up
 If you can not fix the issue, please send the log to support@petoi.com for help.''',
 
     'Calibrate':'Calibrate',
+    'Auto':'Auto',
+    'AutoCali failed': 'Automatic calibration of the robotic claw joint servo failed!',
     'Rest':'Rest',
     'Stand Up':'Stand Up',
     'Walk':'Walk',
@@ -396,6 +398,8 @@ textCN = {
     'Clear':'清空',
     'max':'最快',
     'Calibrate':'校准位',
+    'Auto':'自动',
+    'AutoCali failed': '自动校准机械爪关节舵机失败！',
     'Rest':'休息',
     'Stand Up':'站立',
     'Walk':'行走',
@@ -669,6 +673,8 @@ textCN_TW = {
     'Clear':'清空',
     'max':'最快',
     'Calibrate':'校準位',
+    'Auto':'自動',
+    'AutoCali failed': '自動校準機械爪關節舵機失敗！',
     'Rest':'休息',
     'Stand Up':'站立',
     'Walk':'行走',
@@ -977,6 +983,8 @@ Weitere Einzelheiten finden Sie unter https://docs.petoi.com/desktop-app/firmwar
 Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur Hilfe an support@petoi.com.''',
 
     'Calibrate':'Kalibrieren',
+    'Auto':'Auto',
+    'AutoCali failed': 'Die automatische Kalibrierung des Servomotors für das Gelenk des Robotergreifers ist fehlgeschlagen!',
     'Rest':'Ruhe',
     'Stand Up':'Aufstehen',
     'Walk':'Gehen',
@@ -1255,6 +1263,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 หากคุณไม่สามารถแก้ไขปัญหาได้ โปรดส่งไฟล์บันทึกไปยัง support@petoi.com เพื่อขอความช่วยเหลือ''',
 
     'Calibrate':'ปรับสอดคล้อง',
+    'Auto':'อัตโนมัติ',
+    'AutoCali failed': 'การสอบเทียบเซอร์โวมอเตอร์ข้อต่อของกรงเล็บหุ่นยนต์โดยอัตโนมัติล้มเหลว!',
     'Rest':'พัก',
     'Stand Up':'ยืนขึ้น',
     'Walk':'เดิน',
@@ -1534,6 +1544,8 @@ Pour plus de détails, veuillez consulter https://docs.petoi.com/desktop-app/fir
 Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal à support@petoi.com pour obtenir de l\'aide.''',
     
     'Calibrate':'Calibrer',
+    'Auto':'Automatique',
+    'AutoCali failed': 'L\'étalonnage automatique du servomoteur de l\'articulation de la pince robotique a échoué !',
     'Rest':'Repos',
     'Stand Up':'Se lever',
     'Walk':'Marcher',
@@ -1811,6 +1823,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 問題を解決できない場合は、ログを support@petoi.com に送信してサポートを受けてください。''',
 
     'Calibrate':'キャリブレーション',
+    'Auto':'自動',
+    'AutoCali failed': 'ロボットグリッパーの関節サーボの自動キャリブレーションに失敗しました！',
     'Rest':'リセット',
     'Stand Up':'立ち上がる',
     'Walk':'歩く',
@@ -2076,6 +2090,8 @@ Per ulteriori dettagli, consultare https://docs.petoi.com/desktop-app/firmware-u
 Se non riesci a risolvere il problema, invia il registro a support@petoi.com per chiedere aiuto.''',
     
     'Calibrate':'Calibrate',
+    'Auto':'Automatico',
+    'AutoCali failed': 'La calibrazione automatica del servo motore dell\'articolazione della pinza robotica è fallita!',
     'Rest':'Riposo',
     'Stand Up':'In piedi',
     'Walk':'Camminare',

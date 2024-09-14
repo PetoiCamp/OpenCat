@@ -6,7 +6,7 @@ language = languageList['English']
 
 BittleRSet = {
     "imageW": 360,       # The width of image
-    "sliderW": 220,      # The width of the slider rail corresponding to joint numbers 0 to 3
+    "sliderW": 260,      # The width of the slider rail corresponding to joint numbers 0 to 3
     "rowJoint1": 2,      # The row number of the label with joint number 2 and 3
     "sliderLen": 260,    # The length of the slider rail corresponding to joint numbers 4 to 15
     "rowJoint2": 4       # The row number of the label with joint number 4 or 15 is located
@@ -24,6 +24,8 @@ paraemterSet = {
     "Regular": RegularSet,
     "BittleR": BittleRSet
 }
+
+frontJointIdx = [4, 5, 8, 9, 12, 13]
 
 def txt(key):
     return language.get(key, textEN[key])
@@ -87,7 +89,7 @@ class Calibrator:
             self.paraemterSet = paraemterSet['Regular']
             scaleNames = RegularScaleNames
 
-        if "B" in self.boardVersion:    # and config.model_ == 'BittleR'
+        if "B" in self.boardVersion:
             self.imgWiring = createImage(self.frameCalibButtons,
                                          resourcePath + config.model_ + self.boardVersion[1] + '_Wire.jpeg',
                                          self.paraemterSet['imageW'])
@@ -127,15 +129,18 @@ class Calibrator:
                 upperQ = i / 4 < 3
 
                 rSPAN = 3
+                cSPAN = 1
                 ROW = self.paraemterSet['rowJoint2'] + (1 - frontQ) * (rSPAN + 2)
 
                 if leftQ:
                     COL = 3 - i // 4
+                    ALIGN = 'sw'
                 else:
                     COL = 3 + i // 4
+                    ALIGN = 'se'
                 ORI = VERTICAL
                 LEN = self.paraemterSet['sliderLen']
-                ALIGN = 'sw'
+                # ALIGN = 'sw'
             stt = NORMAL
             if i in NaJoints[self.model]:
                 clr = 'light yellow'
@@ -149,12 +154,25 @@ class Calibrator:
                           text=sideLabel + '(' + str(i) + ')\n' + txt(scaleNames[i]))
 
             value = DoubleVar()
-            sliderBar = Scale(self.winCalib, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
-                              borderwidth=2, relief='flat', width=8, from_=-25 * tickDirection, to=25 * tickDirection,
-                              length=LEN, tickinterval=10, resolution=1, repeatdelay=100, repeatinterval=100,
-                              command=lambda value, idx=i: self.setCalib(idx, value))
+            if i in frontJointIdx:
+                sliderBar = Scale(self.winCalib, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
+                                  borderwidth=2, relief='flat', width=8, from_=-25 * tickDirection,
+                                  to=25 * tickDirection,
+                                  length=LEN+30, tickinterval=10, resolution=1, repeatdelay=100, repeatinterval=100,
+                                  command=lambda value, idx=i: self.setCalib(idx, value))
+            else:
+                sliderBar = Scale(self.winCalib, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
+                                  borderwidth=2, relief='flat', width=8, from_=-25 * tickDirection, to=25 * tickDirection,
+                                  length=LEN, tickinterval=10, resolution=1, repeatdelay=100, repeatinterval=100,
+                                  command=lambda value, idx=i: self.setCalib(idx, value))
             self.calibSliders.append(sliderBar)
-            label.grid(row=ROW, column=COL, columnspan=cSPAN, pady=2, sticky=ALIGN)
+            if i == 2 and scaleNames == BittleRScaleNames:
+                autoCalibButton = Button(self.winCalib, text=txt('Auto'), fg='blue',
+                                         width=self.calibButtonW, command=lambda cmd='c-2': self.calibFun(cmd))
+                label.grid(row=ROW, column=COL, columnspan=2, pady=2, sticky='e')
+                autoCalibButton.grid(row=ROW, column=COL+2,  pady=2, sticky='w')    # padx=5,
+            else:
+                label.grid(row=ROW, column=COL, columnspan=cSPAN, pady=2, sticky=ALIGN)
             sliderBar.grid(row=ROW + 1, column=COL, rowspan=rSPAN, columnspan=cSPAN, sticky=ALIGN)
         time.sleep(3) # wait for the robot to reboot
         self.calibFun('c')
@@ -169,9 +187,15 @@ class Calibrator:
         imageW = self.paraemterSet['imageW']
 
         self.imgPosture.destroy()
-        if cmd == 'c':
+        if cmd == 'c' or cmd == 'c-2':
             self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Ruler.jpeg', imageW)
-            result = send(goodPorts, ['c', 0])
+            if cmd == 'c-2':
+                send(goodPorts, ['c', [-2], 0])
+                time.sleep(1)
+                result = send(goodPorts, ['c', 0])
+            else:
+                result = send(goodPorts, [cmd, 0])
+
             if result != -1:
                 offsets = result[1]
                 printH('re',result)
@@ -184,9 +208,16 @@ class Calibrator:
             #                print(len(offsets))
             else:
                 offsets = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
-            for i in range(16):
-                self.calibSliders[i].set(offsets[i])
 
+            if cmd == 'c-2':
+                printH("offset2:", offsets[2])
+                if int(offsets[2]) > 25:
+                    tk.messagebox.showwarning(title=txt('Warning'), message=txt('AutoCali failed'))
+                else:
+                    self.calibSliders[2].set(offsets[2])
+            else:
+                for i in range(16):
+                    self.calibSliders[i].set(offsets[i])
         elif cmd == 'd':
             self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Rest.jpeg', imageW)
             send(goodPorts, ['d', 0])
@@ -202,7 +233,6 @@ class Calibrator:
 
     def setCalib(self, idx, value):
         if self.calibratorReady:
-#            global ports
             value = int(value)
             send(goodPorts, ['c', [idx, value], 0])
 
