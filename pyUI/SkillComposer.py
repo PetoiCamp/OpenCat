@@ -68,19 +68,19 @@ BittleRWinSet = {
 }
 
 BittleRMacSet = {
-    "sliderW": 380,           # The width of the slider rail corresponding to joint numbers 0 to 3
+    "sliderW": 300,           # The width of the slider rail corresponding to joint numbers 0 to 3
     "sixW": 10,               # The width of six IMU Axis Names lable
-    "rowUnbindButton": 12,   # The row number where the unbind button is located
+    "rowUnbindButton": 10,   # The row number where the unbind button is located
     "rowJoint1": 2,          # The row number of the label with joint number 2 and 3
-    "sliderLen": 260,        # The length of the slider rail corresponding to joint numbers 4 to 15
-    "rSpan": 4,              # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+    "sliderLen": 185,        # The length of the slider rail corresponding to joint numbers 4 to 15
+    "rSpan": 5,              # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
     "rowJoint2": 4,          # The row number of the label with joint number 4 or 15 is located
-    "rowFrameImu": 13,       # The row number of the IMU button frame is located
-    "imuSliderLen": 220,     # The length of the IMU slider rail
-    "schedulerHeight": 580,  # The height of action frame scheduler
+    "rowFrameImu": 12,       # The row number of the IMU button frame is located
+    "imuSliderLen": 125,     # The length of the IMU slider rail
+    "schedulerHeight": 360,  # The height of action frame scheduler
     "rowFrameImage": 5,      # The row number of the image frame is located
-    "imgWidth": 320,         # The width of image
-    "imgRowSpan": 7          # The number of lines occupied by the image frame
+    "imgWidth": 200,         # The width of image
+    "imgRowSpan": 5          # The number of lines occupied by the image frame
 }
 
 RegularWinSet = {
@@ -223,9 +223,14 @@ class SkillComposer:
             self.backgroundColor = None
 
         if self.OSname == 'win32':
+            winVer = platform.release()
+            printH('Windows version:', winVer)
             self.window.iconbitmap(resourcePath + 'Petoi.ico')
             # global frameItemWidth
-            self.frameItemWidth = [2, 4, 3, 5, 4, 4, 10, 3, 3]
+            if winVer.isnumeric() and int(winVer) > 10:
+                self.frameItemWidth = [2, 4, 3, 5, 4, 4, 6, 3, 3]  # for some Windows 11, 10 -> 6
+            else:
+                self.frameItemWidth = [2, 4, 3, 5, 4, 4, 10, 3, 3]
             self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
             self.parameterSet = parameterWinSet[self.model]

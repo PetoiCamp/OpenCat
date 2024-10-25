@@ -4,7 +4,7 @@ from commonVar import *
 
 language = languageList['English']
 
-BittleRSet = {
+BittleRWinSet = {
     "imageW": 360,       # The width of image
     "sliderW": 260,      # The width of the slider rail corresponding to joint numbers 0 to 3
     "rowJoint1": 2,      # The row number of the label with joint number 2 and 3
@@ -12,7 +12,7 @@ BittleRSet = {
     "rowJoint2": 4       # The row number of the label with joint number 4 or 15 is located
 }
 
-RegularSet = {
+RegularWinSet = {
     "imageW": 250,
     "sliderW": 200,
     "rowJoint1": 11,
@@ -20,9 +20,34 @@ RegularSet = {
     "rowJoint2": 2
 }
 
-paraemterSet = {
-    "Regular": RegularSet,
-    "BittleR": BittleRSet
+BittleRMacSet = {
+    "imageW": 300,       # The width of image
+    "sliderW": 200,      # The width of the slider rail corresponding to joint numbers 0 to 3
+    "rowJoint1": 2,      # The row number of the label with joint number 2 and 3
+    "sliderLen": 200,    # The length of the slider rail corresponding to joint numbers 4 to 15
+    "rowJoint2": 4       # The row number of the label with joint number 4 or 15 is located
+}
+
+RegularMacSet = {
+    "imageW": 190,
+    "sliderW": 140,
+    "rowJoint1": 11,
+    "sliderLen": 140,
+    "rowJoint2": 2
+}
+
+parameterWinSet = {
+    "Nybble": RegularWinSet,
+    "Bittle": RegularWinSet,
+    "BittleR": BittleRWinSet,
+    "DoF16": RegularWinSet,
+}
+
+parameterMacSet = {
+    "Nybble": RegularMacSet,
+    "Bittle": RegularMacSet,
+    "BittleR": BittleRMacSet,
+    "DoF16": RegularMacSet,
 }
 
 frontJointIdx = [4, 5, 8, 9, 12, 13]
@@ -82,26 +107,33 @@ class Calibrator:
         abortButton.grid(row=11, column=2)
 #        quitButton.grid(row=11, column=2)
 
+        self.OSname = self.winCalib.call('tk', 'windowingsystem')
+        print(self.OSname)
+        if self.OSname == 'win32':
+            self.parameterSet = parameterWinSet[self.model]
+        else:
+            self.parameterSet = parameterMacSet[self.model]
+
         if self.model == 'BittleR':
-            self.paraemterSet = paraemterSet['BittleR']
+            # self.parameterSet = parameterSet['BittleR']
             scaleNames = BittleRScaleNames
         else:
-            self.paraemterSet = paraemterSet['Regular']
+            # self.parameterSet = parameterSet['Regular']
             scaleNames = RegularScaleNames
 
         if "B" in self.boardVersion:
             self.imgWiring = createImage(self.frameCalibButtons,
                                          resourcePath + config.model_ + self.boardVersion[1] + '_Wire.jpeg',
-                                         self.paraemterSet['imageW'])
+                                         self.parameterSet['imageW'])
         else:
             self.imgWiring = createImage(self.frameCalibButtons,
                                          resourcePath + config.model_ + '_Wire.jpeg',
-                                         self.paraemterSet['imageW'])
+                                         self.parameterSet['imageW'])
 
         self.imgWiring.grid(row=0, column=0, rowspan=5, columnspan=3)
         Hovertip(self.imgWiring, txt('tipImgWiring'))
 
-        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Ruler.jpeg', self.paraemterSet['imageW'])
+        self.imgPosture = createImage(self.frameCalibButtons, resourcePath + self.model + '_Ruler.jpeg', self.parameterSet['imageW'])
         self.imgPosture.grid(row=7, column=0, rowspan=3, columnspan=3)
 
         for i in range(16):
@@ -111,7 +143,7 @@ class Calibrator:
                 if i < 2:
                     ROW = 0
                 else:
-                    ROW = self.paraemterSet['rowJoint1']
+                    ROW = self.parameterSet['rowJoint1']
 
                 if 0 < i < 3:
                     COL = 4
@@ -119,7 +151,7 @@ class Calibrator:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                LEN = self.paraemterSet['sliderW']
+                LEN = self.parameterSet['sliderW']
                 ALIGN = 'we'
 
             else:
@@ -130,7 +162,7 @@ class Calibrator:
 
                 rSPAN = 3
                 cSPAN = 1
-                ROW = self.paraemterSet['rowJoint2'] + (1 - frontQ) * (rSPAN + 2)
+                ROW = self.parameterSet['rowJoint2'] + (1 - frontQ) * (rSPAN + 2)
 
                 if leftQ:
                     COL = 3 - i // 4
@@ -139,7 +171,7 @@ class Calibrator:
                     COL = 3 + i // 4
                     ALIGN = 'se'
                 ORI = VERTICAL
-                LEN = self.paraemterSet['sliderLen']
+                LEN = self.parameterSet['sliderLen']
                 # ALIGN = 'sw'
             stt = NORMAL
             if i in NaJoints[self.model]:
@@ -155,10 +187,12 @@ class Calibrator:
 
             value = DoubleVar()
             if i in frontJointIdx:
+                if self.model == 'BittleR':
+                    LEN = LEN + 30
                 sliderBar = Scale(self.winCalib, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
                                   borderwidth=2, relief='flat', width=8, from_=-25 * tickDirection,
                                   to=25 * tickDirection,
-                                  length=LEN+30, tickinterval=10, resolution=1, repeatdelay=100, repeatinterval=100,
+                                  length=LEN, tickinterval=10, resolution=1, repeatdelay=100, repeatinterval=100,
                                   command=lambda value, idx=i: self.setCalib(idx, value))
             else:
                 sliderBar = Scale(self.winCalib, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
@@ -184,7 +218,7 @@ class Calibrator:
 
     def calibFun(self, cmd):
 #        global ports
-        imageW = self.paraemterSet['imageW']
+        imageW = self.parameterSet['imageW']
 
         self.imgPosture.destroy()
         if cmd == 'c' or cmd == 'c-2':
@@ -198,14 +232,14 @@ class Calibrator:
 
             if result != -1:
                 offsets = result[1]
-                printH('re',result)
-                printH('of',offsets)
+                # printH('re',result)
+                # printH('of',offsets)
                 idx = offsets.find(',')
                 l1 = offsets[:idx].split()[-1]
                 offsets = ''.join(offsets[idx + 1:].split()).split(',')[:15]
                 offsets.insert(0, l1)
-            #                print(offsets)
-            #                print(len(offsets))
+                print(offsets)
+                # print(len(offsets))
             else:
                 offsets = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
 

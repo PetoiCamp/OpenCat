@@ -20,7 +20,6 @@ regularW = 14
 language = languageList['English']
 NyBoard_version_list = ['NyBoard_V1_0', 'NyBoard_V1_1', 'NyBoard_V1_2']
 BiBoard_version_list = ['BiBoard_V0_1', 'BiBoard_V0_2', 'BiBoard_V1_0']
-# Hunter_Board_list = ['BiBoard_V1_0']
 
 def txt(key):
     return language.get(key, textEN[key])
@@ -69,8 +68,6 @@ class Uploader:
         self.initWidgets()
         if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
             board_version_list = BiBoard_version_list
-        # elif self.strProduct.get() == 'Hunter':
-        #     board_version_list = Hunter_Board_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list
@@ -367,9 +364,6 @@ class Uploader:
         if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
             self.strBoardVersion.set(BiBoard_version_list[0])
             board_version_list = BiBoard_version_list
-        # elif self.strProduct.get() == 'Bittle R':
-        #     self.cbBoardVersion.set(Hunter_Board_list[0])
-        #     board_version_list = Hunter_Board_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
         self.cbBoardVersion['values'] = board_version_list

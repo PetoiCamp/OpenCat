@@ -171,7 +171,7 @@ def serialWriteByte(port, var=None):
 
 def printSerialMessage(port, token, timeout=0):
     if token == 'k' or token == 'K':
-        threshold = 4
+        threshold = 8
     else:
         threshold = 3
 
@@ -665,7 +665,8 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
         if set(currentPorts) - set(allPorts):
             time.sleep(1) #usbmodem is slower in detection
             currentPorts = Communication.Print_Used_Com()
-            newPort = deleteDuplicatedUsbSerial(list(set(currentPorts) - set(allPorts)))
+            # newPort = deleteDuplicatedUsbSerial(list(set(currentPorts) - set(allPorts)))
+            newPort = list(set(currentPorts) - set(allPorts))
             if check:
                 time.sleep(0.5)
                 checkPortList(portList, newPort)
@@ -709,7 +710,7 @@ def showSerialPorts(allPorts):
             if 'AMA0' in item:
                 allPorts.remove(item)
         
-    allPorts = deleteDuplicatedUsbSerial(allPorts)
+    # allPorts = deleteDuplicatedUsbSerial(allPorts)
     for index in range(len(allPorts)):
         logger.debug(f"port[{index}] is {allPorts[index]} ")
     logger.info(f"*** Available serial ports: ***")
@@ -810,7 +811,7 @@ def replug(PortList, needSendTask=True, needOpenPort=True):
                 timePassed = 0
             else:
                 dif = list(set(curPorts)-set(ap))
-                dif = deleteDuplicatedUsbSerial(dif)
+                # dif = deleteDuplicatedUsbSerial(dif)
                 print("diff:",end=" ")
                 print(dif)
                 
@@ -889,7 +890,8 @@ def selectList(PortList,ls,win, needSendTask=True, needOpenPort=True):
     win.destroy()
 
 def manualSelect(PortList, window, needSendTask=True, needOpenPort=True):
-    allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+    # allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+    allPorts = Communication.Print_Used_Com()
     window.title(txt('Manual mode'))
     l1 = tk.Label(window, font = 'sans 14 bold')
     l1['text'] = txt('Manual mode')
@@ -900,7 +902,8 @@ def manualSelect(PortList, window, needSendTask=True, needOpenPort=True):
     ls = tk.Listbox(window,selectmode="multiple")
     ls.grid(row=2,column=0)
     def refreshBox(ls):
-        allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+        # allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+        allPorts = Communication.Print_Used_Com()
         ls.delete(0,tk.END)
         for p in allPorts:
             ls.insert(tk.END,p)

@@ -1,5 +1,5 @@
-versionNum = '1.2.1'
-dateStr = '2024-07-05'
+versionNum = '1.2.2'
+dateStr = '2024-10-25'
 
 textEN = {
     'lan':'English',
@@ -153,7 +153,9 @@ If you can not fix the issue, please send the log to support@petoi.com for help.
 
     'Calibrate':'Calibrate',
     'Auto':'Auto',
-    'AutoCali failed': 'Automatic calibration of the robotic claw joint servo failed!',
+    'AutoCali failed': '''Automatic calibration of the robotic claw joint servo failed!\n
+    Please follow the instructions in the Petoi Doc Center to perform manual calibration:\n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'Rest',
     'Stand Up':'Stand Up',
     'Walk':'Walk',
@@ -399,7 +401,9 @@ textCN = {
     'max':'最快',
     'Calibrate':'校准位',
     'Auto':'自动',
-    'AutoCali failed': '自动校准机械爪关节舵机失败！',
+    'AutoCali failed': '''自动校准机械爪关节舵机失败！\n
+    请按照说明书中的方法，进行手动校准：\n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'休息',
     'Stand Up':'站立',
     'Walk':'行走',
@@ -674,7 +678,9 @@ textCN_TW = {
     'max':'最快',
     'Calibrate':'校準位',
     'Auto':'自動',
-    'AutoCali failed': '自動校準機械爪關節舵機失敗！',
+    'AutoCali failed': '''自動校準機械爪關節舵機失敗！\n
+    請按照說明書中的方法，進行手動校準：\n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'休息',
     'Stand Up':'站立',
     'Walk':'行走',
@@ -984,7 +990,9 @@ Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur H
 
     'Calibrate':'Kalibrieren',
     'Auto':'Auto',
-    'AutoCali failed': 'Die automatische Kalibrierung des Servomotors für das Gelenk des Robotergreifers ist fehlgeschlagen!',
+    'AutoCali failed': '''Die automatische Kalibrierung des Servomotors für das Gelenk des Robotergreifers ist fehlgeschlagen!\n
+    Bitte folgen Sie den Anweisungen in der Bedienungsanleitung, um eine manuelle Kalibrierung durchzuführen: \n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'Ruhe',
     'Stand Up':'Aufstehen',
     'Walk':'Gehen',
@@ -1264,7 +1272,9 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 
     'Calibrate':'ปรับสอดคล้อง',
     'Auto':'อัตโนมัติ',
-    'AutoCali failed': 'การสอบเทียบเซอร์โวมอเตอร์ข้อต่อของกรงเล็บหุ่นยนต์โดยอัตโนมัติล้มเหลว!',
+    'AutoCali failed': '''การสอบเทียบเซอร์โวมอเตอร์ข้อต่อของกรงเล็บหุ่นยนต์โดยอัตโนมัติล้มเหลว!\n
+    กรุณาปฏิบัติตามคำแนะนำในคู่มือเพื่อทำการสอบเทียบด้วยตนเอง: \n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'พัก',
     'Stand Up':'ยืนขึ้น',
     'Walk':'เดิน',
@@ -1545,7 +1555,9 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     
     'Calibrate':'Calibrer',
     'Auto':'Automatique',
-    'AutoCali failed': 'L\'étalonnage automatique du servomoteur de l\'articulation de la pince robotique a échoué !',
+    'AutoCali failed': '''L\'étalonnage automatique du servomoteur de l\'articulation de la pince robotique a échoué !\n
+    Veuillez suivre les instructions du manuel pour effectuer un étalonnage manuel: \n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'Repos',
     'Stand Up':'Se lever',
     'Walk':'Marcher',
@@ -1824,7 +1836,9 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 
     'Calibrate':'キャリブレーション',
     'Auto':'自動',
-    'AutoCali failed': 'ロボットグリッパーの関節サーボの自動キャリブレーションに失敗しました！',
+    'AutoCali failed': '''ロボットグリッパーの関節サーボの自動キャリブレーションに失敗しました！\n
+    マニュアルの指示に従って、手動でキャリブレーションを行ってください：\n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'リセット',
     'Stand Up':'立ち上がる',
     'Walk':'歩く',
@@ -2091,7 +2105,9 @@ Se non riesci a risolvere il problema, invia il registro a support@petoi.com per
     
     'Calibrate':'Calibrate',
     'Auto':'Automatico',
-    'AutoCali failed': 'La calibrazione automatica del servo motore dell\'articolazione della pinza robotica è fallita!',
+    'AutoCali failed': '''La calibrazione automatica del servo motore dell\'articolazione della pinza robotica è fallita!\n
+    Si prega di seguire le istruzioni del manuale per eseguire una calibrazione manuale: \n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'Riposo',
     'Stand Up':'In piedi',
     'Walk':'Camminare',
