@@ -2,6 +2,7 @@
 pyUI/.idea/*
 pyUI/logfile*
 pyUI/genApp4Mac/*
+pyUI/genApp4Win/*
 pyUI/lib/*
 *.DS_Store
 *.pyc
@@ -13,3 +14,6 @@ ModuleTests/testDoubleAnalog/debug_custom.json
 ModuleTests/testVoiceCommander/debug_custom.json
 ModuleTests/testI2cDevice/debug_custom.json
 .vscode/*
+pyUI/README.txt
+pyUI/README_Mac.txt
+pyUI/README_Windows.txt
