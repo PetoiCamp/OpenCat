@@ -14,7 +14,7 @@ import threading
 from tkinter import ttk
 from tkinter import filedialog
 import pathlib
-import webbrowser
+# import webbrowser
 
 regularW = 14
 language = languageList['English']
@@ -80,10 +80,14 @@ class Uploader:
         # self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera','Ultrasonic', 'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture', 'InfraredDistance']))
         # self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera','Ultrasonic', 'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture', 'InfraredDistance']))
         # for NyBoard, the mode is the same between Bittle and Nybble now
-        self.NyBoardModes = list(map(lambda x: txt(x),
+        self.BittleNyBoardModes = list(map(lambda x: txt(x),
                                            ['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera', 'Ultrasonic',
                                             'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture',
-                                            'InfraredDistance']))
+                                            'InfraredDistance','Voice_RobotArm']))
+        self.NybbleNyBoardModes = list(map(lambda x: txt(x),
+                                     ['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera', 'Ultrasonic',
+                                      'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture',
+                                      'InfraredDistance']))
         # self.BittleBiBoardModes = list(map(lambda x: txt(x), ['Standard', 'Camera','Ultrasonic','PIR','Touch','Light','Gesture']))
         # self.NybbleBiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         # for BiBoard, the mode is the same between Bittle and Nybble now
@@ -264,10 +268,13 @@ class Uploader:
 
         if self.strProduct.get() == 'Bittle' or self.strProduct.get() == 'Nybble':
             if 'NyBoard' in self.strBoardVersion.get():
-                cbModeList = self.NyBoardModes
+                if self.strProduct.get() == 'Bittle':
+                    cbModeList = self.BittleNyBoardModes
+                else:
+                    cbModeList = self.NybbleNyBoardModes
             else:
                 cbModeList = self.BiBoardModes
-        elif self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
+        else:    # if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
             cbModeList = self.BiBoardModes
 
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', font=12)
@@ -285,21 +292,7 @@ class Uploader:
         self.labPort = ttk.Label(fmSerial, text=txt('labPort'), font=('Arial', 16))
         self.labPort.grid(row=0, ipadx=5, padx=5, sticky=W)
         self.cbPort = ttk.Combobox(fmSerial, textvariable=self.strPort, foreground='blue', font=12)    # width=38,
-        # list of serial port number
-        port_number_list = []
-        if len(portStrList) == 0:
-            port_number_list = [' ']
-            print("Cannot find the serial port!")
-        else:
-            logger.info(f"portStrList is {portStrList}")
-            for p in portStrList:
-                portName = p
-                logger.debug(f"portName is {portName}")
-                port_number_list.append(portName)
-            logger.debug(f"port_number_list is {port_number_list}")
-            self.cbPort.set(port_number_list[0])
-        # set list for Combobox
-        self.cbPort['values'] = port_number_list
+        self.updatePortlist()
         self.cbPort.grid(row=1, ipadx=5, padx=5, sticky=W)
 
         fmFacReset = ttk.Frame(self.win)    # relief=GROOVE
@@ -379,9 +372,12 @@ class Uploader:
                 logger.debug(f"{portName}")
                 port_number_list.append(portName)
             logger.debug(f"port_number_list is {port_number_list}")
-        self.cbPort.set(port_number_list[0])
-        # set list for Combobox
-        self.cbPort['values'] = port_number_list
+        if self.OSname == 'aqua':
+            self.updatePort()
+        else:
+            self.cbPort.set(port_number_list[0])
+            # set list for Combobox
+            self.cbPort['values'] = port_number_list
 
     def about(self):
         self.msgbox = messagebox.showinfo(txt('titleVersion'), txt('msgVersion'))
@@ -460,9 +456,61 @@ class Uploader:
 
         self.cbSoftwareVersion.config(state=stt)
 
+    def updatePort(self):
+        if self.OSname == 'aqua':
+            list = copy.deepcopy(portStrList)
+            boardVer = self.strBoardVersion.get()
+            if boardVer in NyBoard_version_list:
+                if len(list) > 0:
+                    itemSet = " "
+                    for item in list:
+                        if 'usbmodem' in item:  # prefer the USB modem device because it can restart the NyBoard
+                            itemSet = itemSet
+                            break
+                        elif 'usbserial-' in item:  # prefer the "serial-" device
+                            itemSet = itemSet
+                            break
+                            
+                    for item in list:
+                        if 'wchusbserial' in item:
+                            list.remove(item)
+                        elif 'cu.SLAB_USBtoUART' in item:
+                            list.remove(item)
+                    if itemSet != " ":
+                        self.cbPort.set(itemSet)
+                    else:
+                        self.cbPort.set(list[0])
+                    self.cbPort['values'] = list
+            elif boardVer == "BiBoard_V1_0":
+                if len(list) > 0:
+                    itemSet = " "
+                    for item in list:
+                        if 'wchusbserial' in item:  # prefer the "wchusbserial" for BiBoard V1
+                            itemSet = item
+                            break
+                        elif 'serial-' in item:  # prefer the "serial-" device
+                            itemSet = item
+                            break
+                            
+                    for item in list:
+                        if 'usbmodem' in item:
+                            list.remove(item)
+                        elif 'cu.SLAB_USBtoUART' in item:
+                            list.remove(item)
+                    if itemSet != " ":
+                        self.cbPort.set(itemSet)
+                    else:
+                        self.cbPort.set(list[0])
+                    self.cbPort['values'] = list
+            else:
+                self.cbPort.set(list[0])
+                # set list for Combobox
+                self.cbPort['values'] = list
+
     def chooseBoardVersion(self, event):
         self.setActiveOption()
         self.updateMode()
+        self.updatePort()
 
     def chooseProduct(self, event):
         if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
@@ -489,10 +537,13 @@ class Uploader:
     def updateMode(self):
         if self.strProduct.get() == 'Bittle' or self.strProduct.get() == 'Nybble':
             if 'NyBoard' in self.strBoardVersion.get():
-                modeList = self.NyBoardModes
+                if self.strProduct.get() == 'Bittle':
+                    modeList = self.BittleNyBoardModes
+                else:
+                    modeList = self.NybbleNyBoardModes
             else:
                 modeList = self.BiBoardModes
-        elif self.strProduct.get() == 'Bittle X'or self.strProduct.get() == 'Bittle R':
+        else:    # if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
             modeList = self.BiBoardModes
 
         self.cbMode['values'] = modeList
@@ -625,7 +676,7 @@ class Uploader:
                                 break
                     else:
                         if prompStr.find(questionMark) != -1:
-                            if self.bParaUpload and strBoardVersion in NyBoard_version_list:    # for NyBoard upgrade firmware
+                            if self.bParaUpload and (strBoardVersion in NyBoard_version_list):  # for NyBoard upgrade firmware
                                 if progress > 0 and retMsg:
                                     self.strStatus.set(promptList[progress-1]['result'])
                                     self.statusBar.update()
@@ -744,18 +795,19 @@ class Uploader:
     def showMessage(self,sta):
         self.strStatus.set(sta)
         self.statusBar.update()
-        messagebox.showinfo('Petoi Desktop App', txt('checkLogfile'))
 
         if self.OSname == 'aqua':    # for macOS
-            folder_path = "file:///Applications/Petoi Desktop App.app/Contents/Resources"
-            # folder_path = "file:////./"  # Replace with the actual folder path
+            # folder_path = "file:///Applications/Petoi Desktop App.app/Contents/Resources"
+            folder_path = "/Applications/Petoi Desktop App.app/Contents/Resources" + '\n'
         else:    # for Windows or Linux
             path = os.getcwd()
-            folder_path = "file://" + path  # Replace with the actual folder path
-            # os.startfile(path)
+            # folder_path = "file://" + path  # Replace with the actual folder path
+            folder_path = path + '\n'  # Replace with the actual folder path
+
         print(folder_path)
+        messagebox.showinfo('Petoi Desktop App', txt('logLocation') + folder_path + txt('checkLogfile'))
         # Open the folder in the default file browser
-        webbrowser.open_new_tab(folder_path)
+        # webbrowser.open_new_tab(folder_path)
 
     # def insertStringAtLine(self, filename, line_number, string_to_insert):
     #     """
@@ -791,18 +843,16 @@ class Uploader:
 
 
     def autoupload(self):
-        file = open('./logfile.log', 'r+')
-        lines = file.readlines()
+        with open("./logfile.log", "r+", encoding="ISO-8859-1") as logfile:
+            lines = logfile.readlines()
+        time.sleep(1)
         # Read the first three lines
         first_three_lines = lines[:3]
-        file.close()
-
         for line in lines:
             line = line.strip()  # remove the line break from each line
             logger.debug(f"{line}")
-            if (".ino.hex" in line) or \
-                    (".ino.bin" in line):
-                with open("./logfile.log", "w+", encoding="utf-8") as logfile:
+            if (".ino.hex" in line) or (".ino.bin" in line):
+                with open("./logfile.log", "w+", encoding="ISO-8859-1") as logfile:
                     for line in first_three_lines:
                         logfile.write(line)
                 break
@@ -909,14 +959,13 @@ class Uploader:
                             logger.info(f"Error running program: {error}")
                         else:
                             # Write captured output to a file
-                            with open("./logfile.log", "a+", encoding="utf-8") as logfile:
+                            with open("./logfile.log", "a+", encoding="ISO-8859-1") as logfile:
                                 logfile.write(output.decode())  # Decode bytes to string
-                                # time.sleep(5)
-                                # lines = logfile.readlines()
-                            # print(lines)
-                            file = open('./logfile.log', 'r+')
-                            lines = file.readlines()
-                            file.close()
+                            time.sleep(1)
+
+                            with open("./logfile.log", "r+", encoding="ISO-8859-1") as logfile:
+                                lines = logfile.readlines()
+                            time.sleep(1)
 
                             for line in lines:
                                 line = line.strip()  # remove the line break from each line
@@ -926,6 +975,9 @@ class Uploader:
                                     ("attempt" in line) or \
                                     ("error" in line) or ("Errno" in line):
                                     status = txt(uploadStage[s]) + txt('failed to upload')
+                                    # self.strStatus.set(status)
+                                    # self.statusBar.update()
+                                    # messagebox.showinfo('Petoi Desktop App',txt('checkLogfile'))
                                     self.showMessage(status)
                                     return False
 
@@ -1005,14 +1057,13 @@ class Uploader:
                     logger.info(f"Error running program: {error}")
                 else:
                     # Write captured output to a file
-                    with open("./logfile.log", "a+", encoding="utf-8") as logfile:
+                    with open("./logfile.log", "a+", encoding="ISO-8859-1") as logfile:
                         logfile.write(output.decode())  # Decode bytes to string
-                        # time.sleep(5)
-                        # lines = logfile.readlines()
-                    # print(lines)
-                    file = open('./logfile.log', 'r+')
-                    lines = file.readlines()
-                    file.close()
+                    time.sleep(1)
+
+                    with open("./logfile.log", "r+", encoding="ISO-8859-1") as logfile:
+                        lines = logfile.readlines()
+                    time.sleep(1)
 
                     for line in lines:
                         line = line.strip()  # remove the line break from each line
@@ -1021,13 +1072,19 @@ class Uploader:
                             ("Failed to connect to ESP32" in line) or \
                             ("error" in line) or ("Errno" in line):
                             status = txt('Main function') + txt('failed to upload')
+                            # self.strStatus.set(status)
+                            # self.statusBar.update()
+                            # messagebox.showinfo('Petoi Desktop App', txt('checkLogfile'))
                             self.showMessage(status)
                             return False
 
-            except:
+            except Exception as e:
+                printH("Excep:", e)
+                logger.info(f"Excep: {e}")
                 status = txt('Main function') + txt('failed to upload')
-                self.strStatus.set(status)
-                self.statusBar.update()
+                # self.strStatus.set(status)
+                # self.statusBar.update()
+                self.showMessage(status)
                 return False
             else:
                 status = txt('Main function') + txt('is successully uploaded')
