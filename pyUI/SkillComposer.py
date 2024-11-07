@@ -32,15 +32,12 @@ cLoop, cSet, cStep,  cTrig, cAngle, cDelay, cNote, cDel, cAdd = range(len(labelS
 axisDisable = {
     'Nybble': [0, 5],
     'Bittle': [0, 5],
+    # 'BittleX': [0, 5],
+    'BittleR': [0, 5],
     'DoF16' : []
 
 }
-NaJoints = {
-    'Nybble': [3, 4, 5, 6, 7],
-    'Bittle': [1, 2, 3, 4, 5, 6, 7],
-    'Bittle X': [1, 2, 3, 4, 5, 6, 7],
-    'DoF16' : []
-}
+
 jointConfig = {
     'Nybble': '><',
     'Bittle': '>>',
@@ -52,6 +49,85 @@ triggerAxis = {
     -1: '-Pitch',
     2: 'Roll',
     -2: '-Roll',
+}
+
+BittleRWinSet = {
+    "sliderW": 380,           # The width of the slider rail corresponding to joint numbers 0 to 3
+    "sixW": 10,               # The width of six IMU Axis Names lable
+    "rowUnbindButton": 12,   # The row number where the unbind button is located
+    "rowJoint1": 2,          # The row number of the label with joint number 2 and 3
+    "sliderLen": 260,        # The length of the slider rail corresponding to joint numbers 4 to 15
+    "rSpan": 4,              # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+    "rowJoint2": 4,          # The row number of the label with joint number 4 or 15 is located
+    "rowFrameImu": 13,       # The row number of the IMU button frame is located
+    "imuSliderLen": 220,     # The length of the IMU slider rail
+    "schedulerHeight": 580,  # The height of action frame scheduler
+    "rowFrameImage": 5,      # The row number of the image frame is located
+    "imgWidth": 320,         # The width of image
+    "imgRowSpan": 7          # The number of lines occupied by the image frame
+}
+
+BittleRMacSet = {
+    "sliderW": 300,           # The width of the slider rail corresponding to joint numbers 0 to 3
+    "sixW": 10,               # The width of six IMU Axis Names lable
+    "rowUnbindButton": 10,   # The row number where the unbind button is located
+    "rowJoint1": 2,          # The row number of the label with joint number 2 and 3
+    "sliderLen": 185,        # The length of the slider rail corresponding to joint numbers 4 to 15
+    "rSpan": 5,              # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+    "rowJoint2": 4,          # The row number of the label with joint number 4 or 15 is located
+    "rowFrameImu": 12,       # The row number of the IMU button frame is located
+    "imuSliderLen": 125,     # The length of the IMU slider rail
+    "schedulerHeight": 360,  # The height of action frame scheduler
+    "rowFrameImage": 5,      # The row number of the image frame is located
+    "imgWidth": 200,         # The width of image
+    "imgRowSpan": 5          # The number of lines occupied by the image frame
+}
+
+RegularWinSet = {
+    "sliderW": 320,
+    "sixW": 6,
+    "rowUnbindButton": 5,
+    "rowJoint1": 11,
+    "sliderLen": 150,
+    "rSpan": 3,
+    "rowJoint2": 2,
+    "rowFrameImu": 6,
+    "imuSliderLen": 125,
+    "schedulerHeight": 310,
+    "rowFrameImage": 3,
+    "imgWidth": 200,
+    "imgRowSpan": 2
+}
+
+RegularMacSet = {
+    "sliderW": 338,
+    "sixW": 5,
+    "rowUnbindButton": 5,
+    "rowJoint1": 11,
+    "sliderLen": 150,
+    "rSpan": 3,
+    "rowJoint2": 2,
+    "rowFrameImu": 6,
+    "imuSliderLen": 125,
+    "schedulerHeight": 310,
+    "rowFrameImage": 3,
+    "imgWidth": 200,
+    "imgRowSpan": 2
+}
+parameterWinSet = {
+    "Nybble": RegularWinSet,
+    "Bittle": RegularWinSet,
+    # "BittleX": RegularWinSet,
+    "BittleR": BittleRWinSet,
+    "DoF16": RegularWinSet,
+}
+
+parameterMacSet = {
+    "Nybble": RegularMacSet,
+    "Bittle": RegularMacSet,
+    # "BittleX": RegularMacSet,
+    "BittleR": BittleRMacSet,
+    "DoF16": RegularMacSet,
 }
 
 # word_file = '/usr/share/dict/words'
@@ -74,7 +150,14 @@ class SkillComposer:
                 config.model_ = model
                 print('Use the model set in the UI interface.')
             time.sleep(0.01)
-        self.model = config.model_
+        self.configName = config.model_
+        config.model_ = config.model_.replace(' ','')
+        if 'BittleR' in config.model_:
+            self.model = 'BittleR'
+        elif config.model_== 'BittleX':
+            self.model = 'Bittle'
+        else:
+            self.model = config.model_
         try:
             with open(defaultConfPath, "r", encoding="utf-8") as f:
                 lines = f.readlines()
@@ -94,7 +177,7 @@ class SkillComposer:
                 self.defaultCreator = txt('Nature')
                 self.defaultLocation = txt('Earth')
 
-            self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+            self.configuration = [self.defaultLan, self.configName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.defaultCreator, self.defaultLocation]
 
         except Exception as e:
@@ -106,9 +189,12 @@ class SkillComposer:
             self.defaultMode = 'Standard'
             self.defaultCreator = txt('Nature')
             self.defaultLocation = txt('Earth')
-            self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+            self.configuration = [self.defaultLan, self.configName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.defaultCreator, self.defaultLocation]
+
         self.postureTable = postureDict[self.model]
+        self.scaleNames = scaleNames[self.model]
+
         ports = goodPorts
         self.window = Tk()
         self.sliders = list()
@@ -117,7 +203,7 @@ class SkillComposer:
         self.controllerLabels = list()
         self.binderValue = list()
         self.binderButton = list()
-        self.previousBinderValue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ]
+        self.previousBinderValue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.keepChecking = True
         self.ready = 0
         self.creatorInfoAcquired = False
@@ -137,13 +223,17 @@ class SkillComposer:
             self.backgroundColor = None
 
         if self.OSname == 'win32':
+            winVer = platform.release()
+            printH('Windows version:', winVer)
             self.window.iconbitmap(resourcePath + 'Petoi.ico')
             # global frameItemWidth
-            self.frameItemWidth = [2, 4, 3, 5, 4, 4, 7, 3, 3]
+            if winVer.isnumeric() and int(winVer) > 10:
+                self.frameItemWidth = [2, 4, 3, 5, 4, 4, 6, 3, 3]  # for some Windows 11, 10 -> 6
+            else:
+                self.frameItemWidth = [2, 4, 3, 5, 4, 4, 10, 3, 3]
             self.headerOffset = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-            self.sixW = 6
-            self.sliderW = 320
+            self.parameterSet = parameterWinSet[self.model]
             # self.buttonW = 20
             self.buttonW = 10
             self.calibButtonW = 8
@@ -156,15 +246,14 @@ class SkillComposer:
             self.dialPad = 2
         else:
             if self.OSname == 'aqua':
-                self.frameItemWidth = [2, 2, 3,  4, 3, 3,4, 1, 1]
+                self.frameItemWidth = [2, 2, 3, 4, 3, 3, 4, 1, 1]
                 self.headerOffset = [2, 2, 2, 2, 2, 2, 2, 2, 2]
-
             else:
                 self.frameItemWidth = [2, 2, 3, 4, 4, 4, 5, 2, 2]
-                self.headerOffset = [0, 0, 1,  1, 0,0, 0, 0, 1]
+                self.headerOffset = [0, 0, 1, 1, 0, 0, 0, 0, 1]
 
-            self.sixW = 5
-            self.sliderW = 338
+            self.parameterSet = parameterMacSet[self.model]
+
             # self.buttonW = 18
             self.buttonW = 8
             self.calibButtonW = 6
@@ -219,10 +308,9 @@ class SkillComposer:
         self.menubar = Menu(self.window, background='#ff8000', foreground='black', activebackground='white',
                             activeforeground='black')
         file = Menu(self.menubar, tearoff=0, background='#ffcc99', foreground='black')
-        for key in NaJoints:
-            file.add_command(label=key, command=lambda model=key: self.changeModel(model))
+        for m in modelOptions:
+            file.add_command(label=m, command=lambda model=m: self.changeModel(model))
         self.menubar.add_cascade(label=txt('Model'), menu=file)
-
 
         lan = Menu(self.menubar, tearoff=0)
         for l in languageList:
@@ -254,7 +342,8 @@ class SkillComposer:
         label.grid(row=0, column=0, columnspan=8)
         self.controllerLabels.append(label)
         unbindButton = Button(self.frameController, text=txt('Unbind All'), fg='blue', command=self.unbindAll)
-        unbindButton.grid(row=5, column=3, columnspan=2)
+        rowUnbindButton = self.parameterSet['rowUnbindButton']    # The row number where the unbind button is located
+        unbindButton.grid(row=rowUnbindButton, column=3, columnspan=2)
         self.controllerLabels.append(unbindButton)
         
         centerWidth = 2
@@ -266,29 +355,31 @@ class SkillComposer:
                 if i < 2:
                     ROW = 0
                 else:
-                    ROW = 11
+                    ROW = self.parameterSet['rowJoint1']    # The row number of the label with joint number 2 and 3
+
                 if 0 < i < 3:
                     COL = 4
                 else:
                     COL = 0
                 rSPAN = 1
                 ORI = HORIZONTAL
-                LEN = self.sliderW
-
+                LEN = self.parameterSet['sliderW']
             else:
                 tickDirection = -1
                 leftQ = (i - 1) % 4 > 1
                 frontQ = i % 4 < 2
-                upperQ = i / 4 < 3
+                # upperQ = i / 4 < 3
 
-                rSPAN = 3
-                ROW = 2 + (1 - frontQ) * (rSPAN + 2)
+                LEN = self.parameterSet['sliderLen']    # The length of the slider rail corresponding to joint numbers 4 to 15
+                rSPAN = self.parameterSet['rSpan']    # The number of rows occupied by the slider rail corresponding to joint numbers 4 to 15
+                ROW = self.parameterSet['rowJoint2'] + (1 - frontQ) * (rSPAN + 2)    # The row number of the label with joint number 4 or 15 is located
+
                 if leftQ:
                     COL = 3 - i // 4
                 else:
                     COL = centerWidth + 2 + i // 4
                 ORI = VERTICAL
-                LEN = 150
+
             stt = NORMAL
             if i in NaJoints[self.model]:
                 clr = 'light yellow'
@@ -299,7 +390,7 @@ class SkillComposer:
             else:
                 sideLabel = ''
             label = Label(self.frameController,
-                          text=sideLabel + '(' + str(i) + ')\n' + txt(scaleNames[i]))
+                          text=sideLabel + '(' + str(i) + ')\n' + txt(self.scaleNames[i]))
 
             value = DoubleVar()
             sliderBar = Scale(self.frameController, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
@@ -336,7 +427,9 @@ class SkillComposer:
                 self.binderValue.append(binderValue)
 
         self.frameImu = Frame(self.frameController)
-        self.frameImu.grid(row=6, column=3, rowspan=6, columnspan=2)
+        rowFrameImu = self.parameterSet['rowFrameImu']    # The row number of the IMU button frame is located
+        sliderLen = self.parameterSet['imuSliderLen']     # The length of the IMU slider rail
+        self.frameImu.grid(row=rowFrameImu, column=3, rowspan=6, columnspan=2)
         for i in range(6):
             frm = -40
             to2 = 40
@@ -356,12 +449,12 @@ class SkillComposer:
                 frm = -50
                 to2 = 40
 
-            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width=self.sixW, height=2, fg='blue',
+            label = Label(self.frameImu, text=txt(sixAxisNames[i]), width=self.parameterSet['sixW'], height=2, fg='blue',
                           bg='Light Blue')
 
             value = DoubleVar()
             sliderBar = Scale(self.frameImu, state=stt, fg='blue', bg=clr, variable=value, orient=HORIZONTAL,
-                              borderwidth=2, relief='flat', width=10, from_=frm, to=to2, length=125, resolution=1,
+                              borderwidth=2, relief='flat', width=10, from_=frm, to=to2, length=sliderLen, resolution=1,
                               command=lambda ang, idx=i: self.set6Axis(idx, ang))  # tickinterval=(to2-frm)//4,
             sliderBar.set(0)
             label.grid(row=i, column=0)
@@ -369,6 +462,7 @@ class SkillComposer:
             self.sliders.append(sliderBar)
             self.values.append(value)
             self.controllerLabels.append(label)
+
 
     def createDial(self):
         self.frameDial = Frame(self.window)
@@ -411,7 +505,6 @@ class SkillComposer:
         button = Button(self.frameDial,text=txt('Send'),fg='blue',width=self.dialW-2,command=self.sendCmd)
         button.grid(row=2, column=4, padx=3)
         entryCmd.bind('<Return>',self.sendCmd)
-        
 
 
     def createPortMenu(self):
@@ -569,7 +662,8 @@ class SkillComposer:
             if tipSkillEditor[i]:
                 tip(label, txt(tipSkillEditor[i]))
 
-        canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=310, bd=0)
+        schedulerHeight = self.parameterSet['schedulerHeight']    # The height of action frame scheduler
+        canvas = Canvas(self.frameRowScheduler, width=self.canvasW, height=schedulerHeight, bd=0)
         scrollbar = Scrollbar(self.frameRowScheduler, orient='vertical', cursor='double_arrow', troughcolor='yellow',
                               width=15, command=canvas.yview)
         self.scrollable_frame = Frame(canvas)
@@ -592,13 +686,18 @@ class SkillComposer:
         ratio = img.size[0] / imgW
         img = img.resize((imgW, round(img.size[1] / ratio)))
         image = ImageTk.PhotoImage(img)
-        imageFrame = Label(frame, image=image)
+        imageFrame = Label(frame, image=image)    # borderwidth=2, relief='raised'
         imageFrame.image = image
         return imageFrame
 
     def placeProductImage(self):
-        self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', 200)
-        self.frameImage.grid(row=3, column=3, rowspan=2, columnspan=2)
+        rowFrameImage = self.parameterSet['rowFrameImage']    # The row number of the image frame is located
+        imgWidth = self.parameterSet['imgWidth']              # The width of image
+        rowSpan = self.parameterSet['imgRowSpan']             # The number of lines occupied by the image frame
+
+        self.frameImage = self.createImage(self.frameController, resourcePath + self.model + '.jpeg', imgWidth)
+
+        self.frameImage.grid(row=rowFrameImage, column=3, rowspan=rowSpan, columnspan=2)
 
     def changeLan(self, l):
         global language
@@ -608,8 +707,11 @@ class SkillComposer:
             language = languageList[l]
             self.defaultLan = l
             logger.debug(f"{self.defaultLan}")
+            # print(self.defaultLan)
             self.window.title(txt('skillComposerTitle'))
             self.menubar.destroy()
+            self.createMenu()
+            # print(self.controllerLabels)
             self.controllerLabels[0].config(text=txt('Joint Controller'))
             self.controllerLabels[1].config(text=txt('Unbind All'))
             for i in range(6):
@@ -619,7 +721,7 @@ class SkillComposer:
                     sideLabel = txt(sideNames[i % 8]) + '\n'
                 else:
                     sideLabel = '\n'
-                self.controllerLabels[2 + i].config(text=sideLabel + '(' + str(i) + ')\n' + txt(scaleNames[i]))
+                self.controllerLabels[2 + i].config(text=sideLabel + '(' + str(i) + ')\n' + txt(self.scaleNames[i]))
 
                 for d in range(2):
                     if d == 0:
@@ -630,7 +732,6 @@ class SkillComposer:
             self.frameDial.destroy()
             self.framePosture.destroy()
             self.frameSkillEditor.destroy()
-            self.createMenu()
             self.createDial()
             self.createPosture()
             self.createSkillEditor()
@@ -668,23 +769,46 @@ class SkillComposer:
                             u'Petoi Controller for OpenCat\nOpen Source on GitHub\nCopyright © Petoi LLC\nwww.petoi.com')
         self.window.focus_force()
 
-    def changeModel(self, modelName):
-        if self.ready and modelName != self.model:
-            if 'Bittle' in modelName:
-                modelName = 'Bittle'
-            self.model = copy.deepcopy(modelName)
+    def changeModel(self, model):
+        if self.ready and model != self.model:
+            self.configName = model
+            model = model.replace(' ', '')
+            if 'Bittle' in model and model != "BittleR": # Bittle or Bittle X will be Bittle
+                model = 'Bittle'
+            self.model = copy.deepcopy(model)
             self.postureTable = postureDict[self.model]
             self.framePosture.destroy()
             self.frameImage.destroy()
-            stt = NORMAL
-            for i in range(16):
-                if i in NaJoints[self.model]:
-                    clr = 'light yellow'
-                else:
-                    clr = 'yellow'
-                self.sliders[i].config(state=stt, bg=clr)
-                self.binderButton[i * 2].config(state=stt)
-                self.binderButton[i * 2 + 1].config(state=stt)
+            self.frameController.destroy()
+            self.sliders=list()
+            self.values = list()
+            self.controllerLabels = list()
+            self.previousBinderValue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            self.binderValue = list()
+            self.binderButton=list()
+            if self.OSname == 'win32':
+                self.parameterSet = parameterWinSet[self.model]
+            else:
+                self.parameterSet = parameterMacSet[self.model]
+
+            if self.model == 'BittleR':
+                self.scaleNames = BittleRScaleNames
+            else:
+                self.scaleNames = RegularScaleNames
+
+            self.createController()
+
+#            stt = NORMAL
+#            for i in range(16):
+#                 if i in NaJoints[self.model]:
+#                     clr = 'light yellow'
+#                 else:
+#                     clr = 'yellow'
+#                 self.sliders[i].config(state=stt, bg=clr)
+#                 self.sliders[i].grid(row=i)
+#                 self.binderButton[i * 2].config(state=stt)
+#                 self.binderButton[i * 2 + 1].config(state=stt)
+
             self.createPosture()
             self.placeProductImage()
             self.restartSkillEditor()
@@ -899,12 +1023,12 @@ class SkillComposer:
                 frameSize = 16
                 copyFrom = 4
             else:  # gait
-                if self.model == 'Nybble' or 'Bittle':
-                    frameSize = 8
-                    copyFrom = 12
-                else:
+                if self.model == 'DoF16':
                     frameSize = 12
                     copyFrom = 8
+                else:
+                    frameSize = 8
+                    copyFrom = 12
             self.gaitOrBehavior.set(txt('Gait'))
         if (len(skillData) - header) % abs(skillData[0]) != 0 or frameSize != (len(skillData) - header) // abs(
                 skillData[0]):
@@ -951,8 +1075,8 @@ class SkillComposer:
         if self.totalFrame == 1:
             self.activeFrame = -1
         self.setFrame(0)
+
     def loadSkill(self,skillData):
-        
         print(skillData)
         self.restartSkillEditor()
         if skillData[0] < 0:
@@ -968,12 +1092,12 @@ class SkillComposer:
                 frameSize = 16
                 copyFrom = 4
             else:  # gait
-                if self.model == 'Nybble' or 'Bittle':
-                    frameSize = 8
-                    copyFrom = 12
-                else:
+                if self.model == 'DoF16':
                     frameSize = 12
                     copyFrom = 8
+                else:
+                    frameSize = 8
+                    copyFrom = 12
             self.gaitOrBehavior.set(txt('Gait'))
         if (len(skillData) - header) % abs(skillData[0]) != 0 or frameSize != (len(skillData) - header) // abs(
                 skillData[0]):
@@ -1330,7 +1454,7 @@ class SkillComposer:
 
         
     def saveConfigToFile(self, filename):
-        self.configuration = [self.defaultLan, self.model, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
+        self.configuration = [self.defaultLan, self.configName, self.defaultPath, self.defaultSwVer, self.defaultBdVer,
                                   self.defaultMode, self.configuration[6], self.configuration[7]]
 
         f = open(filename, 'w+', encoding="utf-8")
@@ -1348,7 +1472,7 @@ class SkillComposer:
                 # f.close()
             lines = [line.split('\n')[0] for line in lines]    # remove the '\n' at the end of each line
             defaultLan = self.defaultLan
-            defaultModel = self.model
+            defaultModel = self.configName
             defaultPath = lines[2]
             defaultSwVer = lines[3]
             defaultBdVer = lines[4]
@@ -1375,7 +1499,7 @@ class SkillComposer:
             print(e)
             print('Create configuration file')
             defaultLan = self.defaultLan
-            defaultModel = self.model
+            defaultModel = self.configName
             defaultPath = releasePath[:-1]
             defaultSwVer = '2.0'
             defaultBdVer = NyBoard_version
@@ -1407,12 +1531,12 @@ class SkillComposer:
         skillData = list()
         loopStructure = list()
         period = self.totalFrame - self.activeFrame
-        if self.model == 'Nybble' or self.model == 'Bittle':
-            copyFrom = 12
-            frameSize = 8
-        else:
-            copyFrom = 8
+        if self.model == 'DoF16':
             frameSize = 12
+            copyFrom = 8
+        else:
+            frameSize = 8
+            copyFrom = 12
         if self.gaitOrBehavior.get() == txt('Behavior'):
             period = -period
             copyFrom = 4
@@ -1476,9 +1600,10 @@ class SkillComposer:
         if file:
 #            print(file.name)
             x = datetime.datetime.now()
+            modeName = self.model
             fileData = '# ' + file.name.split('/')[-1].split('.')[0] + '\n'
             fileData += 'Note: '+'You may add a short description/instruction here.\n\n'
-            fileData += 'Model: ' + self.model + '\n\n'
+            fileData += 'Model: ' + modeName + '\n\n'
             fileData += 'Creator: ' + self.creator.get() + '\n\n'
             fileData += 'Location: ' + self.location.get() + '\n\n'
             fileData += 'Date: ' + x.strftime("%b")+' '+x.strftime("%d")+', '+x.strftime("%Y") + '\n\n'
@@ -1496,13 +1621,13 @@ class SkillComposer:
             fileData += '};'
 
             # the file in the config directory will be saved automatically
-            filePathName = configDir + separation + 'SkillLibrary' + separation + self.model + separation + file.name.split('/')[-1]
+            filePathName = configDir + separation + 'SkillLibrary' + separation + modeName + separation + file.name.split('/')[-1]
             logger.debug(f"fileName is: {filePathName}")
 
             filePathList = [file.name, filePathName]
             for filePath in filePathList:
                 if filePath == filePathName:
-                    modelDir = configDir + separation + 'SkillLibrary' + separation + self.model
+                    modelDir = configDir + separation + 'SkillLibrary' + separation + modeName
                     makeDirectory(modelDir)
                 try:
                     with open(filePath, 'w+', encoding="utf-8") as f:
@@ -1534,7 +1659,6 @@ class SkillComposer:
         self.activeFrame = 0
         self.addFrame(0)
         self.vRepeat.set(0)
-
     #        self.window.update()
     #        self.setPose('calib')
 
@@ -1617,6 +1741,9 @@ class SkillComposer:
                 self.originalAngle[0] = 1
             positiveGroup = []
             negativeGroup = []
+            if 'Bittle' in self.model:
+                self.model = 'Bittle'
+
             if i == 0:  # ypr
                 positiveGroup = []
                 negativeGroup = []
