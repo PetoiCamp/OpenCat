@@ -1548,7 +1548,7 @@ class SkillComposer:
         angleRatio = 1
         startFrame = self.activeFrame
         inv_triggerAxis = {txt(v): k for k, v in triggerAxis.items()}
-        for f in range(startFrame, self.totalFrame):
+        for f in range(0, self.totalFrame):
             frame = self.frameList[f]
             self.frameData = copy.deepcopy(frame[2])
             if max(self.frameData[4:20]) > 125 or min(self.frameData[4:20]) < -125:
@@ -1825,14 +1825,16 @@ class SkillComposer:
             if serialCmd != '':
                 try:
                     token = serialCmd[0]
-                    cmdList = serialCmd[1:].replace(',',' ').split()
-
-                    if len(cmdList) <= 1:
-                        send(ports, [serialCmd, 1])
+                    if token == 'S': #send everything as a string
+                        send(ports, [serialCmd[1:], 1])
                     else:
-                        cmdList = list(map(lambda x:int(x),cmdList))
-                        send(ports, [token,cmdList, 1])
-                    self.newCmd.set('')
+                        cmdList = serialCmd[1:].replace(',',' ').split()
+                        if len(cmdList) <= 1:
+                            send(ports, [serialCmd, 1])
+                        else:
+                            cmdList = list(map(lambda x:int(x),cmdList))
+                            send(ports, [token, cmdList, 1])
+                        self.newCmd.set('')
                 except Exception as e:
                     logger.info("Exception")
                     print("Illegal input!")
