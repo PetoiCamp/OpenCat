@@ -26,7 +26,7 @@
 #include "Adafruit-PWM-Servo-Driver-Library/Adafruit_PWMServoDriver.h"
 
 #define P_STEP 32
-#define P_BASE 3000 + P_STEP * 4  //3000~3320
+#define P_BASE 3000 + P_STEP * 4  //3128  range: 3000~3320 
 #define P_HARD (P_BASE + P_STEP * 1)
 #define P_SOFT (P_BASE - P_STEP * 2)
 
