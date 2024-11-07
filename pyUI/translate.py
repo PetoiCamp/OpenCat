@@ -1,5 +1,5 @@
 versionNum = '1.2.2'
-dateStr = '2024-10-25'
+dateStr = '2024-11-07'
 
 textEN = {
     'lan':'English',
@@ -147,8 +147,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Yes',
     'No': 'No',
     'Reset successfully': 'Reset successfully!',
-    'checkLogfile':'''Please check the log file: logfile.log \n
-For more details, please refer to https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'Please check the log file (logfile.log) in the following file path: \n',
+    'checkLogfile':'''\nFor more details, please refer to https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 If you can not fix the issue, please send the log to support@petoi.com for help.''',
 
     'Calibrate':'Calibrate',
@@ -437,8 +437,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': '是',
     'No': '否',
     'Reset successfully': '重置成功！',
-    'checkLogfile':'''请检查日志文件：logfile.log \n
-相关详细信息，请参阅 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'请在以下文件路径中检查日志文件 (logfile.log) ：\n',
+    'checkLogfile':'''\n相关详细信息，请参阅 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您无法解决问题，请发送日志到 support@petoi.com 以寻求帮助。''',
 
     'Do you want to save the offsets?':'要保存校准值吗？',
@@ -714,8 +714,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': '是',
     'No': '否',
     'Reset successfully': '重設成功！',
-    'checkLogfile':'''請檢查日志文件：logfile.log \n
-相關详细信息，請參閱 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'請在以下檔案路徑中檢查日誌檔案 (logfile.log)： \n',
+    'checkLogfile':'''\n相關详细信息，請參閱 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您無法修復問題，請將日志發送到 support@petoi.com 以尋求幫助。''',
 
     'Do you want to save the offsets?':'要保存校準值嗎？',
@@ -984,8 +984,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Ja',
     'No': 'Nein',
     'Reset successfully': 'Reset erfolgreich!',
-    'checkLogfile':'''Bitte überprüfen Sie die Protokolldatei: logfile.log \n
-Weitere Einzelheiten finden Sie unter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'Bitte überprüfen Sie die Log-Datei (logfile.log) im folgenden Dateipfad: \n',
+    'checkLogfile':'''\nWeitere Einzelheiten finden Sie unter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur Hilfe an support@petoi.com.''',
 
     'Calibrate':'Kalibrieren',
@@ -1266,8 +1266,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'ใช่',
     'No': 'ไม่ใช่',
     'Reset successfully': 'รีเซ็ตสำเร็จ!',
-    'checkLogfile':'''กรุณาตรวจสอบไฟล์บันทึก: logfile.log \n
-สำหรับรายละเอียดเพิ่มเติม โปรดดูที่ https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'โปรดตรวจสอบไฟล์บันทึก (logfile.log) ในเส้นทางไฟล์ต่อไปนี้: \n',
+    'checkLogfile':'''\nสำหรับรายละเอียดเพิ่มเติม โปรดดูที่ https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 หากคุณไม่สามารถแก้ไขปัญหาได้ โปรดส่งไฟล์บันทึกไปยัง support@petoi.com เพื่อขอความช่วยเหลือ''',
 
     'Calibrate':'ปรับสอดคล้อง',
@@ -1549,8 +1549,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Oui',
     'No': 'Non',
     'Reset successfully': 'Réinitialisation réussie !',
-    'checkLogfile':'''Veuillez vérifier le fichier journal: logfile.log \n
-Pour plus de détails, veuillez consulter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'Veuillez vérifier le fichier journal (logfile.log) dans le chemin de fichier suivant : \n',
+    'checkLogfile':'''\nPour plus de détails, veuillez consulter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal à support@petoi.com pour obtenir de l\'aide.''',
     
     'Calibrate':'Calibrer',
@@ -1830,8 +1830,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'はい',
     'No': 'いいえ',
     'Reset successfully': 'リセットが成功しました！',
-    'checkLogfile':'''ログファイル: logfile.log を確認してください \n
-詳細については、https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file を参照してください \n
+    'logLocation':'以下のファイルパスにあるログファイル (logfile.log) を確認してください： \n',
+    'checkLogfile':'''\n詳細については、https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file を参照してください \n
 問題を解決できない場合は、ログを support@petoi.com に送信してサポートを受けてください。''',
 
     'Calibrate':'キャリブレーション',
@@ -2099,8 +2099,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Sì',
     'No': 'No',
     'Reset successfully': 'Ripristino riuscito!',
-    'checkLogfile':'''Controlla il file di registro: logfile.log \n
-Per ulteriori dettagli, consultare https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'Si prega di controllare il file di registro (logfile.log) nel seguente percorso: \n',
+    'checkLogfile':'''\nPer ulteriori dettagli, consultare https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Se non riesci a risolvere il problema, invia il registro a support@petoi.com per chiedere aiuto.''',
     
     'Calibrate':'Calibrate',

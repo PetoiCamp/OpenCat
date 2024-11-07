@@ -50,8 +50,9 @@ if not config.useMindPlus:
 
     # printH("txt('lan'):", txt('lan'))
 
-with open("./logfile.log", "w+", encoding="utf-8") as logfile:
+with open("./logfile.log", "w+", encoding="ISO-8859-1") as logfile:
     pass
+time.sleep(1)
 logger.info("ardSerial date: Jun. 20, 2024")
 
 def encode(in_str, encoding='utf-8'):
@@ -260,6 +261,7 @@ def sendTaskParallel(ports, task, timeout=0):
     for p in ports:
         t = threading.Thread(target=sendTask, args=(goodPorts, p, task, timeout))
         threads.append(t)
+        t.daemon = True
         t.start()
     for t in threads:
         if t.is_alive():
@@ -345,6 +347,7 @@ def closeAllSerial(ports, clearPorts=True):
 
     for p in ports:
         t = threading.Thread(target=closeSerialBehavior, args=(p,))
+        t.daemon = True
         t.start()
         t.join()
 
@@ -635,6 +638,7 @@ def checkPortList(PortList, allPorts, needTesting=True):
             t = threading.Thread(target=testPort,
                                  args=(PortList, serialObject, p.split('/')[-1]))    # remove '/dev/' in the port name
             threads.append(t)
+            t.daemon = True
             t.start()
         else:
             logger.debug(f"Adding in checkPortList: {p}")
@@ -758,7 +762,6 @@ def connectPort(PortList, needTesting=True, needSendTask=True, needOpenPort=True
         else:   # len(allPorts) == 1
             portName = allPorts[0].split('/')[-1]
             portStrList.insert(0, portName)    # remove '/dev/' in the port name
-
 
                                 
 def replug(PortList, needSendTask=True, needOpenPort=True):
