@@ -7,6 +7,10 @@ pyUI/lib/*
 *.DS_Store
 *.pyc
 pyUI/defaultConfig.txt
+pyUI/README.txt
+pyUI/README_Mac.txt
+pyUI/README_Windows.txt
+pyUI/PetoiDesktopApp/*
 *.cfg
 *.svd
 ModuleTests/testDoubleLight/debug_custom.json

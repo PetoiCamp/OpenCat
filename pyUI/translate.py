@@ -1,5 +1,5 @@
-versionNum = '1.2.1'
-dateStr = '2024-07-05'
+versionNum = '1.2.2'
+dateStr = '2024-11-07'
 
 textEN = {
     'lan':'English',
@@ -124,8 +124,8 @@ Click the button below. Connect the USB cable to the main board, then plug the o
 * If the main board is already connected to the computer via a USB cable:\n
 1. Confirm your computer can recognize the USB device.\n
 More details can be found at https://docs.petoi.com/upload-firmware\n
-2. After clicking the button below, unplug the USB cable from the COMPUTER side, and then plug it back.
-''',
+2. After clicking the button below, unplug the USB cable from the COMPUTER side, and then plug it back.\n
+The program will automatically identify the correct serial port name.''',
     'Confirm':'Confirm',
     'Counting down to manual mode: ':'Counting down to manual mode: ',
     'Info':'Info',
@@ -147,11 +147,15 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Yes',
     'No': 'No',
     'Reset successfully': 'Reset successfully!',
-    'checkLogfile':'''Please check the log file: logfile.log \n
-For more details, please refer to https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'Please check the log file (logfile.log) in the following file path: \n',
+    'checkLogfile':'''\nFor more details, please refer to https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 If you can not fix the issue, please send the log to support@petoi.com for help.''',
 
     'Calibrate':'Calibrate',
+    'Auto':'Auto',
+    'AutoCali failed': '''Automatic calibration of the robotic claw joint servo failed!\n
+    Please follow the instructions in the Petoi Doc Center to perform manual calibration:\n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'Rest',
     'Stand Up':'Stand Up',
     'Walk':'Walk',
@@ -244,6 +248,7 @@ Then re-upgrade the firmware.\n''',
     'Light':'Light',
     'Gesture':'Gesture',
     'InfraredDistance':'InfraredDistance',
+    'Voice_RobotArm':'Voice_RobotArm',
     
     'Breath':'Breath',
     'Rotate':'Rotate',
@@ -395,6 +400,10 @@ textCN = {
     'Clear':'清空',
     'max':'最快',
     'Calibrate':'校准位',
+    'Auto':'自动',
+    'AutoCali failed': '''自动校准机械爪关节舵机失败！\n
+    请按照说明书中的方法，进行手动校准：\n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'休息',
     'Stand Up':'站立',
     'Walk':'行走',
@@ -410,8 +419,8 @@ textCN = {
 * 如果主板已经通过USB数据线连接到计算机：\n
 1. 确认您的计算机可以识别 USB 设备。\n
    更多详情请参考 https://docs.petoi.com/upload-firmware \n
-2. 点击下面的按钮后，从电脑端拔下USB数据线，然后再插回去。
-''',
+2. 点击下面的按钮后，从电脑端拔下USB数据线，然后再插回去。\n
+   程序将自动识别出正确的串口名称。''',
     'Confirm':'确认',
     'Counting down to manual mode: ':'切换到手动模式倒计时：',
     'Info':'提示',
@@ -428,8 +437,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': '是',
     'No': '否',
     'Reset successfully': '重置成功！',
-    'checkLogfile':'''请检查日志文件：logfile.log \n
-相关详细信息，请参阅 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'请在以下文件路径中检查日志文件 (logfile.log) ：\n',
+    'checkLogfile':'''\n相关详细信息，请参阅 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您无法解决问题，请发送日志到 support@petoi.com 以寻求帮助。''',
 
     'Do you want to save the offsets?':'要保存校准值吗？',
@@ -505,6 +514,7 @@ https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
     'Light':'光敏',
     'Gesture':'手势',
     'InfraredDistance':'红外测距',
+    'Voice_RobotArm':'语音_机械臂',
     'Parameters':'参数',
     'Main function':'主程序',
     'Time consuming': '大约需要30秒',
@@ -667,6 +677,10 @@ textCN_TW = {
     'Clear':'清空',
     'max':'最快',
     'Calibrate':'校準位',
+    'Auto':'自動',
+    'AutoCali failed': '''自動校準機械爪關節舵機失敗！\n
+    請按照說明書中的方法，進行手動校準：\n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'休息',
     'Stand Up':'站立',
     'Walk':'行走',
@@ -682,8 +696,8 @@ textCN_TW = {
 * 如果主機板已經通過USB資料線連接到電腦：\n
 1. 確認您的電腦可以識別 USB 設備。\n
    更多詳情請參考 https://docs.petoi.com/upload-firmware \n
-2. 點擊下面的按鈕後，從電腦端拔下USB資料線，然後再插回去。
-''',
+2. 點擊下面的按鈕後，從電腦端拔下USB資料線，然後再插回去。\n
+   程式將自動辨識出正確的序列埠名稱。''',
     'Confirm':'確認',
     'Counting down to manual mode: ':'切換到手動模式倒計時：',
     'Info':'提示',
@@ -700,8 +714,8 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': '是',
     'No': '否',
     'Reset successfully': '重設成功！',
-    'checkLogfile':'''請檢查日志文件：logfile.log \n
-相關详细信息，請參閱 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'請在以下檔案路徑中檢查日誌檔案 (logfile.log)： \n',
+    'checkLogfile':'''\n相關详细信息，請參閱 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您無法修復問題，請將日志發送到 support@petoi.com 以尋求幫助。''',
 
     'Do you want to save the offsets?':'要保存校準值嗎？',
@@ -776,6 +790,7 @@ https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
     'Light':'光敏',
     'Gesture':'手勢',
     'InfraredDistance':'紅外線測距',
+    'Voice_RobotArm':'語音_機械臂',
     'Parameters':'參數',
     'Main function':'主程序',
     'Time consuming': '大約需要30秒',
@@ -950,8 +965,8 @@ Klicken Sie auf die Schaltfläche unten. Verbinden Sie das USB-Kabel mit der Hau
 * Wenn die Hauptplatine bereits über ein USB-Kabel mit dem Computer verbunden ist:\n
 1. Vergewissern Sie sich, dass Ihr Computer das USB-Gerät erkennen kann.\n
 Weitere Einzelheiten finden Sie unter https://docs.petoi.com/upload-firmware.\n
-2. Nachdem Sie auf die Schaltfläche unten geklickt haben, ziehen Sie das USB-Kabel von der COMPUTER-Seite ab und stecken Sie es dann wieder ein. 
-''',
+2. Nachdem Sie auf die Schaltfläche unten geklickt haben, ziehen Sie das USB-Kabel von der COMPUTER-Seite ab und stecken Sie es dann wieder ein.\n
+Das Programm wird den richtigen seriellen Portnamen automatisch erkennen.''',
     'Confirm':'Bestätigen',
     'Counting down to manual mode: ':'Countdown zum manuellen Modus: ',
     'Info':'Information',
@@ -969,11 +984,15 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Ja',
     'No': 'Nein',
     'Reset successfully': 'Reset erfolgreich!',
-    'checkLogfile':'''Bitte überprüfen Sie die Protokolldatei: logfile.log \n
-Weitere Einzelheiten finden Sie unter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'Bitte überprüfen Sie die Log-Datei (logfile.log) im folgenden Dateipfad: \n',
+    'checkLogfile':'''\nWeitere Einzelheiten finden Sie unter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur Hilfe an support@petoi.com.''',
 
     'Calibrate':'Kalibrieren',
+    'Auto':'Auto',
+    'AutoCali failed': '''Die automatische Kalibrierung des Servomotors für das Gelenk des Robotergreifers ist fehlgeschlagen!\n
+    Bitte folgen Sie den Anweisungen in der Bedienungsanleitung, um eine manuelle Kalibrierung durchzuführen: \n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'Ruhe',
     'Stand Up':'Aufstehen',
     'Walk':'Gehen',
@@ -1066,6 +1085,7 @@ Aktualisieren Sie dann die Firmware erneut.\n''',
     'Light':'Licht',
     'Gesture':'Geste',
     'InfraredDistance':'Infrarot-Entfernung',
+    'Voice_RobotArm':'Sprachmodus_Roboterarm',
 
     'Breath':'Atmen',
     'Rotate':'Drehen',
@@ -1227,9 +1247,9 @@ textTH = {
 คลิกปุ่มด้านล่าง ต่อสาย USB เข้ากับเมนบอร์ด จากนั้นเสียบปลายอีกด้านเข้ากับคอมพิวเตอร์ \n\n
 * หากเมนบอร์ดเชื่อมต่อกับคอมพิวเตอร์ผ่านสาย USB อยู่แล้ว:\n
 1. ยืนยันว่าคอมพิวเตอร์ของคุณสามารถรู้จักอุปกรณ์ USB ได้\n
-ดูรายละเอียดเพิ่มเติมได้ที่ https://docs.petoi.com/upload-firmware.\n
-2. หลังจากคลิกปุ่มด้านล่าง ให้ถอดสาย USB จากฝั่งคอมพิวเตอร์ แล้วเสียบกลับเข้าไปใหม่
-''',
+ดูรายละเอียดเพิ่มเติมได้ที่ https://docs.petoi.com/upload-firmware \n
+2. หลังจากคลิกปุ่มด้านล่าง ให้ถอดสาย USB จากฝั่งคอมพิวเตอร์ แล้วเสียบกลับเข้าไปใหม่ \n
+โปรแกรมจะระบุชื่อพอร์ตสื่อสารที่ถูกต้องโดยอัตโนมัติ ''',
     'Confirm':'ยืนยัน',
     'Counting down to manual mode: ':'นับถอยหลังสู่โหมดแมนนวล: ',
     'Info':'ข้อมูล',
@@ -1246,11 +1266,15 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'ใช่',
     'No': 'ไม่ใช่',
     'Reset successfully': 'รีเซ็ตสำเร็จ!',
-    'checkLogfile':'''กรุณาตรวจสอบไฟล์บันทึก: logfile.log \n
-สำหรับรายละเอียดเพิ่มเติม โปรดดูที่ https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'โปรดตรวจสอบไฟล์บันทึก (logfile.log) ในเส้นทางไฟล์ต่อไปนี้: \n',
+    'checkLogfile':'''\nสำหรับรายละเอียดเพิ่มเติม โปรดดูที่ https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 หากคุณไม่สามารถแก้ไขปัญหาได้ โปรดส่งไฟล์บันทึกไปยัง support@petoi.com เพื่อขอความช่วยเหลือ''',
 
     'Calibrate':'ปรับสอดคล้อง',
+    'Auto':'อัตโนมัติ',
+    'AutoCali failed': '''การสอบเทียบเซอร์โวมอเตอร์ข้อต่อของกรงเล็บหุ่นยนต์โดยอัตโนมัติล้มเหลว!\n
+    กรุณาปฏิบัติตามคำแนะนำในคู่มือเพื่อทำการสอบเทียบด้วยตนเอง: \n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'พัก',
     'Stand Up':'ยืนขึ้น',
     'Walk':'เดิน',
@@ -1342,6 +1366,7 @@ https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
     'Light':'แสง',
     'Gesture':'ท่าทาง',
     'InfraredDistance':'ระยะทางอินฟราเรด',
+    'Voice_RobotArm':'เสียง_แขนหุ่นยนต์',
 
     'Breath':'หายใจ',
     'Rotate':'หมุน',
@@ -1505,8 +1530,8 @@ Cliquez sur le bouton ci-dessous. Connectez le câble USB à la carte principale
 * Si la carte principale est déjà connectée à l'ordinateur via un câble USB :\n
 1. Confirmez que votre ordinateur peut reconnaître le périphérique USB.\n
 Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmware. \n
-2. Après avoir cliqué sur le bouton ci-dessous, débranchez le câble USB du côté de l'ORDINATEUR, puis rebranchez-le.
-''',
+2. Après avoir cliqué sur le bouton ci-dessous, débranchez le câble USB du côté de l'ORDINATEUR, puis rebranchez-le.\n
+Le programme identifiera automatiquement le nom correct du port série.''',
     'Confirm':'Confirmer',
     'Counting down to manual mode: ':'Compte à rebours jusqu\'au mode manuel : ',
     'Info':'Info',
@@ -1524,11 +1549,15 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Oui',
     'No': 'Non',
     'Reset successfully': 'Réinitialisation réussie !',
-    'checkLogfile':'''Veuillez vérifier le fichier journal: logfile.log \n
-Pour plus de détails, veuillez consulter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'Veuillez vérifier le fichier journal (logfile.log) dans le chemin de fichier suivant : \n',
+    'checkLogfile':'''\nPour plus de détails, veuillez consulter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal à support@petoi.com pour obtenir de l\'aide.''',
     
     'Calibrate':'Calibrer',
+    'Auto':'Automatique',
+    'AutoCali failed': '''L\'étalonnage automatique du servomoteur de l\'articulation de la pince robotique a échoué !\n
+    Veuillez suivre les instructions du manuel pour effectuer un étalonnage manuel: \n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'Repos',
     'Stand Up':'Se lever',
     'Walk':'Marcher',
@@ -1619,6 +1648,7 @@ Puis, re-mettez à niveau le firmware.\n''',
     'Light':'Lumière',
     'Gesture':'Geste',
     'InfraredDistance':'Distance infrarouge',
+    'Voice_RobotArm':'Voix_Bras robotique',
 
     'Breath':'Respiration',
     'Rotate':'Rotation',
@@ -1781,7 +1811,8 @@ textJP={
 * メインボードがすでにUSBケーブルを介してコンピュータに接続されている場合：\n
 1. コンピュータがUSBデバイスを認識できることを確認します。\n
 詳細は、https://docs.petoi.com/upload-firmwareを参照してください。\n
-2. 以下のボタンをクリックした後、USBケーブルをコンピュータ側から抜き、再び接続します。''',
+2. 以下のボタンをクリックした後、USBケーブルをコンピュータ側から抜き、再び接続します。\n
+プログラムは、正しいシリアルポート名を自動的に識別します。''',
     'Confirm':'確認',
     'Counting down to manual mode: ':'マニュアルモードまでのカウントダウン：',
     'Info':'情報',
@@ -1799,11 +1830,15 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'はい',
     'No': 'いいえ',
     'Reset successfully': 'リセットが成功しました！',
-    'checkLogfile':'''ログファイル: logfile.log を確認してください \n
-詳細については、https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file を参照してください \n
+    'logLocation':'以下のファイルパスにあるログファイル (logfile.log) を確認してください： \n',
+    'checkLogfile':'''\n詳細については、https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file を参照してください \n
 問題を解決できない場合は、ログを support@petoi.com に送信してサポートを受けてください。''',
 
     'Calibrate':'キャリブレーション',
+    'Auto':'自動',
+    'AutoCali failed': '''ロボットグリッパーの関節サーボの自動キャリブレーションに失敗しました！\n
+    マニュアルの指示に従って、手動でキャリブレーションを行ってください：\n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'リセット',
     'Stand Up':'立ち上がる',
     'Walk':'歩く',
@@ -1888,6 +1923,7 @@ https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
     'Light':'光',
     'Gesture':'ジェスチャー',
     'InfraredDistance':'赤外線距離',
+    'Voice_RobotArm':'音声_ロボットアーム',
 
     'Breath':'呼吸',
     'Rotate':'回転',
@@ -2044,8 +2080,8 @@ Fare clic sul pulsante in basso. Collegare il cavo USB alla scheda principale, q
 * Se la scheda principale è già collegata al computer tramite un cavo USB:\n
 1. Verificare che il computer sia in grado di riconoscere il dispositivo USB.\n
 Ulteriori dettagli sono disponibili su https://docs.petoi.com/upload-firmware.\n
-2. Dopo aver fatto clic sul pulsante in basso, scollegare il cavo USB dal lato COMPUTER, quindi ricollegarlo.
-''',
+2. Dopo aver fatto clic sul pulsante in basso, scollegare il cavo USB dal lato COMPUTER, quindi ricollegarlo.\n
+Il programma identificherà automaticamente il nome corretto della porta seriale.''',
     'Confirm':'Confermare',
     'Counting down to manual mode: ':'Conto alla rovescia per la modalità manuale: ',
     'Info':'Informazione',
@@ -2063,11 +2099,15 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'Yes': 'Sì',
     'No': 'No',
     'Reset successfully': 'Ripristino riuscito!',
-    'checkLogfile':'''Controlla il file di registro: logfile.log \n
-Per ulteriori dettagli, consultare https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
+    'logLocation':'Si prega di controllare il file di registro (logfile.log) nel seguente percorso: \n',
+    'checkLogfile':'''\nPer ulteriori dettagli, consultare https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Se non riesci a risolvere il problema, invia il registro a support@petoi.com per chiedere aiuto.''',
     
     'Calibrate':'Calibrate',
+    'Auto':'Automatico',
+    'AutoCali failed': '''La calibrazione automatica del servo motore dell\'articolazione della pinza robotica è fallita!\n
+    Si prega di seguire le istruzioni del manuale per eseguire una calibrazione manuale: \n
+    https://docs.petoi.com/extensible-modules/robot-arm#fine-calibration''',
     'Rest':'Riposo',
     'Stand Up':'In piedi',
     'Walk':'Camminare',
@@ -2156,6 +2196,7 @@ Quindi, aggiornare nuovamente il firmware.\n''',
     'Light':'Luce',
     'Gesture':'Gesto',
     'InfraredDistance':'Distanza infrarossa',
+    'Voice_RobotArm':'Voce_Braccio robotico',
     
     'Breath':'Respiro',
     'Rotate':'Ruotare',

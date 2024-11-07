@@ -77,6 +77,7 @@
 // The tracking demo works the best with a yellow tennis ball or some other round objects. Demo: https://www.youtube.com/watch?v=CxGI-MzCGWM
 // #define GROVE_SERIAL_PASS_THROUGH  //allow analog/digital read/write GPIO pins through serial protocol
 // #define OTHER_MODULES  //uncomment this line to disable the gyroscope code to save programming resources for other modules.
+// #define ROBOT_ARM
 
 #define IR_PIN 4  // Signal Pin of IR receiver to Arduino Digital Pin 4
 #include "src/OpenCat.h"

@@ -50,8 +50,9 @@ if not config.useMindPlus:
 
     # printH("txt('lan'):", txt('lan'))
 
-with open("./logfile.log", "w+", encoding="utf-8") as logfile:
+with open("./logfile.log", "w+", encoding="ISO-8859-1") as logfile:
     pass
+time.sleep(1)
 logger.info("ardSerial date: Jun. 20, 2024")
 
 def encode(in_str, encoding='utf-8'):
@@ -86,7 +87,7 @@ def serialWriteNumToByte(port, token, var=None):  # Only to be used for c m u b 
         angleRatio = 1
         for row in range(abs(period)):
             for angle in var[skillHeader + row * frameSize:skillHeader + row * frameSize + min(16,frameSize)]:
-                if angle > 125 or angle<-125:
+                if angle > 125 or angle < -125:
                     angleRatio = 2
                     break
             if angleRatio ==2:
@@ -147,6 +148,7 @@ def serialWriteByte(port, var=None):
     if var is None:
         var = []
     token = var[0][0]
+    # printH("token:",token)
     # print var
     if (token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't') and len(var) >= 2:
         in_str = ""
@@ -163,17 +165,20 @@ def serialWriteByte(port, var=None):
     else:
         in_str = token + '\n'
     logger.debug(f"!!!!!!! {in_str}")
+    # printH("in_str:", in_str)
     port.Send_data(encode(in_str))
     time.sleep(0.01)
 
 
 def printSerialMessage(port, token, timeout=0):
     if token == 'k' or token == 'K':
-        threshold = 4
+        threshold = 8
     else:
         threshold = 3
-    #    if token == 'K':
-    #        timeout = 1
+
+    if 'X' in token:
+        token = 'X'
+
     startTime = time.time()
     allPrints = ''
     while True:
@@ -206,6 +211,7 @@ def printSerialMessage(port, token, timeout=0):
 
 def sendTask(PortList, port, task, timeout=0):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
+    # printH("task:",task)
     global returnValue
     #    global sync
     #    print(task)
@@ -255,6 +261,7 @@ def sendTaskParallel(ports, task, timeout=0):
     for p in ports:
         t = threading.Thread(target=sendTask, args=(goodPorts, p, task, timeout))
         threads.append(t)
+        t.daemon = True
         t.start()
     for t in threads:
         if t.is_alive():
@@ -340,6 +347,7 @@ def closeAllSerial(ports, clearPorts=True):
 
     for p in ports:
         t = threading.Thread(target=closeSerialBehavior, args=(p,))
+        t.daemon = True
         t.start()
         t.join()
 
@@ -630,6 +638,7 @@ def checkPortList(PortList, allPorts, needTesting=True):
             t = threading.Thread(target=testPort,
                                  args=(PortList, serialObject, p.split('/')[-1]))    # remove '/dev/' in the port name
             threads.append(t)
+            t.daemon = True
             t.start()
         else:
             logger.debug(f"Adding in checkPortList: {p}")
@@ -660,7 +669,8 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
         if set(currentPorts) - set(allPorts):
             time.sleep(1) #usbmodem is slower in detection
             currentPorts = Communication.Print_Used_Com()
-            newPort = deleteDuplicatedUsbSerial(list(set(currentPorts) - set(allPorts)))
+            # newPort = deleteDuplicatedUsbSerial(list(set(currentPorts) - set(allPorts)))
+            newPort = list(set(currentPorts) - set(allPorts))
             if check:
                 time.sleep(0.5)
                 checkPortList(portList, newPort)
@@ -704,7 +714,7 @@ def showSerialPorts(allPorts):
             if 'AMA0' in item:
                 allPorts.remove(item)
         
-    allPorts = deleteDuplicatedUsbSerial(allPorts)
+    # allPorts = deleteDuplicatedUsbSerial(allPorts)
     for index in range(len(allPorts)):
         logger.debug(f"port[{index}] is {allPorts[index]} ")
     logger.info(f"*** Available serial ports: ***")
@@ -752,7 +762,6 @@ def connectPort(PortList, needTesting=True, needSendTask=True, needOpenPort=True
         else:   # len(allPorts) == 1
             portName = allPorts[0].split('/')[-1]
             portStrList.insert(0, portName)    # remove '/dev/' in the port name
-
 
                                 
 def replug(PortList, needSendTask=True, needOpenPort=True):
@@ -805,7 +814,7 @@ def replug(PortList, needSendTask=True, needOpenPort=True):
                 timePassed = 0
             else:
                 dif = list(set(curPorts)-set(ap))
-                dif = deleteDuplicatedUsbSerial(dif)
+                # dif = deleteDuplicatedUsbSerial(dif)
                 print("diff:",end=" ")
                 print(dif)
                 
@@ -884,7 +893,8 @@ def selectList(PortList,ls,win, needSendTask=True, needOpenPort=True):
     win.destroy()
 
 def manualSelect(PortList, window, needSendTask=True, needOpenPort=True):
-    allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+    # allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+    allPorts = Communication.Print_Used_Com()
     window.title(txt('Manual mode'))
     l1 = tk.Label(window, font = 'sans 14 bold')
     l1['text'] = txt('Manual mode')
@@ -895,7 +905,8 @@ def manualSelect(PortList, window, needSendTask=True, needOpenPort=True):
     ls = tk.Listbox(window,selectmode="multiple")
     ls.grid(row=2,column=0)
     def refreshBox(ls):
-        allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+        # allPorts = deleteDuplicatedUsbSerial(Communication.Print_Used_Com())
+        allPorts = Communication.Print_Used_Com()
         ls.delete(0,tk.END)
         for p in allPorts:
             ls.insert(tk.END,p)
