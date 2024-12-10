@@ -107,18 +107,18 @@ void readRGBultrasonic() {
       };
 #endif
       int servoAngle[] = { 
-	      mid[0] - distance / 2,                        //Neck
-    	  -10 + distance / 2,                           //Head (Nybble only)
-    	  distance * (random() % 50 < 1 ? int(random() % 2 - 1) : 1),   //Tail (Nybble only)
-    	  0, 0, 0, 0, 0,
-    	  mid[8] - 15 + distance / 2,     			   	    //Front upper legs
-    	  mid[9] - 15 + distance / 2, 
-    	  mid[10] - 30 + distance * feedbackDirection,  //Back upper legs
-    	  mid[11] - 30 + distance * feedbackDirection,
-    	  mid[12] + 35 - distance,     					        //Front lower legs
-    	  mid[13] + 35 - distance, 
-    	  mid[14] + 40 - distance * feedbackDirection,  //Back lower legs
-    	  mid[15] + 40 - distance * feedbackDirection 
+	mid[0] - distance / 2,				//Neck
+    	-10 + distance / 2,				//Head (Nybble only)
+    	distance * (random() % 50 < 1 ? int(random() % 2 - 1) : 1),   //Tail (Nybble only)
+    	0, 0, 0, 0, 0,
+    	mid[8] - 15 + distance / 2,     		//Front upper legs
+    	mid[9] - 15 + distance / 2, 
+    	mid[10] - 30 + distance * feedbackDirection,	//Back upper legs
+    	mid[11] - 30 + distance * feedbackDirection,
+    	mid[12] + 35 - distance,			//Front lower legs
+    	mid[13] + 35 - distance, 
+    	mid[14] + 40 - distance * feedbackDirection,	//Back lower legs
+    	mid[15] + 40 - distance * feedbackDirection 
       };
       //      printList(servoAngle);
       cmdLen = 16;
