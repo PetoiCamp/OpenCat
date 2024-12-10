@@ -106,14 +106,24 @@ void readRGBultrasonic() {
         -30,
       };
 #endif
-      int allParameter[] = { mid[0] - distance / 2, -10 + distance / 2, distance * (random() % 50 < 1 ? int(random() % 2 - 1) : 1), 0,
-                             0, 0, 0, 0,
-                             mid[8] - 15 + distance / 2, mid[9] - 15 + distance / 2, mid[10] - 30 + distance * feedbackDirection, mid[11] - 30 + distance * feedbackDirection,
-                             mid[12] + 35 - distance, mid[13] + 35 - distance, mid[14] + 40 - distance * feedbackDirection, mid[15] + 40 - distance * feedbackDirection };
-      //      printList(allParameter);
+      int servoAngle[] = { 
+	      mid[0] - distance / 2,                        //Neck
+    	  -10 + distance / 2,                           //Head (Nybble only)
+    	  distance * (random() % 50 < 1 ? int(random() % 2 - 1) : 1),   //Tail (Nybble only)
+    	  0, 0, 0, 0, 0,
+    	  mid[8] - 15 + distance / 2,     			   	    //Front upper legs
+    	  mid[9] - 15 + distance / 2, 
+    	  mid[10] - 30 + distance * feedbackDirection,  //Back upper legs
+    	  mid[11] - 30 + distance * feedbackDirection,
+    	  mid[12] + 35 - distance,     					        //Front lower legs
+    	  mid[13] + 35 - distance, 
+    	  mid[14] + 40 - distance * feedbackDirection,  //Back lower legs
+    	  mid[15] + 40 - distance * feedbackDirection 
+      };
+      //      printList(servoAngle);
       cmdLen = 16;
       for (byte i = 0; i < cmdLen; i++)
-        newCmd[i] = (int8_t)min(max(allParameter[i], -128), 127);
+        newCmd[i] = (int8_t)min(max(servoAngle[i], -128), 127);
       newCmd[cmdLen] = '~';
       randomInterval = 5000;
       tQueue->addTask('L', newCmd);
