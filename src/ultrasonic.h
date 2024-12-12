@@ -11,7 +11,7 @@ RgbUltrasonic ultrasonic(6, 7);  //(signal, RGB)
 long colors[] = { RGB_RED, RGB_PURPLE, RGB_GREEN, RGB_BLUE, RGB_YELLOW, RGB_WHITE };
 long ultraTimer;
 int ultraInterval = 1000;
-float distance;
+int distance;
 #ifdef BITTLE
 int feedbackDirection = -1;
 #elif defined NYBBLE
@@ -26,6 +26,20 @@ void readRGBultrasonic() {
     if (distance > 120) {
       return;
     }
+
+    //Add up multiple distance readings to reduce sensor noise
+    static unsigned int totalDistances = 0;
+    static byte readings = 0;
+    totalDistances += distance;
+    readings += 1;	
+    if (readings < 10) {
+      return;
+    }
+    //Take the average distance of the readings
+    distance = totalDistances / readings;
+    //Reset tracking variables
+    totalDistances = distance;
+    readings = 1;
 
     if (distance > 90) {
       if (!manualEyeColorQ)
@@ -107,18 +121,18 @@ void readRGBultrasonic() {
       };
 #endif
       int servoAngle[] = { 
-	mid[0] - distance / 2,				//Neck
-    	-10 + distance / 2,				//Head (Nybble only)
-    	distance * (random() % 50 < 1 ? int(random() % 2 - 1) : 1),   //Tail (Nybble only)
-    	0, 0, 0, 0, 0,
-    	mid[8] - 15 + distance / 2,     		//Front upper legs
-    	mid[9] - 15 + distance / 2, 
-    	mid[10] - 30 + distance * feedbackDirection,	//Back upper legs
-    	mid[11] - 30 + distance * feedbackDirection,
-    	mid[12] + 35 - distance,			//Front lower legs
-    	mid[13] + 35 - distance, 
-    	mid[14] + 40 - distance * feedbackDirection,	//Back lower legs
-    	mid[15] + 40 - distance * feedbackDirection 
+		mid[0] - distance / 2,			//Head pan
+	-10 + distance / 2,				//Head tilt (Nybble only)
+	distance * (random() % 50 < 1 ? int(random() % 2 - 1) : 1),	//Tail (Nybble only)
+	0, 0, 0, 0, 0,
+	mid[8] - 15 + distance / 2, 			//Front upper legs
+	mid[9] - 15 + distance / 2, 
+	mid[10] - 30 + distance * feedbackDirection, 	//Back upper legs
+	mid[11] - 30 + distance * feedbackDirection,
+	mid[12] + 35 - distance, 			//Front lower legs
+	mid[13] + 35 - distance, 
+	mid[14] + 40 - distance * feedbackDirection, 	//Back lower legs
+	mid[15] + 40 - distance * feedbackDirection 
       };
       //      printList(servoAngle);
       cmdLen = 16;
