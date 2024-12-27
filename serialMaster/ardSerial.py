@@ -160,7 +160,7 @@ def serialWriteByte(port, var=None):
             var.insert(1, var[0][1:])
         var[1:] = list(map(int, var[1:]))
         in_str = token.encode() + struct.pack('b' * (len(var) - 1), *var[1:]) + '~'.encode()
-    elif token == 'w' or token == 'k' or token == 'X':
+    elif token == 'w' or token == 'k' or token == 'X' or token == 'g':
         in_str = var[0] + '\n'
     else:
         in_str = token + '\n'
@@ -433,16 +433,16 @@ postureTableBittleR = {
 }
 
 postureTableNybble = {
-    "balance": balanceNybble,
-    "buttUp": buttUpNybble,
+    "balance": balance,
+    "buttUp": buttUp,
     # "dropped": droppedNybble,
     # "lifted": liftedNybble,
     # 'flat': flatNybble,
     # 'table': tableNybble,
-    "rest": restNybble,
-    "sit": sitNybble,
-    "str": strNybble,
-    "zero": zeroNybble
+    "rest": rest,
+    "sit": sit,
+    "str": str,
+    "zero": zero
 }
 postureTableDoF16 = {
     "balance": balance,

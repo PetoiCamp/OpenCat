@@ -76,6 +76,8 @@ class Calibrator:
             self.model = 'Bittle'
         elif config.model_ == 'BittleRN':
             self.model = 'BittleR'
+        elif config.model_ == 'NybbleQ':
+            self.model = 'Nybble'
         else:
             self.model = config.model_
 

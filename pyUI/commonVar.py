@@ -49,6 +49,7 @@ except Exception as e:
     
 modelOptions = [
     'Nybble',
+    'Nybble Q',
     'Bittle',
     'Bittle X',
     'Bittle R',

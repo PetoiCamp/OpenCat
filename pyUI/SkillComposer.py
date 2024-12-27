@@ -156,6 +156,8 @@ class SkillComposer:
             self.model = 'BittleR'
         elif config.model_== 'BittleX':
             self.model = 'Bittle'
+        elif config.model_== 'NybbleQ':
+            self.model = 'Nybble'
         else:
             self.model = config.model_
         try:
@@ -288,19 +290,15 @@ class SkillComposer:
         self.createSkillEditor()
         self.createRowScheduler()
 
-        self.ready = 1
         self.window.protocol('WM_DELETE_WINDOW', self.on_closing)
         self.window.update()
         t = threading.Thread(target=keepCheckingPort, args=(goodPorts,lambda:self.keepChecking,lambda:True,self.updatePortMenu,))
         t.daemon = True
         t.start()
         time.sleep(2)
-        res = send(goodPorts, ['G', 0])
-        printH("gyro status:",res )
-        if res != -1 and res[0][0] == 'G':
-            res = send(goodPorts, ['G', 0])
-            printH("gyro status:",res )
+
         self.window.focus_force()    # force the main interface to get focus
+        self.ready = 1
         self.window.mainloop()
 
 
@@ -463,6 +461,48 @@ class SkillComposer:
             self.values.append(value)
             self.controllerLabels.append(label)
 
+    def buttDialAct(self,idx, bAct = False):
+        if bAct:
+            self.dialValue[idx].set(True)
+            self.frameDial.winfo_children()[idx+1].config(fg='green')
+        else:
+            self.dialValue[idx].set(False)
+            self.frameDial.winfo_children()[idx+1].config(fg='red')
+
+    def deacGyrp(self):
+        self.boardVer = config.version_
+        # printH("boardVer:", boardVer)
+        if self.boardVer[0] == 'N':
+            res = send(goodPorts, ['G', 0])
+            if res != -1:
+                if res[0][0] == 'G':
+                    res = send(goodPorts, ['G', 0])
+                    if res != -1 and res[0][0] == 'g':
+                        self.buttDialAct(2, False)
+                        # printH("gyro status:", res)
+                        logger.debug(f'gyro is deactived successfully.')
+                    else:
+                        self.buttDialAct(2, True)
+                elif res[0][0] == 'g':
+                    self.buttDialAct(2, False)
+                    # printH("gyro status:", res)
+                    logger.debug(f'gyro status:{res}')
+                else:
+                    self.buttDialAct(2, True)
+            else:
+                self.buttDialAct(2, True)
+        else:
+            res = send(goodPorts, ['gb', 0])
+            # printH("res:", res)
+            if res != -1 and res[0][0] == 'g':
+                self.buttDialAct(2, False)
+                # print("Gyro is deactived successfully.")
+                logger.debug(f'gyro is deactived successfully.')
+            else:
+                self.buttDialAct(2, True)
+        # printH("gyro status:", self.dialValue[2].get())
+        logger.debug(f'gyro status:{self.dialValue[2].get()}')
+
 
     def createDial(self):
         self.frameDial = Frame(self.window)
@@ -477,8 +517,8 @@ class SkillComposer:
                 dialState = NORMAL
             else:
                 dialState = DISABLED
-#            if i == 2:#disable gyro
-#                dialState = DISABLED
+            # if i == 2:#disable gyro
+            #    dialState = DISABLED
             if i == 0:
                 wth = self.connectW
                 if len(goodPorts) > 0:
@@ -496,6 +536,9 @@ class SkillComposer:
             self.dialValue.append(value)
             button.grid(row=1, column=i + (i > 0), padx=self.dialPad)
             tip(button, txt(tipDial[i]))
+        # for i in range(len(dialTable)):
+        #     printH(list(dialTable)[i], self.dialValue[i].get())
+        self.deacGyrp()
 
         self.createPortMenu()
         
@@ -542,6 +585,7 @@ class SkillComposer:
                 self.options.insert(0, txt('All'))
             if self.keepChecking:
                 self.frameDial.winfo_children()[1].config(text=txt('Connected'), fg='green')
+                self.deacGyrp()
         for string in self.options:
             menu.add_command(label=string, command=lambda p=string: self.port.set(p))
         self.port.set(self.options[0])
@@ -1900,8 +1944,7 @@ class SkillComposer:
                     # self.portMenu.config(state = DISABLED)
                     # self.updatePortMenu()
                     self.keepChecking = False
-                    self.frameDial.winfo_children()[1].config(text=txt('Connect'), fg='red')
-                    self.dialValue[0].set(False)
+                    self.buttDialAct(0, False)
                     # for b in buttons:
                     #     b.config(state = DISABLED)
                 else:
@@ -1921,6 +1964,7 @@ class SkillComposer:
                     send(ports, ['b', [10, 90], 0])
                     if len(goodPorts) > 0:
                         self.frameDial.winfo_children()[1].config(text=txt('Connected'), fg='green')
+                        self.deacGyrp()
                         # for b in buttons:
                         #     b.config(state = NORMAL)
                     else:
@@ -1928,33 +1972,46 @@ class SkillComposer:
                 # self.frameDial.winfo_children()[1].update()
                 self.updatePortMenu()
             elif len(goodPorts) > 0:
-                result = send(ports, [dialTable[key], 0])
-                if result != -1:
-                    state = result[0].replace('\r', '').replace('\n', '')
-                    if state == 'k':
-                        self.dialValue[i].set(True)
-                        self.frameDial.winfo_children()[2].config(fg='green')
-                        self.frameDial.winfo_children()[2].select()
-                    elif state == 'P':
-                        self.dialValue[i].set(False)
-                        self.frameDial.winfo_children()[2].config(fg='red')
-                        self.frameDial.winfo_children()[2].deselect()
-                    elif state == 'g':
-                        self.dialValue[i].set(False)
-                        self.frameDial.winfo_children()[3].config(fg='red')
-                        self.frameDial.winfo_children()[3].deselect()
-                    elif state == 'G':
-                        self.dialValue[i].set(True)
-                        self.frameDial.winfo_children()[3].config(fg='green')
-                        self.frameDial.winfo_children()[3].select()
-                    elif state == 'z':
-                        self.dialValue[i].set(False)
-                        self.frameDial.winfo_children()[4].config(fg='red')
-                        self.frameDial.winfo_children()[4].deselect()
-                    elif state == 'Z':
-                        self.dialValue[i].set(True)
-                        self.frameDial.winfo_children()[4].config(fg='green')
-                        self.frameDial.winfo_children()[4].select()
+                # print("dialState")
+                # for j in range(4):
+                #     printH(list(dialTable)[j], self.dialValue[j].get())
+                # print("end")
+                # printH("button name", list(dialTable)[i])
+                if key == 'Gyro' and self.boardVer[0] == 'B':
+                    # printH("Button state:", self.dialValue[2].get())
+                    if self.dialValue[2].get():
+                        result = send(ports, ['gB', 0])
+                        printH("result", result)
+                        if result != -1:  # and result[0][0] == 'G':
+                            self.frameDial.winfo_children()[3].config(fg='green')
+                        else:
+                            self.buttDialAct(2, False)
+                    else:
+                        result = send(ports, ['gb', 0])
+                        printH("result", result)
+                        if result != -1:  # and result[0][0] == 'g':
+                            self.frameDial.winfo_children()[3].config(fg='red')
+                        else:
+                            self.buttDialAct(2, True)
+                    # printH("gyroFlag", self.dialValue[2].get())
+                else:
+                    result = send(ports, [dialTable[key], 0])
+                    if result != -1:
+                        state = result[0].replace('\r', '').replace('\n', '')
+                        if state == 'k':
+                            self.buttDialAct(i, True)
+                        elif state == 'P':
+                            self.buttDialAct(i, False)
+                        elif state == 'g':
+                            self.buttDialAct(i, False)
+                            # printH("gyroFlag", self.dialValue[2].get())
+                        elif state == 'G':
+                            self.buttDialAct(i, True)
+                            # printH("gyroFlag", self.dialValue[2].get())
+                        elif state == 'z':
+                            self.buttDialAct(i, False)
+                        elif state == 'Z':
+                            self.buttDialAct(i, True)
 
     def on_closing(self):
         if messagebox.askokcancel(txt('Quit'), txt('Do you want to quit?')):

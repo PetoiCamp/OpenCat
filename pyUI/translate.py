@@ -1,5 +1,5 @@
-versionNum = '1.2.2'
-dateStr = '2024-11-07'
+versionNum = '1.2.3'
+dateStr = '2024-12-25'
 
 textEN = {
     'lan':'English',
@@ -141,7 +141,7 @@ The program will automatically identify the correct serial port name.''',
 
     'Voice indicates':'''Do you hear the melody "1-3-5"?\n
 If yes, press the button "Yes" to continue; 
-If no, press the button "No" to quit, and check the dial switch 
+If no, press the button "No" to quit, for BiBoard V0, please check the dial switch 
 on the bottom of the BiBoard extension hat is dialed to Voice, not UART2.
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
     'Yes': 'Yes',
@@ -186,14 +186,15 @@ If you can not fix the issue, please send the log to support@petoi.com for help.
     'tipFacReset':''' After factory reset, you need to do joint calibration, please refer to: 
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Upgrade the Firmware',
-    'tipUpgradeNyBoard':''' Upgrade both the parameters and the main function. 
+    'tipUpgrade':''' Upgrade both the parameters and the main function. 
  * Mandatory if you just downloaded a new version of this software. 
  * You can select \'N\' to preserve the calibration values. ''',
-    'tipUpgradeBiBoard':' Upgrade the main function. ',
     'btnUpdateMode': 'Update the Mode Only',
-    'tipUpdateMode':''' If you have upgraded the firmware at least once after a new download, 
- it\'s faster to only switch the modes without refreshing the parameters. ''',
-    'tipSwitchMode':'You can switch the working mode.',
+    'tipUpdateMode':''' For NyBoard:
+ If you have upgraded the firmware at least once after a new download, 
+ it\'s faster to only switch the modes without refreshing the parameters. 
+ For BiBoard:
+ The function of this button is the same as the function of the "Upgrade the Firmware" button.''',
     'Warning': 'Warning',
     'Uploading': 'Uploading ',
     'is successully uploaded':' is successully uploaded',
@@ -434,7 +435,7 @@ textCN = {
     'Reset voice module':'重置语音模块',
     'Voice indicates':'''您能听到“1-3-5”的旋律吗？
 是的话，请按“是”按钮继续；
-否的话，请按“否”按钮退出，并检查 BiBoard 扩展帽底部的拨动开关是否拨到“语音”，而不是“UART2”。
+否的话，请按“否”按钮退出，对于BiBoard V0主板，请检查 BiBoard 扩展底部的拨动开关是否拨到“语音”，而不是“UART2”。
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
     'Yes': '是',
     'No': '否',
@@ -524,12 +525,15 @@ https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
     'tipFacReset':''' 恢复出厂设置后，你需要重新校准关节舵机，请参考：
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'升级固件',
-    'tipUpgradeNyBoard':''' 升级参数固件和主程序固件。
+    'tipUpgrade':''' 升级参数和主程序固件。
  * 如果您初次下载了该软件的新版本，则必须点击此按钮升级固件。
  * 您可以选择 “N” 来保留校准值。''',
     'btnUpdateMode': '只更新模式',
-    'tipUpdateMode':''' 如果您在下载后至少升级过一次固件，
- 只切换模式而不刷新参数固件会更快。''',
+    'tipUpdateMode':''' 对于NyBoard:
+ 如果您在下载后至少升级过一次固件，
+ 只切换模式而不刷新参数固件会更快。
+ 对于BiBoard：
+ 此按钮的功能与“升级固件”按钮的功能相同。''',
     'Breath':'渐变',
     'Rotate':'旋转',
     'Flash':'闪烁',
@@ -579,7 +583,7 @@ textCN_TW = {
     'Utility':'應用工具',
     'Joint Calibrator':'關節校準',
     'Scheduler':'排程器',
-    'Firmware Uploader':'固件上傳',
+    'Firmware Uploader':'韌體上傳',
     'Debugger': '調試器',
     'tipDebugger':'提供便捷的機器人除錯工具。',
     'tipRstVoice':'點擊此按鈕重設語音模組。',
@@ -711,7 +715,7 @@ textCN_TW = {
     'Reset voice module':'重設語音模組',
     'Voice indicates':'''您能聽到「1-3-5」的旋律嗎？
 是的話，請按「是」按鈕繼續；
-否的話，請按「否」按鈕退出，並檢查 BiBoard 擴展帽底部的撥動開關是否撥到「語音」，而不是「UART2」。
+否的話，請按「否」按鈕退出，對於BiBoard V0，請檢查 BiBoard 擴展板底部的撥動開關是否撥到「語音」，而不是「UART2」。
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
     'Yes': '是',
     'No': '否',
@@ -752,7 +756,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'titleVersion': '版本信息',
 
     'msgVersion': '版本：' + versionNum + '\n'+
-    '''OpenCat固件上傳工具
+    '''OpenCat韌體上傳工具
     版權所有 © 2018-2024
     派拓藝（深圳）科技有限责任公司
     https://www.petoi.com\n''' + dateStr,
@@ -774,7 +778,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'parameterFinish': '''參數初始化完成！\n
 點擊「確定」按鈕後，主功能韌體將自動上傳。''',
     '9685 Calibrated':'PCA9685校準完成！',
-    'msgFinish': '固件上傳完成!',
+    'msgFinish': '韌體上傳完成!',
     'msgMode': '無效模式，請選擇其他模式!',
     'caliIMUerrorMessage': '''請將 I2C 開關撥到 Arduino 側。有关更多详细信息，請參閱:\n
 https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
@@ -799,13 +803,17 @@ https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
     'btnFacReset':'恢復出廠設置',
     'tipFacReset':''' 恢復出廠設置後，你需要重新校準關節舵機，請參考：
  https://docs.petoi.com/joint-calibration ''',
-    'btnUpgrade':'升級固件',
-    'tipUpgradeNyBoard':''' 升級參數固件和主程序固件。
- * 如果您初次下載了該軟體的新版本，則必須點擊此按鈕升級固件。
+    'btnUpgrade':'升級韌體',
+    'tipUpgrade':''' 升級參數和主程式韌體。
+ * 如果您初次下載了該軟體的新版本，則必須點擊此按鈕升級韌體。
  * 您可以選擇 “N” 來保留校準值。''',
     'btnUpdateMode': '僅更新模式',
-    'tipUpdateMode':''' 如果您在下載後至少升級過一次固件，
- 僅切換模式而不刷新參數固件會更快。''',
+    'tipUpdateMode':''' 對於NyBoard:
+ 如果您在下載後至少升級過一次韌體，
+ 僅切換模式而不刷新參數韌體會更快。
+ 對於BiBoard：
+ 此按鈕的功能與「升級韌體」按鈕的功能相同。
+ ''',
     'Breath':'漸變',
     'Rotate':'旋轉',
     'Flash':'閃爍',
@@ -980,8 +988,8 @@ Das Programm wird den richtigen seriellen Portnamen automatisch erkennen.''',
     'Reset voice module':'Sprachmodul zurücksetzen',
     'Voice indicates':'''Hören Sie die Melodie "1-3-5"?
 Wenn ja, drücken Sie die Taste "Ja", um fortzufahren.
-Wenn nein, drücken Sie die Taste "Nein", um zu beenden, und überprüfen Sie, ob der 
-Drehschalter an der Unterseite des BiBoard-Erweiterungshuts auf "Sprache" und nicht auf "UART2" eingestellt ist.
+Wenn nicht, drücken Sie die Schaltfläche "Nein" zum Beenden. Überprüfen Sie bei BiBoard V0, 
+ob der DIP-Schalter an der Unterseite der BiBoard-Erweiterung auf Voice und nicht auf UART2 eingestellt ist.
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
     'Yes': 'Ja',
     'No': 'Nein',
@@ -1025,12 +1033,15 @@ Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur H
     'tipFacReset':''' Nach dem Zurücksetzen auf die Werkseinstellungen müssen Sie eine gemeinsame Kalibrierung durchführen. 
  Weitere Informationen finden Sie unter: https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Aktualisieren Sie die Firmware',
-    'tipUpgradeNyBoard':''' Aktualisieren Sie sowohl die Parameter als auch die Hauptfunktion. 
+    'tipUpgrade':''' Aktualisieren Sie die Parameter und die Firmware des Hauptprogramms. 
  * Obligatorisch, wenn Sie gerade eine neue Version dieser Software heruntergeladen haben. 
  * Sie können "N" wählen, um die Kalibrierungswerte beizubehalten. ''',
     'btnUpdateMode': 'Aktualisieren Sie nur den Modus',
-    'tipUpdateMode':''' Wenn Sie die Firmware nach einem erneuten Download mindestens einmal aktualisiert haben, 
- Es ist schneller, nur die Modi zu wechseln, ohne die Parameter zu aktualisieren. ''',
+    'tipUpdateMode':''' Für NyBoard:
+ Wenn Sie die Firmware nach einem erneuten Download mindestens einmal aktualisiert haben, 
+ Es ist schneller, nur die Modi zu wechseln, ohne die Parameter zu aktualisieren. 
+ Für BiBoard: 
+ Die Funktion dieser Taste ist dieselbe wie die Funktion der Taste "Aktualisieren Sie die Firmware".''',
     'Warning': 'Warnung',
     'Uploading': 'Hochladen ',
     'is successully uploaded':' erfolgreich hochgeladen',
@@ -1263,7 +1274,7 @@ textTH = {
     'Reset voice module':'รีเซ็ตโมดูลเสียง',
     'Voice indicates':'''คุณได้ยินท่วงทำนอง "1-3-5" หรือไม่?
 ใช่: กดปุ่ม "ใช่" เพื่อดำเนินการต่อ
-ไม่ใช่: กดปุ่ม "ไม่ใช่" เพื่อออก และตรวจสอบสวิตช์หมุนที่ด้านล่างของหมวกเสริม BiBoard ว่าหมุนไปที่ "เสียง" ไม่ใช่ "UART2"
+ถ้าไม่มี ให้กดปุ่ม "ไม่" เพื่อออก สำหรับ BiBoard V0 โปรดตรวจสอบสวิตช์แบบหมุนที่ด้านล่างของส่วนขยาย BiBoard ว่าหมุนไปที่ Voice ไม่ใช่ UART2
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
     'Yes': 'ใช่',
     'No': 'ไม่ใช่',
@@ -1307,12 +1318,16 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'tipFacReset':''' หลังจากการรีเซ็ตเป็นค่าเริ่มต้นจากโรงงาน คุณต้องทำการปรับเทียบร่วม โปรดดูที่: 
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'อัพเกรดเฟิร์มแวร์',
-    'tipUpgradeNyBoard':''' อัปเกรดทั้งพารามิเตอร์และฟังก์ชันหลัก 
+    'tipUpgrade':''' อัปเกรดพารามิเตอร์และเฟิร์มแวร์โปรแกรมหลัก
  * จำเป็นหากคุณเพิ่งดาวน์โหลดเวอร์ชันใหม่ของซอฟต์แวร์นี้ 
  * คุณสามารถเลือก "N" เพื่อรักษาค่าการสอบเทียบ ''',
     'btnUpdateMode': 'อัปเดตโหมดเท่านั้น',
-    'tipUpdateMode':''' หากคุณได้อัปเกรดเฟิร์มแวร์อย่างน้อยหนึ่งครั้งหลังจากดาวน์โหลดใหม่ 
- การสลับโหมดเพียงอย่างเดียวโดยไม่รีเฟรชพารามิเตอร์จะเร็วกว่า ''',
+    'tipUpdateMode':''' สำหรับ NyBoard:
+ หากคุณได้อัปเกรดเฟิร์มแวร์อย่างน้อยหนึ่งครั้งหลังจากดาวน์โหลดใหม่ 
+ การสลับโหมดเพียงอย่างเดียวโดยไม่รีเฟรชพารามิเตอร์จะเร็วกว่า 
+ สำหรับ BiBoard: 
+ ฟังก์ชันของปุ่มนี้เหมือนกับฟังก์ชันของปุ่ม "อัปเกรดเฟิร์มแวร์"
+ ''',
     'Warning': 'คำเตือน',
     'Uploading': 'กำลังอัพโหลด',
     'is successully uploaded':' อัพโหลดสำเร็จ',
@@ -1527,12 +1542,12 @@ textFR={
     'Replug mode':'Mode Replug',
     # 'Replug prompt':'''ATTENTION: Echec de la connexion! \n\n
     'Replug prompt':'''ATTENTION: \n\n
-* Si la carte principale N'EST PAS connectée à l'ordinateur :\n
-Cliquez sur le bouton ci-dessous. Connectez le câble USB à la carte principale, puis branchez l'autre extrémité sur l'ORDINATEUR. \n\n
-* Si la carte principale est déjà connectée à l'ordinateur via un câble USB :\n
+* Si la carte principale N'EST PAS connectée à l\'ordinateur :\n
+Cliquez sur le bouton ci-dessous. Connectez le câble USB à la carte principale, puis branchez l\'autre extrémité sur l\'ORDINATEUR. \n\n
+* Si la carte principale est déjà connectée à l\'ordinateur via un câble USB :\n
 1. Confirmez que votre ordinateur peut reconnaître le périphérique USB.\n
-Vous trouverez plus de détails à l'adresse https://docs.petoi.com/upload-firmware. \n
-2. Après avoir cliqué sur le bouton ci-dessous, débranchez le câble USB du côté de l'ORDINATEUR, puis rebranchez-le.\n
+Vous trouverez plus de détails à l\'adresse https://docs.petoi.com/upload-firmware. \n
+2. Après avoir cliqué sur le bouton ci-dessous, débranchez le câble USB du côté de l\'ORDINATEUR, puis rebranchez-le.\n
 Le programme identifiera automatiquement le nom correct du port série.''',
     'Confirm':'Confirmer',
     'Counting down to manual mode: ':'Compte à rebours jusqu\'au mode manuel : ',
@@ -1545,8 +1560,8 @@ Le programme identifiera automatiquement le nom correct du port série.''',
     'Reset voice module':'Réinitialiser le module vocal',
     'Voice indicates':'''Entendez-vous la mélodie "1-3-5" ?
 Si oui, appuyez sur le bouton "Oui" pour continuer.
-Si non, appuyez sur le bouton "Non" pour quitter et vérifiez que le 
-commutateur rotatif situé en bas du chapeau d\'extension BiBoard est réglé sur "Voix", et non sur "UART2".
+Si non, appuyez sur le bouton "Non" pour quitter. Pour BiBoard V0, veuillez vérifier que le 
+commutateur DIP situé sous la carte d\'extension BiBoard est réglé sur Voice et non sur UART2.
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
     'Yes': 'Oui',
     'No': 'Non',
@@ -1587,15 +1602,18 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     'Main function':'Fonction principale',
     'Time consuming': 'cela prendra environ 30 secondes',
     'btnFacReset':'Réinitialisation d\'usine',
-    'tipFacReset':''' Après la réinitialisation d'usine, vous devrez effectuer l'étalonnage des articulations. Veuillez vous référer à :
+    'tipFacReset':''' Après la réinitialisation d\'usine, vous devrez effectuer l\'étalonnage des articulations. Veuillez vous référer à :
      https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Mettre à jour le micrologiciel',
-    'tipUpgradeNyBoard':''' Met à jour à la fois les paramètres et la fonction principale.
+    'tipUpgrade':''' Mettre à niveau les paramètres et le firmware du programme principal.
      * Obligatoire si vous venez de télécharger une nouvelle version de ce logiciel.
-     * Vous pouvez sélectionner "N" pour conserver les valeurs d'étalonnage. ''',
+     * Vous pouvez sélectionner "N" pour conserver les valeurs d\'étalonnage. ''',
     'btnUpdateMode': 'Mettre à jour uniquement le mode',
-    'tipUpdateMode':''' Si vous avez déjà mis à jour le micrologiciel au moins une fois après un nouveau téléchargement,
-     il est plus rapide de simplement passer d'un mode à l'autre sans rafraîchir les paramètres. ''',
+    'tipUpdateMode':''' Pour NyBoard:
+ Si vous avez déjà mis à jour le micrologiciel au moins une fois après un nouveau téléchargement,
+ il est plus rapide de simplement passer d\'un mode à l\'autre sans rafraîchir les paramètres. 
+ Pour BiBoard: 
+ La fonction de ce bouton est identique à celle du bouton "Mettre à jour le micrologiciel".''',
      'Warning': 'Avertissement',
     'Uploading': 'Téléchargement en cours ',
     'is successully uploaded':' a été téléchargé avec succès',
@@ -1604,7 +1622,7 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     'msgFileDir': 'Veuillez choisir le dossier de la version !',
     'msgPort': 'Veuillez choisir le port série correct !',
 
-    'msgNoneAvrdude': '''Avrdude n'est pas installé. Veuillez d'abord installer avrdude ! Pour plus de détails, veuillez consulter :
+    'msgNoneAvrdude': '''Avrdude n'est pas installé. Veuillez d\'abord installer avrdude ! Pour plus de détails, veuillez consulter :
     https://docs.petoi.com/desktop-app/firmware-uploader#install-avrdude-in-the-linux-os''',
     'msgNoneEsptool':'Il n\'y a pas d\'estool. Veuillez d\'abord installer esptool!',
 
@@ -1623,7 +1641,7 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     'updating instincts':'Mise à jour des instincts en cours...',
     'instincts updated': 'Instincts mis à jour',
 
-    'calibrate IMU?':'''Calibrer l'IMU ? (O/N)
+    'calibrate IMU?':'''Calibrer l\'IMU ? (O/N)
         Remarque : Placez la carte principale À PLAT sur une table !''',
     'calibrating IMU': 'Calibration de l\'IMU en cours...',
     'IMU calibrated': 'Calibration de l\'IMU terminée !',
@@ -1826,8 +1844,8 @@ textJP={
     'Reset voice module':'音声モジュールをリセットする',
     'Voice indicates':'''メロディー「1-3-5」が聞こえますか？
 はい (« はい » ボタンを押して続行)
-いいえ (« いいえ » ボタンを押して終了し、BiBoard 拡張ハットの底にあるダイヤル 
-スイッチが「音声」ではなく「UART2」に設定されていないことを確認してください)
+そうでない場合は、「いいえ」ボタンを押して終了してください。BiBoard V0の場合は、
+BiBoard拡張ハットの底面にあるディップスイッチがUART2ではなくVoiceに設定されているか確認してください。
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
     'Yes': 'はい',
     'No': 'いいえ',
@@ -1870,9 +1888,12 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'btnFacReset': '工場出荷時設定に戻す',
     'tipFacReset':'ファクトリーリセット後、関節のキャリブレーションを行う必要があります。詳細は次を参照してください：https://docs.petoi.com/joint-calibration',
     'btnUpgrade':'ファームウェアのアップグレード',
-    'tipUpgradeNyBoard':'パラメータとメイン機能の両方をアップグレードします。ソフトウェアの新しいバージョンをダウンロードした場合は必須です。キャリブレーション値を保持する場合は、\'N\'を選択できます。',
+    'tipUpgrade':'パラメータとメインプログラムのファームウェアをアップグレードします。ソフトウェアの新しいバージョンをダウンロードした場合は必須です。キャリブレーション値を保持する場合は、\'N\'を選択できます。',
     'btnUpdateMode':'モードのみを更新',
-    'tipUpdateMode':'新しいダウンロード後、ファームウェアを少なくとも1回アップグレードした場合、パラメータをリフレッシュせずにモードのみを切り替える方が速くなります。',
+    'tipUpdateMode':''' NyBoardの場合:
+ 新しいダウンロード後、ファームウェアを少なくとも1回アップグレードした場合、パラメータをリフレッシュせずにモードのみを切り替える方が速くなります。
+ BiBoardの場合:
+ このボタンの機能は「ファームウェアのアップグレード」ボタンの機能と同じです。''',
     'Warning':'警告',
     'Uploading':'アップロード中 ',
     'is successully uploaded':'が正常にアップロードされました',
@@ -2095,8 +2116,8 @@ Il programma identificherà automaticamente il nome corretto della porta seriale
     'Reset voice module':'Ripristina modulo vocale',
     'Voice indicates':'''Senti la melodia "1-3-5"?
 Se sì, premi il pulsante "Sì" per continuare.
-Se no, premi il pulsante "No" per uscire e controlla che l\'interruttore 
-rotativo sul fondo del cappello di estensione BiBoard sia ruotato su "Voce", non su "UART2".
+Se no, premere il pulsante "No" per uscire. Per BiBoard V0, controllare che il selettore 
+DIP nella parte inferiore dell\'estensione BiBoard sia impostato su Voice e non su UART2.
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
     'Yes': 'Sì',
     'No': 'No',
@@ -2141,12 +2162,15 @@ Se non riesci a risolvere il problema, invia il registro a support@petoi.com per
  è necessario eseguire la calibrazione del giunto, fare riferimento a: 
  https://docs.petoi.com/joint-calibration ''',
     'btnUpgrade':'Aggiorna il firmware',
-    'tipUpgradeNyBoard':''' Aggiorna sia i parametri che la funzione principale. 
+    'tipUpgrade':''' Aggiorna i parametri e il firmware del programma principale. 
  * Obbligatorio se hai appena scaricato una nuova versione di questo software. 
  * È possibile selezionare \'N\' per conservare i valori di calibrazione. ''',
     'btnUpdateMode': 'Aggiorna solo la modalità',
-    'tipUpdateMode':''' Se hai aggiornato il firmware almeno una volta dopo un nuovo download, 
- è più veloce cambiare solo modalità senza aggiornare i parametri. ''',
+    'tipUpdateMode':''' Per NyBoard:
+ Se hai aggiornato il firmware almeno una volta dopo un nuovo download, 
+ è più veloce cambiare solo modalità senza aggiornare i parametri. 
+ Per BiBoard: 
+ La funzione di questo pulsante è la stessa del pulsante "Aggiorna il firmware".''',
     'Warning': 'Avvertimento',
     'Uploading': 'Caricamento in corso ',
     'is successully uploaded':' è caricato con successo',
@@ -2160,7 +2184,7 @@ Se non riesci a risolvere il problema, invia il registro a support@petoi.com per
     'titleVersion': 'Informazioni sulla versione',
     'msgVersion': 'Versione: ' + versionNum + '\n' +
     '''Strumento di caricamento del firmware per OpenCat
-    Diritto d'autore © 2018-2024
+    Diritto d\'autore © 2018-2024
     Tutti i diritti riservati Petoi LLC
     https://www.petoi.com\n''' + dateStr,
     'reset joints?': 'Reimpostare gli offset dei giunti? (S/N)',
@@ -2182,7 +2206,7 @@ Dopo aver cliccato sul pulsante "OK", il firmware della funzione principale verr
     '9685 Calibrated':'PCA9685 è stato calibrato con successo!',
     'msgFinish': 'Caricamento del firmware completato!',
     'msgMode': 'Non valido, selezionare un\'altra modalità!',
-    'caliIMUerrorMessage': '''Si prega di spostare l'interruttore I2C sul lato Arduino. Per maggiori dettagli, consultare:\n
+    'caliIMUerrorMessage': '''Si prega di spostare l\'interruttore I2C sul lato Arduino. Per maggiori dettagli, consultare:\n
 https://docs.petoi.com/desktop-app/firmware-uploader#nyboard-version \n
 Quindi, aggiornare nuovamente il firmware.\n''',
 
