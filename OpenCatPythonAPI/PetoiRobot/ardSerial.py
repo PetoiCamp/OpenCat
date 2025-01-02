@@ -859,33 +859,35 @@ def manualSelect(PortList, window, needSendTask=True, needOpenPort=True):
     tk.messagebox.showwarning(title=txt('Warning'), message=txt('Manual mode'))
     window.mainloop()
 
-def monitorSensors(ports, pinDict):
-    result = {}
-
-    if 'voltage' in pinDict:
-        voltage = send(ports, ["R", [97, pinDict['voltage']], 0])
-        result['voltage'] = voltage
-
-    if 'angle' in pinDict:
-        if pinDict['angle'] == 'all':
-            angleList = send(ports, ["j", 0])
-            result['angle'] = angleList
-        else:
-            angle = send(ports, ["j", [pinDict['angle']], 0])
-            result['angle'] = angle
-    
-    if 'distance' in pinDict:
-        distance = send(ports, ["XU", pinDict['distance'], 0])
-        result['distance'] = distance
-        
-    return result
-
-
-def keepMonitoring(ports, pinDict):
+def monitoringVoltage(ports, VoltagePin, timer, callback):
     while True and len(ports):
-        time.sleep(0.05)
-        result = monitorSensors(ports, pinDict)
-        print(result)
+        time.sleep(timer)
+        voltage = send(ports, ["R", [97, VoltagePin], 0])
+        if callback is not None:
+            callback(voltage)
+        else:
+            print("Current Voltage:" + str(voltage))
+
+def monitoringDistance(ports, trigerPin, echoPin, timer, callback):
+    while True and len(ports):
+        time.sleep(timer)
+        distance = send(ports, ["XU", [trigerPin, echoPin], 0])
+        if callback is not None:
+            callback(distance)
+        else:
+            print("Current Distance:" + str(distance))   
+
+def monitoringJoint(ports, jointIndex, timer, callback):
+    while True and len(ports):
+        time.sleep(timer)
+        if jointIndex == 0:
+          angel = send(ports, ["j", jointIndex])
+        else:
+          angel = send(ports, ["j", [jointIndex], 0])
+        if callback is not None:
+            callback(angel)
+        else:
+            print("Current Angel:" + str(angel))
 
 #if need to open serial port, use objects goodPorts
 goodPorts = {}      # goodPorts is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
@@ -898,17 +900,31 @@ lock = threading.Lock()
 returnValue = ''
 timePassed = 0
 
-# pinDict = {'voltage': 0xA7, 'angle': 'all', 'distance': [16, 17]} 
-# pinDict = {'voltage': YOUR_VOLATGE_PIN, 'angle': 'all', 'distance': [YOUR_triggerPin, YOUR_echoPin]}   
-# pinDict = {'angle': ANGLE_INDEX}     # monitoring a single angle 
+'''
+# Monitor callback usage sample
+def voltageHanle(voltage):
+    if  voltage <0.5:
+        print("Low Power Warning")    # do something to handle low power
+        
+def distanceHanle(distance):
+    if  distance <0.5:
+        print("Small Distance Warning")    # do something to handle small distance
+'''
+
 
 if __name__ == '__main__':
     try:
         connectPort(goodPorts)
         t = threading.Thread(target=keepCheckingPort, args=(goodPorts,), daemon=True)
         t.start()
-        # t_monitor = threading.Thread(target=keepMonitoring, args=(goodPorts, pinDict), daemon=True)
-        # t_monitor.start()
+        ### Monitor Threads
+        # t_monitor_voltage = threading.Thread(target=monitoringVoltage, args=(goodPorts, 0xA7, 60, voltageHanle), daemon=True)
+        # t_monitor_voltage.start()
+        # t_monitor_distance = threading.Thread(target=monitoringDistance, args=(goodPorts, 16, 17, 0.5, distanceHanle), daemon=True)
+        # t_monitor_distance.start()
+        # t_monitor_joint = threading.Thread(target=monitoringJoint, args=(goodPorts, 0 , 0.5, None), daemon=True)
+        # t_monitor_joint.start()
+
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
                 cmd = sys.argv[1]
