@@ -207,16 +207,16 @@ class Uploader:
         self.cbBoardVersion.set(self.lastSetting[3])
         # set list for Combobox
         if self.strProduct.get() == 'Bittle X':
-            # if self.lastSetting[3] in NyBoard_version_list:
-            self.cbBoardVersion.set(BiBoard_version_list[0])
+            if self.lastSetting[3] in NyBoard_version_list:
+                self.cbBoardVersion.set(BiBoard_version_list[1])
             board_version_list = BiBoard_version_list
         elif self.strProduct.get() == 'Bittle R':
-            # if self.lastSetting[3] in NyBoard_version_list:
-            self.cbBoardVersion.set(BiBoard_version_list[2])
+            if self.lastSetting[3] in NyBoard_version_list:
+                self.cbBoardVersion.set(BiBoard_version_list[2])
             board_version_list = BiBoard_version_list
         elif self.strProduct.get() == 'Nybble Q':
-            # if self.lastSetting[3] in NyBoard_version_list:
-            self.cbBoardVersion.set(BiBoard_version_list[2])
+            if self.lastSetting[3] in NyBoard_version_list:
+                self.cbBoardVersion.set(BiBoard_version_list[2])
             board_version_list = BiBoard_version_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
@@ -404,7 +404,7 @@ class Uploader:
 
     def chooseProduct(self, event):
         if self.strProduct.get() == 'Bittle X':
-            self.strBoardVersion.set(BiBoard_version_list[0])
+            self.strBoardVersion.set(BiBoard_version_list[1])
             board_version_list = BiBoard_version_list
         elif self.strProduct.get() == 'Nybble Q' or self.strProduct.get() == 'Bittle R':
             self.cbBoardVersion.set(BiBoard_version_list[2])
