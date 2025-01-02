@@ -1981,14 +1981,14 @@ class SkillComposer:
                     # printH("Button state:", self.dialValue[2].get())
                     if self.dialValue[2].get():
                         result = send(ports, ['gB', 0])
-                        printH("result", result)
+                        # printH("result", result)
                         if result != -1:  # and result[0][0] == 'G':
                             self.frameDial.winfo_children()[3].config(fg='green')
                         else:
                             self.buttDialAct(2, False)
                     else:
                         result = send(ports, ['gb', 0])
-                        printH("result", result)
+                        # printH("result", result)
                         if result != -1:  # and result[0][0] == 'g':
                             self.frameDial.winfo_children()[3].config(fg='red')
                         else:
