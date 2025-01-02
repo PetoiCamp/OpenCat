@@ -211,7 +211,7 @@ If you can not fix the issue, please send the log to support@petoi.com for help.
 
     'msgVersion': 'Version: ' + versionNum + '\n'+
     '''Firmware upload tool for OpenCat
-    Copyright © 2018-2024
+    Copyright © 2018-2025
     All rights reserved Petoi LLC
     https://www.petoi.com\n''' + dateStr,
 
@@ -478,7 +478,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 
     'msgVersion': '版本：' + versionNum + '\n'+
     '''OpenCat固件上传工具
-    版权所有 © 2018-2024
+    版权所有 © 2018-2025
     派拓艺（深圳）科技有限责任公司
     https://www.petoi.com\n''' + dateStr,
 
@@ -757,7 +757,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 
     'msgVersion': '版本：' + versionNum + '\n'+
     '''OpenCat韌體上傳工具
-    版權所有 © 2018-2024
+    版權所有 © 2018-2025
     派拓藝（深圳）科技有限责任公司
     https://www.petoi.com\n''' + dateStr,
 
@@ -1058,7 +1058,7 @@ Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur H
 
     'msgVersion': 'Version: ' + versionNum + '\n'+
     '''Firmware-Uploader für OpenCat
-    Copyright © 2018-2024
+    Copyright © 2018-2025
     Alle Rechte vorbehalten
     Petoi LLC
     https://www.petoi.com\n''' + dateStr,
@@ -1344,7 +1344,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 
     'msgVersion': 'เวอร์ชัน: ' + versionNum + '\n'+
     '''เครื่องมืออัพโหลดเฟิร์มแวร์สำหรับ OpenCat
-    ลิขสิทธิ์ ©  2018-2024
+    ลิขสิทธิ์ ©  2018-2025
     สงวนลิขสิทธิ์ทั้งหมด Petoi LLC
     https://www.petoi.com\n''' + dateStr,
 
@@ -1629,7 +1629,7 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     'title Version': 'Informations sur la version',
     'msgVersion': 'Version : ' + versionNum + '\n'+
     '''Outil de téléchargement du micrologiciel pour OpenCat
-    Copyright © 2018-2024
+    Copyright © 2018-2025
     Tous droits réservés Petoi LLC
     https://www.petoi.com\n''' + dateStr,
 
@@ -1907,7 +1907,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 
     'msgVersion':'バージョン：' + versionNum + '\n'+
 '''OpenCat用のファームウェアアップロードツール
-著作権 © 2018-2024
+著作権 © 2018-2025
 全著作権 Petoi LLC
 https://www.petoi.com\n''' + dateStr,
 
@@ -2184,7 +2184,7 @@ Se non riesci a risolvere il problema, invia il registro a support@petoi.com per
     'titleVersion': 'Informazioni sulla versione',
     'msgVersion': 'Versione: ' + versionNum + '\n' +
     '''Strumento di caricamento del firmware per OpenCat
-    Diritto d\'autore © 2018-2024
+    Diritto d\'autore © 2018-2025
     Tutti i diritti riservati Petoi LLC
     https://www.petoi.com\n''' + dateStr,
     'reset joints?': 'Reimpostare gli offset dei giunti? (S/N)',
