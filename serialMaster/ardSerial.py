@@ -948,27 +948,27 @@ def monitoringJoint(ports, jointIndex, timer, callback):
             print("Current Angel:" + str(angel))
             
 def read_MCU_loop(PortList, callback=None):
-        result = send(PortList, ['gP', 0])
-        print("send results " + str(result))       
-        p = list(PortList.keys())
-        serialObject = p[0]
-        while True:
-            try:
-                if PortList:
-                    data = serialObject.main_engine.readline()
-                    if data:
-                        try:
-                            decoded_data = data.decode('ISO-8859-1').strip()
-                            if callback is not None:
-                                callback(decoded_data)
-                            else:
-                                print(str(decoded_data))
-                        except Exception as e:
-                            logger.error(f"Error decoding serial port data: {e}")
-                time.sleep(0.005)  # avoid high CPU usage
-            except Exception as e:
-                logger.error(f"Error reading serial port data: {e}")
-                break
+    result = send(PortList, ['gP', 0])
+    print("send results " + str(result))       
+    p = list(PortList.keys())
+    serialObject = p[0]
+    while True:
+        try:
+            if PortList:
+                data = serialObject.main_engine.readline()
+                if data:
+                    try:
+                        decoded_data = data.decode('ISO-8859-1').strip()
+                        if callback is not None:
+                            callback(decoded_data)
+                        else:
+                            print(str(decoded_data))
+                    except Exception as e:
+                        logger.error(f"Error decoding serial port data: {e}")
+            time.sleep(0.005)  # avoid high CPU usage
+        except Exception as e:
+            logger.error(f"Error reading serial port data: {e}")
+            break
             
 #if need to open serial port, use objects goodPorts
 goodPorts = {}      # goodPorts is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
