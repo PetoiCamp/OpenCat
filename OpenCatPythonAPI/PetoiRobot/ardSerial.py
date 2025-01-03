@@ -157,7 +157,7 @@ def serialWriteByte(port, var=None):
             var.insert(1, var[0][1:])
         var[1:] = list(map(int, var[1:]))
         in_str = token.encode() + struct.pack('b' * (len(var) - 1), *var[1:]) + '~'.encode()
-    elif token == 'w' or token == 'k' or token == 'X':
+    elif token == 'w' or token == 'k' or token == 'X' or token == 'g':
         in_str = var[0] + '\n'
     else:
         in_str = token + '\n'
@@ -888,7 +888,30 @@ def monitoringJoint(ports, jointIndex, timer, callback):
             callback(angel)
         else:
             print("Current Angel:" + str(angel))
-
+            
+def read_MCU_loop(PortList, callback=None):
+        result = send(PortList, ['gP', 0])
+        print("send results " + str(result))       
+        p = list(PortList.keys())
+        serialObject = p[0]
+        while True:
+            try:
+                if PortList:
+                    data = serialObject.main_engine.readline()
+                    if data:
+                        try:
+                            decoded_data = data.decode('ISO-8859-1').strip()
+                            if callback is not None:
+                                callback(decoded_data)
+                            else:
+                                print(str(decoded_data))
+                        except Exception as e:
+                            logger.error(f"Error decoding serial port data: {e}")
+                time.sleep(0.005)  # avoid high CPU usage
+            except Exception as e:
+                logger.error(f"Error reading serial port data: {e}")
+                break
+            
 #if need to open serial port, use objects goodPorts
 goodPorts = {}      # goodPorts is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
 
@@ -917,6 +940,8 @@ if __name__ == '__main__':
         connectPort(goodPorts)
         t = threading.Thread(target=keepCheckingPort, args=(goodPorts,), daemon=True)
         t.start()
+        t1=threading.Thread(target=read_MCU_loop, args=(goodPorts, None)) 
+        t1.start()
         ### Monitor Threads
         # t_monitor_voltage = threading.Thread(target=monitoringVoltage, args=(goodPorts, 0xA7, 60, voltageHanle), daemon=True)
         # t_monitor_voltage.start()
