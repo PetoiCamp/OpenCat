@@ -917,6 +917,59 @@ def manualSelect(PortList, window, needSendTask=True, needOpenPort=True):
     tk.messagebox.showwarning(title=txt('Warning'), message=txt('Manual mode'))
     window.mainloop()
 
+def monitoringVoltage(ports, VoltagePin, timer, callback):
+    while True and len(ports):
+        time.sleep(timer)
+        voltage = send(ports, ["R", [97, VoltagePin], 0])
+        if callback is not None:
+            callback(voltage)
+        else:
+            print("Current Voltage:" + str(voltage))
+
+def monitoringDistance(ports, trigerPin, echoPin, timer, callback):
+    while True and len(ports):
+        time.sleep(timer)
+        distance = send(ports, ["XU", [trigerPin, echoPin], 0])
+        if callback is not None:
+            callback(distance)
+        else:
+            print("Current Distance:" + str(distance))   
+
+def monitoringJoint(ports, jointIndex, timer, callback):
+    while True and len(ports):
+        time.sleep(timer)
+        if jointIndex == 0:
+          angel = send(ports, ["j", jointIndex])
+        else:
+          angel = send(ports, ["j", [jointIndex], 0])
+        if callback is not None:
+            callback(angel)
+        else:
+            print("Current Angel:" + str(angel))
+            
+def read_MCU_loop(PortList, callback=None):
+    result = send(PortList, ['gP', 0])
+    print("send results " + str(result))       
+    p = list(PortList.keys())
+    serialObject = p[0]
+    while True:
+        try:
+            if PortList:
+                data = serialObject.main_engine.readline()
+                if data:
+                    try:
+                        decoded_data = data.decode('ISO-8859-1').strip()
+                        if callback is not None:
+                            callback(decoded_data)
+                        else:
+                            print(str(decoded_data))
+                    except Exception as e:
+                        logger.error(f"Error decoding serial port data: {e}")
+            time.sleep(0.005)  # avoid high CPU usage
+        except Exception as e:
+            logger.error(f"Error reading serial port data: {e}")
+            break
+            
 #if need to open serial port, use objects goodPorts
 goodPorts = {}      # goodPorts is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
 
@@ -928,11 +981,33 @@ lock = threading.Lock()
 returnValue = ''
 timePassed = 0
 
+'''
+# Monitor callback usage sample
+def voltageHanle(voltage):
+    if  voltage <0.5:
+        print("Low Power Warning")    # do something to handle low power
+        
+def distanceHanle(distance):
+    if  distance <0.5:
+        print("Small Distance Warning")    # do something to handle small distance
+'''
+
+
 if __name__ == '__main__':
     try:
         connectPort(goodPorts)
-        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,))
+        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,), daemon=True)
         t.start()
+        t1=threading.Thread(target=read_MCU_loop, args=(goodPorts, None), daemon=True) 
+        t1.start()
+        ### Monitor Threads
+        # t_monitor_voltage = threading.Thread(target=monitoringVoltage, args=(goodPorts, 0xA7, 60, voltageHanle), daemon=True)
+        # t_monitor_voltage.start()
+        # t_monitor_distance = threading.Thread(target=monitoringDistance, args=(goodPorts, 16, 17, 0.5, distanceHanle), daemon=True)
+        # t_monitor_distance.start()
+        # t_monitor_joint = threading.Thread(target=monitoringJoint, args=(goodPorts, 0 , 0.5, None), daemon=True)
+        # t_monitor_joint.start()
+
         if len(sys.argv) >= 2:
             if len(sys.argv) == 2:
                 cmd = sys.argv[1]
