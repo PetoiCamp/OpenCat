@@ -1,0 +1,7 @@
+2024-12-13 11:46:26,132 __main__ - INFO - ardSerial date: Jun. 20, 2024
+2024-12-13 11:46:26,147 __main__ - INFO - *** Available serial ports: ***
+2024-12-13 11:46:26,147 __main__ - INFO - /dev/cu.debug-console 
+2024-12-13 11:46:26,147 __main__ - INFO - /dev/cu.OpenRunProbyShokz 
+2024-12-13 11:46:26,147 __main__ - INFO - /dev/cu.Bluetooth-Incoming-Port 
+2024-12-13 11:46:26,148 __main__ - INFO - /dev/cu.wchusbserial58A60846861 
+2024-12-13 11:46:26,148 __main__ - INFO - /dev/cu.usbmodem58A60846861 

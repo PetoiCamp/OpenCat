@@ -1,4 +1,4 @@
-#define SOFTWARE_VERSION "N_240907"  //NyBoard + YYMMDD
+#define SOFTWARE_VERSION "N_250224"  //NyBoard + YYMMDD
 //board configuration
 // -- comment out these blocks to save program space for your own codes --
 #define BUZZER 5
