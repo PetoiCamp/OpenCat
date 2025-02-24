@@ -5,7 +5,7 @@
 
 //#define SERVO_SLOW_BOOT
 
-#define I2C_EEPROM  //comment this line out if you don't have an I2C EEPROM in your DIY board.
+// #define I2C_EEPROM  //comment this line out if you don't have an I2C EEPROM in your DIY board.
 #define SERIAL_TIMEOUT 5
 #define SERIAL_TIMEOUT_LONG 200
 //Tutorial: https://bittle.petoi.com/11-tutorial-on-creating-new-skills
@@ -159,7 +159,12 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define WALKING_DOF 8
 #define REGULAR G41
 #define KNEE G41
+#ifdef I2C_EEPROM
 #include "InstinctNybble.h"
+#else
+#include "InstinctNybbleShortExample.h"
+#undef IR_PIN
+#endif
 
 
 #elif defined BITTLE
@@ -174,11 +179,18 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define WALKING_DOF 8
 #define REGULAR P1S
 #define KNEE P1S
+
+#ifdef I2C_EEPROM
 #ifdef ROBOT_ARM
 #include "InstinctBittle_arm.h"
 #else
 #include "InstinctBittle.h"
 #endif
+#else
+#include "InstinctBittleShortExample.h"
+#undef IR_PIN
+#endif
+
 //#include "InstinctBittleShortExample.h"
 #endif
 
@@ -232,13 +244,15 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define T_SAVE 's'  //save the calibration values
 // #define T_TILT 't'
 // #define T_MEOW 'u'
+#define T_QUERY '?'
+#ifdef I2C_EEPROM
 #define T_PRINT_GYRO 'v'            //print the Gyro data once
 #define T_VERBOSELY_PRINT_GYRO 'V'  //toggle verbosely print Gyro data
+
 // #define T_XLEG        'x'
 // #define T_ACCELERATE  '.'
 // #define T_DECELERATE  ','
 #define T_RANDOM_MIND 'z'  //toggle random behaviors in the RANDOM_MIND mode
-#define T_QUERY '?'
 
 #ifdef GROVE_SERIAL_PASS_THROUGH
 #define T_READ 'R'        //read pin     R
@@ -247,12 +261,12 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define TYPE_DIGITAL 'd'  //            Rd(digital read)  Wd(digital write)
 #endif
 #define T_COLOR 'C'                     //change the eye colors of the RGB ultrasonic sensor
-#define T_INDEXED_SIMULTANEOUS_BIN 'I'  //I jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. I0 70 8 -20 9 -20
-#define T_INDEXED_SEQUENTIAL_BIN 'M'    //M jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. M0 70 0 -70 8 -20 9 -20
 
 #define BINARY_COMMAND  //disable the binary commands to save space for the simple random demo
 
 #ifdef BINARY_COMMAND
+#define T_INDEXED_SIMULTANEOUS_BIN 'I'  //I jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. I0 70 8 -20 9 -20
+#define T_INDEXED_SEQUENTIAL_BIN 'M'    //M jointIndex1 jointAngle1 jointIndex2 jointAngle2 ... e.g. M0 70 0 -70 8 -20 9 -20
 #define T_BEEP_BIN 'B'    //B note1 duration1 note2 duration2 ... e.g. B12 8 14 8 16 8 17 8 19 4
 #define T_LISTED_BIN 'L'  //a list of the DOFx joint angles: angle0 angle1 angle2 ... angle15
 // #define T_SERVO_MICROSECOND 'w'  //PWM width modulation
@@ -262,7 +276,7 @@ byte pwm_pin[] = { 12, 11, 4, 3,
 #define EXTENSION 'X'
 #define EXTENSION_VOICE 'A'
 #define EXTENSION_ULTRASONIC 'U'
-
+#endif
 
 float degPerRad = 180.0 / M_PI;
 float radPerDeg = M_PI / 180.0;

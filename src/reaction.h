@@ -348,9 +348,11 @@ void reaction() {
           }
           break;
         }
-      // this block handles array like arguments
+        // this block handles array like arguments
+#ifdef BINARY_COMMAND
       case T_INDEXED_SEQUENTIAL_BIN:
       case T_INDEXED_SIMULTANEOUS_BIN:
+#endif
 #ifdef GROVE_SERIAL_PASS_THROUGH
       case T_READ:
       case T_WRITE:
@@ -379,9 +381,11 @@ void reaction() {
                 } else
                   nonHeadJointQ = true;
               }
+#ifdef BINARY_COMMAND
               if (token == T_INDEXED_SEQUENTIAL_BIN) {
                 transform(targetFrame, 1, 2);
               }
+#endif
 #ifdef GROVE_SERIAL_PASS_THROUGH
               else if (token == T_WRITE) {
                 pinMode(newCmd[i + 1], OUTPUT);
@@ -409,6 +413,7 @@ void reaction() {
           }
           break;
         }
+#ifdef I2C_EEPROM
       case EXTENSION:
         {
           switch (newCmd[0]) {
@@ -430,6 +435,7 @@ void reaction() {
           }
           break;
         }
+#endif
 #ifdef BINARY_COMMAND
       case T_LISTED_BIN:
         {
