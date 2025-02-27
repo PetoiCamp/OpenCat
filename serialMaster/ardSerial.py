@@ -12,6 +12,7 @@ import threading
 import os
 import config
 import glob
+import re
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
@@ -460,7 +461,7 @@ postureTableDoF16 = {
 postureDict = {
     'Nybble': postureTableNybble,
     'Bittle': postureTableBittle,
-    'BittleR': postureTableBittleR,
+    'BittleX+Arm': postureTableBittleR,
     'DoF16': postureTableDoF16
 }
 
@@ -646,7 +647,8 @@ def checkPortList(PortList, allPorts, needTesting=True):
     if needTesting is True:
         for t in threads:
             if t.is_alive():
-                t.join(8)
+                # print("t is alive")
+                t.join(timeout=8)
 
 
 def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None):
@@ -698,20 +700,51 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
             updateFunc()
         allPorts = copy.deepcopy(currentPorts)
 
+def get_raspberry_pi_model():
+    """Detects the Raspberry pi model."""
+    try :
+        with open('/proc/cpuinfo','r')as cpuinfo:
+            for line in cpuinfo:
+                if "Model" in line:
+                    model_info = line.split(':')[1].strip()
+                    if "Raspberry Pi 3" in model_info:
+                        return "Raspberry Pi 3"
+                    elif "Raspberry Pi 4" in model_info:
+                        return "Raspberry pi 4"
+                    elif "Raspberry Pi 5" in model_info:
+                        return "Raspberry Pi 5"
+                    else:
+                        #if not 3,4,or 5,attempt to get revision code
+                        with open('/proc/cpuinfo','r')as cpuinfo2:
+                            for line2 in cpuinfo2:
+                                if"Revision" in line2:
+                                    revision_code =line2.split(':')[1].strip()
+                                    #basic check for revision codes that indicate pi5
+                                    if re.match(r'^d[0-3]8', revision_code):
+                                        return "Raspberry Pi 5"
+                                    else:
+                                        return "Raspberry Pi(Unknown Model)"
+        return "Not a Raspberry pi"
+    except FileNotFoundError:
+        return "Not a Raspberry Pi"
+
 def showSerialPorts(allPorts):
     # currently an issue in pyserial where for newer raspiberry pi os
     # (Kernel version: 6.1, Debian version: 12 (bookworm)) or ubuntus (22.04)
     # it classifies the /dev/ttyS0 port as a platform port and therefore won't be queried
     # https://github.com/pyserial/pyserial/issues/489
     if os.name == 'posix' and sys.platform.lower()[:5] == 'linux':
-        extra_ports = glob.glob('/dev/ttyS*')
+        raspPiModelName = get_raspberry_pi_model()
+        if raspPiModelName != "Raspberry Pi 5":
+            extra_ports = glob.glob('/dev/ttyS*')
+        else:
+            extra_ports = glob.glob('/dev/ttyAMA*')
+
         for port in extra_ports:
             if port not in allPorts:
                 allPorts.append(port)
-        for item in allPorts:
-            if 'AMA0' in item:
-                allPorts.remove(item)
-        
+        # printH("allPorts:", allPorts)
+
     # allPorts = deleteDuplicatedUsbSerial(allPorts)
     for index in range(len(allPorts)):
         logger.debug(f"port[{index}] is {allPorts[index]} ")
@@ -996,9 +1029,11 @@ def distanceHanle(distance):
 if __name__ == '__main__':
     try:
         connectPort(goodPorts)
-        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,), daemon=True)
+        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,))
+        t.daemon = True
         t.start()
-        t1=threading.Thread(target=read_MCU_loop, args=(goodPorts, None), daemon=True) 
+        t1=threading.Thread(target=read_MCU_loop, args=(goodPorts, None)) 
+        t1.daemon = True
         t1.start()
         ### Monitor Threads
         # t_monitor_voltage = threading.Thread(target=monitoringVoltage, args=(goodPorts, 0xA7, 60, voltageHanle), daemon=True)
