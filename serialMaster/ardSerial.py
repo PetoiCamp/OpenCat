@@ -35,6 +35,9 @@ def printH(head, value):
     print(head, end=' ')
     print(value)
 
+languageList = {
+    'English': 'en',
+}
 
 if not config.useMindPlus:
     import tkinter as tk
