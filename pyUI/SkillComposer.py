@@ -33,7 +33,7 @@ axisDisable = {
     'Nybble': [0, 5],
     'Bittle': [0, 5],
     # 'BittleX': [0, 5],
-    'BittleR': [0, 5],
+    'BittleX+Arm': [0, 5],
     'DoF16' : []
 
 }
@@ -118,7 +118,7 @@ parameterWinSet = {
     "Nybble": RegularWinSet,
     "Bittle": RegularWinSet,
     # "BittleX": RegularWinSet,
-    "BittleR": BittleRWinSet,
+    "BittleX+Arm": BittleRWinSet,
     "DoF16": RegularWinSet,
 }
 
@@ -126,7 +126,7 @@ parameterMacSet = {
     "Nybble": RegularMacSet,
     "Bittle": RegularMacSet,
     # "BittleX": RegularMacSet,
-    "BittleR": BittleRMacSet,
+    "BittleX+Arm": BittleRMacSet,
     "DoF16": RegularMacSet,
 }
 
@@ -152,8 +152,8 @@ class SkillComposer:
             time.sleep(0.01)
         self.configName = config.model_
         config.model_ = config.model_.replace(' ','')
-        if 'BittleR' in config.model_:
-            self.model = 'BittleR'
+        if 'BittleX+Arm' in config.model_:
+            self.model = 'BittleX+Arm'
         elif config.model_== 'BittleX':
             self.model = 'Bittle'
         elif config.model_== 'NybbleQ':
@@ -817,7 +817,7 @@ class SkillComposer:
         if self.ready and model != self.model:
             self.configName = model
             model = model.replace(' ', '')
-            if 'Bittle' in model and model != "BittleR": # Bittle or Bittle X will be Bittle
+            if 'Bittle' in model and model != "BittleX+Arm": # Bittle or Bittle X will be Bittle
                 model = 'Bittle'
             self.model = copy.deepcopy(model)
             self.postureTable = postureDict[self.model]
@@ -835,7 +835,7 @@ class SkillComposer:
             else:
                 self.parameterSet = parameterMacSet[self.model]
 
-            if self.model == 'BittleR':
+            if self.model == 'BittleX+Arm':
                 self.scaleNames = BittleRScaleNames
             else:
                 self.scaleNames = RegularScaleNames

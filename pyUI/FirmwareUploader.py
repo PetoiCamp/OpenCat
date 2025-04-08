@@ -52,10 +52,14 @@ class Uploader:
         # self.BittleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera','Ultrasonic', 'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture', 'InfraredDistance']))
         # self.NybbleNyBoardModes = list(map(lambda x: txt(x),['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera','Ultrasonic', 'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture', 'InfraredDistance']))
         # for NyBoard, the mode is the same between Bittle and Nybble now
+        # self.BittleNyBoardModes = list(map(lambda x: txt(x),
+        #                                    ['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera', 'Ultrasonic',
+        #                                     'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture',
+        #                                     'InfraredDistance','Voice_RobotArm']))
         self.BittleNyBoardModes = list(map(lambda x: txt(x),
                                            ['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera', 'Ultrasonic',
                                             'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture',
-                                            'InfraredDistance','Voice_RobotArm']))
+                                            'InfraredDistance']))
         self.NybbleNyBoardModes = list(map(lambda x: txt(x),
                                      ['Standard', 'Mind+', 'RandomMind', 'Voice', 'Camera', 'Ultrasonic',
                                       'RandomMind_Ultrasonic', 'PIR', 'Touch', 'Light', 'Gesture',
@@ -66,7 +70,7 @@ class Uploader:
         self.BiBoardModes = list(map(lambda x: txt(x), ['Standard']))
         self.inv_txt = {v: k for k, v in language.items()}
         self.initWidgets()
-        if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R' or self.strProduct.get() == 'Nybble Q':
+        if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle X+Arm' or self.strProduct.get() == 'Nybble Q':
             board_version_list = BiBoard_version_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
@@ -168,15 +172,19 @@ class Uploader:
         self.labProduct = ttk.Label(fmProduct, text=txt('labProduct'), font=('Arial', 16))
         self.labProduct.grid(row=0, column=0, ipadx=5, padx=5, sticky=W)
 
-        cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', font=12)
+        self.cbProduct = ttk.Combobox(fmProduct, textvariable=self.strProduct, foreground='blue', font=12)
         # list of product
-        cbProductList = ['Nybble', 'Nybble Q', 'Bittle', 'Bittle X', 'Bittle R']
+        cbProductList = ['Nybble', 'Nybble Q', 'Bittle', 'Bittle X', 'Bittle X+Arm']
         # set default value of Combobox
-        cbProduct.set(displayName(self.lastSetting[0]))
+        self.cbProduct.set(displayName(self.lastSetting[0]))
         # set list for Combobox
-        cbProduct['values'] = cbProductList
-        cbProduct.grid(row=1, ipadx=5, padx=5, sticky=W)
-        cbProduct.bind("<<ComboboxSelected>>", self.chooseProduct)
+        self.cbProduct['values'] = cbProductList
+        self.cbProduct.grid(row=1, ipadx=5, padx=5, sticky=W)
+        self.cbProduct.bind("<<ComboboxSelected>>", self.chooseProduct)
+        if self.strProduct.get() == 'Bittle X+Arm':
+            tip(self.cbProduct, "Bittle X+Arm" + " (" + "Bittle + " + txt('Robotic Arm') + ")")
+        else:
+            tip(self.cbProduct, self.strProduct.get())
 
         fmSoftwareVersion = ttk.Frame(self.win)
         fmSoftwareVersion.grid(row=1, column=1, ipadx=2, padx=2, sticky=W)
@@ -210,7 +218,7 @@ class Uploader:
             if self.lastSetting[3] in NyBoard_version_list:
                 self.cbBoardVersion.set(BiBoard_version_list[1])
             board_version_list = BiBoard_version_list
-        elif self.strProduct.get() == 'Bittle R':
+        elif self.strProduct.get() == 'Bittle X+Arm':
             if self.lastSetting[3] in NyBoard_version_list:
                 self.cbBoardVersion.set(BiBoard_version_list[2])
             board_version_list = BiBoard_version_list
@@ -236,7 +244,7 @@ class Uploader:
                     cbModeList = self.NybbleNyBoardModes
             else:
                 cbModeList = self.BiBoardModes
-        else:    # if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
+        else:    # if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle X+Arm':
             cbModeList = self.BiBoardModes
 
         self.cbMode = ttk.Combobox(fmMode, textvariable=self.strMode, foreground='blue', font=12)
@@ -406,11 +414,17 @@ class Uploader:
         if self.strProduct.get() == 'Bittle X':
             self.strBoardVersion.set(BiBoard_version_list[1])
             board_version_list = BiBoard_version_list
-        elif self.strProduct.get() == 'Nybble Q' or self.strProduct.get() == 'Bittle R':
+        elif self.strProduct.get() == 'Nybble Q' or self.strProduct.get() == 'Bittle X+Arm':
             self.cbBoardVersion.set(BiBoard_version_list[2])
             board_version_list = BiBoard_version_list
         else:
             board_version_list = NyBoard_version_list + BiBoard_version_list
+
+        if self.strProduct.get() == 'Bittle X+Arm':
+            tip(self.cbProduct, "Bittle X+Arm" + " (" + "Bittle + " + txt('Robotic Arm') + ")")
+        else:
+            tip(self.cbProduct, self.strProduct.get())
+
         self.cbBoardVersion['values'] = board_version_list
         self.updateMode()
         self.setActiveOption()
@@ -424,7 +438,7 @@ class Uploader:
                     modeList = self.NybbleNyBoardModes
             else:
                 modeList = self.BiBoardModes
-        else:    # if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle R':
+        else:    # if self.strProduct.get() == 'Bittle X' or self.strProduct.get() == 'Bittle X+Arm':
             modeList = self.BiBoardModes
 
         self.cbMode['values'] = modeList
@@ -703,8 +717,8 @@ class Uploader:
 
         if strProd == "Bittle X":
             strProdPath = "Bittle"
-        elif strProd == "Bittle R":
-            strProdPath = "BittleR"
+        elif strProd == "Bittle X+Arm":
+            strProdPath = "BittleX+Arm"
         elif strProd == "Nybble Q":
             strProdPath = "Nybble"
         else:

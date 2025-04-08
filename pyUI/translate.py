@@ -1,5 +1,5 @@
-versionNum = '1.2.3'
-dateStr = '2025-01-21'
+versionNum = '1.2.4'
+dateStr = '2025-04-08'
 
 textEN = {
     'lan':'English',
@@ -9,13 +9,14 @@ textEN = {
     'calibTitle':'Joint Calibrator',
     'skillComposerTitle':'Petoi Skill Composer for OpenCat',
     'Model':'Model',
+    'Robotic Arm':'Robotic Arm',
     'Utility':'Utility',
     'Joint Calibrator':'Joint Calibrator',
     'Skill Composer':'Skill Composer',
     'Task Scheduler':'Task Scheduler',
     'Scheduler':'Scheduler',
     'Firmware Uploader':'Firmware Uploader',
-    'Debugger': 'Debugger',
+    'Debugger': 'Tools',
     'tipDebugger':'Provide convinient tools to debug the robot.',
 
     'Eye color picker':'Eye color picker',
@@ -136,6 +137,8 @@ The program will automatically identify the correct serial port name.''',
 
     'Reset voice module':'Reset voice module',
     'tipRstVoice':'Click this button to reset the voice module.',
+    'Calibrate gyroscope':'Calibrate gyroscope',
+    'tipImuCali': 'Calibrate the gyroscope (IMU).',
     'BiBoard Config':'BiBoard Config',
     'tipbiboardConfig':'Click this button to configure BiBoard.',
 
@@ -144,9 +147,16 @@ If yes, press the button "Yes" to continue;
 If no, press the button "No" to quit, for BiBoard V0, please check the dial switch 
 on the bottom of the BiBoard extension hat is dialed to Voice, not UART2.
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''Do you want to calibrate the gyroscope (IMU)?\n
+If yes, place the robot on a level surface and press it down to ensure it's horizontal.\n
+Bittle is shown in the example below.\n
+Then press the button "Yes" to continue;\n
+If no, press the button "No" to cancel.''',
     'Yes': 'Yes',
     'No': 'No',
     'Reset successfully': 'Reset successfully!',
+    'IMU Calibration successfully':'The gyroscope calibration is successful!',
+    'IMU Calibration failed': 'The gyroscope calibration failed!',
     'logLocation':'Please check the log file (logfile.log) in the following file path: \n',
     'checkLogfile':'''\nFor more details, please refer to https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 If you can not fix the issue, please send the log to support@petoi.com for help.''',
@@ -223,7 +233,7 @@ If you can not fix the issue, please send the log to support@petoi.com for help.
     'updating instincts':'Updating Instincts......',
     'instincts updated': 'Instincts updated',
     
-    'calibrate IMU?':'''Calibrate IMU? (Y/N)
+    'calibrate IMU?':'''Calibrate gyroscope (IMU)? (Y/N)
     Note: Lay the mainboard FLAT on a table!''',
     'calibrating IMU': 'Calibrating IMU...',
     'IMU calibrated': 'Calibrate IMU complete!',
@@ -300,13 +310,16 @@ textCN = {
     'Skill Composer':'技能创作坊',
     'Task Scheduler':'任务时序器',
     'Model':'产品',
+    'Robotic Arm':'机械臂',
     'Utility':'应用工具',
     'Joint Calibrator':'关节校准',
     'Scheduler':'时序器',
     'Firmware Uploader':'固件上载',
-    'Debugger': '调试器',
+    'Debugger': '工具箱',
     'tipDebugger':'提供便捷的机器人调试工具。',
     'tipRstVoice':'点击此按钮重置语音模块。',
+    'Calibrate gyroscope':'校准陀螺仪',
+    'tipImuCali': '校准陀螺仪（IMU）。',
     'Eye color picker':'眼色选择器',
     'Creator Information':'创作者信息',
     'Creator':'创作者',
@@ -437,9 +450,15 @@ textCN = {
 是的话，请按“是”按钮继续；
 否的话，请按“否”按钮退出，对于BiBoard V0主板，请检查 BiBoard 扩展底部的拨动开关是否拨到“语音”，而不是“UART2”。
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''您想要校准陀螺仪（IMU）吗？\n
+如果是，请将机器人放在水平面上并按压，确保其身体保持水平。以Bittle为例，如下图所示。\n
+然后按“是”按钮继续；\n
+如果否，按“否”按钮取消。''',
     'Yes': '是',
     'No': '否',
     'Reset successfully': '重置成功！',
+    'IMU Calibration successfully':'陀螺仪校准成功！',
+    'IMU Calibration failed': '陀螺仪校准失败！',
     'logLocation':'请在以下文件路径中检查日志文件 (logfile.log) ：\n',
     'checkLogfile':'''\n相关详细信息，请参阅 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您无法解决问题，请发送日志到 support@petoi.com 以寻求帮助。''',
@@ -490,7 +509,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'updating instincts':'刷新EEPROM数据......',
     'instincts updated': '更新技能完成!',
     
-    'calibrate IMU?':'''校准 IMU？(Y/N)
+    'calibrate IMU?':'''校准陀螺仪（IMU）吗？(Y/N)
             注意: 请务必将主板保持水平放置！''' ,
     'calibrating IMU': 'IMU校准中...',
     'IMU calibrated': 'IMU校准完成！',
@@ -580,13 +599,16 @@ textCN_TW = {
     'Skill Composer':'技能創作坊',
     'Task Scheduler':'任務排程器',
     'Model':'產品',
+    'Robotic Arm':'機械手臂',
     'Utility':'應用工具',
     'Joint Calibrator':'關節校準',
     'Scheduler':'排程器',
     'Firmware Uploader':'韌體上傳',
-    'Debugger': '調試器',
+    'Debugger': '工具箱',
     'tipDebugger':'提供便捷的機器人除錯工具。',
     'tipRstVoice':'點擊此按鈕重設語音模組。',
+    'Calibrate gyroscope':'校準陀螺儀',
+    'tipImuCali': '校準陀螺儀（IMU）。',
     'Eye color picker':'眼睛顏色選擇器',
     'Creator Information':'創作者信息',
     'Creator':'創作者',
@@ -717,9 +739,15 @@ textCN_TW = {
 是的話，請按「是」按鈕繼續；
 否的話，請按「否」按鈕退出，對於BiBoard V0，請檢查 BiBoard 擴展板底部的撥動開關是否撥到「語音」，而不是「UART2」。
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''您想要校準陀螺儀（IMU）嗎？\n
+如果是，請將機器人放在水平面上並按壓，確保其身體保持水平。以Bittle為例，如下圖所示。\n
+然後按“是”按鈕繼續；\n
+如果否，按“否”按鈕取消。''',
     'Yes': '是',
     'No': '否',
     'Reset successfully': '重設成功！',
+    'IMU Calibration successfully':'陀螺儀校準成功！',
+    'IMU Calibration failed': '陀螺儀校準失敗！',
     'logLocation':'請在以下檔案路徑中檢查日誌檔案 (logfile.log)： \n',
     'checkLogfile':'''\n相關详细信息，請參閱 https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 如果您無法修復問題，請將日志發送到 support@petoi.com 以尋求幫助。''',
@@ -769,7 +797,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'updating instincts':'刷新EEPROM數據......',
     'instincts updated': '更新技能完成！',
     
-    'calibrate IMU?':'''校準 IMU？(Y/N)
+    'calibrate IMU?':'''校準陀螺儀（IMU）嗎？(Y/N)
             注意: 請務必將主板保持水平放置！''' ,
     'calibrating IMU': 'IMU校準中......',
     'IMU calibrated': 'IMU校準完成！',
@@ -860,15 +888,18 @@ textDE = {
     'calibTitle':'Gelenkkalibrator',
     'skillComposerTitle':'Petoi Einstellungen Fähigkeiten für OpenCat',
     'Model':'Modell',
+    'Robotic Arm':'Roboterarm',
     'Utility':'Werkzeug',
     'Joint Calibrator':'Gelenkkalibrator',
     'Skill Composer':'Einstellungen Fähigkeiten',
     'Task Scheduler':'Aufgabenplaner',
     'Scheduler':'Planer',
     'Firmware Uploader':'Firmware-Uploader',
-    'Debugger': 'Debugger',
+    'Debugger': 'Werkzeuge',
     'tipDebugger':'Bequeme Werkzeuge zur Fehlerbehebung des Roboters bereitstellen.',
     'tipRstVoice':'Klicken Sie auf diese Schaltfläche, um das Sprachmodul zurückzusetzen.',
+    'Calibrate gyroscope':'Gyroskop kalibrieren',
+    'tipImuCali': 'Das Gyroskop (IMU) kalibrieren.',
     'Eye color picker':'Augenfarbauswahl',
     'Creator Information':'Erstellerinformationen',
     'Creator':'Schöpfer',
@@ -991,9 +1022,17 @@ Wenn ja, drücken Sie die Taste "Ja", um fortzufahren.
 Wenn nicht, drücken Sie die Schaltfläche "Nein" zum Beenden. Überprüfen Sie bei BiBoard V0, 
 ob der DIP-Schalter an der Unterseite der BiBoard-Erweiterung auf Voice und nicht auf UART2 eingestellt ist.
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''Möchten Sie das Gyroskop (IMU) kalibrieren?\n
+Wenn ja, stellen Sie den Roboter auf eine ebene Fläche und drücken Sie ihn nach unten,\n
+um sicherzustellen, dass er horizontal ausgerichtet ist.\n
+Bittle wird im folgenden Beispiel gezeigt.\n
+Drücken Sie dann die Schaltfläche "Ja", um fortzufahren;\n
+Drücken Sie andernfalls die Schaltfläche "Nein", um abzubrechen.''',
     'Yes': 'Ja',
     'No': 'Nein',
     'Reset successfully': 'Reset erfolgreich!',
+    'IMU Calibration successfully':'Die Gyroskopkalibrierung ist erfolgreich!',
+    'IMU Calibration failed': 'Die Gyroskopkalibrierung ist fehlgeschlagen!',
     'logLocation':'Bitte überprüfen Sie die Log-Datei (logfile.log) im folgenden Dateipfad: \n',
     'checkLogfile':'''\nWeitere Einzelheiten finden Sie unter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur Hilfe an support@petoi.com.''',
@@ -1071,7 +1110,7 @@ Wenn Sie das Problem nicht beheben können, senden Sie das Protokoll bitte zur H
     'updating instincts':'Instinkte werden aktualisiert...',
     'instincts updated': 'Instinkte aktualisiert',
 
-    'calibrate IMU?':'''IMU kalibrieren? (J/N)
+    'calibrate IMU?':'''Gyroskop (IMU) kalibrieren? (J/N)
     Hinweis: Legen Sie das Mainboard FLACH auf einen Tisch!''',
     'calibrating IMU': 'IMU wird kalibriert...',
     'IMU calibrated': 'IMU erfolgreich kalibriert!',
@@ -1146,15 +1185,18 @@ textTH = {
     'calibTitle':'การปรับสอดคล้องข้อต่อ',
     'skillComposerTitle':'คอมโพเซอร์ Petoi Skill สำหรับ OpenCat',
     'Model':'รุ่น',
+    'Robotic Arm':'แขนหุ่นยนต์ ',
     'Utility':'ยูทิลิตี้',
     'Joint Calibrator':'การปรับสอดคล้องข้อต่อ',
     'Skill Composer':'คอมโพเซอร์สกิล',
     'Task Scheduler':'ตัวจัดตารางงาน',
     'Scheduler':'ตัวจัดตาราง',
     'Firmware Uploader':'ตัวอัปโหลดเฟิร์มแวร์',
-    'Debugger': 'ดีบักเกอร์ ',
+    'Debugger': 'เครื่องมือ',
     'tipDebugger':'จัดเตรียมเครื่องมือที่สะดวกสำหรับดีบักหุ่นยนต์ .',
     'tipRstVoice':'กดปุ่มนี้เพื่อรีเซ็ตโมดูลเสียง (กดปุ่มนี้เพื่อรีเซ็ตโมดูลเสียง.',
+    'Calibrate gyroscope':'ปรับเทียบไจโรสโคป',
+    'tipImuCali': 'ปรับเทียบไจโรสโคป (IMU).',
     'Eye color picker':'ตัวเลือกสีตา',
     'Creator Information':'ข้อมูลผู้สร้าง',
     'Creator':'ผู้สร้าง',
@@ -1276,9 +1318,16 @@ textTH = {
 ใช่: กดปุ่ม "ใช่" เพื่อดำเนินการต่อ
 ถ้าไม่มี ให้กดปุ่ม "ไม่" เพื่อออก สำหรับ BiBoard V0 โปรดตรวจสอบสวิตช์แบบหมุนที่ด้านล่างของส่วนขยาย BiBoard ว่าหมุนไปที่ Voice ไม่ใช่ UART2
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''คุณต้องการปรับเทียบไจโรสโคป (IMU) หรือไม่?\n
+ถ้าต้องการ โปรดวางหุ่นยนต์บนพื้นผิวที่เรียบและกดลงเพื่อให้แน่ใจว่ามันอยู่ในแนวนอน\n
+ตัวอย่างด้านล่างแสดง Bittle\n
+จากนั้นกดปุ่ม "ใช่" เพื่อดำเนินการต่อ\n
+ถ้าไม่ต้องการ กดปุ่ม "ไม่ใช่" เพื่อยกเลิก''',
     'Yes': 'ใช่',
     'No': 'ไม่ใช่',
     'Reset successfully': 'รีเซ็ตสำเร็จ!',
+    'IMU Calibration successfully':'การปรับเทียบไจโรสโคปสำเร็จ!',
+    'IMU Calibration failed': 'การปรับเทียบไจโรสโคปล้มเหลว!',
     'logLocation':'โปรดตรวจสอบไฟล์บันทึก (logfile.log) ในเส้นทางไฟล์ต่อไปนี้: \n',
     'checkLogfile':'''\nสำหรับรายละเอียดเพิ่มเติม โปรดดูที่ https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 หากคุณไม่สามารถแก้ไขปัญหาได้ โปรดส่งไฟล์บันทึกไปยัง support@petoi.com เพื่อขอความช่วยเหลือ''',
@@ -1356,7 +1405,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'updating instincts':'กำลังอัปเดตตัวอย่าง...',
     'instincts updated': 'อัปเดตตัวอย่างแล้ว',
 
-    'calibrate IMU?':'''ต้องการปรับแต่ง IMU หรือไม่? (Y/N)
+    'calibrate IMU?':'''ปรับเทียบไจโรสโคป (IMU) หรือไม่? (Y/N)
     หมายเหตุ: วางเมนบอร์ดให้ราบไปกับบนโต๊ะ!''',
     'calibrating IMU': 'กำลังปรับแต่ง IMU...',
     'IMU calibrated': 'ปรับแต่ง IMU เสร็จสมบูรณ์!',
@@ -1432,15 +1481,18 @@ textFR={
     'calibTitle':'Calibrateur d\'articulation',
     'skillComposerTitle':'Compositeur de compétences Petoi pour OpenCat',
     'Model':'Modèle',
+    'Robotic Arm':'Bras robotique',
     'Utility':'Utilitaire',
     'Joint Calibrator':'Calibrateur d\'articulation',
     'Skill Composer':'Compositeur de compétences',
     'Task Scheduler':'Planificateur de tâches',
     'Scheduler':'Planificateur',
     'Firmware Uploader':'Chargeur de firmware',
-    'Debugger': 'Débogueur',
+    'Debugger': 'Outils',
     'tipDebugger':'Fournir des outils pratiques pour déboguer le robot.',
     'tipRstVoice':'Cliquez sur ce bouton pour réinitialiser le module vocal.',
+    'Calibrate gyroscope':'Calibrer le gyroscope',
+    'tipImuCali': 'Calibrer le gyroscope (IMU).',
     'Eye color picker':'Sélecteur de couleur des yeux',
     'Creator Information':'Informations sur le créateur',
     'Creator':'Créateur',
@@ -1563,9 +1615,16 @@ Si oui, appuyez sur le bouton "Oui" pour continuer.
 Si non, appuyez sur le bouton "Non" pour quitter. Pour BiBoard V0, veuillez vérifier que le 
 commutateur DIP situé sous la carte d\'extension BiBoard est réglé sur Voice et non sur UART2.
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''Voulez-vous calibrer le gyroscope (IMU) ?\n
+Si oui, placez le robot sur une surface plane et appuyez dessus pour vous assurer qu\'il est horizontal.\n
+Bittle est montré dans l\'exemple ci-dessous.\n
+Appuyez ensuite sur le bouton « Oui » pour continuer ;\n
+Sinon, appuyez sur le bouton « Non » pour annuler.''',
     'Yes': 'Oui',
     'No': 'Non',
     'Reset successfully': 'Réinitialisation réussie !',
+    'IMU Calibration successfully':'La calibration du gyroscope est réussie!',
+    'IMU Calibration failed': 'La calibration du gyroscope a échoué!',
     'logLocation':'Veuillez vérifier le fichier journal (logfile.log) dans le chemin de fichier suivant : \n',
     'checkLogfile':'''\nPour plus de détails, veuillez consulter https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal à support@petoi.com pour obtenir de l\'aide.''',
@@ -1641,7 +1700,7 @@ Si vous ne parvenez pas à résoudre le problème, veuillez envoyer le journal �
     'updating instincts':'Mise à jour des instincts en cours...',
     'instincts updated': 'Instincts mis à jour',
 
-    'calibrate IMU?':'''Calibrer l\'IMU ? (O/N)
+    'calibrate IMU?':'''Calibrer le gyroscope (IMU) (O/N)
         Remarque : Placez la carte principale À PLAT sur une table !''',
     'calibrating IMU': 'Calibration de l\'IMU en cours...',
     'IMU calibrated': 'Calibration de l\'IMU terminée !',
@@ -1716,15 +1775,18 @@ textJP={
     'calibTitle':'ジョイントキャリブレータ',
     'skillComposerTitle':'OpenCatのためのPetoiスキルコンポーザー',
     'Model':'モデル',
+    'Robotic Arm':'ロボットアーム',
     'Utility':'ユーティリティ',
     'Joint Calibrator':'ジョイントキャリブレータ',
     'Skill Composer':'スキルコンポーザ',
     'Task Scheduler':'タスクスケジューラ',
     'Scheduler':'スケジューラ',
     'Firmware Uploader':'ファームウェアアップローダ',
-    'Debugger': 'デバッガー',
+    'Debugger': 'ツール',
     'tipDebugger':'ロボットのデバッグに便利なツールを提供する。',
     'tipRstVoice':'このボタンをクリックして音声モジュールをリセットします。',
+    'Calibrate gyroscope':'ジャイロスコープを校正する',
+    'tipImuCali': 'ジャイロスコープ（IMU）を校正する',
     'Eye color picker':'目の色選択',
     'Creator Information':'制作者情報',
     'Creator':'制作者',
@@ -1847,9 +1909,16 @@ textJP={
 そうでない場合は、「いいえ」ボタンを押して終了してください。BiBoard V0の場合は、
 BiBoard拡張ハットの底面にあるディップスイッチがUART2ではなくVoiceに設定されているか確認してください。
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''ジャイロスコープ (IMU) を校正しますか？\n
+はいの場合、ロボットを水平な場所に置き、水平になるように押し下げてください。\n
+下の例は Bittle を示しています。\n
+次に、「はい」ボタンを押して続行します。\n
+いいえの場合、「いいえ」ボタンを押してキャンセルします。''',
     'Yes': 'はい',
     'No': 'いいえ',
     'Reset successfully': 'リセットが成功しました！',
+    'IMU Calibration successfully':'ジャイロスコープの校正が成功しました！',
+    'IMU Calibration failed': 'ジャイロスコープの校正が失敗しました！',
     'logLocation':'以下のファイルパスにあるログファイル (logfile.log) を確認してください： \n',
     'checkLogfile':'''\n詳細については、https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file を参照してください \n
 問題を解決できない場合は、ログを support@petoi.com に送信してサポートを受けてください。''',
@@ -1919,7 +1988,7 @@ https://www.petoi.com\n''' + dateStr,
     'updating instincts':'本能をアップデート中...',
     'instincts updated':'本能がアップデートされました',
 
-    'calibrate IMU?':'IMUをキャリブレーションしますか？（Y/N）\n注：メインボードをテーブルの上に平らに置いてください！',
+    'calibrate IMU?':'ジャイロスコープ（IMU）を校正しますか？（Y/N）\n注：メインボードをテーブルの上に平らに置いてください！',
     'calibrating IMU':'IMUをキャリブレーション中...',
     'IMU calibrated':'IMUのキャリブレーションが完了しました！',
     'caliIMUerrorStatus':'IMUキャリブレーションエラー!',
@@ -1994,15 +2063,18 @@ textIT = {
     'calibTitle':'Calibratore articolare',
     'skillComposerTitle':'Petoi compositore per OpenCat',
     'Model':'Modello',
+    'Robotic Arm':'Braccio robotico',
     'Utility':'Utilità',
     'Joint Calibrator':'Calibratore articolare',
     'Skill Composer':'Compositore di abilità',
     'Task Scheduler':'Agenda',
     'Scheduler':'Sequenza',
     'Firmware Uploader':'Caricatore di firmware',
-    'Debugger': 'Debugger',
+    'Debugger': 'Strumenti',
     'tipDebugger':'Fornire strumenti convenienti per il debug del robot.',
     'tipRstVoice':'Clicca su questo pulsante per ripristinare il modulo vocale.',
+    'Calibrate gyroscope':'Calibrare il giroscopio',
+    'tipImuCali': 'Calibrare il giroscopio (IMU).',
     'Eye color picker':'Selettore del colore degli occhi',
     'Creator Information':'Informazioni sul creatore',
     'Creator':'Creatore',
@@ -2119,9 +2191,22 @@ Se sì, premi il pulsante "Sì" per continuare.
 Se no, premere il pulsante "No" per uscire. Per BiBoard V0, controllare che il selettore 
 DIP nella parte inferiore dell\'estensione BiBoard sia impostato su Voice e non su UART2.
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''Vuoi calibrare il giroscopio (IMU)?\n
+In caso affermativo, posiziona il robot su una superficie \n
+piana e premilo verso il basso per assicurarti che sia orizzontale.\n
+Bittle è mostrato nell'esempio qui sotto.\n
+Quindi premi il pulsante "Sì" per continuare;\n
+Altrimenti, premi il pulsante "No" per annullare.
+    Vuoi calibrare il giroscopio (IMU)?\n
+In caso affermativo, posiziona la scheda madre o il robot PIATTO su un tavolo.\n
+Prendi Bittle come esempio, come mostrato nella figura sotto.\n
+Quindi premi il pulsante "Sì" per continuare;\n
+In caso contrario, premi il pulsante "No" per annullare.''',
     'Yes': 'Sì',
     'No': 'No',
     'Reset successfully': 'Ripristino riuscito!',
+    'IMU Calibration successfully':'La calibrazione del giroscopio è riuscita!',
+    'IMU Calibration failed': 'La calibrazione del giroscopio è fallita!',
     'logLocation':'Si prega di controllare il file di registro (logfile.log) nel seguente percorso: \n',
     'checkLogfile':'''\nPer ulteriori dettagli, consultare https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Se non riesci a risolvere il problema, invia il registro a support@petoi.com per chiedere aiuto.''',
@@ -2195,7 +2280,7 @@ Se non riesci a risolvere il problema, invia il registro a support@petoi.com per
     'updating instincts':'Aggiornamento degli istinti......',
     'instincts updated': 'Istinti aggiornati',
     
-    'calibrate IMU?':'''Calibrare l\'IMU? (S/N)
+    'calibrate IMU?':'''Calibrare il giroscopio (IMU)? (S/N)
     Nota: Appoggia la scheda madre PIATTA su un tavolo!''',
     'calibrating IMU': 'Taratura dell\'IMU...',
     'IMU calibrated': 'Calibrazione IMU completata!',
@@ -2270,13 +2355,14 @@ textRU = {
     'calibTitle':'Калибратор',
     'skillComposerTitle':'Редактор навыков Petoi для OpenCat',
     'Model':'Модель',
+    'Robotic Arm':'Роботизированная рука',
     'Utility':'Утилиты',
     'Joint Calibrator':'Войти в калибратор',
     'Skill Composer':'Редактор навыков',
     'Task Scheduler':'Планировщик задач',
     'Scheduler':'Планировщик',
     'Firmware Uploader':'Обновление Firmware',
-    'Debugger': 'Отладчик',
+    'Debugger': 'Инструменты',
     'tipDebugger':'Инструменты отладки робота.',
 
     'Eye color picker':'Выбор цыета глаз',
@@ -2397,6 +2483,8 @@ textRU = {
 
     'Reset voice module':'Сбросить голосовой модуль',
     'tipRstVoice':'Нажмите кнопку для сброса госового модуля.',
+    'Calibrate gyroscope':'Калибровка гироскопа',
+    'tipImuCali': 'Калибровка гироскопа (IMU).',
     'BiBoard Config':'Конфигурация BiBoard',
     'tipbiboardConfig':'Нажмите эту кнопку для конфигурирования BiBoard.',
 
@@ -2405,9 +2493,17 @@ textRU = {
 Если нет, нажмите "Нет" для выхода, для BiBoard V0, проверьте дисковый переключатель 
 на нижней стороне голосового расширителя BiBoard (не UART2).
 https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-the-voice-command-doesnt-work''',
+    'IMU indicates':'''Вы хотите откалибровать гироскоп (IMU)?\n
+Если да, поместите робота на ровную поверхность и надавите на него,\n
+чтобы убедиться, что он находится в горизонтальном положении.\n
+Bittle показан в примере ниже.\n
+Затем нажмите кнопку «Да» для продолжения;\n
+Если нет, нажмите кнопку «Нет» для отмены.''',
     'Yes': 'Да',
     'No': 'Нет',
     'Reset successfully': 'Успешный сброс!',
+    'IMU Calibration successfully':'Калибровка гироскопа выполнена успешно!',
+    'IMU Calibration failed': 'Калибровка гироскопа не удалась!',
     'logLocation':'Проверьте log файл (logfile.log) по следующему пути: \n',
     'checkLogfile':'''\nДополнительная информация по адресу https://docs.petoi.com/desktop-app/firmware-uploader#check-the-log-file \n
 Если проблема не решена, отправьте лог на support@petoi.com for help.''',
@@ -2472,7 +2568,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
 
     'msgVersion': 'Версия: ' + versionNum + '\n'+
     '''Инструмент загрузки прошивки для OpenCat
-    Copyright © 2018-2024
+    Copyright © 2018-2025
     All rights reserved Petoi LLC
     https://www.petoi.com\n''' + dateStr,
 
@@ -2484,7 +2580,7 @@ https://docs.petoi.com/extensible-modules/voice-command-module#how-to-debug-if-t
     'updating instincts':'Обновление Инстинкта......',
     'instincts updated': 'Инстинкт обновлен',
     
-    'calibrate IMU?':'''Калибровка IMU? (Д/Н)
+    'calibrate IMU?':'''Калибровать гироскоп (IMU)? (Д/Н)
     Примечание: Положите материнскую плату ГОРИЗОНТАЛЬНО!''',
     'calibrating IMU': 'Калибровка IMU...',
     'IMU calibrated': 'Калибровка IMU завершена!',

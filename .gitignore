@@ -22,3 +22,4 @@ pyUI/README.txt
 pyUI/README_Mac.txt
 pyUI/README_Windows.txt
 serialMaster/logfile.log
+.cursor/*

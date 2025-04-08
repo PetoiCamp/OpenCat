@@ -10,6 +10,8 @@ import re
 import platform
 import os
 
+intoCameraMode = False
+
 if platform.system() == "Windows":    # for Windows
     seperation = '\\'
     homeDri = os.getenv('HOMEDRIVE') 
@@ -28,7 +30,7 @@ def printH(head, value):
     print(head, end=' ')
     print(value)
 
-printH("Mind+ date: ", "Oct 18, 2023")
+printH("Mind+ date: ", "Feb 25, 2025")
 
 
 def makeDirectory(path):
@@ -42,9 +44,23 @@ def makeDirectory(path):
     isExists = os.path.exists(path)
     
     if not isExists:
-        # Create the directory if it does not exist
-        os.makedirs(path)
-        print(path + ' creat successfully')
+        # printH("model name:", path.split(seperation)[-1])
+        if path.split(seperation)[-1] == "BittleX+Arm":
+            path = seperation.join(path.split(seperation)[:-1]) + seperation + "BittleR"
+            # printH("path:", path)
+            if not os.path.exists(path):
+                # Create the directory if it does not exist
+                path = seperation.join(path.split(seperation)[:-1]) + seperation + "BittleX+Arm"
+                os.makedirs(path)
+                print(path + ' creat successfully')
+            else:
+                # Change the directory name "BittleR" to "BittleX+Arm"
+                os.rename(path,seperation.join(path.split(seperation)[:-1]) + seperation + "BittleX+Arm")
+                # print("Rename successfully!")
+        else:
+            # Create the directory if it does not exist
+            os.makedirs(path)
+            print(path + ' creat successfully')
         return True
     else:
         # If the directory exists, it will not be created and prompt that the directory already exists.
@@ -107,7 +123,7 @@ K\n\
    0,   0,   0,   0,   0,   0,   0,   0,  30,  30,  30,  30,  30,  30,  30,  30,	 8, 0, 0, 0,\n\
 };'
 
-modelDict = {'Bittle': BittleData, 'Nybble': NybbleData, 'BittleR': BittleRData}
+modelDict = {'Bittle': BittleData, 'Nybble': NybbleData, 'BittleX+Arm': BittleRData,}  # 'BittleR': BittleRData, 
 
 def creatSkillFile():
     for key in modelDict:
@@ -137,13 +153,20 @@ def getPortList():
 
 # deactivate the gyro
 def deacGyro():
-    res = send(goodPorts, ['G', 0])
-    # printH("gyro status:",res )
-    logger.debug(f'gyro status:{res}')
-    if res != -1 and res[0][0] == 'G':
+    boardVer = config.version_
+    # printH("boardVer:", boardVer)
+    if boardVer[0] == 'N':
         res = send(goodPorts, ['G', 0])
         # printH("gyro status:",res )
         logger.debug(f'gyro status:{res}')
+        if res != -1 and res[0][0] == 'G':
+            res = send(goodPorts, ['G', 0])
+            # printH("gyro status:",res )
+            logger.debug(f'gyro status:{res}')
+    else:
+        res = send(goodPorts, ['gb', 0])
+        if res != -1 and res[0][0] == 'g':
+            logger.debug(f'gyro is deactived successfully.')
 
 
 # get the current angle list of all joints
@@ -276,8 +299,12 @@ def encode(in_str, encoding='utf-8'):
 def printSkillFileName():
     global modelName
     config.model_ = config.model_.replace(' ','')
-    if 'Bittle' in config.model_ and config.model_!= 'BittleR':
+    if config.model_ == "BittleR":
+        modelName = 'BittleX+Arm'
+    elif 'Bittle' in config.model_ and config.model_!= 'BittleX+Arm':
         modelName = 'Bittle'
+    elif 'Nybble' in config.model_:
+        modelName = 'Nybble'
     else:
         modelName = config.model_
     printH("modelName:", modelName)
@@ -301,6 +328,7 @@ def openPort(port):
     print('Time delay after open port: ', str(t))
     time.sleep(t)
     printSkillFileName()
+    deacGyro()
 
 
 # auto connect serial ports
@@ -449,17 +477,33 @@ def getValue(task, dataType ="int"):
             try:
                 if dataType == "float":
                     value = float(result[index:])
-                else:
+                elif dataType == "int":
                     value = int(result[index:])
+                elif dataType == "tuple":
+                    tmpList = result[index:].split('\t')
+                    sizeStr = tmpList[2].split(' ')
+                    width = int(sizeStr[-1])
+                    # printH("width is: ",width)
+                    height = int(tmpList[3])
+                    # printH("height is: ",height)
+                    tupWidthHeight = (width, height)
+                    if width != 0:
+                        value = tuple(map(float, tmpList[:2])) + tupWidthHeight
+                    else:
+                        value = (-255, -255, 0, 0)
+                        print('* No value got!')
                 # printH("value is: ",value)
             except Exception as e:
-                print('* No value got!')
+                print('* Got value error!')
                 raise e
         else:
-            value = -1
+            value = (-255, -255, 0, 0)
+            print('* No value got!')
         return value
     else:
-        return -1
+        value = (-255, -255, 0, 0)
+        print('* No value got!')
+        return value
 
 
 # get analog value of a pin
@@ -482,8 +526,45 @@ def readDigitalValue(pin):
 # get distance value(cm) from ultrasonic sensor
 def readUltrasonicDistance(triggerPin, echoPin):
     token = 'XU'
-    task = [token, [triggerPin, echoPin], 0]
+    task = [token, [int(triggerPin), int(echoPin)], 0]
     return getValue(task, dataType ="float")
+
+# get the coordinates of the identified target from camera module
+def readCameraCoordinate():
+    global intoCameraMode
+    # Check if the camera task isactivated.
+    if intoCameraMode == False:
+        res = send(goodPorts, ['XCr', 0])
+        if res != -1 :
+            # printH("intoCameraMode is:",intoCameraMode)
+            logger.debug(f'res={res}')
+            # p = re.compile(r'^(.*),',re.MULTILINE)
+            p = re.compile(r'^(?=.*[01])(?=.*,).+$', flags=re.MULTILINE)
+            if res[1] != '':
+                logger.debug(f'res[1]={res[1]}')
+                for one in p.findall(res[1]):
+                    val = re.sub('\t','',one)
+                val = val.replace('\r','').replace('\n','')    # delete '\r\n'
+                strFlagList = val.split(',')[:-1]
+                flagList = list(map(lambda x:int(x),strFlagList))    # flag value have to be integer
+                logger.debug(f'flagList={flagList}')
+                if flagList[9] == 1:
+                    task = ['XCp', 0]
+                    intoCameraMode = True
+                    return getValue(task, dataType ="tuple")
+                else:
+                    tup = (0,0)
+                    print("No target detected!")
+                    return tup
+            else:
+                task = ['XCp', 0]
+                intoCameraMode = True
+                return getValue(task, dataType ="tuple")
+            
+    else:
+        # printH("intoCameraMode is:",intoCameraMode)
+        task = ['XCp', 0]
+        return getValue(task, dataType ="tuple")
 
 
 # set analog value of a pin

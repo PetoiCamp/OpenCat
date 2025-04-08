@@ -54,7 +54,7 @@ if not config.useMindPlus:
 with open("./logfile.log", "w+", encoding="ISO-8859-1") as logfile:
     pass
 time.sleep(1)
-logger.info("ardSerial date: Jun. 20, 2024")
+logger.info("ardSerial date: Feb. 27, 2025")
 
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):
@@ -221,8 +221,9 @@ def sendTask(PortList, port, task, timeout=0):  # task Structure is [token, var=
                 logger.debug(f"Previous buffer: {previousBuffer}")
                 pass
             if len(task) == 2:
-                #        print('a')
-                #        print(task[0])
+                # print('a')
+                # print(task[0])
+                # printH("port is:", port)
                 serialWriteByte(port, [task[0]])
             elif isinstance(task[1][0], int):
                 #        print('b')
@@ -242,7 +243,7 @@ def sendTask(PortList, port, task, timeout=0):  # task Structure is [token, var=
         #    if initialized:
         #        printH('thread',portDictionary[port])
         except Exception as e:
-            #        printH('Fail to send to port',PortList[port])
+            # printH('Fail to send to port',PortList[port])
             if port in PortList:
                 PortList.pop(port)
             lastMessage = -1
@@ -299,8 +300,10 @@ def splitTaskForLargeAngles(task):
 def send(port, task, timeout=0):
 #    printH('*** @@@ open port ',port) #debug
     if isinstance(port, dict):
+        # print("port is dict.")
         p = list(port.keys())
     elif isinstance(port, list):
+        # print("port is list.")
         p = port
     queue = splitTaskForLargeAngles(task)
     for task in queue:
@@ -308,6 +311,7 @@ def send(port, task, timeout=0):
         if len(port) > 1:
             returnResult = sendTaskParallel(p, task, timeout)
         elif len(port) == 1:
+            # print("port len is 1.")
             returnResult = sendTask(goodPorts, p[0], task, timeout)
         else:
             # print('no ports')
@@ -982,7 +986,7 @@ def monitoringJoint(ports, jointIndex, timer, callback):
             
 def read_MCU_loop(PortList, callback=None):
     result = send(PortList, ['gP', 0])
-    print("send results " + str(result))       
+    print("send results " + str(result))
     p = list(PortList.keys())
     serialObject = p[0]
     while True:
@@ -1002,7 +1006,7 @@ def read_MCU_loop(PortList, callback=None):
         except Exception as e:
             logger.error(f"Error reading serial port data: {e}")
             break
-            
+
 #if need to open serial port, use objects goodPorts
 goodPorts = {}      # goodPorts is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
 
@@ -1032,15 +1036,18 @@ if __name__ == '__main__':
         t = threading.Thread(target=keepCheckingPort, args=(goodPorts,))
         t.daemon = True
         t.start()
-        t1=threading.Thread(target=read_MCU_loop, args=(goodPorts, None)) 
-        t1.daemon = True
-        t1.start()
+        # t1=threading.Thread(target=read_MCU_loop, args=(goodPorts, None))
+        # t1.daemon = True
+        # t1.start()
         ### Monitor Threads
-        # t_monitor_voltage = threading.Thread(target=monitoringVoltage, args=(goodPorts, 0xA7, 60, voltageHanle), daemon=True)
+        # t_monitor_voltage = threading.Thread(target=monitoringVoltage, args=(goodPorts, 0xA7, 60, voltageHanle))
+        # t_monitor_voltage.daemon = True
         # t_monitor_voltage.start()
-        # t_monitor_distance = threading.Thread(target=monitoringDistance, args=(goodPorts, 16, 17, 0.5, distanceHanle), daemon=True)
+        # t_monitor_distance = threading.Thread(target=monitoringDistance, args=(goodPorts, 16, 17, 0.5, distanceHanle))
+        # t_monitor_distance.daemon = True
         # t_monitor_distance.start()
-        # t_monitor_joint = threading.Thread(target=monitoringJoint, args=(goodPorts, 0 , 0.5, None), daemon=True)
+        # t_monitor_joint = threading.Thread(target=monitoringJoint, args=(goodPorts, 0 , 0.5, None))
+        # t_monitor_joint.daemon = True
         # t_monitor_joint.start()
 
         if len(sys.argv) >= 2:

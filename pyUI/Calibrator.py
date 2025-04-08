@@ -39,14 +39,14 @@ RegularMacSet = {
 parameterWinSet = {
     "Nybble": RegularWinSet,
     "Bittle": RegularWinSet,
-    "BittleR": BittleRWinSet,
+    "BittleX+Arm": BittleRWinSet,
     "DoF16": RegularWinSet,
 }
 
 parameterMacSet = {
     "Nybble": RegularMacSet,
     "Bittle": RegularMacSet,
-    "BittleR": BittleRMacSet,
+    "BittleX+Arm": BittleRMacSet,
     "DoF16": RegularMacSet,
 }
 
@@ -74,8 +74,8 @@ class Calibrator:
         config.model_ = config.model_.replace(' ', '')
         if config.model_ == 'BittleX':
             self.model = 'Bittle'
-        elif config.model_ == 'BittleRN':
-            self.model = 'BittleR'
+        elif config.model_ == 'BittleX+Arm':
+            self.model = 'BittleX+Arm'
         elif config.model_ == 'NybbleQ':
             self.model = 'Nybble'
         else:
@@ -116,8 +116,8 @@ class Calibrator:
         else:
             self.parameterSet = parameterMacSet[self.model]
 
-        if self.model == 'BittleR':
-            # self.parameterSet = parameterSet['BittleR']
+        if self.model == 'BittleX+Arm':
+            # self.parameterSet = parameterSet['BittleX+Arm']
             scaleNames = BittleRScaleNames
         else:
             # self.parameterSet = parameterSet['Regular']
@@ -189,7 +189,7 @@ class Calibrator:
 
             value = DoubleVar()
             if i in frontJointIdx:
-                if self.model == 'BittleR':
+                if self.model == 'BittleX+Arm':
                     LEN = LEN + 30
                 sliderBar = Scale(self.winCalib, state=stt, fg='blue', bg=clr, variable=value, orient=ORI,
                                   borderwidth=2, relief='flat', width=8, from_=-25 * tickDirection,

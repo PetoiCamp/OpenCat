@@ -12,6 +12,7 @@ import threading
 import os
 from . import config
 import glob
+import re
 
 FORMAT = '%(asctime)-15s %(name)s - %(levelname)s - %(message)s'
 '''
@@ -51,7 +52,7 @@ if not config.useMindPlus:
     # printH("txt('lan'):", txt('lan'))
 
 
-logger.info("ardSerial date: Jun. 20, 2024")
+logger.info("ardSerial date: Feb. 27, 2025")
 
 def encode(in_str, encoding='utf-8'):
     if isinstance(in_str, bytes):
@@ -146,6 +147,7 @@ def serialWriteByte(port, var=None):
     if var is None:
         var = []
     token = var[0][0]
+    # printH("token:",token)
     # print var
     if (token == 'c' or token == 'm' or token == 'i' or token == 'b' or token == 'u' or token == 't') and len(var) >= 2:
         in_str = ""
@@ -162,6 +164,7 @@ def serialWriteByte(port, var=None):
     else:
         in_str = token + '\n'
     logger.debug(f"!!!!!!! {in_str}")
+    # printH("in_str:", in_str)
     port.Send_data(encode(in_str))
     time.sleep(0.01)
 
@@ -181,7 +184,7 @@ def printSerialMessage(port, token, timeout=0):
         if port:
             response = port.main_engine.readline().decode('ISO-8859-1')
             if response != '':
-                # logger.debug(f"response is: {response}")
+                logger.debug(f"response is: {response}")
                 responseTrim = response.split('\r')[0]
                 logger.debug(f"responseTrim is: {responseTrim}")
                 if responseTrim.lower() == token.lower(): 
@@ -205,6 +208,7 @@ def printSerialMessage(port, token, timeout=0):
 
 def sendTask(PortList, port, task, timeout=0):  # task Structure is [token, var=[], time]
     logger.debug(f"{task}")
+    # printH("task:",task)
     global returnValue
     #    global sync
     #    print(task)
@@ -215,8 +219,9 @@ def sendTask(PortList, port, task, timeout=0):  # task Structure is [token, var=
                 logger.debug(f"Previous buffer: {previousBuffer}")
                 pass
             if len(task) == 2:
-                #        print('a')
-                #        print(task[0])
+                # print('a')
+                # print(task[0])
+                # printH("port is:", port)
                 serialWriteByte(port, [task[0]])
             elif isinstance(task[1][0], int):
                 #        print('b')
@@ -252,8 +257,9 @@ def sendTaskParallel(ports, task, timeout=0):
     #    sync = 0
     threads = list()
     for p in ports:
-        t = threading.Thread(target=sendTask, args=(goodPorts, p, task, timeout), daemon=True)
+        t = threading.Thread(target=sendTask, args=(goodPorts, p, task, timeout))
         threads.append(t)
+        t.daemon = True
         t.start()
     for t in threads:
         if t.is_alive():
@@ -292,8 +298,10 @@ def splitTaskForLargeAngles(task):
 def send(port, task, timeout=0):
 #    printH('*** @@@ open port ',port) #debug
     if isinstance(port, dict):
+        # print("port is dict.")
         p = list(port.keys())
     elif isinstance(port, list):
+        # print("port is list.")
         p = port
     queue = splitTaskForLargeAngles(task)
     for task in queue:
@@ -301,6 +309,7 @@ def send(port, task, timeout=0):
         if len(port) > 1:
             returnResult = sendTaskParallel(p, task, timeout)
         elif len(port) == 1:
+            # print("port len is 1.")
             returnResult = sendTask(goodPorts, p[0], task, timeout)
         else:
             # print('no ports')
@@ -338,7 +347,8 @@ def closeAllSerial(ports, clearPorts=True):
         send(ports, ['d', 0], 1)
 
     for p in ports:
-        t = threading.Thread(target=closeSerialBehavior, args=(p,), daemon=True)
+        t = threading.Thread(target=closeSerialBehavior, args=(p,))
+        t.daemon = True
         t.start()
         t.join()
 
@@ -453,7 +463,7 @@ postureTableDoF16 = {
 postureDict = {
     'Nybble': postureTableNybble,
     'Bittle': postureTableBittle,
-    'BittleR': postureTableBittleR,
+    'BittleX+Arm': postureTableBittleR,
     'DoF16': postureTableDoF16
 }
 model = 'Bittle'
@@ -581,8 +591,9 @@ def checkPortList(PortList, allPorts, needTesting=True):
         serialObject = Communication(p, 115200, 1)
         if needTesting is True:
             t = threading.Thread(target=testPort,
-                                 args=(PortList, serialObject, p.split('/')[-1]), daemon=True)    # remove '/dev/' in the port name
+                                 args=(PortList, serialObject, p.split('/')[-1]))    # remove '/dev/' in the port name
             threads.append(t)
+            t.daemon = True
             t.start()
         else:
             logger.debug(f"Adding in checkPortList: {p}")
@@ -593,7 +604,7 @@ def checkPortList(PortList, allPorts, needTesting=True):
         for t in threads:
             if t.is_alive():
                 # print("t is alive")
-                t.join(timeout=5)
+                t.join(timeout=8)
 
 
 def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None):
@@ -644,25 +655,59 @@ def keepCheckingPort(portList, cond1=None, check=True, updateFunc = lambda:None)
             updateFunc()
         allPorts = copy.deepcopy(currentPorts)
 
+def get_raspberry_pi_model():
+    """Detects the Raspberry pi model."""
+    try :
+        with open('/proc/cpuinfo','r')as cpuinfo:
+            for line in cpuinfo:
+                if "Model" in line:
+                    model_info = line.split(':')[1].strip()
+                    if "Raspberry Pi 3" in model_info:
+                        return "Raspberry Pi 3"
+                    elif "Raspberry Pi 4" in model_info:
+                        return "Raspberry pi 4"
+                    elif "Raspberry Pi 5" in model_info:
+                        return "Raspberry Pi 5"
+                    else:
+                        #if not 3,4,or 5,attempt to get revision code
+                        with open('/proc/cpuinfo','r')as cpuinfo2:
+                            for line2 in cpuinfo2:
+                                if"Revision" in line2:
+                                    revision_code =line2.split(':')[1].strip()
+                                    #basic check for revision codes that indicate pi5
+                                    if re.match(r'^d[0-3]8', revision_code):
+                                        return "Raspberry Pi 5"
+                                    else:
+                                        return "Raspberry Pi(Unknown Model)"
+        return "Not a Raspberry pi"
+    except FileNotFoundError:
+        return "Not a Raspberry Pi"
+
 def showSerialPorts(allPorts):
     # currently an issue in pyserial where for newer raspiberry pi os
     # (Kernel version: 6.1, Debian version: 12 (bookworm)) or ubuntus (22.04)
     # it classifies the /dev/ttyS0 port as a platform port and therefore won't be queried
     # https://github.com/pyserial/pyserial/issues/489
     if os.name == 'posix' and sys.platform.lower()[:5] == 'linux':
-        extra_ports = glob.glob('/dev/ttyS*')
+        raspPiModelName = get_raspberry_pi_model()
+        if raspPiModelName != "Raspberry Pi 5":
+            extra_ports = glob.glob('/dev/ttyS*')
+        else:
+            extra_ports = glob.glob('/dev/ttyAMA*')
+
         for port in extra_ports:
             if port not in allPorts:
                 allPorts.append(port)
-        for item in allPorts:
-            if 'AMA0' in item:
-                allPorts.remove(item)
-        
+        # printH("allPorts:", allPorts)
+
     allPorts = deleteDuplicatedUsbSerial(allPorts)
     for index in range(len(allPorts)):
         logger.debug(f"port[{index}] is {allPorts[index]} ")
-    print("\n*** Available serial ports: ***")
-    print(*allPorts, sep = "\n")
+    logger.info(f"*** Available serial ports: ***")
+    # print(*allPorts, sep = "\n")
+    for index in range(len(allPorts)):
+        logger.info(f"{allPorts[index]} ")
+
     if platform.system() != "Windows":
         for p in allPorts:
              if 'cu.usb' in p:
@@ -703,7 +748,6 @@ def connectPort(PortList, needTesting=True, needSendTask=True, needOpenPort=True
         else:   # len(allPorts) == 1
             portName = allPorts[0].split('/')[-1]
             portStrList.insert(0, portName)    # remove '/dev/' in the port name
-
 
                                 
 def replug(PortList, needSendTask=True, needOpenPort=True):
@@ -757,8 +801,8 @@ def replug(PortList, needSendTask=True, needOpenPort=True):
             else:
                 dif = list(set(curPorts)-set(ap))
                 dif = deleteDuplicatedUsbSerial(dif)
-                # print("diff:",end=" ")
-                # print(dif)
+                print("diff:",end=" ")
+                print(dif)
                 
                 success = False
                 for p in dif:
@@ -890,28 +934,28 @@ def monitoringJoint(ports, jointIndex, timer, callback):
             print("Current Angel:" + str(angel))
             
 def read_MCU_loop(PortList, callback=None):
-        result = send(PortList, ['gP', 0])
-        print("send results " + str(result))       
-        p = list(PortList.keys())
-        serialObject = p[0]
-        while True:
-            try:
-                if PortList:
-                    data = serialObject.main_engine.readline()
-                    if data:
-                        try:
-                            decoded_data = data.decode('ISO-8859-1').strip()
-                            if callback is not None:
-                                callback(decoded_data)
-                            else:
-                                print(str(decoded_data))
-                        except Exception as e:
-                            logger.error(f"Error decoding serial port data: {e}")
-                time.sleep(0.005)  # avoid high CPU usage
-            except Exception as e:
-                logger.error(f"Error reading serial port data: {e}")
-                break
-            
+    result = send(PortList, ['gP', 0])
+    print("send results " + str(result))
+    p = list(PortList.keys())
+    serialObject = p[0]
+    while True:
+        try:
+            if PortList:
+                data = serialObject.main_engine.readline()
+                if data:
+                    try:
+                        decoded_data = data.decode('ISO-8859-1').strip()
+                        if callback is not None:
+                            callback(decoded_data)
+                        else:
+                            print(str(decoded_data))
+                    except Exception as e:
+                        logger.error(f"Error decoding serial port data: {e}")
+            time.sleep(0.005)  # avoid high CPU usage
+        except Exception as e:
+            logger.error(f"Error reading serial port data: {e}")
+            break
+
 #if need to open serial port, use objects goodPorts
 goodPorts = {}      # goodPorts is a dictionary, the structure is {SerialPort Object(<class 'SerialCommunication.Communication'>): portName(string), ...}
 
@@ -938,16 +982,21 @@ def distanceHanle(distance):
 if __name__ == '__main__':
     try:
         connectPort(goodPorts)
-        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,), daemon=True)
+        t = threading.Thread(target=keepCheckingPort, args=(goodPorts,))
+        t.daemon = True
         t.start()
-        t1=threading.Thread(target=read_MCU_loop, args=(goodPorts, None)) 
-        t1.start()
+        # t1=threading.Thread(target=read_MCU_loop, args=(goodPorts, None))
+        # t1.daemon = True
+        # t1.start()
         ### Monitor Threads
-        # t_monitor_voltage = threading.Thread(target=monitoringVoltage, args=(goodPorts, 0xA7, 60, voltageHanle), daemon=True)
+        # t_monitor_voltage = threading.Thread(target=monitoringVoltage, args=(goodPorts, 0xA7, 60, voltageHanle))
+        # t_monitor_voltage.daemon = True
         # t_monitor_voltage.start()
-        # t_monitor_distance = threading.Thread(target=monitoringDistance, args=(goodPorts, 16, 17, 0.5, distanceHanle), daemon=True)
+        # t_monitor_distance = threading.Thread(target=monitoringDistance, args=(goodPorts, 16, 17, 0.5, distanceHanle))
+        # t_monitor_distance.daemon = True
         # t_monitor_distance.start()
-        # t_monitor_joint = threading.Thread(target=monitoringJoint, args=(goodPorts, 0 , 0.5, None), daemon=True)
+        # t_monitor_joint = threading.Thread(target=monitoringJoint, args=(goodPorts, 0 , 0.5, None))
+        # t_monitor_joint.daemon = True
         # t_monitor_joint.start()
 
         if len(sys.argv) >= 2:

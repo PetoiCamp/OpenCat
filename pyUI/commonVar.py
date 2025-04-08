@@ -52,7 +52,7 @@ modelOptions = [
     'Nybble Q',
     'Bittle',
     'Bittle X',
-    'Bittle R',
+    'Bittle X+Arm',
     'DoF16'
 ]
 
@@ -60,7 +60,7 @@ NaJoints = {
     'Nybble': [3, 4, 5, 6, 7],
     'Bittle': [1, 2, 3, 4, 5, 6, 7],
 #    'BittleX': [1, 2, 3, 4, 5, 6, 7],
-    'BittleR': [3, 4, 5, 6, 7],
+    'BittleX+Arm': [3, 4, 5, 6, 7],
     'DoF16' : []
 }
 
@@ -79,7 +79,7 @@ RegularScaleNames = [
 scaleNames = {
     'Nybble': RegularScaleNames,
     'Bittle': RegularScaleNames,
-    'BittleR': BittleRScaleNames
+    'BittleX+Arm': BittleRScaleNames
 }
 
 sideNames = ['Left Front', 'Right Front', 'Right Back', 'Left Back']

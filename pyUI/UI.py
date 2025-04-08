@@ -122,7 +122,7 @@ class UI:
         print(self.configName)
         if self.configName == "Bittle X":
             self.defaultBdVer = "BiBoard_V0_2"
-        elif self.configName == "Bittle R":
+        elif self.configName == "Bittle X+Arm":
             self.defaultBdVer = "BiBoard_V1_0"
 
     def changeLan(self, l):
