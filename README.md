@@ -8,7 +8,7 @@ OpenCat is the open-source Arduino and Raspberry Pi-based quadruped robotic pet 
 
 Inspired by Boston Dynamics' Big Dog and Spot Mini, Dr. Rongzhong Li started the project in his dorm at Wake Forest University in 2016. After one year of R&D, he founded Petoi LLC and devoted all his resources to developing open source robots. 
 
-The goal is to foster collaboration in quadruped(four-legged) robotic research, education, and engineering development of agile and affordable quadruped robot pets, bring STEM concepts to the mass, and inspire newcomers (including many kids and adults) to join the robotic AI revolution to create more applications.
+The goal is to foster collaboration in quadruped (four-legged) robotic research, education, and engineering development of agile and affordable quadruped robot pets, bring STEM concepts to the masses, and inspire newcomers (including many kids and adults) to join the robotic AI revolution to create more applications.
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/slope.gif?raw=true)
 
@@ -37,7 +37,7 @@ With our [customized Arduino-Uno board](https://www.petoi.com/products/nyboard-c
  
 Please see [Petoi FAQs](https://www.petoi.com/pages/faq?utm_source=github&utm_medium=code&utm_campaign=faq) for more info.
 
-Also, Check out [all of the OpenCat and Petoi robot user showcases](https://www.petoi.camp/forum/showcase).
+Also, check out [all of the OpenCat and Petoi robot user showcases](https://www.petoi.camp/forum/showcase).
 
 ![](https://github.com/PetoiCamp/NonCodeFiles/blob/master/gif/ball.gif?raw=true)
 
@@ -65,7 +65,7 @@ To configure the board:
 // #define MAIN_SKETCH
 ```
 
-4. If you activate ```#define AUTO_INIT```, the program will automatically set up without prompts. It will not reset joint offsets but calibrate the IMU. It's just a convenient option for our production line.
+4. If you activate ```#define AUTO_INIT```, the program will automatically set up without prompts. It will not reset the joint offsets but will calibrate the IMU. It's just a convenient option for our production line.
 
 5. Plug the USB uploader to the NyBoard and install the driver if no USB port is found under Arduino -> Tools -> Port.
 
