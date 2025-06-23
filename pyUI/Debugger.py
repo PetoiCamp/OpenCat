@@ -113,6 +113,8 @@ class Debugger:
             self.winDebug.title(txt('Debugger'))
             self.winDebug.winfo_children()[1].config(text=txt('Reset voice module'))
             tip(self.winDebug.winfo_children()[1], txt('tipRstVoice'))
+            self.winDebug.winfo_children()[2].config(text=txt('Calibrate gyroscope'))
+            tip(self.winDebug.winfo_children()[2], txt('tipImuCali'))
             
     
     def showAbout(self):

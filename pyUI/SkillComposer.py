@@ -819,6 +819,8 @@ class SkillComposer:
             model = model.replace(' ', '')
             if 'Bittle' in model and model != "BittleX+Arm": # Bittle or Bittle X will be Bittle
                 model = 'Bittle'
+            elif model == 'NybbleQ':
+                model = 'Nybble'
             self.model = copy.deepcopy(model)
             self.postureTable = postureDict[self.model]
             self.framePosture.destroy()
